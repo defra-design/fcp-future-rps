@@ -1,0 +1,54 @@
+params:
+  - name: title
+    type: string
+    required: true
+    description: The title that is displayed at the beginning of the timeline.
+  - name: events
+    type: array
+    required: true
+    description: An array of events ordered chronologically that are displayed on the timeline
+    params:
+      - name: name
+        type: string
+        required: true
+        description: A descriptive name of the event
+      - name: state
+        type: string
+        required: true
+        description: The state of the event (for example, "booked")
+      - name: date
+        type: string
+        required: true
+        description: The date of the event
+  - name: classes
+    type: string
+    required: false
+    description: Additional classes to add to the timeline
+  - name: attributes
+    type: object
+    required: false
+    description: HTML Attributes (data attributes) to add to the timeline
+
+examples:
+  - name: default
+    data:
+      title: Contact history
+      events:
+        - name: John Smith
+          state: booked
+          date: 25 May 2021
+        - name: John Smith
+          state: cancelled
+          date: 22 May 2021
+  - name: no-title
+    data:
+      events:
+        - name: John Smith
+          state: booked
+          date: 25 May 2021
+        - name: John Smith
+          state: cancelled
+          date: 22 May 2021
+  - name: no-events
+    data:
+      title: Contact history

@@ -1,0 +1,24 @@
+.dwp-timeline {
+  &__events {
+    border-left: 3px solid $govuk-brand-colour;
+    list-style-type: none;
+    padding: 0;
+
+    &--entry {
+      margin: 32px 0;
+      padding-left: 18px;
+      position: relative;
+      top: -10px;
+
+      &::before {
+        background-color: $govuk-brand-colour;
+        content: "";
+        height: 3px;
+        left: -1px;
+        position: absolute;
+        top: 10px;
+        width: 11px;
+      }
+    }
+  }
+}

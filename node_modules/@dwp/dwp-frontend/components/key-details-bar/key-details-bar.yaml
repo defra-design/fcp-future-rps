@@ -1,0 +1,82 @@
+params:
+  - name: primaryIdentifier
+    type: object
+    required: true
+    description: The primary identifier
+    params:
+      - name: text
+        type: string
+        required: true
+      - name: value
+        type: string
+        required: true
+  - name: secondaryIdentifier
+    type: object
+    required: false
+    description: The secondary identifier
+    params:
+      - name: text
+        type: string
+        required: true
+      - name: value
+        type: string
+        required: true
+  - name: status
+    type: object
+    required: false
+    description: The claim status
+    params:
+      - name: text
+        type: string
+        required: true
+      - name: value
+        type: string
+        required: true
+      - name: classes
+        type: string
+        required: false
+  - name: additionalData
+    type: array
+    required: false
+    description: Array of optional additional data
+    params:
+      - name: text
+        type: string
+        required: true
+        description: Text to use within each additional data item
+      - name: value
+        type: string
+        required: true
+        description: Value to use within each additional data item
+  - name: classes
+    type: string
+    required: false
+    description: Additional classes to add to the key details bar
+  - name: attributes
+    type: object
+    required: false
+    description: HTML Attributes (data attributes) to add to the key details bar
+
+examples:
+  - name: default
+    data:
+      primaryIdentifier:
+        text: Name
+        value: Jane Doe
+      secondaryIdentifier:
+        text: Nino
+        value: QQ 12 34 56 X
+      status:
+        text: Claim status
+        value: completed
+      classes: custom-styles
+      attributes:
+        data-attribute: value
+        data-second-attribute: second-value
+      additionalData:
+        - text: Date of birth
+          value: 4 June 1972
+        - text: Mobile number
+          value: 07777 900 900
+        - text: Language
+          value: Welsh speaker

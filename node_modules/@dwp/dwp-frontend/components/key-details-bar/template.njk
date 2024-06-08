@@ -1,0 +1,38 @@
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+
+<section class="dwp-key-details-bar {%- if params.classes %} {{ params.classes }}{% endif %}" aria-label="Key details"
+{%- for attribute, value in params.attributes %} {{ attribute }}="{{ value }}"{% endfor %}>
+  <div class="dwp-key-details-bar__key-details">
+    <dl class="dwp-key-details-bar__top-block">
+      {% if params.primaryIdentifier %}
+        <dt class="govuk-visually-hidden">{{ params.primaryIdentifier.text }}</dt>
+        <dd class="dwp-key-details-bar__primary">{{ params.primaryIdentifier.value }}</dd>
+      {% endif %}
+
+      {% if params.secondaryIdentifier %}
+        <dt class="govuk-visually-hidden">{{ params.secondaryIdentifier.text }}</dt>
+        <dd class="dwp-key-details-bar__secondary">{{ params.secondaryIdentifier.value }}</dd>
+      {% endif %}
+
+      {% if params.status %}
+        <dt class="govuk-visually-hidden">{{ params.status.text }}</dt>
+        <dd class="govuk-table__cell dwp-key-details-bar__status">
+          {{ govukTag({
+            text: params.status.value,
+            classes: params.status.classes or 'dwp-key-details-bar__status--dwp-default'
+          }) }}
+        </dd>
+      {% endif %}
+    </dl>
+
+    {% if params.additionalData %}
+      <dl class="dwp-key-details-bar__bottom-block">
+        {% for item in params.additionalData %}
+          <dt>{{ item.text }}</dt>
+          <dd>{{ item.value }}</dd>
+        {% endfor %}
+      </dl>
+    {% endif %}
+
+  </div>
+</section>

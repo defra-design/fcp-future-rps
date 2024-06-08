@@ -1,0 +1,119 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="govuk-grid-row" id="header">
+<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+<div class="moj-organisation-nav" aria-label="Organisation switcher">
+<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Save and return later
+</button>
+</div>
+</div>
+</div>
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+      <h1 class="govuk-heading-l">Select land for your actions</h1>
+<p class="govuk-body">Your available land is grouped by Ordinance Survey map sheet references. To view your land parcels, click on the OS map sheet reference links in the table, or the icons in the map.</p>
+<p class="govuk-body">You’ll then be able to add actions to parcels. When you finish, you’ll come back to this screen. Click ‘back to task list’ to continue the rest of your application.</p>
+<h2 class="govuk-heading-m">Total number of available land parcels: 2</h2>
+<h2 class="govuk-heading-m">Total area (ha): 200.6611</h2>
+<!--<h2 class="govuk-heading-m">Total number of land parcels used for actions: 0</h2>-->
+<!--<h2 class="govuk-heading-m">Total number of actions applied for: 0</h2>-->
+
+<hr class="section-break-large"></hr>
+      <table class="govuk-table">
+<p class="govuk-body govuk-!-font-weight-bold"><a href="select-land" class="govuk-link">OS Map Sheet Reference SO3</a></p>
+<hr class="govuk-section-break govuk-section-break--visible">
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Number of available land parcels</td>
+      <td class="govuk-table__cell govuk-table__cell--numeric">20</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Total area (ha)</td>
+      <td class="govuk-table__cell govuk-table__cell--numeric">120.3451 ha</td>
+    </tr>
+<!--    <tr class="govuk-table__row">-->
+<!--     <td class="govuk-table__cell">Number of land parcels used for actions</td>-->
+<!--      <td class="govuk-table__cell govuk-table__cell&#45;&#45;numeric">0</td>-->
+<!--    </tr>-->
+<!--        <tr class="govuk-table__row">-->
+<!--    <td class="govuk-table__cell">Number of actions applied for</td>-->
+<!--      <td class="govuk-table__cell govuk-table__cell&#45;&#45;numeric">0</td>-->
+<!--    </tr>-->
+  </tbody>
+</table>
+<hr class="section-break-large"></hr>
+      <table class="govuk-table">
+<p class="govuk-body govuk-!-font-weight-bold"><a href="select-land" class="govuk-link">OS Map Sheet Reference SX2</a></p>
+<hr class="govuk-section-break govuk-section-break--visible">
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Number of available land parcels</td>
+      <td class="govuk-table__cell govuk-table__cell--numeric">17</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Total area (ha)</td>
+      <td class="govuk-table__cell govuk-table__cell--numeric">80.3160 ha</td>
+    </tr>
+<!--    <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">Number of land parcels used for actions</td>-->
+<!--      <td class="govuk-table__cell govuk-table__cell&#45;&#45;numeric">0</td>-->
+<!--    </tr>-->
+<!--        <tr class="govuk-table__row">-->
+<!--     <td class="govuk-table__cell">Number of actions applied for</td>-->
+<!--      <td class="govuk-table__cell govuk-table__cell&#45;&#45;numeric">0</td>-->
+<!--    </tr>-->
+  </tbody>
+</table>
+
+      <form class="form" action="tasklist-6" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Back to task list
+          </button>
+        </form>
+
+    </div>
+    
+      <div class="govuk-grid-column-one-half govuk-!-margin-bottom-5">
+    <p class="govuk-body"><a href="#" class="govuk-link">Hide/show map</a></p>
+  <map name="clickable">
+        <area shape="rect" coords="70,300,160,350" href="select-land">
+        <area shape="rect" coords="180,110,270,160" href="select-land">
+          </map>
+<img usemap="#clickable" src="img/map_1.png" alt="Map of your land" style="width:465px;height:400px;"></a>
+    </div>
+
+</div>
+
+</main>
+</div>
+{% endblock %}

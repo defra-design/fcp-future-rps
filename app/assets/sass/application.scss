@@ -1,0 +1,85 @@
+//
+// For guidance on how to add CSS and SCSS see:
+// https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
+// 
+
+// Add extra styles here
+
+/* Add a black background color to the top navigation */
+.topnav {
+    overflow: hidden;
+}
+
+/* Right-aligned section inside the top navigation */
+.topnav-right {
+  float: right;
+}
+
+.app-custom-class {
+  width: 0.2em;
+}
+
+.list-parcels {
+  float: right;
+  padding-right: 100px;
+}
+
+.section-break-large {
+  break-color: black;
+  background-color: black;
+  border: 0;
+  border-top: 4px solid black;
+  height: 1px;
+  margin: 2rem auto;
+  text-align: center;
+  width: 100%;
+  }
+
+  .section-break-large-blue {
+  break-color: #1d70b8;
+  background-color: #1d70b8;
+  border: 0;
+  border-top: 4px solid #1d70b8;
+  height: 1px;
+  margin: 2rem auto;
+  text-align: center;
+  width: 100%;
+  }
+
+
+  .key-parent {
+    width: 23vw;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 4px;
+}
+
+  #key1 {
+  width: 2em;
+  height: 2em;
+  border: 4px solid #E53724;
+  background-color: #FADD4B;
+}
+
+  #key2 {
+  width: 2em;
+  height: 2em;
+  border: 12px solid #001EF5;
+  background-color: #96CDF6;
+}
+
+  #key3 {
+  width: 2em;
+  height: 2em;
+  border: 4px solid #A46E53;
+  background-color: #F1DEB8;
+}
+
+  #key4 {
+  width: 2em;
+  height: 2em;
+  border: 4px solid #2C6739;
+  background-color: #899855;
+}
+
+
