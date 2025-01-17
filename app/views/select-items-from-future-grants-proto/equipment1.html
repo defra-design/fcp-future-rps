@@ -1,0 +1,123 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} {{ item.title }} {% endblock %}
+
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+
+  <!-- <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="equipment-list">Items</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">{{ item.title }}
+      </li>
+    </ol>
+  </div> -->
+
+{% endblock %}
+
+
+{% block content %}
+
+    <form action="/fetf-add-to-selected-items2" method="post">
+      <input type="hidden" name="termName" value="{{ item.termName }}">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <input type="hidden" name="itemThis" value="{{ item }}">
+
+    <!-- <span class="govuk-caption-xl">{{ item.section }}</span> -->
+
+    
+    
+    <span class="govuk-caption-xl">Code: FETF{{ item.itemCode }}</span> 
+    <h1 class="govuk-heading-l">Check item eligibility rules</h1>
+
+
+
+
+{% if item.eligible %}
+
+<h2 class="govuk-heading-m">{{ item.title }} must:</h2>
+<ul class="govuk-list govuk-list--bullet">
+  {% if item.eligible.eligibleBullet01 %}<li>{{ item.eligible.eligibleBullet01 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet02 %}<li>{{ item.eligible.eligibleBullet02 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet03 %}<li>{{ item.eligible.eligibleBullet03 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet04 %}<li>{{ item.eligible.eligibleBullet04 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet05 %}<li>{{ item.eligible.eligibleBullet05 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet06 %}<li>{{ item.eligible.eligibleBullet06 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet07 %}<li>{{ item.eligible.eligibleBullet07 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet08 %}<li>{{ item.eligible.eligibleBullet08 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet09 %}<li>{{ item.eligible.eligibleBullet09 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet10 %}<li>{{ item.eligible.eligibleBullet10 }}</li>{% endif %}
+</ul>
+
+{% if item.eligible.eligibleText01 %}<p class="govuk-body">{{ item.eligible.eligibleText01 }}</p>{% endif %}
+{% if item.eligible.eligibleText02 %}<p class="govuk-body">{{ item.eligible.eligibleText02 }}</p>{% endif %}
+{% if item.eligible.eligibleText03 %}<p class="govuk-body">{{ item.eligible.eligibleText03 }}</p>{% endif %}
+{% if item.eligible.eligibleText04 %}<p class="govuk-body">{{ item.eligible.eligibleText04 }}</p>{% endif %}
+{% if item.eligible.eligibleText05 %}<p class="govuk-body">{{ item.eligible.eligibleText05 }}</p>{% endif %}
+
+{% endif %}
+
+
+{% if item.notEligible %}
+
+<h2 class="govuk-heading-m">The following are not eligible:</h2>
+<ul class="govuk-list govuk-list--bullet">
+  {% if item.notEligible.notEligibleBullet01 %}<li>{{ item.notEligible.notEligibleBullet01 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet02 %}<li>{{ item.notEligible.notEligibleBullet02 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet03 %}<li>{{ item.notEligible.notEligibleBullet03 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet04 %}<li>{{ item.notEligible.notEligibleBullet04 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet05 %}<li>{{ item.notEligible.notEligibleBullet05 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet06 %}<li>{{ item.notEligible.notEligibleBullet06 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet07 %}<li>{{ item.notEligible.notEligibleBullet07 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet08 %}<li>{{ item.notEligible.notEligibleBullet08 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet09 %}<li>{{ item.notEligible.notEligibleBullet09 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet10 %}<li>{{ item.notEligible.notEligibleBullet10 }}</li>{% endif %}
+</ul>
+
+{% endif %}
+
+
+
+
+
+
+
+  
+
+
+<div class="govuk-button-group">
+<a  href="/fetf/rewrite/select-items/items/1/{{ item.termName | lower | replace(' ', '-') }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+  Continue
+</a>
+
+</form>
+
+
+
+ <a class="govuk-button govuk-button--secondary" href="equipment-list">
+
+    Cancel
+  
+  </a>
+</div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} Will you store the equipment at the main business address? {% endblock %}
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+
+<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form action="/selectComplete1" method="post">
+
+      <span class="govuk-caption-l">Apply</span>
+      
+
+      <h1 class="govuk-heading-xl">You have added 1 item you want to claim for</h1>
+<div class="govuk-form-group">
+
+  <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
+    {%  if (data['itemName1']) %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
+        {{ data['itemName1'] }}<br>
+        Item Value: {{ data['itemValue1'] }} | Number of items: {{ data['itemNo1'] }}
+      </dt>
+      <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+        <ul class="govuk-summary-list__actions-list">
+          <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="item1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+          <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+        </ul>
+      </dd>
+    </div>
+    {%  endif  %}
+    {%  if (data['itemName2']) %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
+        {{ data['itemName2'] }}<br>
+        Item Value: {{ data['itemValue2'] }} | Number of items: {{ data['itemNumber2'] }}
+      </dt>
+      <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+        <ul class="govuk-summary-list__actions-list">
+          <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="item2"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+          <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+        </ul>
+      </dd>
+    </div>
+    {%  endif  %}
+    {%  if (data['itemName3']) %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
+        {{ data['itemName1'] }}<br>
+        Item Value: {{ data['itemValue3'] }} | Number of items: {{ data['itemNumber3'] }}
+      </dt>
+      <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+        <ul class="govuk-summary-list__actions-list">
+          <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="item3"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+          <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+        </ul>
+      </dd>
+    </div>
+    {%  endif  %}
+   
+  </dl>
+  Grand total = {{ data['Total'] }}
+
+</div>
+
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="add-another-hint">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
+        Do you need to add another item?
+      </legend>
+      <div id="add-another-hint" class="govuk-hint">
+
+      </div>
+      <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="add-another" name="addAnother" type="radio" value="Yes">
+          <label class="govuk-label govuk-radios__label" for="add-another">
+            Yes
+          </label>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="add-another-2" name="addAnother" type="radio" value="No">
+          <label class="govuk-label govuk-radios__label" for="add-another-2">
+            No
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+
+
+      <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save and continue
+    </button>
+    <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+      Save and come back later
+    </button>
+    
+    </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+</main>
+
+{% endblock %}

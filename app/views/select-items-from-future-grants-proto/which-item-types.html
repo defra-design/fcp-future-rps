@@ -1,0 +1,171 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} Will you store the equipment at the main business address? {% endblock %}
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+
+<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+
+      <span class="govuk-caption-l">Apply</span>
+     
+<!--
+      <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="itemType-hint">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">
+                Which category of farm equipment do you require?
+              </h1>
+            </legend>
+            <div id="itemType-hint" class="govuk-hint">
+              Select all that apply. 
+            </div>
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+              
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType-2" name="itemType" type="checkbox" value="Arable" {{ checked("itemType", "Arable") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType-2">
+                  Arable (12)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType-3" name="itemType" type="checkbox" value="Forestry" {{ checked("itemType", "Forestry") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType-3">
+                  Forestry (13)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType-4" name="itemType" type="checkbox" value="Horticulture" {{ checked("itemType", "Horticulture") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType-4">
+                  Horticulture (9)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType-5" name="itemType" type="checkbox" value="Livestock" {{ checked("itemType", "Livestock") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType-5">
+                  Livestock (12)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType" name="itemType" type="checkbox" value="Resource and energy management"{{ checked("itemType", "Resource and energy management") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType">
+                  Resource and energy management (9)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType-6" name="itemType" type="checkbox" value="Water and irrigation management" {{ checked("itemType", "Water and irrigation management") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType-6">
+                  Water and irrigation management (9)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType-7" name="itemType" type="checkbox" value="Other" data-aria-controls="conditional-contact-3" {{ checked("itemType", "Other") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType-7">
+                  Other (7)
+                </label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="itemType-7" name="itemType" type="checkbox" value="Show all" data-aria-controls="conditional-contact-3" {{ checked("itemType", "Show all") }}>
+                <label class="govuk-label govuk-checkboxes__label" for="itemType-7">
+                  Show all (73)
+                </label>
+              </div>
+              
+            </div>
+          </fieldset>
+
+      </div>
+
+    -->
+          <h1 class="govuk-heading-l">What type of items do you want to apply for?</h1>
+
+          <p>Check the <a href="https://www.gov.uk/government/publications/farming-equipment-and-technology-fund-2024/productivity-items-and-specifications-farming-equipment-and-technology-fund-fetf-2024" class="govuk-link">productivity items and specification list</a>  to see all items.</p>
+    <p class="govuk-body-l">select all that apply</p>
+
+     <form  method="post" novalidate action="/equipmentListApplyFilters">
+
+
+       {{ govukCheckboxes({
+        idPrefix: 'category',
+        name: 'category',
+        classes: "govuk-checkboxes--small",
+        fieldset: {
+          legend: {
+            text: 'Category',
+            classes: 'govuk-fieldset__legend--s'
+          }
+        },
+        items: [
+          {
+            value: 'Arable',
+            text: 'Arable',
+            checked:  checked("category", "Arable")
+          },
+          {
+            value: 'Forestry',
+            text: 'Forestry',
+            checked:  checked("category", "Forestry")
+          },
+          {
+            value: 'General',
+            text: 'General',
+            checked:  checked("category", "General")
+          },
+          {
+            value: 'Horticulture',
+            text: 'Horticulture',
+            checked:  checked("category", "Horticulture")
+          },
+          {
+            value: 'Livestock',
+            text: 'Livestock',
+            checked:  checked("category", "Livestock")
+          },
+          {
+            value: 'Resource and energy management',
+            text: 'Resource and energy management',
+            checked:  checked("category", "Resource and energy management")
+          },
+          {
+            value: 'Water and irrigation management',
+            text: 'Water and irrigation management',
+            checked:  checked("category", "Water and irrigation management")
+          }
+        ]
+      }) }}
+
+
+
+
+
+
+
+      <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save and continue
+    </button>
+    
+</div>
+    </form>
+
+  </div>
+
+</div>
+
+
+
+</main>
+
+{% endblock %}

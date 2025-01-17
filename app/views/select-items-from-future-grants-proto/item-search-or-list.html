@@ -1,0 +1,71 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} Will you store the equipment at the main business address? {% endblock %}
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+<form action="/searchFindItems1" method="post">
+<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+
+      <span class="govuk-caption-l">Apply</span>
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+    How do you want to find items to apply for?
+      </h1>
+    </legend>
+
+    <div class="govuk-radios" data-module="govuk-radios"> 
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="changedName" name="searchFind" type="radio" value="Yes">
+        <label class="govuk-label govuk-radios__label" for="changedName">
+          Search by item name or code
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="changedName-2" name="searchFind" type="radio" value="No">
+        <label class="govuk-label govuk-radios__label" for="changedName-2">
+          Search by type of item
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+          
+
+
+
+
+
+
+      <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save and continue
+    </button>
+    
+</div>
+    </form>
+
+  </div>
+
+</div>
+
+
+
+</main>
+
+{% endblock %}

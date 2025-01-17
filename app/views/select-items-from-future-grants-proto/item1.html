@@ -1,0 +1,123 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} {{ item.title }} {% endblock %}
+
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+  <a href="equipment-list" class="govuk-back-link">Back</a>
+  <!-- <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="equipment-list">Items</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">{{ item.title }}
+      </li>
+    </ol>
+  </div> -->
+
+{% endblock %}
+
+
+{% block content %}
+
+<form action="/addItem1" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <!-- <span class="govuk-caption-xl">{{ item.section }}</span> -->
+
+    
+    
+    <h1 class="govuk-heading-l">Direct drill 4m (FETF205)</h1>
+
+    <p class="govuk-body-l">Seed drill for sowing crops at minimum 4m width.</p>
+
+    <p class="govuk-body-l"><strong>Grant amount per item: </strong>£17,845.00</p>
+    <p class="govuk-body-s"><strong>Maximum quantity: 3</strong>3</p>
+    <p class="govuk-body-s"><strong>Expected average cost of item: </strong>£35,690.00</p>
+    <p class="govuk-body-s"><strong>Percentage paid towards item: </strong>50%</p>
+    <hr style="margin-bottom: 20px; margin-top: 20px;">
+    <p class="govuk-body-l"><strong>Item score: </strong>59</p>
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          How items are scored
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body">Applications for productivity items are scored on:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>productivity benefit</li>
+          <li>environmental benefit</li>
+          <li>level of adoption by the industry</li>
+        </ul>
+        <p class="govuk-body">Each productivity item has a score up to 100.</p>
+        <p class="govuk-body">The RPA will give your application a score by:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>adding together the scores for each item in your application (if you apply for more than one of the same item, the item will only be scored once)</li>
+          <li>dividing this number by the number of items in your application (if you apply for more than one of the same item, the item will only be counted once)</li>
+        </ul>
+
+
+      </div>
+    </details>
+    <hr style="margin-bottom: 20px;">
+
+
+
+<h2 class="govuk-heading-m">Items must:</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li>be a direct drill</li>
+  <li>use either tines or discs to produce the seeding slot</li>
+  <li>have a 3.9m minimum drilling width</li>
+  <li>have no fertiliser placement mechanism in front of the seeding slot</li>
+  <li>place the seed in the seeding slot</li>
+  <li>drill through an established growing cover crop of at least 15cm</li>
+  <li>have a seed hopper with a capacity of at least 1,000L</li>
+  <li>have precision metering</li>
+  <li>drill the full range of arable and cover crops including cereals</li>
+</ul>
+
+
+<h2 class="govuk-heading-m">The following are not eligible:</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li>drills with cultivation, seed bed preparation, or fertiliser placement equipment in front of the seeding slot</li>
+  <li>cultivators with over-seeders</li>
+  <li>cultivators with broadcasters</li>
+  <li>minimum till drills</li>
+  <li>strip till drills</li>
+  <li>grassland over-seeders</li>
+  <li>grassland broadcasters</li>
+</ul>
+
+
+
+
+<p class="govuk-body"><strong>Serial number:</strong> You must provide this item’s serial number when you submit your claim for payment.</p>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="bName">
+            How many item are you applying for?
+          </label>
+            <input class="govuk-input govuk-input--width-5" id="bName" name="itemNo1" type="text"  value="{{ data['itemNo1'] }}">
+        </div>
+
+  
+      <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save and continue
+    </button>
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+
+</div>
+{% endblock %}

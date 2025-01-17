@@ -1,0 +1,195 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} {{ item.title }} {% endblock %}
+
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+
+  <!-- <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="equipment-list">Items</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">{{ item.title }}
+      </li>
+    </ol>
+  </div> -->
+
+{% endblock %}
+
+
+{% block content %}
+
+    <form action="/fetf-add-to-selected-items1" method="post">
+      <input type="hidden" name="termName" value="{{ item.termName }}">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <!-- <span class="govuk-caption-xl">{{ item.section }}</span> -->
+
+    
+    
+    <h1 class="govuk-heading-l">{{ item.title }} (FETF{{ item.itemCode }})</h1>
+
+    <p class="govuk-body-l">{{ item.summary }}</p>
+
+    <p class="govuk-body-l"><strong>Grant amount per item: </strong>£{{ item.grantValue }}</p>
+    <p class="govuk-body-s"><strong>Maximum quantity: </strong>3</p>
+    <p class="govuk-body-s"><strong>Expected average cost of item: </strong>£{{ item.averageValue }}</p>
+    <p class="govuk-body-s"><strong>Percentage paid towards item: </strong>{{ item.grantPercentage }}%</p>
+    <hr style="margin-bottom: 20px; margin-top: 20px;">
+    <p class="govuk-body-l"><strong>Item score: </strong>{{ item.score }}</p>
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          How items are scored
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body">Applications for productivity items are scored on:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>productivity benefit</li>
+          <li>environmental benefit</li>
+          <li>level of adoption by the industry</li>
+        </ul>
+        <p class="govuk-body">Each productivity item has a score up to 100.</p>
+        <p class="govuk-body">The RPA will give your application a score by:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>adding together the scores for each item in your application (if you apply for more than one of the same item, the item will only be scored once)</li>
+          <li>dividing this number by the number of items in your application (if you apply for more than one of the same item, the item will only be counted once)</li>
+        </ul>
+
+        <!-- <p class="govuk-body">Each item has been assigned a score out of 100 based on certain criteria.</p>
+<p class="govuk-body">For Productivity and Slurry items, this criteria is:</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>productivity</li>
+  <li>environmental benefit</li>
+  <li>level of adoption by the industry (items not in widespread use have a higher score)</li>
+</ul> -->
+      </div>
+    </details>
+    <hr style="margin-bottom: 20px;">
+<!--     
+{% if item.description %}
+
+<h2 class="govuk-heading-m">Overview</h2>
+<p class="govuk-body">{{ item.description.descriptionText01 }}</p>
+<p class="govuk-body">{{ item.description.descriptionText02 }}</p>
+<p class="govuk-body">{{ item.description.descriptionText03 }}</p>
+<p class="govuk-body">{{ item.description.descriptionText04 }}</p>
+<p class="govuk-body">{{ item.description.descriptionText05 }}</p>
+
+<ul class="govuk-list govuk-list--bullet">
+  {% if item.description.descriptionBullet01 %}<li>{{ item.description.descriptionBullet01 }}</li>{% endif %}
+  {% if item.description.descriptionBullet02 %}<li>{{ item.description.descriptionBullet02 }}</li>{% endif %}
+  {% if item.description.descriptionBullet03 %}<li>{{ item.description.descriptionBullet03 }}</li>{% endif %}
+  {% if item.description.descriptionBullet04 %}<li>{{ item.description.descriptionBullet04 }}</li>{% endif %}
+  {% if item.description.descriptionBullet05 %}<li>{{ item.description.descriptionBullet05 }}</li>{% endif %}
+</ul>
+
+{% endif %}
+ -->
+
+{% if item.eligible %}
+
+<h2 class="govuk-heading-m">Items must:</h2>
+<ul class="govuk-list govuk-list--bullet">
+  {% if item.eligible.eligibleBullet01 %}<li>{{ item.eligible.eligibleBullet01 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet02 %}<li>{{ item.eligible.eligibleBullet02 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet03 %}<li>{{ item.eligible.eligibleBullet03 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet04 %}<li>{{ item.eligible.eligibleBullet04 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet05 %}<li>{{ item.eligible.eligibleBullet05 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet06 %}<li>{{ item.eligible.eligibleBullet06 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet07 %}<li>{{ item.eligible.eligibleBullet07 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet08 %}<li>{{ item.eligible.eligibleBullet08 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet09 %}<li>{{ item.eligible.eligibleBullet09 }}</li>{% endif %}
+  {% if item.eligible.eligibleBullet10 %}<li>{{ item.eligible.eligibleBullet10 }}</li>{% endif %}
+</ul>
+
+{% if item.eligible.eligibleText01 %}<p class="govuk-body">{{ item.eligible.eligibleText01 }}</p>{% endif %}
+{% if item.eligible.eligibleText02 %}<p class="govuk-body">{{ item.eligible.eligibleText02 }}</p>{% endif %}
+{% if item.eligible.eligibleText03 %}<p class="govuk-body">{{ item.eligible.eligibleText03 }}</p>{% endif %}
+{% if item.eligible.eligibleText04 %}<p class="govuk-body">{{ item.eligible.eligibleText04 }}</p>{% endif %}
+{% if item.eligible.eligibleText05 %}<p class="govuk-body">{{ item.eligible.eligibleText05 }}</p>{% endif %}
+
+{% endif %}
+
+
+{% if item.notEligible %}
+
+<h2 class="govuk-heading-m">The following are not eligible:</h2>
+<ul class="govuk-list govuk-list--bullet">
+  {% if item.notEligible.notEligibleBullet01 %}<li>{{ item.notEligible.notEligibleBullet01 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet02 %}<li>{{ item.notEligible.notEligibleBullet02 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet03 %}<li>{{ item.notEligible.notEligibleBullet03 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet04 %}<li>{{ item.notEligible.notEligibleBullet04 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet05 %}<li>{{ item.notEligible.notEligibleBullet05 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet06 %}<li>{{ item.notEligible.notEligibleBullet06 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet07 %}<li>{{ item.notEligible.notEligibleBullet07 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet08 %}<li>{{ item.notEligible.notEligibleBullet08 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet09 %}<li>{{ item.notEligible.notEligibleBullet09 }}</li>{% endif %}
+  {% if item.notEligible.notEligibleBullet10 %}<li>{{ item.notEligible.notEligibleBullet10 }}</li>{% endif %}
+</ul>
+
+{% endif %}
+
+
+{% if item.serialNumber %}
+<p class="govuk-body"><strong>Serial number:</strong> You must provide this item’s serial number when you submit your claim for payment.</p>
+{% endif %}
+
+<div class="govuk-form-group">
+  <h2 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--m" for="quantity">
+      How many do you need?
+    </label>
+  </h2>
+  <div id="event-name-hint" class="govuk-hint">
+    Maximum quantity: 3
+  </div>
+  <div class="govuk-input__wrapper">
+     <input class="govuk-input govuk-input--width-5" id="quantity" name="quantity" type="text" spellcheck="false" value="{{ item.quantity }}">
+    <div class="govuk-input__suffix" aria-hidden="true">item quantity</div>
+  </div>
+</div>
+
+
+
+
+  
+
+
+<div class="govuk-button-group">
+<button type="submit" class="govuk-button" data-module="govuk-button">
+  Continue
+</button>
+<br>
+
+</form>
+
+
+
+ <a class="govuk-button govuk-button--secondary" href="equipment-list">
+
+    Cancel
+  
+  </a>
+</div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+</div>
+{% endblock %}

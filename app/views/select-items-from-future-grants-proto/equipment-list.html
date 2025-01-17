@@ -1,0 +1,137 @@
+
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %}
+  Select items
+{% endblock %}
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{% endblock %}
+
+
+
+{% block content %}
+
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+<main class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if data.grantTotal %}
+      <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Your basket
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <p class="govuk-notification-banner__heading"></p>
+      <p>
+<strong>Requesetd grant total</strong>: {{ data.grantTotal | currency }} <span class="govuk-!-margin-left-3"><strong>Item score</strong></span>: {{ data.scoreTotal }} </p>
+<p>
+      
+      <a class="govuk-notification-banner__link" href="selected-items">View your current items</a>.
+    </p>
+  </div>
+</div>
+      {% endif  %}
+      <span class="govuk-caption-l">Apply</span>
+
+      <h1 class="govuk-heading-l" style="margin-bottom:30px;">Select {% if data.grantTotal %}more {% endif  %}items</h1>
+
+
+ 
+
+      <p><strong>Your applied filters</strong>: {{ data['category'] }} <span class="govuk-!-margin-left-4"><a href="which-item-types">Change filters</a></p>
+      <div class="govuk-inset-text">
+        The minimum grant you can apply for is £1,000 and the maximum grant is £50,000.
+      </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+
+
+{% if data.filteredResults.length %}
+
+{% set results = data.filteredResults %}
+
+{% else %}
+
+{% set results = allData %}
+
+{% endif %}
+
+<h2 class="govuk-heading-m">{{results.length}} results found</h2>
+  <hr style="margin-bottom: 20px;">
+{% if (data.searchFind == 'Yes') %}
+  {% for item in results %}
+    <span style="clear: both; display: inline-block;">
+    <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+      <a href="items/{{ item.termName | lower | replace(' ', '-') }}" class="govuk-link">{{ item.title }} (FETF{{ item.itemCode }})</a>
+    </h3>
+<!--
+    <p class="govuk-body">{{ item.summary }}</p>
+    <span style="display: inline-block;">
+    <span class="govuk-caption-m">Grant amount per item:</span>
+    <p class="govuk-body-l"><strong>£{{ item.grantValue }}</strong></p>
+    </span>
+    <span style="display: inline-block; margin-left: 40px;">
+    <span class="govuk-caption-m">Item score:</span>
+    <p class="govuk-body-l"><strong>{{ item.score }}</strong></p>
+    </span>
+
+
+   <p class="govuk-body-s">Category: {{ item.category }}</p><span class="govuk-caption-s"></span> -->
+
+
+
+    </span>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+  {% endfor %}
+
+{% else %}
+
+  {% for item in data.category %}
+    <h2 class="govuk-heading-l govuk-!-margin-top-7">{{item}} items</h2>
+    {% set categoryThis = item %}
+      {% for item in results %}
+        {% if  (item.category == categoryThis) %}
+          <span style="clear: both; display: inline-block;">
+            <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+              <a href="items/{{ item.termName | lower | replace(' ', '-') }}" class="govuk-link">{{ item.title }} (FETF{{ item.itemCode }})</a>
+            </h3>
+            <p class="govuk-body">{{ item.summary }}</p>
+            <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£{{ item.grantValue }}</strong></p>
+            </span>
+            <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>{{ item.score }}</strong></p>
+            </span>
+          </span>
+          <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+        {% endif %}
+      {% endfor %}
+  {% endfor %}
+
+{% endif %}
+
+
+</div>
+
+</main>
+
+
+
+
+
+{% endblock %}

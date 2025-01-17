@@ -1,0 +1,125 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} Selected items {% endblock %}
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{% endblock %}
+
+{% block content %}
+
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+<form method="post" novalidate action="/moreItems1">
+<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <span class="govuk-caption-l">Apply</span>
+    <h1 class="govuk-heading-l">Selected items</h1>
+    <div class="govuk-inset-text">You can apply for £1,000 to £50,000</div>
+<table class="govuk-table">
+
+
+  <caption class="govuk-table__caption govuk-table__caption--m add-hr" >Items summary</caption>
+  <thead class="govuk-table__head">
+    <tr class=".govuk-table-row-selected-item">
+      <th scope="col" class="govuk-table__header">Item</th>
+      <th scope="col" class="govuk-table__header"id="selected-item" >Code</th>
+      <th scope="col" class="govuk-table__header" id="selected-item">Quantity</th>
+      <th scope="col" class="govuk-table__header" id="selected-item" >Grant amount</th>
+      <th scope="col" class="govuk-table__header" id="selected-item" >Score</th>
+      <th scope="col" class="govuk-table__header govuk-!-width-one-quarter" ></th>
+    </tr>
+  </thead>
+    <tbody class="govuk-table__body" >
+      {% set grantTotal = 0 %}
+      {% set scoreTotal = 0 %}
+      {% set itemTotal = 0 %}
+      {% for item in data['selected-items'] %}
+        {% set grantTotal = grantTotal + item.grantTotal %}
+        {% set scoreTotal = scoreTotal + item.score %}
+        {% set itemTotal = itemTotal + item.quantity %}
+        <tr class="govuk-table__row" id="selected-items__row">
+          <td class="govuk-table__cell add-item" id="selected-item-bold">{{ item.title }}</td>
+          <td class="govuk-table__cell add-code" id="selected-item" >FETF{{ item.itemCode }}</td>
+          <td class="govuk-table__cell add-quantity" id="selected-item">{{ item.quantity }}&nbsp;&nbsp;</td>
+          <td class="govuk-table__cell add-grant" id="selected-item">{{ item.grantTotal | currency }}</td>
+          <td class="govuk-table__cell add-score" id="selected-item">{{ item.score }}</td>
+          <td class="govuk-table__cell"><a href="/fetf/rewrite/select-items/items/1/{{ item.termName | lower | replace(' ', '-') }}" class="govuk-link govuk-!-padding-left-7">Change</a> | <a href="/removeItems1/{{ item.itemCode }}"  style="text-align: right;">Remove</a></td>
+        </tr>
+      {% endfor %}
+      <tr class="govuk-table__row" id="selected-items__row">
+        <th scope="row" class="govuk-table__cell" id="mobile-hide"><strong>Total requested grant amount</strong></th>
+        <td class="govuk-table__cell" id="mobile-hide"></td>
+        <td class="govuk-table__cell" id="mobile-hide"></td>
+        <td class="govuk-table__cell add-total-grant"id="selected-item" ><strong> {{ grantTotal | currency }}</strong><input type="hidden" name="grantTotal" value="{{ grantTotal }}"></td>
+
+        <td class="govuk-table__cell add-total-score" id="selected-item"><strong>{{ scoreTotal/data['selected-items'].length}}</strong><input type="hidden" name="scoreTotal" value="{{ scoreTotal/data['selected-items'].length }}"></td>
+      <td class="govuk-table__cell" id="mobile-hide"><input type="hidden" name="itemTotal" value="{{ itemTotal }}"></td>
+      </tr>
+    </tbody>
+</table>
+
+<br><br>
+
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+    
+ 
+
+
+
+
+
+
+  
+
+
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="add-another-hint">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
+        Do you need to add more items to this list?
+      </legend>
+
+      <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="add-another" name="addAnother" type="radio" value="Yes">
+          <label class="govuk-label govuk-radios__label" for="add-another">
+            Yes
+          </label>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="add-another-2" name="addAnother" type="radio" value="No">
+          <label class="govuk-label govuk-radios__label" for="add-another-2">
+            No
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+    Continue
+  </button>
+</form>
+
+
+
+
+
+
+</div>
+</div>
+</main>
+
+
+
+
+
+
+{% endblock %}

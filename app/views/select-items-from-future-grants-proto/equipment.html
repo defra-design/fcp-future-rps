@@ -1,0 +1,127 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} {{ item.title }} {% endblock %}
+
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+
+  <!-- <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="equipment-list">Items</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">{{ item.title }}
+      </li>
+    </ol>
+  </div> -->
+
+{% endblock %}
+
+
+{% block content %}
+{% set quantity =  item.quantity %}
+
+    <form action="/fetf-add-to-selected-items1" method="post">
+      <input type="hidden" name="termName" value="{{ item.termName }}">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <!-- <span class="govuk-caption-xl">{{ item.section }}</span> -->
+
+    
+    <span class="govuk-caption-xl">Code: FETF{{ item.itemCode }}</span> 
+    <h1 class="govuk-heading-l">{{ item.title }}</h1>
+
+
+    <h2 class="govuk-heading-s">Item costs (based on 1 item)</h2>
+    <p>Expected average cost of item: <strong>£{{ item.averageValue }}</strong></p>
+    <p >Grant amount per item: <strong>£{{ item.grantValue }}</strong></p>
+    <p>Percentage item costs covered by grant:<strong>{{ item.grantPercentage }}%</strong></p>
+
+
+    <h2 class="govuk-heading-s">Item score</h2>
+    <p>Item score:<strong>{{ item.score }}</strong></p>
+    <p>You’re more likely to get a grant for items with a higher score.</p>
+
+
+
+<div class="govuk-form-group">
+  <h2 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--m" for="quantity">
+      How many do you need?
+    </label>
+  </h2>
+
+  <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+
+    <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+
+        <input class="govuk-radios__input" id="whereDoYouLive" name="quantity" type="radio" value="1">
+
+        <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+          1
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+
+        <input class="govuk-radios__input" id="whereDoYouLive-2" name="quantity" type="radio" value="2">
+
+        <label class="govuk-label govuk-radios__label" for="whereDoYouLive-2">
+          2
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+
+        <input class="govuk-radios__input" id="whereDoYouLive-3" name="quantity" type="radio" value="3">
+
+        <label class="govuk-label govuk-radios__label" for="whereDoYouLive-3">
+          3
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+</div>
+
+
+
+
+  
+
+
+<div class="govuk-button-group">
+<button type="submit" class="govuk-button" data-module="govuk-button">
+  Continue
+</button>
+<br>
+
+</form>
+
+
+
+ <a class="govuk-button govuk-button--secondary" href="equipment-list">
+
+    Cancel
+  
+  </a>
+</div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+</div>
+{% endblock %}

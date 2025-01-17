@@ -1,0 +1,73 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} Will you store the equipment at the main business address? {% endblock %}
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+
+
+
+{% set data = allData %}
+
+
+<form action="/itemSearch1" method="post">
+<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+
+      <span class="govuk-caption-l">Apply</span>
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+    Search for the item
+      </h1>
+    </legend>
+    <div class="govuk-form-group">
+<p>Start typing an item name or code. For example, direct drill or FETF2023.</p>
+<p>Check the <a href="https://www.gov.uk/government/publications/farming-equipment-and-technology-fund-2024/productivity-items-and-specifications-farming-equipment-and-technology-fund-fetf-2024" class="govuk-link">productivity items and specification list</a> for names and codes.</p>
+  <select class="govuk-select" id="country" name="fetfNo"
+    data-module="autocomplete" data-autoselect="" data-display-menu="" data-min-length="" data-show-all-values="" data-show-no-options-found="">
+    <option value="" selected disabled>Select an option</option>
+    {% for item in data %}
+      <option value="{{ item.itemCode }}">{{ item.title }} (FETF{{ item.itemCode }})</option>
+    {% endfor %}
+  </select>
+</div>
+  </fieldset>
+</div>
+          
+
+
+
+
+
+
+      <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save and continue
+    </button>
+    
+</div>
+    </form>
+
+  </div>
+
+</div>
+
+
+
+</main>
+
+{% endblock %}

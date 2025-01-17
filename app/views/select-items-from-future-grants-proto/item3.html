@@ -1,0 +1,123 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} {{ item.title }} {% endblock %}
+
+
+{% block beforeContent %}
+{% include "../../../_includes/phase-banner_alpha.html" %}
+  <a href="equipment-list" class="govuk-back-link">Back</a>
+  <!-- <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="equipment-list">Items</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">{{ item.title }}
+      </li>
+    </ol>
+  </div> -->
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <!-- <span class="govuk-caption-xl">{{ item.section }}</span> -->
+
+    
+    
+    <h1 class="govuk-heading-l">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</h1>
+
+    <p class="govuk-body-l">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+
+    <p class="govuk-body-l"><strong>Grant amount per item: </strong>£11,031.00</p>
+    <p class="govuk-body-s"><strong>Maximum quantity: 3</strong>3</p>
+    <p class="govuk-body-s"><strong>Expected average cost of item: </strong>£18,385.00</p>
+    <p class="govuk-body-s"><strong>Percentage paid towards item: </strong>60%</p>
+    <hr style="margin-bottom: 20px; margin-top: 20px;">
+    <p class="govuk-body-l"><strong>Item score: </strong>71</p>
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          How items are scored
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body">Applications for productivity items are scored on:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>productivity benefit</li>
+          <li>environmental benefit</li>
+          <li>level of adoption by the industry</li>
+        </ul>
+        <p class="govuk-body">Each productivity item has a score up to 100.</p>
+        <p class="govuk-body">The RPA will give your application a score by:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>adding together the scores for each item in your application (if you apply for more than one of the same item, the item will only be scored once)</li>
+          <li>dividing this number by the number of items in your application (if you apply for more than one of the same item, the item will only be counted once)</li>
+        </ul>
+
+
+      </div>
+    </details>
+    <hr style="margin-bottom: 20px;">
+
+
+
+<h2 class="govuk-heading-m">Items must:</h2>
+<ul class="govuk-list govuk-list--bullet">
+  <li>be a liquid fertiliser applicator for seed drills</li></li>
+  <li>incorporate the solution into the soil as part of the drilling or planting process
+  <li>have a minimum 6m drilling or planting width</li>
+  <li>have a fill tank</li>
+  <li>have a hydraulic powered pump</li>
+  <li>have a drill mounted liquid distribution manifold</li>
+  <li>have pressure regulation</li>
+  <li>have a nozzle and pump flush system</li>
+  <li>apply the solution at different rates using built in calibration</li>
+  <li>have a system to prevent nozzles from blocking or a liquid blockage monitoring system</li>
+</ul>
+
+
+
+<p class="govuk-body">Applicators that use surface application of liquid fertiliser or liquid chemicals such as herbicides and fungicides are not eligible.</p>
+
+<p class="govuk-body"><strong>Serial number:</strong> You must provide this item’s serial number when you submit your claim for payment.</p>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="bName">
+            How many item are you applying for?
+          </label>
+            <input class="govuk-input govuk-input--width-5" id="bName" name="itemNumber3" type="text" spellcheck="false" aria-describedby="employees-number-hint" inputmode="numeric" value="{{ data['itemNumber3'] }}">
+        </div>
+
+  
+<div class="govuk-button-group">
+  <a class="govuk-button" href="/addItem2">
+   
+    Select this item
+ 
+  </a>
+ 
+
+
+</div>
+
+
+
+
+
+
+
+  </div>
+
+  <div class="govuk-grid-column-one-third">
+    {% include "../../../_includes/selected-items-panel.html" %}
+    
+    <!-- <p class="govuk-body-s">You can apply for a total of £50,000 over multiple rounds.</p> -->
+  </div>
+
+</div>
+{% endblock %}

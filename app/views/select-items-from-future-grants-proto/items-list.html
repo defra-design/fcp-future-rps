@@ -1,0 +1,527 @@
+{% extends "layouts/main-fetf.html" %}
+
+{% block pageTitle %} Will you store the equipment at the main business address? {% endblock %}
+
+{% block beforeContent %}
+{% include "../../_includes/phase-banner_alpha.html" %}
+{{ govukBackLink({
+  text: "Back",
+  href: "javascript:history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+
+<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form action="show-items" method="post">
+
+      <span class="govuk-caption-l">Apply</span>
+     
+
+
+              <h1 class="govuk-heading-l">
+                Select the item you would like a grant for
+              </h1>
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="direct-drill" class="govuk-link">Direct drill 4m (FETF205)</a>
+              </h3>
+
+              <p class="govuk-body">Seed drill for sowing crops at minimum 4m width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£17,845.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>59</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator3" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 3m (FETF211)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 3m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£8,880.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>66</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator6" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£11,031.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>71</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="direct-drill" class="govuk-link">Direct drill 4m (FETF205)</a>
+              </h3>
+
+              <p class="govuk-body">Seed drill for sowing crops at minimum 4m width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£17,845.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>59</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator3" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 3m (FETF211)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 3m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£8,880.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>66</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator6" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£11,031.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>71</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="direct-drill" class="govuk-link">Direct drill 4m (FETF205)</a>
+              </h3>
+
+              <p class="govuk-body">Seed drill for sowing crops at minimum 4m width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£17,845.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>59</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator3" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 3m (FETF211)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 3m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£8,880.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>66</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator6" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£11,031.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>71</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="direct-drill" class="govuk-link">Direct drill 4m (FETF205)</a>
+              </h3>
+
+              <p class="govuk-body">Seed drill for sowing crops at minimum 4m width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£17,845.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>59</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator3" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 3m (FETF211)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 3m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£8,880.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>66</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator6" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£11,031.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>71</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="direct-drill" class="govuk-link">Direct drill 4m (FETF205)</a>
+              </h3>
+
+              <p class="govuk-body">Seed drill for sowing crops at minimum 4m width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£17,845.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>59</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator3" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 3m (FETF211)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 3m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£8,880.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>66</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator6" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£11,031.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>71</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="direct-drill" class="govuk-link">Direct drill 4m (FETF205)</a>
+              </h3>
+
+              <p class="govuk-body">Seed drill for sowing crops at minimum 4m width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£17,845.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>59</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator3" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 3m (FETF211)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 3m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£8,880.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>66</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator6" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£11,031.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>71</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="direct-drill" class="govuk-link">Direct drill 4m (FETF205)</a>
+              </h3>
+
+              <p class="govuk-body">Seed drill for sowing crops at minimum 4m width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£17,845.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>59</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator3" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 3m (FETF211)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 3m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£8,880.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>66</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+              <span style="clear: both; display: inline-block;">
+              <h3 id="linked-data" tabindex="-1" class="govuk-heading-m">
+                <a href="fertiliser-applicator6" class="govuk-link">Liquid fertiliser applicator for seed drills/planters 6m (FETF212)</a>
+              </h3>
+
+              <p class="govuk-body">Liquid fertiliser applicator for seed drills, with minimum 6m drilling or planting width.</p>
+              <span style="display: inline-block;">
+              <span class="govuk-caption-m">Grant amount per item:</span>
+              <p class="govuk-body-l"><strong>£11,031.00</strong></p>
+              </span>
+              <span style="display: inline-block; margin-left: 40px;">
+              <span class="govuk-caption-m">Item score:</span>
+              <p class="govuk-body-l"><strong>71</strong></p>
+              </span>
+
+              <!-- <p class="govuk-body-s">Category: Arable</p><span class="govuk-caption-s"></span> -->
+
+              </span>
+
+              <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" style="margin: 0 0 20px;">
+
+
+
+
+
+
+
+
+      <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save and continue
+    </button>
+    <a  class="govuk-link" href="#">Skip</a>
+</div>
+    </form>
+
+  </div>
+
+</div>
+
+
+
+</main>
+
+{% endblock %}
