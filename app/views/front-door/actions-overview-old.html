@@ -25,20 +25,21 @@
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">Name</th>
-          <th scope="col" class="govuk-table__header">Application</th>
+          {# <th scope="col" class="govuk-table__header">ID</th> #}
           {# <th scope="col" class="govuk-table__header">Active</th> #}
-          <th scope="col" class="govuk-table__header">Application start</th>
-          <th scope="col" class="govuk-table__header">Status</th>
-          <th scope="col" class="govuk-table__header"></th>
+          <th scope="col" class="govuk-table__header">Start date</th>
+          <th scope="col" class="govuk-table__header">End date</th>
+          <th scope="col" colspan="2" class="govuk-table__header">Status</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">{{ data['project-name'] or 'Browns Hill Farm reservoir' }}</td>
-          <td class="govuk-table__cell">WM-VMA-1234</td>
+          {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
           {# <td class="govuk-table__cell">No</td> #}
-          <td class="govuk-table__cell">10 December 24</td>
-          <td class="govuk-table__cell">Need to register interest</td>
+          <td class="govuk-table__cell">10 December 2024</td>
+          <td class="govuk-table__cell">10 December 2027</td>
+          <td class="govuk-table__cell">Live</td>
           <td class="govuk-table__cell">
             <form action="../task-list2/list-1-1" method="get">
             <button type="submit" class="govuk-button govuk-!-margin-bottom-0 govuk-button-custom" data-module="govuk-button">
