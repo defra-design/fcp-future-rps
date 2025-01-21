@@ -25,18 +25,21 @@
 
 
 <div class="govuk-grid-row" id="header">
+
 <div class="govuk-grid-column-full govuk-!-margin-bottom-5">
-<div class="moj-organisation-nav" aria-label="Organisation switcher">
-<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
-<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-  Save and return later
-</button>
-</div>
-</div>
-</div>
+    <div class="moj-organisation-nav" aria-label="Organisation switcher">
+        <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+              <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                Save and return later
+              </button>
+        </div>
+    </div>
+  </div>
 
 <div class="govuk-width-container">
 <main class="govuk-main-wrapper">
+  <form class="form" action="select-rotational-actions" method="post">
+
 
   <div class="govuk-grid-row">
   <div class="govuk-grid-column-one-half">
@@ -394,30 +397,34 @@
   </tbody>
 </table>
 
- <nav class="govuk-pagination" role="navigation" aria-label="Pagination">
-<!--    <div class="govuk-pagination__prev govuk-pagination__next">-->
-<!--    <p class="govuk-body">Showing <span class="govuk-!-font-weight-bold">1</span> to <span class="govuk-!-font-weight-bold">15</span> of <span class="govuk-!-font-weight-bold">17</span> actions</p></div>-->
-<!--  <div class="govuk-pagination__next">-->
-<!--    <a class="govuk-link govuk-pagination__link" href="select-land-parcel-1-page-2" rel="next">-->
-<!--      <span class="govuk-pagination__link-title">-->
-<!--        Next<span class="govuk-visually-hidden"> page</span>-->
-<!--      </span>-->
-<!--      <svg class="govuk-pagination__icon govuk-pagination__icon&#45;&#45;next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">-->
-<!--        <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>-->
-<!--      </svg>-->
-<!--    </a>-->
-<!--  </div>-->
-  
-  <form class="form" action="select-rotational-actions" method="post">
-          <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
-Save and continue
-         </button>
-        </form>
-</nav>
+      <nav class="govuk-pagination" role="navigation" aria-label="Pagination">
+  <!--    <div class="govuk-pagination__prev govuk-pagination__next">-->
+  <!--    <p class="govuk-body">Showing <span class="govuk-!-font-weight-bold">1</span> to <span class="govuk-!-font-weight-bold">15</span> of <span class="govuk-!-font-weight-bold">17</span> actions</p></div>-->
+  <!--  <div class="govuk-pagination__next">-->
+  <!--    <a class="govuk-link govuk-pagination__link" href="select-land-parcel-1-page-2" rel="next">-->
+  <!--      <span class="govuk-pagination__link-title">-->
+  <!--        Next<span class="govuk-visually-hidden"> page</span>-->
+  <!--      </span>-->
+  <!--      <svg class="govuk-pagination__icon govuk-pagination__icon&#45;&#45;next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">-->
+  <!--        <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>-->
+  <!--      </svg>-->
+  <!--    </a>-->
+  <!--  </div>-->
+    
+          <div class="govuk-button-group"> 
+              <button type="submit" class="govuk-button" data-module="govuk-button">
+                  Save and continue
+              </button>
+              <a href="select-land-parcel-1" class="govuk-link">Cancel and view all land parcels</a>
+          </div>
+
+      </nav>
     </div>
     
   </div>
-
+  
+</form>
 </main>
 </div>
+
 {% endblock %}

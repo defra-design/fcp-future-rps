@@ -1,0 +1,55 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Enter name for actions" %}
+
+{%- block beforeContent -%}
+
+{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+
+<a href="javascript:window.history.back()" class="govuk-back-link govuk-!-margin-bottom-0">Back</a>
+
+{% endblock %} 
+
+{% block content %}
+
+<div class="govuk-grid-row" id="header">
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+  <div class="moj-organisation-nav" aria-label="Organisation switcher">
+    <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Save and return later
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--l" for="event-name">
+            Enter the name for these actions
+          </label>
+        </h1>
+        <div id="event-name-hint" class="govuk-hint">
+          This is for your own use, so choose you'll recognise later. For example 'Upper Field Jan 25'
+        </div>
+        <input class="govuk-input" id="event-name" name="eventName" type="text" aria-describedby="event-name-hint">
+      </div>
+
+    <form class="form" action="select-land-parcel-1a" method="post">
+      <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+        Continue
+      </button>
+    </form>
+
+    </div>
+  </div>
+
+</main>
+</div>
+{% endblock %}
