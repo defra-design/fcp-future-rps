@@ -1,0 +1,174 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row" id="header">
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+    <div class="moj-organisation-nav" aria-label="Organisation switcher">
+        <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+              <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                Save and return later
+              </button>
+        </div>
+    </div>
+  </div>
+
+
+  <form class="form" action="select-rotational-actions" method="post">
+
+
+  <div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+         <h1 class="govuk-heading-l">Actions copying to parcel</h1>
+         {# <p class="govuk-body">Confirm the details of actions you are copying</p> #}
+        {# <p class="govuk-body">Some other helpful copy needed or not?</p> #}
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--s">Parcels you have chosen</caption>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">From</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">SO3757 3159</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">To</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">SO3757 3158</td>
+            </tr>
+          </tbody>
+          </table>  
+    <hr class="section-break-large"></hr>
+         <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--s">Actions for selected land parcel</caption>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Select</td>
+              <td class="govuk-table__cell">Action</td>
+              <td class="govuk-table__cell">Available area</td>
+              <td class="govuk-table__cell">Quantity</td>
+              <td class="govuk-table__cell">Unit</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+                  <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+                  <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+                  </label>
+                </div></td>
+              <td class="govuk-table__cell">AB1: Nectar flower mix</td>
+              <td class="govuk-table__cell">8.3405</td>
+              <td class="govuk-table__cell"><div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-6" id="quantity" name="quantity" type="text" inputmode="numeric">
+                </div></td>
+              <td class="govuk-table__cell">ha</td>
+            </tr>
+                <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+                  <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+                  <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+                  </label>
+                </div></td>
+              <td class="govuk-table__cell">AB4: Skylark plots</td>
+              <td class="govuk-table__cell">8.3405</td>
+              <td class="govuk-table__cell"><div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-6" id="quantity" name="quantity" type="text" inputmode="numeric">
+                </div></td>
+              <td class="govuk-table__cell">ha</td>
+            </tr>
+                <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+                  <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+                  <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+                  </label>
+                </div></td>
+              <td class="govuk-table__cell">AB2: Basic overwinter stubble</td>
+              <td class="govuk-table__cell">8.3405</td>
+              <td class="govuk-table__cell"><div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-6" id="quantity" name="quantity" type="text" inputmode="numeric">
+                </div></td>
+              <td class="govuk-table__cell">ha</td>
+            </tr>
+          </tbody>
+        </table>
+
+   </div>
+
+  <div class="govuk-grid-column-one-half">
+    {# <p class="govuk-body"><a href="#" class="govuk-link">Hide/show map</a></p> #}
+   <map name="clickable">
+        <area shape="rect" coords="100,280,190,320" href="select-land-parcel-1">
+        <area shape="rect" coords="150,220,240,280" href="select-land-parcel-2">
+                  </map>
+<img usemap="#clickable" src="https://raw.githubusercontent.com/defra-design/fcp-future-rps/56621a962ff1c79573dc9ba24b9dfed026bf152e/app/views/experiment/img/map_3.png" alt="Map of your land" style="width:465px;height:400px;"></a>
+
+       {# <p class="govuk-body">Key:</p> #}
+    <div class="key-div govuk-!-margin-bottom-5">
+       <div class="key-parent" id="key1"></div><span class="govuk-body-s">Error</span>
+       <div class="key-parent" id="key2"></div><span class="govuk-body-s">Selected</span>
+       <div class="key-parent" id="key3"></div><span class="govuk-body-s">Not Applied</span>
+       <div class="key-parent" id="key4"></div><span class="govuk-body-s">Applied</span>
+    </div>
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">The land parcel actions are being copied to</caption>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Reference</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">SO3757 3158</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Total area (ha)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">32.0404</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Land cover</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">Arable land</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">     
+      <button type="submit" class="govuk-button" data-module="govuk-button">
+        Save and continue
+      </button>
+      <p><a href="select-land-parcel-1" class="govuk-link">Cancel and view all parcels</a></p>
+    </div>
+  </div>
+
+  
+</form>
+</main>
+</div>
+
+{% endblock %}
