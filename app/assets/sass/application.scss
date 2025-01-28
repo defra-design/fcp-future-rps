@@ -106,6 +106,10 @@
 	margin-top: 1em;
 } 
 
+.no-bottom-border > td {
+	border-bottom: none;
+}
+
 
 // START - Single front door styles from https://fcp-farming-front-door-59e0a6ac6fb8.herokuapp.com/to-be/v3/landing/landing
 

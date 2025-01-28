@@ -35,11 +35,8 @@
 </div>
 </div>
 
-<div class="govuk-width-container">
-<main class="govuk-main-wrapper">
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-row main" role="main">
+  <div class="govuk-grid-column-two-thirds">
 
 <div class="govuk-panel govuk-panel--confirmation">
           <h1 class="govuk-panel__title">
@@ -55,15 +52,13 @@
         </p>
         <p class="govuk-body">
 We’ll email you again when your agreement offer is available in the Rural Payments service for you to check. Your agreement will only begin once you accept and sign this document.        </p>
-        <form class="form" action="dashboard-after-application" method="post">
+        <form class="form" action="/front-door/manage-your-actions2" method="post">
           <button type="submit" class="govuk-button" data-module="govuk-button">
             Close
           </button>
         </form>
         
-      </div>
-    </div>
 
-</main>
-</div>
+      </div>
+  </div>
 {% endblock %}

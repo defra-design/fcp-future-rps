@@ -35,11 +35,8 @@
 </div>
 </div>
 
-<div class="govuk-width-container">
-<main class="govuk-main-wrapper">
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-row main" role="main">
+  <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">Select your agreement level actions</h1>
       <p class="govuk-body">You’ve selected the following ‘agreement level’ actions. These are actions that apply to a whole agreement, rather than a specific area of land.</p>
@@ -89,15 +86,12 @@
   </tbody>
 </table>
 
-<form class="form" action="tasklist-8" method="post">
+        <form class="form" action="http://localhost:3000/v1/check-your-answers" method="post">
           <button type="submit" class="govuk-button" data-module="govuk-button">
             Continue
           </button>
         </form>
 
-    </div>
-  </div>
-
-</main>
+      </div>
 </div>
 {% endblock %}
