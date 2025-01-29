@@ -23,22 +23,18 @@
 
 {% block content %}
 
-
 <div class="govuk-grid-row" id="header">
-<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
-<div class="moj-organisation-nav" aria-label="Organisation switcher">
-<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Smith</div>
-<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-  Save and return later
-</button>
-</div>
-</div>
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+  <div class="moj-organisation-nav" aria-label="Organisation switcher">
+    <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Save and return later
+      </button>
+    </div>
+  </div>
 </div>
 
-<div class="govuk-width-container">
-<main class="govuk-main-wrapper">
-
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">Check your land details</h1>
@@ -51,7 +47,7 @@
         </ul>
 <p class="govuk-body"><a href="#" class="govuk-link">Check your digital maps</a></p>
 
-<form class="form" action="/land-details-answer" method="post">
+    <form class="form" action="/land-details-answer" method="post">
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -80,8 +76,5 @@
 
     </div>
   </div>
-
-</div>
-</main>
 
 {% endblock %}

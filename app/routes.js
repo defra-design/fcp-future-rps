@@ -7,21 +7,31 @@ const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 
 // Add your routes here
-router.post('/land-details-answer', function (req, res) {
 
+router.post('/land-details-answer', function (req, res) {
   // Make a variable and give it the value from 'how-many-balls'
   var landDetailsAnswer = req.session.data['land-details-answer']
-
   // Check whether the variable matches a condition
   if (landDetailsAnswer == "yes"){
     // Send user to next page
-    res.redirect('/experiment/tasklist-2')
-
+    res.redirect('/v1/actions-name')
   } else {
     // Send user to ineligible page
-    res.redirect('/experiment/update-land-details')
+    res.redirect('/v1/update-land-details')
   }
+})
 
+router.post('/new-or-existing-answer', function (req, res) {
+  // Make a variable and give it the value from 'how-many-balls'
+  var NeworExistingsAnswer = req.session.data['new-or-existing-answer']
+  // Check whether the variable matches a condition
+  if (NeworExistingsAnswer == "new"){
+    // Send user to next page
+    res.redirect('/v1/new-agreement')
+  } else {
+    // Send user to ineligible page
+    res.redirect('/v1/existing-agreement')
+  }
 })
 
 router.post('/management-answer', function (req, res) {
@@ -210,5 +220,6 @@ router.post('/public-body-answer-ht', function (req, res) {
   }
 
 })
+
 
 
