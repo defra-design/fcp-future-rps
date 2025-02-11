@@ -17,7 +17,7 @@
   <div class="govuk-grid-column-full">
 
     <h1 class="govuk-heading-xl">
-      Lower Meadow actions
+      Actions details
     </h1>
 
     <form action="../v1/edit-action" method="post">
@@ -30,22 +30,24 @@
       <caption class="govuk-table__caption govuk-table__caption--m"></caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Name</th>
+          {# <th scope="col" class="govuk-table__header">Name</th> #}
           {# <th scope="col" class="govuk-table__header">ID</th> #}
           {# <th scope="col" class="govuk-table__header">Active</th> #}
           <th scope="col" class="govuk-table__header">Start date</th>
           <th scope="col" class="govuk-table__header">End date</th>
-          <th scope="col" colspan="2" class="govuk-table__header">Status</th>
+          <th scope="col"  class="govuk-table__header">Status</th>
+          <th scope="col"  class="govuk-table__header">Annual payment</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
-          <td class="govuk-table__cell">{{ data['project-name'] or 'Lower Meadow' }}</td>
+          {# <td class="govuk-table__cell">{{ data['project-name'] or 'Lower Meadow' }}</td> #}
           {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
           {# <td class="govuk-table__cell">No</td> #}
           <td class="govuk-table__cell">10 December 2024</td>
           <td class="govuk-table__cell">10 December 2027</td>
           <td class="govuk-table__cell">Live</td>
+          <td class="govuk-table__cell">&pound;5,130.00</td>
           {# <td class="govuk-table__cell">
             <form action="../task-list2/list-1-1" method="get">
             <button type="submit" class="govuk-button govuk-!-margin-bottom-0 govuk-button-custom" data-module="govuk-button">
@@ -57,7 +59,7 @@
       </tbody>
     </table>    
     <br>
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">5 actions for Lower Meadow</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">2 actions</h2>
     <hr class="actions-hr">
     <p class="actions-p"><a href="https://www.gov.uk/find-funding-for-land-or-farms/cipm2-flower-rich-grass-margins-blocks-or-in-field-strips" target="_blank">CIPM2: Flower-rich grass margins, blocks or in-field strips (opens in new tab)</a></p>
     <p>Establish and maintain flower-rich grass margins, blocks or in-field strips. This will encourage natural crop pest predators, and provide habitats and foraging sites for wildlife.</p>
