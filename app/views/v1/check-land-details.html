@@ -9,12 +9,12 @@
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
-{{ govukPhaseBanner({
+{# {{ govukPhaseBanner({
   tag: {
     text: "Prototype"
   },
   html: 'This is a prototype used for testing purposes only.'
-}) }}
+}) }} #}
   {{ govukBackLink({
     text: "Back",
     href: "javascript:window.history.back()"
@@ -43,7 +43,7 @@
         <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
         <strong class="govuk-warning-text__text">
           <span class="govuk-visually-hidden">Warning</span>
-          Your application may not be approved or may be delayed if they are not. 
+          Your application may be rejected or delayed if they are not. 
         </strong>
       </div>
 
