@@ -113,6 +113,291 @@
 
 // START - Single front door styles from https://fcp-farming-front-door-59e0a6ac6fb8.herokuapp.com/to-be/v3/landing/landing
 
+// Tabs //
+
+.govuk-tabs {
+	margin-top: 5px;
+	margin-bottom: 20px;
+	font-family: "GDS Transport", arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-weight: 400;
+	font-size: 1rem;
+	line-height: 1.25;
+  }
+  @media (min-width: 40.0625em) {
+	.govuk-tabs {
+	  margin-bottom: 30px;
+	}
+  }
+  @media print {
+	.govuk-tabs {
+	  font-family: sans-serif;
+	}
+  }
+  @media (min-width: 40.0625em) {
+	.govuk-tabs {
+	  font-size: 1.1875rem;
+	  line-height: 1.3157894737;
+	}
+  }
+  @media print {
+	.govuk-tabs {
+	  font-size: 14pt;
+	  line-height: 1.15;
+	}
+  }
+  
+  .govuk-tabs__title {
+	font-size: 1rem;
+	line-height: 1.25;
+	font-weight: 400;
+	color: #0b0c0c;
+	margin-bottom: 10px;
+  }
+  @media (min-width: 40.0625em) {
+	.govuk-tabs__title {
+	  font-size: 1.1875rem;
+	  line-height: 1.3157894737;
+	}
+  }
+  @media print {
+	.govuk-tabs__title {
+	  font-size: 14pt;
+	  line-height: 1.15;
+	}
+  }
+  @media print {
+	.govuk-tabs__title {
+	  color: #000000;
+	}
+  }
+  
+  .govuk-tabs__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	margin-bottom: 20px;
+  }
+  @media (min-width: 40.0625em) {
+	.govuk-tabs__list {
+	  margin-bottom: 30px;
+	}
+  }
+  
+  .govuk-tabs__list-item {
+	margin-left: 25px;
+  }
+  .govuk-tabs__list-item::before {
+	color: #0b0c0c;
+	content: "—";
+	margin-left: -25px;
+	padding-right: 5px;
+  }
+  @media print {
+	.govuk-tabs__list-item::before {
+	  color: #000000;
+	}
+  }
+  
+  .govuk-tabs__tab {
+	font-family: "GDS Transport", arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: underline;
+	text-decoration-thickness: max(1px, .0625rem);
+	text-underline-offset: 0.1578em;
+	display: inline-block;
+	margin-bottom: 10px;
+  }
+  @media print {
+	.govuk-tabs__tab {
+	  font-family: sans-serif;
+	}
+  }
+  .govuk-tabs__tab:hover {
+	text-decoration-thickness: max(3px, .1875rem, .12em);
+	-webkit-text-decoration-skip-ink: none;
+	text-decoration-skip-ink: none;
+	-webkit-text-decoration-skip: none;
+	text-decoration-skip: none;
+  }
+  .govuk-tabs__tab:focus {
+	outline: 3px solid transparent;
+	color: #0b0c0c;
+	background-color: #ffdd00;
+	box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+	text-decoration: none;
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+  }
+  .govuk-tabs__tab:link {
+	color: #1d70b8;
+  }
+  .govuk-tabs__tab:visited {
+	color: #4c2c92;
+  }
+  .govuk-tabs__tab:hover {
+	color: #003078;
+  }
+  .govuk-tabs__tab:active {
+	color: #0b0c0c;
+  }
+  .govuk-tabs__tab:focus {
+	color: #0b0c0c;
+  }
+  
+  .govuk-tabs__panel {
+	margin-bottom: 30px;
+  }
+  @media (min-width: 40.0625em) {
+	.govuk-tabs__panel {
+	  margin-bottom: 50px;
+	}
+  }
+  
+  @media (min-width: 40.0625em) {
+	.govuk-frontend-supported .govuk-tabs__list {
+	  margin-bottom: 0;
+	  border-bottom: 1px solid #b1b4b6;
+	}
+	.govuk-frontend-supported .govuk-tabs__list::after {
+	  content: "";
+	  display: block;
+	  clear: both;
+	}
+	.govuk-frontend-supported .govuk-tabs__title {
+	  display: none;
+	}
+	.govuk-frontend-supported .govuk-tabs__list-item {
+	  position: relative;
+	  margin-right: 5px;
+	  margin-bottom: 0;
+	  margin-left: 0;
+	  padding: 10px 20px;
+	  float: left;
+	  background-color: #f3f2f1;
+	  text-align: center;
+	}
+	.govuk-frontend-supported .govuk-tabs__list-item::before {
+	  content: none;
+	}
+	.govuk-frontend-supported .govuk-tabs__list-item--selected {
+	  position: relative;
+	  margin-top: -5px;
+	  margin-bottom: -1px;
+	  padding-top: 14px;
+	  padding-right: 19px;
+	  padding-bottom: 16px;
+	  padding-left: 19px;
+	  border: 1px solid #b1b4b6;
+	  border-bottom: 0;
+	  background-color: #ffffff;
+	}
+	.govuk-frontend-supported .govuk-tabs__list-item--selected .govuk-tabs__tab {
+	  text-decoration: none;
+	}
+	.govuk-frontend-supported .govuk-tabs__tab {
+	  margin-bottom: 0;
+	}
+	.govuk-frontend-supported .govuk-tabs__tab:link, .govuk-frontend-supported .govuk-tabs__tab:visited {
+	  color: #0b0c0c;
+	}
+  }
+  @media print and (min-width: 40.0625em) {
+	.govuk-frontend-supported .govuk-tabs__tab:link, .govuk-frontend-supported .govuk-tabs__tab:visited {
+	  color: #000000;
+	}
+  }
+  @media (min-width: 40.0625em) {
+	.govuk-frontend-supported .govuk-tabs__tab:hover {
+	  color: rgba(11, 12, 12, 0.99);
+	}
+	.govuk-frontend-supported .govuk-tabs__tab:active, .govuk-frontend-supported .govuk-tabs__tab:focus {
+	  color: #0b0c0c;
+	}
+  }
+  @media print and (min-width: 40.0625em) {
+	.govuk-frontend-supported .govuk-tabs__tab:active, .govuk-frontend-supported .govuk-tabs__tab:focus {
+	  color: #000000;
+	}
+  }
+  @media (min-width: 40.0625em) {
+	.govuk-frontend-supported .govuk-tabs__tab::after {
+	  content: "";
+	  position: absolute;
+	  top: 0;
+	  right: 0;
+	  bottom: 0;
+	  left: 0;
+	}
+	.govuk-frontend-supported .govuk-tabs__panel {
+	  margin-bottom: 0;
+	  padding: 30px 20px;
+	  border: 1px solid #b1b4b6;
+	  border-top: 0;
+	}
+	.govuk-frontend-supported .govuk-tabs__panel > :last-child {
+	  margin-bottom: 0;
+	}
+	.govuk-frontend-supported .govuk-tabs__panel--hidden {
+	  display: none;
+	}
+  }
+  
+  .govuk-tabs__list--payments::after {
+	content: "";
+	display: block;
+	clear: both;
+  }
+  
+  .govuk-tabs__list--payments {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-bottom: 1px solid #b1b4b6;
+  }
+  
+  .govuk-tabs__list-item--payments::before {
+	content: none;
+  }
+  
+  .govuk-tabs__list-item--payments {
+	margin-right: 5px;
+	margin-bottom: 0;
+	margin-left: 0;
+	padding: 10px 20px;
+	float: left;
+	background-color: #f3f2f1;
+	text-align: center;
+  }
+  
+  .govuk-tabs__list-item--payments-selected {
+	position: relative;
+	margin-top: -5px;
+	margin-bottom: -1px;
+	padding-top: 14px;
+	padding-right: 19px;
+	padding-bottom: 16px;
+	padding-left: 19px;
+	border: 1px solid #b1b4b6;
+	border-bottom: 0;
+	background-color: #ffffff;
+  }
+  
+  .govuk-tabs__tab--payments:link,
+  .govuk-tabs__tab--payments:visited,
+  .govuk-tabs__tab--payments {
+	display: inline-block;
+	color: #0b0c0c;
+  }
+  
+  .govuk-tabs__list-item--payments-selected .govuk-tabs__tab--payments {
+	text-decoration: none;
+  }  
+  
+// Tabs //  
+
 .gem-c-cards__heading {
 	margin: 0 0 30px 0;
   }
