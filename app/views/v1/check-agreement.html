@@ -23,49 +23,100 @@
   </div>
 </div>
 
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full-column">
+    <button type="submit" class="topnav-right govuk-button govuk-button--primary" data-module="govuk-button">
+      Print
+    </button>
+  </div>
+</div>
+
 <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
               <h1 class="govuk-heading-l">
-                Your agreement
+                Review your application
               </h1>
               <p class="govuk-body">
-                Details of the updated agreement here.....
+                This is an application for funding for: 
               </p>
               <p class="govuk-body">
-                More details of the updated agreement here.....
+                Agile Farms Ltd<br>
+                10 Skirbeck Way<br>
+                Maidstone<br>
+                SK22 1DL<br>
               </p>
+              <p>SBI: 123456789</p>
 
-              <form action="confirmation" method="post" novalidate>
-                <div class="govuk-form-group">
-                  <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                      Are you happy with this?
-                    </legend>
-                    <div class="govuk-radios" data-module="govuk-radios">
-                      <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
-                        <label class="govuk-label govuk-radios__label" for="interviewNeeds">
-                          Yes
-                        </label>
-                      </div>
-                      <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="interviewNeeds-2" name="interviewNeeds" type="radio" value="no">
-                        <label class="govuk-label govuk-radios__label" for="interviewNeeds-2">
-                          No
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
+              <h2 class="govuk-heading-m">Funding details</h2>
 
+              <table class="govuk-table">
+                {# <caption class="govuk-table__caption govuk-table__caption--s">Actions applied for</caption> #}
 
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">AB1: Nectar flower mix</td>
+                  <td class="govuk-table__cell">8.3405 ha</td>
+                  <td class="govuk-table__cell">&pound;6,372.14</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">AB4: Skylark plots</td>
+                  <td class="govuk-table__cell">8.3405 ha</td>
+                  <td class="govuk-table__cell">&pound;4,295.35</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">AB2: Basic overwinter stubble</td>
+                  <td class="govuk-table__cell">100 ha</td>
+                  <td class="govuk-table__cell">&pound;5,800</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Land parcels</td>
+                  <td class="govuk-table__cell">20</td>
+                  <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Funding total</td>
+                  <td class="govuk-table__cell">&pound;16,467.49</td>
+                  <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Total application value</td>
+                  <td class="govuk-table__cell">&pound;16,467.49</td>
+                  <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
 
-    <form class="form" action="existing-agreement-updated" method="post">
-      <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
-        Continue
-      </button>
-    </form>
+            <h2 class="govuk-heading-m">Payment details</h2>
+
+              <p>Your annual payment of £16,467.49 will be paid in quarterly instalments.</p>
+              <ul class="govuk-list govuk-list--bullet">
+                <li>You’ll usually receive your first payment in the fourth month after your agreement’s start date.</li>
+                <li>The first 3 instalments will be paid by an automated BACS transfer.</li>
+                <li>You must submit an annual declaration (a simple tick box form) before you’re paid the fourth instalment.</li>
+              </ul>
+            
+            <p>You confirm that:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>you’ll have management control of the land for the 3-year duration of the agreement</li>
+              <li>you’re entering into an agreement with the RPA and confirm you have read and accepted the terms and conditions</li>
+            </ul>
+
+            <h2 class="govuk-heading-m">Submit your application</h2>
+
+            <p>By submitting this application you confirm that:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>the information you have given is correct</li>
+              <li>you’ll complete the actions you have applied for</li>
+              <li>you’ll have management control of the land parcels selected for the duration of the actions you have applied for</li>
+            </ul>
+            <br>
+          <form class="form" action="confirmation" method="post">
+            <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+              I agree - submit my application
+            </button>
+          </form>
+
+          <p><a href="select-land.html" class="govuk-link">Withdraw your application and start again</a></p>
 
     </div>
   </div>

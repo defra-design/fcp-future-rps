@@ -1,0 +1,207 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Check actions
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<!--<div class="govuk-grid-row" id="header">-->
+<!--<div class="govuk-grid-column-full govuk-!-margin-bottom-5">-->
+<!--<div class="moj-organisation-nav" aria-label="Organisation switcher">-->
+<!--<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>-->
+<!--<button type="submit" class="govuk-button govuk-button&#45;&#45;secondary" data-module="govuk-button">-->
+<!--  Save and return later-->
+<!--</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
+      <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full-column">
+            <button type="submit" class="topnav-right govuk-button govuk-button--primary" data-module="govuk-button">
+              Print
+            </button>
+          </div>
+      </div>
+
+<div class="govuk-grid-row main" role="main">
+      <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Check your actions</h1>
+
+<table class="govuk-table">
+  {# <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header govuk-!-width-one-half">Business</th>
+      <td class="govuk-table__cell govuk-!-width-one-quarter">SARAH FARM LTD<br>
+          2 Toomers Wharf<br>
+          Canal Walk<br>
+          Newbury<br>
+          Berkshire<br>
+          RG14 1DY</td>
+        <td class="govuk-table__cell govuk-table__header--numeric"></td>
+    </tr>
+  </thead> #}
+  <tbody class="govuk-table__body">
+    <h2 class="govuk-heading-m">Agreement details</h2>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Single business identifier (SBI)</th>
+      <td class="govuk-table__cell">123456789</td>
+         <td class="govuk-table__cell govuk-table__header--numeric"></td>
+    </tr>
+    {# <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header govuk-!-width-one-half">Indicative annual payment (excluding management payment)</th>
+      <td class="govuk-table__cell govuk-!-width-one-quarter">£18,547.839</td>
+      <td class="govuk-table__cell govuk-table__header--numeric"></td>
+    </tr> #}
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land details</th>
+      <td class="govuk-table__cell">Up to date</td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="check-land-details">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Actions name</th>
+      <td class="govuk-table__cell">Feb 25 Bumblebird mix</td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="agreement-name">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr>
+    {# <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header govuk-!-width-one-half">Management control of land</th>
+      <td class="govuk-table__cell govuk-!-width-one-quarter">Yes</td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="management-control">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land with scheduled monuments or historic or archaeological features</th>
+      <td class="govuk-table__cell">Yes</td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="hefer">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Sites of special scientific interest (SSSIs)</th>
+      <td class="govuk-table__cell">Yes</td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="sssi">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr>
+       <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Inheritance tax exemptions</th>
+      <td class="govuk-table__cell">Yes</td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="ite">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr> #}
+    </tbody>
+    </table>
+    <br>
+    <table class="govuk-table">
+    <h2 class="govuk-heading-m">Actions details</h2>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Number of actions applied for</th>
+      <td class="govuk-table__cell">3</td>
+       <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="select-actions">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel actions</th>
+      <td class="govuk-table__cell"></td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="select-map">Change<span class="govuk-visually-hidden"> answer</span></a></td></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB1: Nectar flower mix</td>
+      <td class="govuk-table__cell">8.3405 ha</td>
+      <td class="govuk-table__cell">£6,372.14</td>
+    </tr>
+        <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB4: Skylark plots</td>
+      <td class="govuk-table__cell">8.3405 ha</td>
+      <td class="govuk-table__cell">£4,295.35</td>
+    </tr>
+            <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB2: Basic overwinter stubble</td>
+      <td class="govuk-table__cell">120.0394 m</td>
+      <td class="govuk-table__cell">£6.01</td>
+    </tr>
+   <tr class="govuk-table__row">
+    <th scope="col" class="govuk-table__cell">Parcel actions total</th>
+    <td class="govuk-table__cell"></td>
+    <td class="govuk-table__cell">£13,673.50</td>
+   </tr>
+<!--               <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">HRW2: Manage hedgerows</td>-->
+<!--      <td class="govuk-table__cell">100.3332 m</td>-->
+<!--      <td class="govuk-table__cell">£17.3316</td>-->
+<!--    </tr>-->
+<!--                   <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">IGL1: Take grassland field corners or blocks-->
+<!--out of management</td>-->
+<!--      <td class="govuk-table__cell">8.3231 ha</td>-->
+<!--      <td class="govuk-table__cell">£2770.893</td>-->
+<!--    </tr>-->
+<!--                       <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">IPM3: Companion crop on arable and-->
+<!--horticultural land</td>-->
+<!--      <td class="govuk-table__cell">3.4502 ha</td>-->
+<!--      <td class="govuk-table__cell">£189.761</td>-->
+<!--      <td class="govuk-table__cell govuk-table__header&#45;&#45;numeric"></td>-->
+<!--    </tr>-->
+<!--                           <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">LIG1: Manage grassland with very low nutrient inputs (outside SDAs)</td>-->
+<!--      <td class="govuk-table__cell">20.2938 ha</td>-->
+<!--      <td class="govuk-table__cell">£3064.3638</td>-->
+<!--    </tr>-->
+<!--                            <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">SAM1 – Assess soil, test soil organic matter and produce a soil management plan</td>-->
+<!--      <td class="govuk-table__cell">2.8284 ha</td>-->
+<!--      <td class="govuk-table__cell">£113.9704</td>-->
+<!--    </tr>-->
+<!--                               <tr class="govuk-table__row">-->
+<!--       <th scope="col" class="govuk-table__cell">Parcel Based actions total</td>-->
+<!--      <td class="govuk-table__cell"></td>-->
+<!--      <td class="govuk-table__cell">£16,829.839</td>-->
+<!--    </tr>-->
+<!--                              <tr class="govuk-table__row">-->
+<!--       <th scope="col" class="govuk-table__cell">Agreement Level actions</td>-->
+<!--      <td class="govuk-table__cell"></td>-->
+<!--      <td class="govuk-table__cell govuk-table__header&#45;&#45;numeric"><a class="govuk-link" href="apply-agreement-level">Change<span class="govuk-visually-hidden"> answer</span></a></td>-->
+<!--    </tr>-->
+<!--        <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">IPM1 – Assess integrated pest management and produce a plan</td>-->
+<!--      <td class="govuk-table__cell"></td>-->
+<!--      <td class="govuk-table__cell">£1,129.00</td>-->
+<!--    </tr>-->
+<!--        <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">NUM1 – Assess nutrient management and produce a nutrient report</td>-->
+<!--      <td class="govuk-table__cell"></td>-->
+<!--      <td class="govuk-table__cell">£589.00</td>-->
+<!--    </tr>-->
+
+  </tbody>
+</table>
+      
+         <form class="form" action="add-new-or-existing" method="post">
+          <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+<!--<button type="submit" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">-->
+<!--  Continue-->
+<!--</button>-->
+
+      </div>
+    </div>
+
+</div>
+{% endblock %}
