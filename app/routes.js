@@ -14,7 +14,7 @@ router.post('/land-details-answer', function (req, res) {
   // Check whether the variable matches a condition
   if (landDetailsAnswer == "yes"){
     // Send user to next page
-    res.redirect('/v1/select-land')
+    res.redirect('/v1/management-control')
   } else {
     // Send user to ineligible page
     res.redirect('/v1/update-land-details')
@@ -42,7 +42,7 @@ router.post('/management-answer', function (req, res) {
   // Check whether the variable matches a condition
   if (managementControlAnswer == "yes"){
     // Send user to next page
-    res.redirect('/experiment/hefer')
+    res.redirect('/v1/select-land')
 
   } else {
     // Send user to ineligible page
