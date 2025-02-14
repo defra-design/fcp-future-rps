@@ -35,7 +35,7 @@
   </div>
 
 
-  <form class="form" action="select-rotational-actions" method="post">
+  <form class="form" action="check-actions" method="post">
 
 
   <div class="govuk-grid-row">
@@ -56,8 +56,89 @@
             </tr>
           </tbody>
           </table>  
+
     <hr class="section-break-large"></hr>
-         <table class="govuk-table">
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--s">Actions that do not require consent</caption>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Select</td>
+          <td class="govuk-table__cell">Action</td>
+          <td class="govuk-table__cell">Available area</td>
+          <td class="govuk-table__cell">Quantity</td>
+          {# <td class="govuk-table__cell">Unit</td> #}
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <div class="govuk-checkboxes__item  govuk-checkboxes--small series-selector-items">
+              <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+              <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+              </label>
+            </div>
+          </td>
+          <td class="govuk-table__cell">AB1: Nectar flower mix</td>
+          <td class="govuk-table__cell">8.3405</td>
+          <td class="govuk-table__cell">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+              <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+            </div>
+          </td>
+          {# <td class="govuk-table__cell">ha</td> #}
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <div class="govuk-checkboxes__item  govuk-checkboxes--small series-selector-items">
+              <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+              <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+              </label>
+            </div>
+          </td>
+          <td class="govuk-table__cell">AB4: Skylark plots</td>
+          <td class="govuk-table__cell">8.3405</td>
+          <td class="govuk-table__cell">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+              <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+            </div>
+          </td>
+          {# <td class="govuk-table__cell">ha</td> #}
+        </tr>
+      </tbody>
+    </table>
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--s">Actions that require consent</caption>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Select</td>
+          <td class="govuk-table__cell">Action</td>
+          <td class="govuk-table__cell">Available area</td>
+          <td class="govuk-table__cell">Quantity</td>
+          {# <td class="govuk-table__cell">Unit</td> #}
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <div class="govuk-checkboxes__item govuk-checkboxes--small series-selector-items">
+              <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+              <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+              </label>
+            </div>
+          </td>
+          <td class="govuk-table__cell">Manage hedgerows: CHRW4</td>
+          <td class="govuk-table__cell">8.3405</td>
+          <td class="govuk-table__cell">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+              <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+            </div>
+          </td>
+          {# <td class="govuk-table__cell">ha</td> #}
+        </tr>
+      </tbody>
+    </table>
+
+         {# <table class="govuk-table">
           <caption class="govuk-table__caption govuk-table__caption--s">Actions for selected land parcel</caption>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
@@ -116,7 +197,7 @@
               <td class="govuk-table__cell">ha</td>
             </tr>
           </tbody>
-        </table>
+        </table> #}
 
    </div>
 
