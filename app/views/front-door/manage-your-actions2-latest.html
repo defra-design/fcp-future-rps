@@ -15,40 +15,55 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-xl">
-              Manage your land
-            </h1>
 
-            <form action="/v1/add-action-or-capital" method="post">
-              <button type="submit" class="govuk-button" data-module="govuk-button">
-                Add action or capital item
-              </button>
-            </form>
+    <h1 class="govuk-heading-xl">
+      Manage your land
+    </h1>
+
+    {# <span class="govuk-caption-l govuk-!-margin-bottom-4">Agreement number: AHWR-2847-2847 </span> #}
+    
+    <form action="../v1/check-land-details" method="post">
+      <button type="submit" class="govuk-button" data-module="govuk-button">
+        Add new actions
+      </button>
+    </form>
+
+    {# {% if data['claimSubmitted'] == 'True' %}  
+    {% else %}
+    <p>A message if needed.</p>
+    {% endif %} #}
+
+
+    {# <h2 class="govuk-heading-m">Your current actions</h2> #}
+
+    <!-- <hr class="govuk-!-margin-bottom-6"> -->
+
+
+      {# {% if data['statusChanged'] == 'True' %}  
+
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row" style="border-top: 1px solid #b1b4b6;">
+          <dt class="govuk-summary-list__key govuk-!-width-one-half" style="font-weight: normal;">
+            VV-5053-A696 - beef cattle review
+          </dt>
+          <dd class="govuk-summary-list__value govuk-!-width-one-half">
+            <strong> Claim approved</strong><br>You'll be paid £554 by 10 October 2024.
+          </dd>
+        </div>
+      </dl> 
+
+      {% else %}   #}
 
         </div>
-
-        <div class="govuk-grid-column-one-third">
-          <div class="govuk-!-margin-top-4">
-            <h2 class="govuk-heading-m">Your agreements</h2>
-            <p class="govuk-body">
-              <strong class="govuk-tag govuk-tag--red">
-                Attention needed
-              </strong>
-            </p>
-            <p class="govuk-body"><a href="agreements">Please accept your updated agreement</a></p>
-            <hr>
-          </div>
-        </div>
-
-
       </div>
 
     <div class="govuk-grid-row">
 
-      <div class="govuk-grid-column-full">
+      <div class="govuk-grid-column-two-thirds">
         <br>
-        <table class="govuk-table">
-          <caption class="govuk-table__caption govuk-table__caption--m">Actions on your land</caption>
+        <table class="govuk-table" style="width: 80%;">
+          <caption class="govuk-table__caption govuk-table__caption--m">Your actions</caption>
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">Name</th>
@@ -62,26 +77,16 @@
           </thead>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <ul class="govuk-list govuk-!-margin-bottom-0">
-                  <li>Skylark plots: AB45</li>
-                  <li>Basic overwinter stubble: AB2</li>
-                </ul>
-              </td>
+              <td class="govuk-table__cell"><a href="actions-detail">{{ data['actions-name'] or 'Old Poole field' }}</a></td>
               {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
               {# <td class="govuk-table__cell">No</td> #}
-              {# <td class="govuk-table__cell">20 February 2025</td> #}
-              <td class="govuk-table__cell">20 February 2028</td>
-              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Pending</strong></td>
-              {# <td class="govuk-table__cell">&pound;13,673.50</td> #}
+              {# <td class="govuk-table__cell">17 January 2025</td> #}
+              <td class="govuk-table__cell">17 January 2028</td>
+              <td class="govuk-table__cell">Pending</td>
+              {# <td class="govuk-table__cell">&pound;14,390</td> #}
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <ul class="govuk-list govuk-!-margin-bottom-0">
-                  <li>No use of insecticide on arable crops and permanent crops: CIPM4</li>
-                  <li>Flower-rich grass margins, blocks or in-field strips: CIPM2</li>
-                </ul>
-              </td>
+              <td class="govuk-table__cell"><a href="actions-detail">{{ data['actions-name'] or 'Feb 25 Bumblebird mix' }}</a></td>
               {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
               {# <td class="govuk-table__cell">No</td> #}
               {# <td class="govuk-table__cell">20 February 2025</td> #}
@@ -90,12 +95,7 @@
               {# <td class="govuk-table__cell">&pound;13,673.50</td> #}
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <ul class="govuk-list govuk-!-margin-bottom-0">
-                  <li>Manage grassland with very low nutrient inputs: CLIG3</li>
-                  <li>Herbal Leys: CSAM3</li>
-                </ul>
-              </td>
+              <td class="govuk-table__cell"><a href="actions-detail">{{ data['actions-name'] or 'Lower Meadow' }}</a></td>
               {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
               {# <td class="govuk-table__cell">No</td> #}
               {# <td class="govuk-table__cell">10 December 2024</td> #}
@@ -115,12 +115,25 @@
 
         </div>
 
+        <div class="govuk-grid-column-one-third">
+          <div class="govuk-!-margin-top-4">
+            <h2 class="govuk-heading-m">Your agreements</h2>
+            <p class="govuk-body">
+              <strong class="govuk-tag govuk-tag--red">
+                Attention needed
+              </strong>
+            </p>
+            <p class="govuk-body"><a href="agreements">Please accept your updated agreement</a></p>
+            <hr>
+          </div>
+        </div>
+
         </div>
 
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-full">
-            {# <h2 id="larger-map" class="govuk-heading-m">Imaginary Farm map</h2> #}
-            {# <p>check this map. Is it right. If not, do this....</p> #}
+            <h2 id="larger-map" class="govuk-heading-m">Imaginary Farm map</h2>
+            <p>check this map. Is it right. If not, do this....</p>
           <a href="parcel-detail2"><img src="https://raw.githubusercontent.com/defra-design/fcp-future-rps/6e95e8a316e1e834c4b876395cb803eb9dcf4318/app/views/v1/img/farm-rough.jpg" 
             alt="Imaginary Farm Ltd" class="farm-overview govuk-!-margin-bottom-8"></a>
           </div>

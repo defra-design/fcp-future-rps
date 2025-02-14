@@ -48,7 +48,7 @@
       <div class="govuk-grid-column-full">
         <br>
         <table class="govuk-table">
-          <caption class="govuk-table__caption govuk-table__caption--m">Your actions</caption>
+          <caption class="govuk-table__caption govuk-table__caption--m">Actions on your land</caption>
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">Name</th>
@@ -62,7 +62,12 @@
           </thead>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><a href="actions-detail">{{ data['actions-name'] or 'CIPM2, CIPM4' }}</a></td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list govuk-!-margin-bottom-0">
+                  <li>No use of insecticide on arable crops and permanent crops: CIPM4</li>
+                  <li>Flower-rich grass margins, blocks or in-field strips: CIPM2</li>
+                </ul>
+              </td>
               {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
               {# <td class="govuk-table__cell">No</td> #}
               {# <td class="govuk-table__cell">20 February 2025</td> #}
@@ -71,7 +76,12 @@
               {# <td class="govuk-table__cell">&pound;13,673.50</td> #}
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><a href="actions-detail">{{ data['actions-name'] or 'CLIG3, CSAM3' }}</a></td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list govuk-!-margin-bottom-0">
+                  <li>Manage grassland with very low nutrient inputs: CLIG3</li>
+                  <li>Herbal Leys: CSAM3</li>
+                </ul>
+              </td>
               {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
               {# <td class="govuk-table__cell">No</td> #}
               {# <td class="govuk-table__cell">10 December 2024</td> #}
