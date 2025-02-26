@@ -21,6 +21,19 @@ router.post('/land-details-answer', function (req, res) {
   }
 })
 
+router.post('/land-details-answer2', function (req, res) {
+  // Make a variable and give it the value from 'how-many-balls'
+  var landDetailsAnswer = req.session.data['land-details-answer2']
+  // Check whether the variable matches a condition
+  if (landDetailsAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/v2/management-control')
+  } else {
+    // Send user to ineligible page
+    res.redirect('/v2/update-land-details')
+  }
+})
+
 router.post('/new-or-existing-answer', function (req, res) {
   // Make a variable and give it the value from 'how-many-balls'
   var NeworExistingsAnswer = req.session.data['new-or-existing-answer']
@@ -34,21 +47,43 @@ router.post('/new-or-existing-answer', function (req, res) {
   }
 })
 
-router.post('/management-answer', function (req, res) {
+router.post('/new-or-existing-answer2', function (req, res) {
+  // Make a variable and give it the value from 'how-many-balls'
+  var NeworExistingsAnswer = req.session.data['new-or-existing-answer2']
+  // Check whether the variable matches a condition
+  if (NeworExistingsAnswer == "new"){
+    // Send user to next page
+    res.redirect('/v2/new-agreement')
+  } else {
+    // Send user to ineligible page
+    res.redirect('/v2/existing-agreement')
+  }
+})
 
+router.post('/management-answer', function (req, res) {
   // Make a variable and give it the value from 'how-many-balls'
   var managementControlAnswer = req.session.data['management-answer']
-
   // Check whether the variable matches a condition
   if (managementControlAnswer == "yes"){
     // Send user to next page
     res.redirect('/v1/select-land')
-
   } else {
     // Send user to ineligible page
-    res.redirect('/experiment/ineligible')
+    res.redirect('/v1/ineligible')
   }
+})
 
+router.post('/management-answer2', function (req, res) {
+  // Make a variable and give it the value from 'how-many-balls'
+  var managementControlAnswer = req.session.data['management-answer2']
+  // Check whether the variable matches a condition
+  if (managementControlAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/v2/select-land')
+  } else {
+    // Send user to ineligible page
+    res.redirect('/v2/ineligible')
+  }
 })
 
 router.post('/hefer-answer', function (req, res) {
