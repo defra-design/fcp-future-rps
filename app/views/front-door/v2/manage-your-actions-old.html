@@ -1,0 +1,181 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Manage your actions" %}
+
+{%- block beforeContent -%}
+
+{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+
+<a href="landing" class="govuk-back-link govuk-!-margin-bottom-0">Back to your business</a>
+
+{% endblock %} 
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+    <h1 class="govuk-heading-xl">
+      Manage your land actions
+    </h1>
+
+    <span class="govuk-caption-l govuk-!-margin-bottom-4">Agreement number: AHWR-2847-2847 </span>
+    
+    <form action="../v1/check-land-details" method="post">
+      <button type="submit" class="govuk-button" data-module="govuk-button">
+        Add new actions
+      </button>
+    </form>
+
+    {# {% if data['claimSubmitted'] == 'True' %}  
+    {% else %}
+    <p>A message if needed.</p>
+    {% endif %} #}
+
+
+    {# <h2 class="govuk-heading-m">Your current actions</h2> #}
+
+    <!-- <hr class="govuk-!-margin-bottom-6"> -->
+
+
+      {# {% if data['statusChanged'] == 'True' %}  
+
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row" style="border-top: 1px solid #b1b4b6;">
+          <dt class="govuk-summary-list__key govuk-!-width-one-half" style="font-weight: normal;">
+            VV-5053-A696 - beef cattle review
+          </dt>
+          <dd class="govuk-summary-list__value govuk-!-width-one-half">
+            <strong> Claim approved</strong><br>You'll be paid £554 by 10 October 2024.
+          </dd>
+        </div>
+      </dl> 
+
+      {% else %}   #}
+
+        </div>
+      </div>
+
+      <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+
+
+        <br>
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--m">Your current actions</caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Name</th>
+              {# <th scope="col" class="govuk-table__header">ID</th> #}
+              {# <th scope="col" class="govuk-table__header">Active</th> #}
+              <th scope="col" class="govuk-table__header">Start date</th>
+              <th scope="col" class="govuk-table__header">End date</th>
+              <th scope="col" class="govuk-table__header">Status</th>
+              <th scope="col" class="govuk-table__header">Payment</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="actions-detail">{{ data['actions-name'] or 'Feb 25 Bumblebird mix' }}</a></td>
+              {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
+              {# <td class="govuk-table__cell">No</td> #}
+              <td class="govuk-table__cell">20 February 2025</td>
+              <td class="govuk-table__cell">20 February 2028</td>
+              <td class="govuk-table__cell">Live</td>
+              <td class="govuk-table__cell">&pound;13,673.50</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="actions-detail">{{ data['actions-name'] or 'Lower Meadow' }}</a></td>
+              {# <td class="govuk-table__cell">WM-VMA-1234</td> #}
+              {# <td class="govuk-table__cell">No</td> #}
+              <td class="govuk-table__cell">10 December 2024</td>
+              <td class="govuk-table__cell">10 December 2027</td>
+              <td class="govuk-table__cell">Live</td>
+              <td class="govuk-table__cell">&pound;21,335</td>
+            </tr>
+            <tr class="govuk-table__row no-bottom-border">
+              <td class="govuk-table__cell">&nbsp;</td>
+              <td class="govuk-table__cell">&nbsp;</td>
+              <td class="govuk-table__cell">&nbsp;</td>
+              <td class="govuk-table__cell">&nbsp;</td>
+              <td class="govuk-table__cell"><strong>&pound;35,008.50</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+      <h2 id="larger-map" class="govuk-heading-m">Imaginary Farm map</h2>
+      <p>check this map. Is it right. If not, do this....</p>
+     <a href="parcel-detail2"><img src="https://raw.githubusercontent.com/defra-design/fcp-future-rps/6e95e8a316e1e834c4b876395cb803eb9dcf4318/app/views/v1/img/farm-rough.jpg" 
+      alt="Imaginary Farm Ltd" class="farm-overview govuk-!-margin-bottom-8"></a>
+
+
+      </ul>
+
+
+<br>
+    <h2 class="govuk-heading-m">More information</h2>
+
+    <p><a href="#" class="govuk-link govuk-link--no-visited-state">Terms and conditions</a></p>
+
+    <p><a href="#" class="govuk-link govuk-link--no-visited-state">Guidance for Land Management Actions</a></p>
+
+    <p><a href="#" class="govuk-link govuk-link--no-visited-state">Agreement summary</a></p>
+
+    
+  </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block footer %}
+
+
+<footer class="govuk-footer">
+  <div class="govuk-width-container">
+    <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+        <h2 class="govuk-visually-hidden">Support links</h2>
+        <ul class="govuk-footer__inline-list">
+          <li class="govuk-footer__inline-list-item">
+            <a class="govuk-footer__link govuk-body-l" href="business-home">
+              Go to service
+            </a>
+          </li>
+        </ul>
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          class="govuk-footer__licence-logo"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 483.2 195.7"
+          height="17"
+          width="41">
+          <path
+            fill="currentColor"
+            d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+        </svg>
+        <span class="govuk-footer__licence-description">
+          All content is available under the
+          <a
+            class="govuk-footer__link"
+            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+            rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+        </span>
+      </div>
+      <div class="govuk-footer__meta-item">
+        <a
+          class="govuk-footer__link govuk-footer__copyright-logo"
+          href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">
+          © Crown copyright
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}

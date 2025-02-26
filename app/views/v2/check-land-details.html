@@ -1,0 +1,90 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{# {{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }} #}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row" id="header">
+  <div class="govuk-grid-column-full">
+  <div class="moj-organisation-nav" aria-label="Organisation switcher">
+    <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Save and return later
+      </button>
+    </div>
+  </div>
+</div>
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Check your land details are up to date</h1>
+
+      <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-visually-hidden">Warning</span>
+          Your application may be rejected or delayed if they are not. 
+        </strong>
+      </div>
+
+        {# <p class="govuk-body">Before you continue with this application, check that the registered land details on your digital maps are up to date. If they’re not, this may prevent you from applying for the SFI actions you select.</p> #}
+        <p class="govuk-body">You need to check your digital maps show:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>all the land parcels you want to include in this application</li>
+          <li>the correct total area for each land parcel in hectares</li>
+          <li>the correct land covers for each land parcel, for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover</li>
+        </ul>
+        
+        <p class="govuk-body"><a href="#" class="govuk-link">Check your digital maps (opens in new tab)</a>  before you continue.</p><br>
+
+    <form class="form" action="/land-details-answer" method="post">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h1 class="govuk-fieldset__heading">
+                  Confirm your land details are up to date
+                </h1>
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="landDetailsAnswer-1" name="land-details-answer" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-1">
+                    Yes, my details are up to date
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="landDetailsAnswer-2" name="land-details-answer" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-2">
+                    No,I need to update my land details
+                  </label>
+                </div>
+            </fieldset>
+          </div>
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+    </div>
+  </div>
+
+{% endblock %}

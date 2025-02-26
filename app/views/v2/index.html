@@ -1,0 +1,89 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Home" %}
+
+{% block beforeContent %}
+{{super()}}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="/index">Future RPS prototypes</a>
+    </li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">
+      Version 1
+      <span class="govuk-caption-xl">Alpha. V1: Started Jan 2024</span>
+    </h1>
+
+    <a class="govuk-button" href="sign-in">Start prototype</a>
+
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-4">MVP scenarios with proposed backend improvements</h2>
+    <h3 class="govuk-heading-s">Single Front Door:</h3>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a class="govuk-link--no-visited-state" href="/front-door/login">Sign in</a></li>
+      <li><a class="govuk-link--no-visited-state" href="/front-door/landing">Business overview</a></li>
+      <li><a class="govuk-link--no-visited-state" href="/front-door/manage-your-actions">All actions overview</a></li>
+      <li><a class="govuk-link--no-visited-state" href="/front-door/actions-detail">Detailed view of action group</a></li>
+      <li><a class="govuk-link--no-visited-state" href="/front-door/parcel-detail2">Add recommended actions from parcel page (from clicking on parcel within farm map)</a></li>
+      <li><a class="govuk-link--no-visited-state" href="/front-door/parcel-detail">Just view recommended actions from parcel page</a></li>
+    </ul>
+
+    <h3 class="govuk-heading-s">Actions journey</h3>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a class="govuk-link--no-visited-state" href="actions-name">Add action name</a></li>
+      <li><a class="govuk-link--no-visited-state" href="select-land-parcel-1a">Land parcel with actions auto-populated from selected recommended actions on parcel page 
+        in Single Front Door
+      </a></li>
+      <li><a class="govuk-link--no-visited-state" href="edit-action">Choose how to edit these actions (scenario is copy these actions to another parcel)</a>
+      
+      <li><a class="govuk-link--no-visited-state" href="select-land-copy-action">Choosing parcel to copy actions to</a>
+      <li><a class="govuk-link--no-visited-state" href="land-parcel-actions-copied">Actions being copied to chosen parcel</a></li>
+    </ul>
+
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <h2 class="govuk-heading-m">
+      Alpha goals for public facing prototype
+    </h2>
+    <p><a href="https://eaflood.atlassian.net/wiki/spaces/FRPS/pages/5312938041/Alpha+Scope#What-we-will-focus-on%3A" target="_blank" class="govuk-link govuk-link--no-visited-state">View all alpha goals</a> which include:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Develop and test a prototype for the managing agreements</li>
+      <li>Allow a user to add a new action</li>
+      <li>Allow a user to amend an action</li>
+    </ul>
+
+    <h2 class="govuk-heading-s">
+      How might we's
+    </h2>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>HMW help applicants quickly apply actions where they already know what they want?</li>
+      <li>HMW help applicants decide which action(s) to apply for when they don't know what they want?</li>
+      <li>HMW help applicants change/remove actions that they have already committed to, for example easily copying actions
+        from one parcel to another?
+    </ul>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <h2 class="govuk-heading-m">
+      Design history
+    </h2>
+    <p><a href="_design-history" class="govuk-link govuk-link--no-visited-state">View design history</a> which includes:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>goals</li>
+      <li>'How might we' statements</li>
+      <li>hypotheses</li>
+      <li>outcomes and decisions</li>
+    </ul>
+    
+
+  </div>
+
+{% endblock %}

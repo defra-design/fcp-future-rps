@@ -1,0 +1,80 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="govuk-grid-row" id="header">
+<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+<div class="moj-organisation-nav" aria-label="Organisation switcher">
+<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Save and return later
+</button>
+</div>
+</div>
+</div>
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">SSSI consent</h1>
+<p class="govuk-body">If you apply for SFI actions on land that’s a site of special scientific interest (SSSI), you must get SSSI consent from Natural England.</p>
+<p class="govuk-body">You need to get this consent before you do your selected SFI actions on SSSI land. Some actions can be done without SSSI consent – this is set out in each action in the <a href="#">'find funding for land or farms’ tool</a>.</p>
+<p class="govuk-body">Read the guidance on <a href="#" class="govuk-link">SSSI consent</a>.</p>
+<p class="govuk-body">If you are not applying for actions on SSSI land, or the actions can be done without SSSI consent, answer ‘yes’ to continue your application.</p>
+
+<form class="form" action="/sssi-answer" method="post">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h1 class="govuk-fieldset__heading">
+Will you get SSSI consent if you need to?</h1>
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="sssiAnswer-1" name="sssi-answer" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="sssiAnswer-1">
+                    Yes
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="sssiAnswer-2" name="sssi-answer" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="sssiAnswer-2">
+                    No
+                  </label>
+                </div>
+            </fieldset>
+          </div>
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+    </div>
+  </div>
+
+</div>
+</main>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Check actions
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<!--<div class="govuk-grid-row" id="header">-->
+<!--<div class="govuk-grid-column-full govuk-!-margin-bottom-5">-->
+<!--<div class="moj-organisation-nav" aria-label="Organisation switcher">-->
+<!--<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>-->
+<!--<button type="submit" class="govuk-button govuk-button&#45;&#45;secondary" data-module="govuk-button">-->
+<!--  Save and return later-->
+<!--</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
+      {# <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full-column">
+            <button type="submit" class="topnav-right govuk-button govuk-button--primary" data-module="govuk-button">
+              Print
+            </button>
+          </div>
+      </div> #}
+
+<div class="govuk-grid-row main" role="main">
+      <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Check your answers</h1>
+
+      <table class="govuk-table">
+        <tbody>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Land details up to date</th>
+              <td class="govuk-table__cell">Yes</td>
+              <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="check-land-details">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Management control of land</th>
+              <td class="govuk-table__cell">Yes</td>
+              <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="management-control">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+            </tr>
+            {# <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Actions name</th>
+              <td class="govuk-table__cell">Feb 25 Bumblebird mix</td>
+              <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="agreement-name">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+            </tr> #}
+        </tbody>
+      </table>
+    
+    <table class="govuk-table">
+    {# <h2 class="govuk-heading-m">Actions details</h2> #}
+    {# <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Number of actions applied for</th>
+      <td class="govuk-table__cell">3</td>
+       <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="select-actions">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr> #}
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel actions</th>
+      <td class="govuk-table__cell"></td>
+      <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="select-map">Change<span class="govuk-visually-hidden"> answer</span></a></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB1: Nectar flower mix</td>
+      <td class="govuk-table__cell">8.3405 ha</td>
+      <td class="govuk-table__cell"></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB4: Skylark plots</td>
+      <td class="govuk-table__cell">8.3405 ha</td>
+      <td class="govuk-table__cell"></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB2: Basic overwinter stubble</td>
+      <td class="govuk-table__cell">120.0394 m</td>
+      <td class="govuk-table__cell"></td>
+    </tr>
+  </tbody>
+</table>
+      
+         <form class="form" action="add-new-or-existing" method="post">
+          <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+</div>
+{% endblock %}
