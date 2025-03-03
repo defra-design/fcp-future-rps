@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Choose the agreement" %}
+{% set pageName="Review your application" %}
 
 {%- block beforeContent -%}
 
@@ -38,28 +38,22 @@
           </div> #}
           <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="changedName" name="existing-agreement" type="radio" value="new">
-              <label class="govuk-label govuk-radios__label" for="changedName">
-                Moorland (AHWR-2847-2847)
-              </label>
-            </div>
-            <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="changedName-2" name="existing-agreement" type="radio" value="existing">
               <label class="govuk-label govuk-radios__label" for="changedName-2">
-                Buffer strips (AHWR-2847-2847)
+                Spring 2025 lower field agreement
               </label>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="changedName-3" name="existing-agreement" type="radio" value="existing">
-              <label class="govuk-label govuk-radios__label" for="changedName-3">
-                Boundary features (AHWR-2847-2847)
+              <input class="govuk-radios__input" id="changedName" name="existing-agreement" type="radio" value="new">
+              <label class="govuk-label govuk-radios__label" for="changedName">
+                Winter 2024 agreement
               </label>
             </div>
           </div>
         </fieldset>
       </div>
 
-    <form class="form" action="check-agreement" method="post">
+    <form class="form" action="check-agreement-existing" method="post">
       <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
         Continue
       </button>

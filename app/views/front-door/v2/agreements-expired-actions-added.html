@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Manage your agreements" %}
+{% set pageName="Manage your actions" %}
 
 {%- block beforeContent -%}
 
@@ -21,19 +21,19 @@
 
           <div class="govuk-tabs">
             <ul class="govuk-tabs__list--payments" role="tablist">
-              <li class="govuk-tabs__list-item--payments">
+              {# <li class="govuk-tabs__list-item--payments">
                 <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements" role="tab" aria-selected="false">Pending <span class="govuk-visually-hidden">agreements</span></a>
+              </li> #}
+              <li class="govuk-tabs__list-item--payments">
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-live-actions-added" role="tab" aria-selected="false">Live <span class="govuk-visually-hidden">agreements</span></a>
               </li>
               <li class="govuk-tabs__list-item--payments govuk-tabs__list-item--payments-selected">
-                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-live" role="tab" aria-selected="true">Live <span class="govuk-visually-hidden">agreements</span></a>
-              </li>
-              <li class="govuk-tabs__list-item--payments">
-                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-expired" role="tab" aria-selected="false">Expired <span class="govuk-visually-hidden">agreements</span></a>
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="#" role="tab" aria-selected="true">Expired <span class="govuk-visually-hidden">agreements</span></a>
               </li>
             </ul>
           </div>
 
-          <h2 class="govuk-heading-l">Winter 2024 agreement</h2>
+          <h2 class="govuk-heading-l">Arable fields 2023 agreement</h2>
 
           <dl class="govuk-summary-list govuk-!-margin-bottom-8">
             <!-- <div class="govuk-summary-list__row">
@@ -57,7 +57,7 @@
                 Name
               </dt>
               <dd class="govuk-summary-list__value">
-                Winter 2024 agreement
+                Arable fields 2023 agreement
               </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -65,7 +65,7 @@
                 Covering period
               </dt>
               <dd class="govuk-summary-list__value">
-                20 November 2024 to 20 November 2028
+                5 January 2023 to 5 January 2025
               </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -84,14 +84,21 @@
               </dt>
               <dd class="govuk-summary-list__value">
                 <p class="govuk-body ">
-                  <strong class="govuk-tag govuk-tag--green">
-                    Live
+                  <strong class="govuk-tag govuk-tag--grey">
+                    Expired
                   </strong>
                 </p>
-                {# <p class="govuk-body govuk-!-margin-bottom-3 govuk-!-margin-top-3">Please sign your agreement by 29 February 2025 to avoid delays to your payment.</p>
-                <p><a href="#" class="govuk-button govuk-!-margin-bottom-2">Sign and accept agreement</a></p> #}
               </dd>
             </div>
+            {# <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Paying into
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-!-margin-bottom-">Bank account ****9276</p> 
+                <p>The payment will be in your account within 2 working days of 5 February 2025.</p>
+              </dd>
+            </div> #}
           </dl>
         </div>
       </div>

@@ -21,14 +21,14 @@
 
           <div class="govuk-tabs">
             <ul class="govuk-tabs__list--payments" role="tablist">
-              <li class="govuk-tabs__list-item--payments">
+              {# <li class="govuk-tabs__list-item--payments">
                 <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements" role="tab" aria-selected="false">Pending <span class="govuk-visually-hidden">agreements</span></a>
-              </li>
+              </li> #}
               <li class="govuk-tabs__list-item--payments govuk-tabs__list-item--payments-selected">
-                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-live" role="tab" aria-selected="true">Live <span class="govuk-visually-hidden">agreements</span></a>
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="#" role="tab" aria-selected="true">Live <span class="govuk-visually-hidden">agreements</span></a>
               </li>
               <li class="govuk-tabs__list-item--payments">
-                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-expired" role="tab" aria-selected="false">Expired <span class="govuk-visually-hidden">agreements</span></a>
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-expired-actions-added" role="tab" aria-selected="false">Expired <span class="govuk-visually-hidden">agreements</span></a>
               </li>
             </ul>
           </div>
@@ -36,22 +36,6 @@
           <h2 class="govuk-heading-l">Winter 2024 agreement</h2>
 
           <dl class="govuk-summary-list govuk-!-margin-bottom-8">
-            <!-- <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Date
-              </dt>
-              <dd class="govuk-summary-list__value">
-                5 February 2025
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Amount
-              </dt>
-              <dd class="govuk-summary-list__value">
-                £2,445.37
-              </dd>
-            </div> -->
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Name
@@ -60,14 +44,14 @@
                 Winter 2024 agreement
               </dd>
             </div>
-            <div class="govuk-summary-list__row">
+            {# <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Covering period
               </dt>
               <dd class="govuk-summary-list__value">
-                20 November 2024 to 20 November 2028
+                20 February 2025 to 20 February 2028
               </dd>
-            </div>
+            </div> #}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Total payment
@@ -84,22 +68,57 @@
               </dt>
               <dd class="govuk-summary-list__value">
                 <p class="govuk-body ">
-                  <strong class="govuk-tag govuk-tag--green">
-                    Live
+                  <strong class="govuk-tag govuk-tag--red">
+                    Action needed
                   </strong>
                 </p>
-                {# <p class="govuk-body govuk-!-margin-bottom-3 govuk-!-margin-top-3">Please sign your agreement by 29 February 2025 to avoid delays to your payment.</p>
-                <p><a href="#" class="govuk-button govuk-!-margin-bottom-2">Sign and accept agreement</a></p> #}
+                <p class="govuk-body govuk-!-margin-bottom-3 govuk-!-margin-top-3">Sign your updated agreement by 29 April 2025 to avoid delays to some of your payments.</p>
+                <p><a href="#" class="govuk-button govuk-!-margin-bottom-2">Sign and accept agreement</a></p>
               </dd>
             </div>
           </dl>
         </div>
       </div>
+<br>
+
+      <!-- Actions group 1 -->
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
+
+        <div class="actions-wrapper">
+          <h2 class="govuk-heading-m">Actions added 15 April 2025 </h2>
+          <p>Payment reference: DEFRAApril25. <a href="#">View payments details</a></p>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Covering period
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  15 April 2025 to 15 April 2028
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Payment
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  &pound;10,667.49
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <strong class="govuk-tag govuk-tag--red">
+                    Action needed
+                  </strong>
+                </dd>
+              </div>
+            </dl>
           <table class="govuk-table">
-            <caption class="govuk-table__caption govuk-table__caption--m">What this agreement includes</caption> 
+            {# <caption class="govuk-table__caption govuk-table__caption--m">Actions added 20 February 2025</caption>  #}
             <thead class="govuk-table__head">
               <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">Action</th>
@@ -110,32 +129,91 @@
             </thead>
             <tbody class="govuk-table__body">
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Skylark plots: AB45</td>
+                <td class="govuk-table__cell">CIPM2: Flower-rich grass margins</td>
                 <td class="govuk-table__cell">1</td>
                 <td class="govuk-table__cell">8.3405 hectares</td>
                 <td class="govuk-table__cell">&pound;4,295.35</td>
               </tr>
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Basic overwinter stubble: AB2</td>
-                <td class="govuk-table__cell">4</td>
-                <td class="govuk-table__cell">100 hectares</td>
-                <td class="govuk-table__cell">&pound;5,800</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Nectar flower mix: AB1</td>
+                <td class="govuk-table__cell">CIPM4: No use of insecticide</td>
                 <td class="govuk-table__cell">1</td>
-                <td class="govuk-table__cell">8.3405 hectares</td>
-                <td class="govuk-table__cell">&pound;6,372.14</td>
+                <td class="govuk-table__cell">8.3405 hectare</td>
+                <td class="govuk-table__cell">&pound;5,800</td>
               </tr>
              </tbody>
           </table>
+        </div>
+          <br>
+
+           <!-- £nd Actions group 1 -->
+
+            <!-- Actions group 2 -->
+
+          <br>
+          <div class="actions-wrapper">
+            <h2 class="govuk-heading-m">Actions added 28 February 2025 </h2>
+            <p>Payment reference: DEFRAApril25. <a href="#">View payments details</a></p>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Covering period
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    28 February 2025 to 28 February 2028
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Payment
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    &pound;10,667.49
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Status
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag govuk-tag--blue">
+                      Live
+                    </strong>
+                  </dd>
+                </div>
+              </dl>
+            <table class="govuk-table">
+              {# <caption class="govuk-table__caption govuk-table__caption--m">Actions added 20 February 2025</caption>  #}
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Action</th>
+                  <th scope="col" class="govuk-table__header">Parcels</th>
+                  <th scope="col" class="govuk-table__header">Quantity</th>
+                  <th scope="col" class="govuk-table__header">Total payment</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">CIPM2: Flower-rich grass margins</td>
+                  <td class="govuk-table__cell">1</td>
+                  <td class="govuk-table__cell">8.3405 hectares</td>
+                  <td class="govuk-table__cell">&pound;4,295.35</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">CIPM4: No use of insecticide</td>
+                  <td class="govuk-table__cell">1</td>
+                  <td class="govuk-table__cell">8.3405 hectare</td>
+                  <td class="govuk-table__cell">&pound;5,800</td>
+                </tr>
+               </tbody>
+            </table>
+          </div>
           
           <br>
           <h3 class="govuk-heading-s">Documents to download</p>
           <ul class="govuk-list govuk-list--bullet">
             <li><a href="#">Full agreement</a></li>
             <li><a href="#">Terms and conditions</a></li>
-
+          </ul>
 
         </div>
       </div>
