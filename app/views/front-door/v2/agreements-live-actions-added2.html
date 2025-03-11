@@ -6,14 +6,14 @@
 
 {# {% include "to-be/v3/components/sub-header/include.html" %} #}
 
-<a href="javascript:window.history.back()" class="govuk-back-link govuk-!-margin-bottom-0">Back to agreement overview</a>
+<a href="javascript:window.history.back()" class="govuk-back-link govuk-!-margin-bottom-0">Back</a>
 
 {% endblock %} 
 
 {% block content %}
 
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
           <h1 class="govuk-heading-xl">
             Manage your agreements
           </h1>
@@ -32,9 +32,9 @@
             </ul>
           </div>
 
-          <h2 class="govuk-heading-l">Winter 2024 agreement - expired actions</h2>
+          <h2 class="govuk-heading-l">Winter 2024 agreement</h2>
 
-          {# <dl class="govuk-summary-list govuk-!-margin-bottom-8">
+          <dl class="govuk-summary-list govuk-!-margin-bottom-8">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Name
@@ -43,6 +43,14 @@
                 Winter 2024 agreement
               </dd>
             </div>
+            {# <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Covering period
+              </dt>
+              <dd class="govuk-summary-list__value">
+                20 February 2025 to 20 February 2028
+              </dd>
+            </div> #}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 Total payment
@@ -67,19 +75,20 @@
                 <p><a href="#" class="govuk-button govuk-!-margin-bottom-2">Sign and accept agreement</a></p>
               </dd>
             </div>
-          </dl> #}
+          </dl>
         </div>
       </div>
-<br>
 
       <!-- Actions group 1 -->
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
-          <p class="govuk-body govuk-!-margin-bottom-2">View expired actions within this agreement</p>
+          <h2 class="govuk-heading-m">Actions within this agreement</h2>
+
+          <p class="govuk-body govuk-!-margin-bottom-2">View expired actions</p>
           <ul class="govuk-list inline-filter-list govuk-!-margin-bottom-6">
-            <li class="inline-filter-list-item"><strong>2024</strong></a></li>
+            <li class="inline-filter-list-item"><a href="agreements-live-past-actions" class="govuk-link govuk-link--no-visited-state">2024</a></li>
             <li class="inline-filter-list-item"><a href="#" class="govuk-link govuk-link--no-visited-state">2023</a></li>
             <li class="inline-filter-list-item"><a href="#" class="govuk-link govuk-link--no-visited-state">2022</a></li>
             <li class="inline-filter-list-item"><a href="#" class="govuk-link govuk-link--no-visited-state">2021</a></li>
@@ -89,15 +98,15 @@
           </ul>
 
         <div class="actions-wrapper">
-          <h2 class="govuk-heading-m">Actions added 15 April 2021 </h2>
-          <p>Payment reference: DEFRAApril21. <a href="#">View payments details</a></p>
+          <h2 class="govuk-heading-s">Actions added 15 April 2025 </h2>
+          <p>Payment reference: DEFRAApril25. <a href="business-payments-details">View payments details</a></p>
             <dl class="govuk-summary-list govuk-!-margin-bottom-6">
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                   Covering period
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  15 April 2021 to 15 April 2024
+                  15 April 2025 to 15 April 2028
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
@@ -113,8 +122,8 @@
                   Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  <strong class="govuk-tag govuk-tag--grey">
-                    Expired
+                  <strong class="govuk-tag govuk-tag--red">
+                    Action needed
                   </strong>
                 </dd>
               </div>
@@ -153,15 +162,15 @@
 
           <br>
           <div class="actions-wrapper">
-            <h2 class="govuk-heading-m">Actions added 28 February 2021 </h2>
-            <p>Payment reference: DEFRAFebruary21. <a href="#">View payments details</a></p>
+            <h2 class="govuk-heading-s">Actions added 28 February 2025 </h2>
+            <p>Payment reference: DEFRAFebruary25. <a href="business-payments-details">View payments details</a></p>
               <dl class="govuk-summary-list govuk-!-margin-bottom-6">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
                     Covering period
                   </dt>
                   <dd class="govuk-summary-list__value">
-                    28 February 2021 to 28 February 2024
+                    28 February 2025 to 28 February 2028
                   </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -177,8 +186,8 @@
                     Status
                   </dt>
                   <dd class="govuk-summary-list__value">
-                    <strong class="govuk-tag govuk-tag--grey">
-                      Expired
+                    <strong class="govuk-tag govuk-tag--blue">
+                      Live
                     </strong>
                   </dd>
                 </div>
@@ -210,12 +219,12 @@
             </table>
           </div>
           
-          {# <br>
+          <br>
           <h3 class="govuk-heading-s">Documents to download</p>
           <ul class="govuk-list govuk-list--bullet">
             <li><a href="#">Full agreement</a></li>
             <li><a href="#">Terms and conditions</a></li>
-          </ul> #}
+          </ul>
 
         </div>
       </div>
