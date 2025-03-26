@@ -1,11 +1,11 @@
-{% extends "layouts/main.html" %}
+{% extends "layouts/main-thread.html" %}
 
 {% block pageTitle %}
   Future – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 
-{% block beforeContent %}
+{# {% block beforeContent %}
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
@@ -19,9 +19,9 @@
     text: "Back",
     href: "javascript:window.history.back()"
   }) }}
-{% endblock %}
+{% endblock %} #}
 
-{% block content %}
+{% block content %} 
 
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
