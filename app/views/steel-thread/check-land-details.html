@@ -26,7 +26,7 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Check your land details</h1>
+      {# <h1 class="govuk-heading-l">Check your land details</h1> #}
 {# <p class="govuk-body">Before you continue with this application, check that the registered land details on your digital maps are up to date. If they’re not, this may prevent you from applying for the SFI actions you select.</p>
 <p class="govuk-body">You need to check your digital maps show:<br>
 • all the land parcels you want to include in this application<br>
@@ -37,27 +37,29 @@
 
 {# <form class="form" action="/steel-thread/select-land" method="post"> #}
   <form action="/steel-thread/select-land" method="post">
-          <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset">
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                <h1 class="govuk-fieldset__heading">
-                 Do your digital maps show the correct land details?
-                </h1>
-              </legend>
-              <div class="govuk-radios" data-module="govuk-radios">
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="landDetailsAnswer-1" name="land-details-answer" type="radio" value="yes">
-                  <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-1">
-                    Yes
-                </div>
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="landDetailsAnswer-2" name="land-details-answer" type="radio" value="no">
-                  <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-2">
-                    No
-                  </label>
-                </div>
-            </fieldset>
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h1 class="govuk-fieldset__heading">
+            Do your digital maps show the correct land details?
+          </h1>
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Land-details" name="Land-details" type="radio" value="yes">
+            <label class="govuk-label govuk-radios__label" for="Land-details">
+              Yes
+            </label>
           </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="Land-details-2" name="Land-details" type="radio" value="no">
+            <label class="govuk-label govuk-radios__label" for="Land-details-2">
+              No
+            </label>
+          </div>
+        </div>
+      </fieldset>
+    </div>
           <button type="submit" class="govuk-button" data-module="govuk-button">
             Continue
           </button>
