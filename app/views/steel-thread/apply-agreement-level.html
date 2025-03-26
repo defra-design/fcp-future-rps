@@ -1,0 +1,103 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="govuk-grid-row" id="header">
+<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+<div class="moj-organisation-nav" aria-label="Organisation switcher">
+<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Save and return later
+</button>
+</div>
+</div>
+</div>
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Select your agreement level actions</h1>
+      <p class="govuk-body">You’ve selected the following ‘agreement level’ actions. These are actions that apply to a whole agreement, rather than a specific area of land.</p>
+      <p class="govuk-body">Confirm your agreement level actions - tick the relevant actions and click 'update your application'.</p>
+
+     <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Your agreement level actions</caption>
+  <tbody class="govuk-table__body">
+      <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">Apply for action</th>
+      <th scope="col" class="govuk-table__header">Actions</th>
+      <th scope="col" class="govuk-table__header">Quantity</th>
+      <th scope="col" class="govuk-table__header">Unit</th>
+    </tr>
+  </thead>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIPM1 – Assess integrated pest management and produce a plan</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">Plan</td>
+    </tr>
+           <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CNUM1 – Assess nutrient management and produce a review report</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">Plan</td>
+    </tr>
+  </tbody>
+</table>
+
+<form class="form" action="tasklist-8" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+    </div>
+  </div>
+
+</main>
+</div>
+{% endblock %}
