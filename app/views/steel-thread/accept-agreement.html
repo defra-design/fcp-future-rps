@@ -13,70 +13,837 @@
 {% block content %}
 
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-full">
+          <form method="post" action="business-payments-details">
+            
+
           <h1 class="govuk-heading-xl">
             Read and accept your agreement
           </h1>
          
-{# 
-          <div class="govuk-tabs">
-            <ul class="govuk-tabs__list--payments" role="tablist">
-              <li class="govuk-tabs__list-item--payments govuk-tabs__list-item--payments-selected">
-                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="#" role="tab" aria-selected="true">Live <span class="govuk-visually-hidden">agreements</span></a>
-              </li>
-              <li class="govuk-tabs__list-item--payments">
-                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-expired-actions-added" role="tab" aria-selected="false">Expired <span class="govuk-visually-hidden">agreements</span></a>
-              </li>
-            </ul>
-          </div> #}
+                <section>
+                  <table class="govuk-table">
+                        <tbody class="govuk-table__body"><tr class="govuk-table__row">
+                          <td>Agreement Document Type:</td>
+                          <td>SFI</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>Agreement Number:</td>
+                          <td>SFI123456789</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>Agreement Name:</td>
+                          <td>Sample Agreement</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>Agreement Start Date:</td>
+                          <td>1/11/2024</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>Agreement End Date:</td>
+                          <td>31/10/2027</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>SBI:</td>
+                          <td>123456789</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>Agreement Holder:</td>
+                          <td>Sample Farm Ltd</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>Address:</td>
+                          <td>123 Farm Lane, Farmville</td>
+                      </tr>
+                      <tr class="govuk-table__row">
+                          <td>Postcode:</td>
+                          <td>FA12 3RM</td>
+                      </tr>
+                  </tbody></table>
+              </section>
 
-          {# <h2 class="govuk-heading-l">Winter 2024 agreement</h2> #}
+              <section>
+                  <h2 class="govuk-heading-m">Table of Contents</h2>
+                  <ol class="govuk-list govuk-list--number">
+                      <li>Introduction and Overview</li>
+                      <li>Parties to the Agreement</li>
+                      <li>Agreement Land</li>
+                      <li>Summary of parcel based SFI Actions</li>
+                      <li>Summary of agreement level actions</li>
+                      <li>Summary of payments</li>
+                      <li>Annual Payment Schedule</li>
+                      <li>Agreement Period</li>
+                      <li>Electronic signature</li>
+                  </ol>
+              </section>
 
-          <dl class="govuk-summary-list govuk-!-margin-bottom-8">
-            {# <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Name
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Winter 2024 agreement
-              </dd>
-            </div> #}
-            {# <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Covering period
-              </dt>
-              <dd class="govuk-summary-list__value">
-                20 February 2025 to 20 February 2028
-              </dd>
-            </div> #}
-            {# <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Total payment
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p class="govuk-body ">
-                    £16,467.49
-                </p>
-              </dd>
-            </div> #}
-            <div class="govuk-summary-list__row">
-              {# <dt class="govuk-summary-list__key">
-                Status
-              </dt> #}
-              <dd class="govuk-summary-list__value">
-                {# <p class="govuk-body ">
-                  <strong class="govuk-tag govuk-tag--red">
-                    Action needed
-                  </strong>
-                </p><br> #}
-                {# <p class="govuk-body govuk-!-margin-bottom-3 govuk-!-margin-top-3">Sign your updated agreement by 29 April 2025 to avoid delays to some of your payments.</p> #}
-                <p><a href="business-payments-details" class="govuk-button govuk-!-margin-bottom-2">Accept agreement</a></p>
-              </dd>
-            </div>
-          </dl>
-        </div>
+              <section>
+                  <h2 class="govuk-heading-m">1. Introduction and Overview</h2>
+                  <p>This is the Sustainable Farming Incentive (SFI) "Agreement Document", which describes the sum to be paid (the "Grant") to the agreement holder ("you") for delivering the SFI action(s) (the
+                  "Actions") you have chosen and for entering into and managing your Agreement (the "SFI
+                  Management Payment").</p>
+
+                  <h3 class="govuk-heading-m">The SFI "Agreement" comprises:</h3>
+                  <ul class="govuk-list govuk-list--bullet">
+                      <li>This Agreement Document;</li>
+                      <li>The Sustainable Farming Incentive Agreement "Terms and Conditions", which are applicable to the payment of the Grant;</li>
+                      <li>The Actions you have chosen.</li>
+                  </ul>
+                  <p>When you enter the Agreement, you are agreeing to the terms applicable to the payment of the Grant. You should review the mandatoryrequirements of your Agreement to make sure you understand the full extentof your obligations under the Agreement.</p>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">2. Parties to the Agreement</h2>
+                  <p>This Agreement is between:</p>
+                  <ul class="govuk-list govuk-list--bullet">
+                      <li>You, the agreement holder;</li>
+                      <li>Sample Farm Ltd, of 123 Farm Lane, Farmville, FA12 3RM;</li>
+                      <li>The Rural Payments Agency (acting as a delivery body on behalf of the Department for Environment, Food and Rural Affairs), PO Box 324, Worksop, S95 1DF ("us", "we", "our").</li>
+                  </ul>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">3. Agreement Land</h2>
+                  <p>The "Agreement Land" comprises the following land parcels</p>
+                  <table class="govuk-table">
+                       <thead class="govuk-table__head">
+                          <tr class="govuk-table__row">
+                              <th scope="col" class="govuk-table__header">Parcel</th>
+                              <th scope="col" class="govuk-table__header">Parcel name</th>
+                              <th scope="col" class="govuk-table__header">Total parcel area (hectares)</th>
+                          </tr>
+                      </thead>
+                        <tbody class="govuk-table__body">
+                          <tr class="govuk-table__row">
+                              <td>SX63599044</td>
+                              <td></td>
+                              <td>0.7306</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>SX63599173</td>
+                              <td></td>
+                              <td>1.5034</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>SX63599555</td>
+                              <td></td>
+                              <td>1.6108</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>SX64590858</td>
+                              <td></td>
+                              <td>3.1213</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>SX64591081</td>
+                              <td></td>
+                              <td>0.8637</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>SX64591369</td>
+                              <td></td>
+                              <td>0.4016</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>SX64592661</td>
+                              <td></td>
+                              <td>2.7771</td>
+                          </tr>
+                        
+                      </tbody>
+                  </table>
+                  <p>Please note that the Terms and Conditions contain separate obligations in relation to the Agreement Land.</p>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">4. Summary of parcel based SFI Actions</h2>
+                  <p>The following table sets out a summary of the Parcel based SFI Actions you have chosen and agree to complete under the Agreement. The Terms and Conditions and the Actions set out the accompanying obligations for the chosen Actions.</p>
+                  <table class="govuk-table">
+                       <thead class="govuk-table__head">
+                          <tr class="govuk-table__row">
+                              <th scope="col" class="govuk-table__header">Parcel number</th>
+                              <th scope="col" class="govuk-table__header">Code</th>
+                              <th scope="col" class="govuk-table__header">Description</th>
+                              <th scope="col" class="govuk-table__header">Total parcel area (hectares)</th>
+                              <th scope="col" class="govuk-table__header">Area (hectares) / Length (metres) / Unit</t=h>
+                              <th scope="col" class="govuk-table__header">Start date</th>
+                              <th scope="col" class="govuk-table__header">End date</th>
+                          </tr>
+                      </thead>
+                        <tbody class="govuk-table__body">
+                        
+                              <tr class="govuk-table__row">
+                                  <td>SX63599044</td>
+                                  <td>BND1</td>
+                                  <td>Maintain dry stone walls</td>
+                                  <td>0.7306</td>
+                                  <td>95</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599044</td>
+                                  <td>CHRW1</td>
+                                  <td>Assess and record hedgerow condition</td>
+                                  <td>0.7306</td>
+                                  <td>207</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599044</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>0.7306</td>
+                                  <td>0.7287</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599044</td>
+                                  <td>CLIG3</td>
+                                  <td>Manage grassland with very low nutrientinputs - outside SDAs or within SDAs</td>
+                                  <td>0.7306</td>
+                                  <td>0.7287</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599044</td>
+                                  <td>BND2</td>
+                                  <td>Maintain earth banks or stone-faced hedgebanks</td>
+                                  <td>0.7306</td>
+                                  <td>234</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599044</td>
+                                  <td>CHRW2</td>
+                                  <td>Manage hedgerows</td>
+                                  <td>0.7306</td>
+                                  <td>207</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599044</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>0.7306</td>
+                                  <td>0.7287</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                        
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599173</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>1.5034</td>
+                                  <td>0.7287</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599173</td>
+                                  <td>CHRW2</td>
+                                  <td>Manage hedgerows</td>
+                                  <td>1.5034</td>
+                                  <td>265</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599173</td>
+                                  <td>CHRW1</td>
+                                  <td>Assess and record hedgerow condition</td>
+                                  <td>1.5034</td>
+                                  <td>265</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599173</td>
+                                  <td>BND2</td>
+                                  <td>Maintain earth banks or stone-faced hedgebanks</td>
+                                  <td>1.5034</td>
+                                  <td>265</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                        
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599555</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>1.6108</td>
+                                  <td>1.6108</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599555</td>
+                                  <td>CLIG3</td>
+                                  <td>Manage grassland with very low nutrientinputs - outside SDAs or within SDAs</td>
+                                  <td>1.6108</td>
+                                  <td>1.6108</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599555</td>
+                                  <td>CHRW3</td>
+                                  <td>Maintain or establish hedgerow trees</td>
+                                  <td>1.6108</td>
+                                  <td>337</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599555</td>
+                                  <td>CHRW2</td>
+                                  <td>Manage hedgerows</td>
+                                  <td>1.6108</td>
+                                  <td>337</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599555</td>
+                                  <td>CHRW1</td>
+                                  <td>Assess and record hedgerow condition</td>
+                                  <td>1.6108</td>
+                                  <td>337</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX63599555</td>
+                                  <td>BND2</td>
+                                  <td>Maintain earth banks or stone-faced hedgebanks</td>
+                                  <td>1.6108</td>
+                                  <td>374</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                        
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64590858</td>
+                                  <td>CHRW2</td>
+                                  <td>Manage hedgerows</td>
+                                  <td>3.1213</td>
+                                  <td>640</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64590858</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>3.1213</td>
+                                  <td>3.1213</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64590858</td>
+                                  <td>CLIG3</td>
+                                  <td>Manage grassland with very low nutrientinputs - outside SDAs or within SDAs</td>
+                                  <td>3.1213</td>
+                                  <td>3.1213</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64590858</td>
+                                  <td>BND2</td>
+                                  <td>Maintain earth banks or stone-faced hedgebanks</td>
+                                  <td>3.1213</td>
+                                  <td>430</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64590858</td>
+                                  <td>CHRW3</td>
+                                  <td>Maintain or establish hedgerow trees</td>
+                                  <td>3.1213</td>
+                                  <td>230</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64590858</td>
+                                  <td>CHRW1</td>
+                                  <td>Assess and record hedgerow condition</td>
+                                  <td>3.1213</td>
+                                  <td>640</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                        
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64591081</td>
+                                  <td>CHRW2</td>
+                                  <td>Manage hedgerows</td>
+                                  <td>0.8637</td>
+                                  <td>50</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64591081</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>0.8637</td>
+                                  <td>0.8291</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64591081</td>
+                                  <td>CHRW1</td>
+                                  <td>Assess and record hedgerow condition</td>
+                                  <td>0.8637</td>
+                                  <td>150</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64591081</td>
+                                  <td>BND2</td>
+                                  <td>Maintain earth banks or stone-faced hedgebanks</td>
+                                  <td>0.8637</td>
+                                  <td>210</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                        
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64591369</td>
+                                  <td>BND2</td>
+                                  <td>Maintain earth banks or stone-faced hedgebanks</td>
+                                  <td>0.4016</td>
+                                  <td>165</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64591369</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>0.4016</td>
+                                  <td>0.4016</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64591369</td>
+                                  <td>CLIG3</td>
+                                  <td>Manage grassland with very low nutrientinputs - outside SDAs or within SDAs</td>
+                                  <td>0.4016</td>
+                                  <td>0.4016</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                        
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64592661</td>
+                                  <td>CHRW3</td>
+                                  <td>Maintain or establish hedgerow trees</td>
+                                  <td>2.7771</td>
+                                  <td>150</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64592661</td>
+                                  <td>CHRW1</td>
+                                  <td>Assess and record hedgerow condition</td>
+                                  <td>2.7771</td>
+                                  <td>300</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64592661</td>
+                                  <td>CHRW2</td>
+                                  <td>Manage hedgerows</td>
+                                  <td>2.7771</td>
+                                  <td>300</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64592661</td>
+                                  <td>CSAM1</td>
+                                  <td>Assess soil, produce a soil management plan and test soil organic matter</td>
+                                  <td>2.7771</td>
+                                  <td>2.7771</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64592661</td>
+                                  <td>CLIG3</td>
+                                  <td>Manage grassland with very low nutrientinputs - outside SDAs or within SDAs</td>
+                                  <td>2.7771</td>
+                                  <td>2.7771</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                              <tr class="govuk-table__row">
+                                  <td>SX64592661</td>
+                                  <td>GRH8</td>
+                                  <td>Supplement: Haymaking (late cut)</td>
+                                  <td>2.7771</td>
+                                  <td>9.7091</td>
+                                  <td>1/11/2024</td>
+                                  <td>31/10/2027</td>
+                              </tr>
+                            
+                        
+                      </tbody>
+                  </table>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">5. Summary of agreement level actions</h2>
+                  <p>The table below sets out a summary of agreement level Actions you have chosen and agree to
+                  complete  under  the  Agreement.  The  Terms  and  Conditions  and  the  Actions  set  out  the
+                  accompanying  obligations  for  the  chosen  Actions  included  in  this  Agreement.</p>
+                
+                  <table class="govuk-table">
+                       <thead class="govuk-table__head">
+                          <tr class="govuk-table__row">
+                              <th scope="col" class="govuk-table__header">Action code</th>
+                              <th scope="col" class="govuk-table__header">Action title</th>
+                              <th scope="col" class="govuk-table__header">Action End date</th>
+                              <th scope="col" class="govuk-table__header">Action Start date</th>
+                              <th scope="col" class="govuk-table__header">Action duration</th>
+                          </tr>
+                      </thead>
+                        <tbody class="govuk-table__body">
+                        
+                          <tr class="govuk-table__row">
+                              <td>CSAM1A</td>
+                              <td>Assess soil, test soil organic matter and produce a soil management plan</td>
+                              <td>31/10/2027</td>
+                              <td>01/11/2024</td>
+                              <td>3 years</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>MPAY1</td>
+                              <td>SFI Management Payment</td>
+                              <td>31/10/2027</td>
+                              <td>01/11/2024</td>
+                              <td>3 years</td>
+                          </tr>
+                        
+                      </tbody>
+                  </table>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">6. Summary of payments</h2>
+                  <p>Subject to you complying with your Agreement, the table below sets out a summary of:</p>
+                  <ul class="govuk-list govuk-list--bullet">
+                      <li>the total payments for the Actions you have chosen and agree to complete under the Agreement.</li>
+                      <li>the relevant additional payments</li>
+                      <li>the indicative SFI management payment - if you havesubmitted 2 or more SFI applications, the SFI management payment may be removed from this agreement offer as it will only be paid for the area, up to50 hectares, entered into SFI actions in the 'live' SFI agreement which starts first</li>
+                  </ul>
+
+                  <p>These payments will be made each year of your Agreement.
+      </p>
+                  <p>Please note that these figures are correct as at the Agreement Start Date and may vary as a result of the processes set out in the Terms and Conditions.</p>
+
+                  <table class="govuk-table">
+                       <thead class="govuk-table__head">
+                          <tr class="govuk-table__row">
+                              <th scope="col" class="govuk-table__header">Code</th>
+                              <th scope="col" class="govuk-table__header">Description</th>
+                              <th scope="col" class="govuk-table__header">Total area (hectares) / length (metres) / Unit</th>
+                              <th scope="col" class="govuk-table__header">Payment rate</th>
+                              <th scope="col" class="govuk-table__header">Total annual agreement grant payment</th>
+                          </tr>
+                      </thead>
+                        <tbody class="govuk-table__body">
+                        
+                          <tr class="govuk-table__row">
+                              <td>BND1</td>
+                              <td>Maintain dry stone walls</td>
+                              <td>95.00 Metres</td>
+                              <td>&pound;325.65/100m</td>
+                              <td>&pound;325.65</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>BND2</td>
+                              <td>Maintain earth banks or stone-faced hedgebanks</td>
+                              <td>1678.00 Metres</td>
+                              <td>11.00/100m</td>
+                              <td>&pound;3184.58</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CHRW1</td>
+                              <td>Assess and record hedgerow condition</td>
+                              <td>1799.00 Metres</td>
+                              <td>5.00/100m</td>
+                              <td>&pound;389.95</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CHRW2</td>
+                              <td>Manage hedgerows</td>
+                              <td>1799.00 Metres</td>
+                              <td>13.00/100m</td>
+                              <td>&pound;3233.87</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CHRW3</td>
+                              <td>Maintain or establish hedgerow trees</td>
+                              <td>717.00 Metres</td>
+                              <td>10.00/100m</td>
+                              <td>&pound;371.70</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CLIG3</td>
+                              <td>Manage grassland with very low nutrient inputs - outside SDAs or within SDAs</td>
+                              <td>8.64 HA</td>
+                              <td>151.00/ha</td>
+                              <td>&pound;31,304.56</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CSAM1</td>
+                              <td>Assess soil, test soil organic matter and produce a soil management plan</td>
+                              <td>10.63 HA</td>
+                              <td>6.00/ha</td>
+                              <td>&pound;363.78</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CSAM1A</td>
+                              <td>Assess soil, produce a soil management planand test soil organic matter</td>
+                              <td>1.00 Units</td>
+                              <td>97.00/units</td>
+                              <td>&pound;397.00</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>GRH8</td>
+                              <td>Supplement: Haymaking (late cut)</td>
+                              <td>9.71 HA</td>
+                              <td>187.00/ha</td>
+                              <td>&pound;31,815.61</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Total: &pound;33,886.69</td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <p>If you are eligible for the Management Payment (MPAY1) the payment details will be shown within section 7 below.</p>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">7. Annual Payment Schedule</h2>
+                  <p>Subject to you complying with your Agreement, the table below sets out a summary of the total payments for:</p>
+                  <ul class="govuk-list govuk-list--bullet">
+                      <li>each year of the Agreement</li>
+                      <li>the total for the duration of the Agreement</li>
+                      <li>Please note that these figures are correct as at the Agreement Start Date and may vary as a result of the processes set out inthe Terms and Conditions.</li>
+                  </ul>
+                
+                  <table class="govuk-table">
+                       <thead class="govuk-table__head">
+                          <tr class="govuk-table__row">
+                              <th scope="col" class="govuk-table__header">Code</th>
+                              <th scope="col" class="govuk-table__header">Year 1</th>
+                              <th scope="col" class="govuk-table__header">Year 2</th>
+                              <th scope="col" class="govuk-table__header">Year 3</th>
+                              <th scope="col" class="govuk-table__header">Total agreement grant payment</th>
+                          </tr>
+                      </thead>
+                        <tbody class="govuk-table__body">
+                        
+                          <tr class="govuk-table__row">
+                              <td>BND1</td>
+                              <td>&pound;325.65</td>
+                              <td>&pound;325.65</td>
+                              <td>&pound;325.65</td>
+                              <td>&pound;376.95</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>BND2</td>
+                              <td>&pound;3184.58</td>
+                              <td>&pound;3184.58</td>
+                              <td>&pound;3184.58</td>
+                              <td>&pound;3553.74</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CHRW1</td>
+                              <td>&pound;389.95</td>
+                              <td>&pound;389.95</td>
+                              <td>&pound;389.95</td>
+                              <td>&pound;3269.85</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CHRW2</td>
+                              <td>&pound;3233.87</td>
+                              <td>&pound;3233.87</td>
+                              <td>&pound;3233.87</td>
+                              <td>&pound;3701.61</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CHRW3</td>
+                              <td>&pound;371.70</td>
+                              <td>&pound;371.70</td>
+                              <td>&pound;371.70</td>
+                              <td>&pound;3215.10</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CLIG3</td>
+                              <td>&pound;31,304.56</td>
+                              <td>&pound;31,304.56</td>
+                              <td>&pound;31,304.56</td>
+                              <td>&pound;33,913.68</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CSAM1</td>
+                              <td>&pound;363.78</td>
+                              <td>&pound;363.78</td>
+                              <td>&pound;363.78</td>
+                              <td>&pound;3191.31</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>CSAM1A</td>
+                              <td>&pound;397.00</td>
+                              <td>&pound;397.00</td>
+                              <td>&pound;397.00</td>
+                              <td>&pound;3291.00</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>GRH8</td>
+                              <td>&pound;31,815.61</td>
+                              <td>&pound;31,815.61</td>
+                              <td>&pound;31,815.61</td>
+                              <td>&pound;35,446.83</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>MPAY1</td>
+                              <td>&pound;3478.76</td>
+                              <td>&pound;3239.38</td>
+                              <td>&pound;3239.38</td>
+                              <td>&pound;3957.52</td>
+                          </tr>
+                        
+                          <tr class="govuk-table__row">
+                              <td>Total</td>
+                              <td>&pound;34,365.45</td>
+                              <td>&pound;34,126.07</td>
+                              <td>&pound;34,126.07</td>
+                              <td>&pound;312,617.59</td>
+                          </tr>
+                      </tbody>
+                  </table>
+                
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">8. Agreement Period</h2>
+                  <p>The Agreement will start on the "Agreement Start Date" and end on the "Agreement End Date",
+                  subject to the provisions for early termination set out in the Terms and Conditions.</p>
+                  <p>Agreement Start Date: 1/11/2024</p>
+                  <p>Agreement End Date: 31/10/2027</p>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">9. Electronic signature</h2>
+                  <p>The Agreement comprising this Agreement Document, the Terms and Conditions and the Actions has been accepted by John Doe - Sample Farm Ltd on </p>
+              </section>
+
+              <section>
+                  <h2 class="govuk-heading-m">Data Protection</h2>
+                  <p>The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give
+                  to RPA. For information on how we handle personal data go to www.gov.uk and search 'Rural Payments Agency
+                  personal information charter'.</p>
+              </section>
+          </div>
       </div>
-
+          
+          <button class="govuk-button govuk-!-margin-bottom-2" data-module="govuk-button">
+            Accept agreement
+          </button>
+          {# <p><a href="business-payments-details" class="govuk-button govuk-!-margin-bottom-2">Accept agreement</a></p> #}
+              
+       
+          </form>
         </div>
       </div>
 
