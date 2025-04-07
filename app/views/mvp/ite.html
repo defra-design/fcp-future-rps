@@ -1,0 +1,80 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="govuk-grid-row" id="header">
+<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+<div class="moj-organisation-nav" aria-label="Organisation switcher">
+<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Save and return later
+</button>
+</div>
+</div>
+</div>
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Land that’s conditionally exempt from inheritance tax</h1>
+<p class="govuk-body">You need to check you can do your selected SFI actions on land that is either:<br>
+• conditionally exempt from inheritance tax<br>
+• the object of a maintenance fund</p>
+<p class="govuk-body">Read the <a href="#">inheritance tax exemption guidance</a>.</p>
+
+<form class="form" action="/ite-answer" method="post">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h1 class="govuk-fieldset__heading">
+Are the actions you want to apply for available on land that’s conditionally exempt from inheritance tax, or the object of a maintenance fund?</h1>
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="iteAnswer-1" name="ite-answer" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="iteAnswer-1">
+                    Yes
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="iteAnswer-2" name="ite-answer" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="iteAnswer-2">
+                    No
+                  </label>
+                </div>
+            </fieldset>
+          </div>
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+    </div>
+  </div>
+
+</div>
+</main>
+{% endblock %}

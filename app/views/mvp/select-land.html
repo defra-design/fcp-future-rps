@@ -1,0 +1,126 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{# 
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %} #}
+
+{% block content %}
+
+{# 
+
+<div class="govuk-grid-row" id="header">
+<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+<div class="moj-organisation-nav" aria-label="Organisation switcher">
+<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Save and return later
+</button>
+</div>
+</div>
+</div> #}
+
+  <div class="govuk-grid-row" role="main">
+  <div class="govuk-grid-column-one-half">
+          <h1 class="govuk-heading-l">Select land for your actions</h1>
+{# <p class="govuk-body">To add your selected actions to a land parcel, click on the land parcel link or the map area.</p>
+<p class="govuk-body">You’ll see your list of actions. You then need to:<br>
+• select the action and enter the amount that you want to add to the parcel<br>
+• confirm your selection for that parcel</p>
+<!--<p class="govuk-body">You can then move on to the next land parcel and repeat these steps. When you finish, click 'Go back to select a different area'. This takes you back to the OS map sheet page. You then need to click ‘back to task list’ to continue your application.</p>-->
+<hr class="section-break-large"></hr>
+      <table class="govuk-table">
+<p class="govuk-body">OS Map Sheet Reference S03</p>
+<hr class="govuk-section-break govuk-section-break--visible">
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Number of available land parcels</td>
+      <td class="govuk-table__cell govuk-table__cell--numeric">11</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Total area (ha)</td>
+      <td class="govuk-table__cell govuk-table__cell--numeric">120.3451 ha</td>
+    </tr> #}
+<!--    <tr class="govuk-table__row">-->
+<!--     <td class="govuk-table__cell">Number of land parcels used for actions</td>-->
+<!--      <td class="govuk-table__cell govuk-table__cell&#45;&#45;numeric">0</td>-->
+<!--    </tr>-->
+<!--        <tr class="govuk-table__row">-->
+<!--    <td class="govuk-table__cell">Number of actions applied for</td>-->
+<!--      <td class="govuk-table__cell govuk-table__cell&#45;&#45;numeric">0</td>-->
+<!--    </tr>-->
+  </tbody>
+</table>
+
+  <p class="govuk-body"><a href="select-land-parcel-1" class="govuk-link">SO3757 3158</a>
+  <span class="list-parcels govuk-body">Total size: 32.0404 ha</span></p>
+  {# <p class="govuk-body"><a href="select-land-parcel-2" class="govuk-link">SO3757 3159</a>
+  <span class="list-parcels govuk-body">Total size: 31.4241 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3160</a>
+  <span class="list-parcels govuk-body">Total size: 1.4935 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3161</a>
+  <span class="list-parcels govuk-body">Total size: 10.3492 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3162</a>
+  <span class="list-parcels govuk-body">Total size: 42.4324 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3163</a>
+  <span class="list-parcels govuk-body">Total size: 9.9754 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3164</a>
+  <span class="list-parcels govuk-body">Total size: 32.1239 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3165</a>
+  <span class="list-parcels govuk-body">Total size: 38.2931 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3166</a>
+  <span class="list-parcels govuk-body">Total size: 28.3482 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3167</a>
+  <span class="list-parcels govuk-body">Total size: 39.2931 ha</span></p>
+  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3168</a>
+  <span class="list-parcels govuk-body">Total size: 3.2131 ha</span></p> #}
+
+ {# <nav class="govuk-pagination" role="navigation" aria-label="Pagination">
+<!--        <form class="form" action="select-map" method="post">-->
+<!--          <button type="submit" class="govuk-button govuk-button&#45;&#45;secondary" data-module="govuk-button">-->
+<!--Go back to select a different area-->
+<!--          </button>-->
+<!--        </form>-->
+</nav>  #}
+
+</div>
+
+  <div class="govuk-grid-column-one-half">
+    {# <p class="govuk-body"><a href="#" class="govuk-link">Hide/show map</a></p>
+  <map name="clickable">
+        <area shape="rect" coords="100,280,190,320" href="select-land-parcel-1">
+        <area shape="rect" coords="150,220,240,280" href="select-land-parcel-2">
+                  </map>
+<img usemap="#clickable" src="https://raw.githubusercontent.com/defra-design/fcp-future-rps/56621a962ff1c79573dc9ba24b9dfed026bf152e/app/views/experiment/img/map_2.png" alt="Map of your land" style="width:465px;height:400px;"></a>
+
+       <p class="govuk-body">Key:</p>
+       <div class="key-div govuk-!-margin-bottom-5">
+       <div class="key-parent" id="key1"></div><span class="govuk-body-s">Error</span>
+       <div class="key-parent" id="key2"></div><span class="govuk-body-s">Selected</span>
+       <div class="key-parent" id="key3"></div><span class="govuk-body-s">Not Applied</span>
+       <div class="key-parent" id="key4"></div><span class="govuk-body-s">Applied</span>
+     </div>
+      #}
+    </div>
+
+  </div>
+
+</main>
+</div>
+{% endblock %}
