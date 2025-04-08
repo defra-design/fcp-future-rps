@@ -1,25 +1,24 @@
 {% extends "layouts/main-thread.html" %}
 
 {% block pageTitle %}
-  Future – {{ serviceName }} – GOV.UK Prototype Kit
+  Apply for funding
 {% endblock %}
 
 
-{# {% block beforeContent %} #}
+{% block beforeContent %}
 
-{# {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
- {{ govukPhaseBanner({
+{{ govukPhaseBanner({
   tag: {
-    text: "Prototype"
+    text: "Beta"
   },
-  html: 'This is a prototype used for testing purposes only.'
+  html: 'This is a new service - your feedback will help us to improve it.'
 }) }}
-  {{ govukBackLink({
-    text: "Back",
-    href: "javascript:window.history.back()"
-  }) }}
-{% endblock %}  #}
+
+  {% include "_common/sub-header.html" %}
+
+{% endblock %}
 
 {% block content %}
 
