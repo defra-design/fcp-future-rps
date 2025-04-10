@@ -105,7 +105,7 @@ router.post('/management-answer3', function (req, res) {
   // Check whether the variable matches a condition
   if (managementControlAnswer == "yes"){
     // Send user to next page
-    res.redirect('/mvp/select-land')
+    res.redirect('/mvp/hefer')
   } else {
     // Send user to ineligible page
     res.redirect('/mvp/ineligible')
@@ -129,6 +129,23 @@ router.post('/hefer-answer', function (req, res) {
 
 })
 
+router.post('/hefer-answer3', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var managementControlAnswer = req.session.data['hefer-answer3']
+
+  // Check whether the variable matches a condition
+  if (managementControlAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/mvp/sssi')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/mvp/ineligible')
+  }
+
+})
+
 router.post('/sssi-answer', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
@@ -146,6 +163,23 @@ router.post('/sssi-answer', function (req, res) {
 
 })
 
+router.post('/sssi-answer3', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var managementControlAnswer = req.session.data['sssi-answer3']
+
+  // Check whether the variable matches a condition
+  if (managementControlAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/mvp/ite')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/mvp/ineligible')
+  }
+
+})
+
 router.post('/ite-answer', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
@@ -159,6 +193,23 @@ router.post('/ite-answer', function (req, res) {
   } else {
     // Send user to ineligible page
     res.redirect('/experiment/ineligible')
+  }
+
+})
+
+router.post('/ite-answer3', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var managementControlAnswer = req.session.data['ite-answer3']
+
+  // Check whether the variable matches a condition
+  if (managementControlAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/mvp/public-body')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/mvp/ineligible')
   }
 
 })
