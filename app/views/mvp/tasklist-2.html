@@ -1,7 +1,7 @@
-{% extends "layouts/main.html" %}
+{% extends "layouts/main-thread.html" %}
 
 {% block pageTitle %}
-  Future – {{ serviceName }} – GOV.UK Prototype Kit
+    Apply for funding
 {% endblock %}
 
 
@@ -11,34 +11,23 @@
 
 {{ govukPhaseBanner({
   tag: {
-    text: "Prototype"
+    text: "Beta"
   },
-  html: 'This is a prototype used for testing purposes only.'
+  html: 'This is a new service - your feedback will help us to improve it.'
 }) }}
+
+  {% include "_common/sub-header.html" %}
+
   {{ govukBackLink({
     text: "Back",
     href: "javascript:window.history.back()"
   }) }}
+
 {% endblock %}
 
 {% block content %}
 
-
-<div class="govuk-grid-row" id="header">
-<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
-<div class="moj-organisation-nav" aria-label="Organisation switcher">
-<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
-<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-  Save and return later
-</button>
-</div>
-</div>
-</div>
-
-<div class="govuk-width-container">
-<main class="govuk-main-wrapper">
-
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">Apply for funding</h1>
@@ -139,6 +128,5 @@
     </div>
   </div>
 
-</div>
-</main>
+
 {% endblock %}

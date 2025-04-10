@@ -231,6 +231,23 @@ router.post('/public-body-answer', function (req, res) {
 
 })
 
+router.post('/public-body-answer3', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var managementControlAnswer = req.session.data['public-body-answer3']
+
+  // Check whether the variable matches a condition
+  if (managementControlAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/mvp/eligible')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/mvp/ineligible')
+  }
+
+})
+
 router.post('/land-details-answer-ht', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
