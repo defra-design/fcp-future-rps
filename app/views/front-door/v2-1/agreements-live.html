@@ -1,0 +1,193 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Manage your agreements" %}
+
+{%- block beforeContent -%}
+
+{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+
+<a href="javascript:window.history.back()" class="govuk-back-link govuk-!-margin-bottom-0">Back</a>
+
+{% endblock %} 
+
+{% block content %}
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <h1 class="govuk-heading-xl">
+            Manage your agreements
+          </h1>
+         
+
+          <div class="govuk-tabs">
+            <ul class="govuk-tabs__list--payments" role="tablist">
+              <li class="govuk-tabs__list-item--payments">
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements" role="tab" aria-selected="false">Pending <span class="govuk-visually-hidden">agreements</span></a>
+              </li>
+              <li class="govuk-tabs__list-item--payments govuk-tabs__list-item--payments-selected">
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-live" role="tab" aria-selected="true">Live <span class="govuk-visually-hidden">agreements</span></a>
+              </li>
+              <li class="govuk-tabs__list-item--payments">
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-expired" role="tab" aria-selected="false">Expired <span class="govuk-visually-hidden">agreements</span></a>
+              </li>
+            </ul>
+          </div>
+
+          <h2 class="govuk-heading-l">Winter 2024 agreement</h2>
+
+          <dl class="govuk-summary-list govuk-!-margin-bottom-8">
+            <!-- <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                5 February 2025
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Amount
+              </dt>
+              <dd class="govuk-summary-list__value">
+                £2,445.37
+              </dd>
+            </div> -->
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Name
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Winter 2024 agreement
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Covering period
+              </dt>
+              <dd class="govuk-summary-list__value">
+                20 November 2024 to 20 November 2028
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Total payment
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body ">
+                    £16,467.49
+                </p>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Status
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body ">
+                  <strong class="govuk-tag govuk-tag--green">
+                    Live
+                  </strong>
+                </p>
+                {# <p class="govuk-body govuk-!-margin-bottom-3 govuk-!-margin-top-3">Please sign your agreement by 29 February 2025 to avoid delays to your payment.</p>
+                <p><a href="#" class="govuk-button govuk-!-margin-bottom-2">Sign and accept agreement</a></p> #}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">What this agreement includes</caption> 
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Action</th>
+                <th scope="col" class="govuk-table__header">Parcels</th>
+                <th scope="col" class="govuk-table__header">Quantity</th>
+                <th scope="col" class="govuk-table__header">Total payment</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Skylark plots: AB45</td>
+                <td class="govuk-table__cell">1</td>
+                <td class="govuk-table__cell">8.3405 hectares</td>
+                <td class="govuk-table__cell">&pound;4,295.35</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Basic overwinter stubble: AB2</td>
+                <td class="govuk-table__cell">4</td>
+                <td class="govuk-table__cell">100 hectares</td>
+                <td class="govuk-table__cell">&pound;5,800</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Nectar flower mix: AB1</td>
+                <td class="govuk-table__cell">1</td>
+                <td class="govuk-table__cell">8.3405 hectares</td>
+                <td class="govuk-table__cell">&pound;6,372.14</td>
+              </tr>
+             </tbody>
+          </table>
+          
+          <br>
+          <h3 class="govuk-heading-s">Documents to download</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li><a href="#">Full agreement</a></li>
+            <li><a href="#">Terms and conditions</a></li>
+
+
+        </div>
+      </div>
+
+{% endblock %}
+
+
+
+{% block footer %}
+
+
+<footer class="govuk-footer">
+  <div class="govuk-width-container">
+    <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+        <h2 class="govuk-visually-hidden">Support links</h2>
+        <ul class="govuk-footer__inline-list">
+          <li class="govuk-footer__inline-list-item">
+            <a class="govuk-footer__link govuk-body-l" href="business-home">
+              Go to service
+            </a>
+          </li>
+        </ul>
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          class="govuk-footer__licence-logo"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 483.2 195.7"
+          height="17"
+          width="41">
+          <path
+            fill="currentColor"
+            d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+        </svg>
+        <span class="govuk-footer__licence-description">
+          All content is available under the
+          <a
+            class="govuk-footer__link"
+            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+            rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+        </span>
+      </div>
+      <div class="govuk-footer__meta-item">
+        <a
+          class="govuk-footer__link govuk-footer__copyright-logo"
+          href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">
+          © Crown copyright
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}
