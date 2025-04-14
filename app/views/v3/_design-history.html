@@ -1,0 +1,159 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Design history" %}
+
+{%- block beforeContent -%}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="/index">Future RPS prototypes</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="index">Version 2</a>
+    </li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      Version 2
+      <span class="govuk-caption-xl">Design history</span>
+    </h1>
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">
+
+    <h2 class="govuk-heading-l">Goals of this iteration</h2>
+
+    <h3 class="govuk-heading-m">Why we explored iterating agreements and exploring payments information</h3>
+
+    <h3 class="govuk-heading-m">Pain points and user needs</h3>
+
+    <p class="govuk-body">We did a lot of research into Farmer's understanding of the action centred agreement concept. This included:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>interviews to discuss concept of action centred agreement to reduce confusions (too many schemes) and align more with farmers needs (eg ability to change or copy actions quickly)</li>
+      <li>testing the v1 prototype with 10 farmers - adding new actions to a new agreement</li>
+      <li>see report <a href="#">here</a></li>
+    </ul>
+
+    <p class="govuk-body">From this, we identified:</p>
+
+    <ol class="govuk-list govuk-list--number">
+      <li>the overall concept was understood and aligned with addressing <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1736506722335/1f60e67faefc85339156532b2657b5cc8c62839d?wid=0-1738771206573">pain points identified here</a></li>
+      <li>the farmers could use the core functions of the prototype easily</li>
+      <li>that we could extend the 'Agreements' concept to include more complex scenarios - copying a set of actions and adding them to an existing agreements</li>
+      <li>that we should understand how payments should work for this scenario, and include this within the 'Agreements' screens</li>
+    </ol>
+
+    <p class="govuk-body">User needs:</p>
+    <ol class="govuk-list govuk-list--number">
+      <li>"As a Farmer or land manager in an agri-environment scheme I need to be able to apply for additional funding, to bring in more land, undertake more actions or buy more items, while already in an agri-environment scheme so that I can do more than originally planned and respond to changing circumstances." Full set of <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1736506722335/1f60e67faefc85339156532b2657b5cc8c62839d?wid=0-1740996017581">user needs found here</a>.</li>
+      <li>I need to know in advance when I will get a payment and how much I will receive</li>
+      <li>I need to know what my payments are for</li>
+      <li>I need to see the progress and state of my payment</li>
+      <li>I need to know how my payments has been calculated and over what period</li>
+      <li>I need to be told when I need to take action and how</li>
+      <li>I need to analyse and query historic and current payments data</li>
+    </ol>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    
+    <h3 class="govuk-heading-m">Constraints</h3>
+
+    <p class="govuk-body">The current payments hub cannot handle multiple actions with different end dates within a single agreement. Our approach to this constraint is:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>to indentify how users need the payments scheduling information to be dispayed for the above scenario</li>
+      <li>analysis on the various <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1736506722335/1f60e67faefc85339156532b2657b5cc8c62839d?wid=0-1740746785512">payments scheduling scenarios</a> for an action centred agreement</li>
+      <li>making recommendations on the required changes to the payment hub which are needed based on our analysis, research and user testing of these designs</li>
+      <li>to work with the payments hub and the Single Front Door team to look at how this change is impacted into the payments schedule and reflected on the customer facing payment statement.</li>
+    </ul>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h3 class="govuk-heading-m">Design approach</h3>
+
+    <p class="govuk-body">For payments, we've aligned with approach used within the Single Front Door team (see their <a href="https://fcp-farming-front-door-59e0a6ac6fb8.herokuapp.com/v6/_design-history">design history on payments</a>) as stated below.</p>
+    <p>"The UCD team was directed not to be constrained with the initial design exploration. This meant ideating as if there are no operational or technical blockers. The only focus of our design would be to meet user needs - we needed to imagine an ideal world. For example, designing with zero constraints means we could imagine simplifying and standardising complex payment information across multiple schemes, and farmers getting accurate, timely, up to date payment notifications and schedules."</p>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-m">How might we statements</h2>
+
+    <ol class="govuk-list govuk-list--number">
+      <li>How might we allow users to quickly amend actions undertaken without the need for a full new application?</li>
+      <li>How might we allow users to add an amendment to an existing agreement?</li>      
+      <li>How might we allow users to view this completed amendment within an existing agreement?</li>      
+      <li>How might we make users aware of when and how much they will be paid? (from SFD)</li>
+      <li>How might we make it clear what each payment is for? (from SFD)</li>
+    </ol>
+
+    <!-- <p class="govuk-body"><strong>1. How might we make users aware of when and how much they will be paid?</strong></p>
+    <p class="govuk-body"><strong>2. How might we make it clear what each payment is for?</strong></p>
+    <p class="govuk-body"><strong>3. How might we keep users up to date with the progress of their claims & payments?</strong></p>
+    <p class="govuk-body"><strong>4. How might we help users to understand how their payments have been calculated and check they are correct?</strong></p>
+    <p class="govuk-body"><strong>5. How might we notify users of actions that need to be completed to progress their claims & payments?</strong></p> -->
+
+    <p class="govuk-body">Across the <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1736506722335/1f60e67faefc85339156532b2657b5cc8c62839d?wid=0-1737385191369">5 how might we statements</a>, we prototyped the following design ideas:</p>
+
+    <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+      <li>xxxxx</li>      
+      <li>make clear:
+        <ul class="govuk-list govuk-list--bullet ">
+          <li>xxxxx</li>
+          <li>xxxxx</li>
+        </ul>
+      </li>
+    </ul>
+      
+    <!-- <p class="govuk-body">6. How might we allow users to access and use their payments information so that they can resolve queries and complete external tasks?</p> -->
+
+    {# <p class="govuk-body">For the 6th how might we statement we prototyped the following ideas:
+    </p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>show past payment information dating back 7 years</li>
+      <li>show past payment information grouped by calendar year</li>
+    </ul> #}
+
+      
+
+
+    <!-- <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-m">
+      Outcomes and decisions
+    </h2>
+
+    <span class="govuk-caption-m">Hypothesis 1:</span>
+    <h3 class="govuk-heading-m">Hypothesis statement.</h3>
+    <strong class="govuk-tag govuk-tag--red" style="margin-bottom: 20px;">
+      Disproven
+    </strong>
+    <strong class="govuk-tag govuk-tag--orange" style="margin-bottom: 20px;">
+      Inconclusive
+    </strong>
+    <strong class="govuk-tag govuk-tag--green" style="margin-bottom: 20px;">
+      Proven
+    </strong>
+    <p class="govuk-body">High-level outcome.</p>
+    <p class="govuk-body-s"><strong>Design conclusion:</strong></p>
+    <p class="govuk-body-s">Design conclusion content.</p> -->
+
+
+
+  </div>
+
+  <!-- right third of page to link to relevant mural boards and UR findings -->
+  <div class="govuk-grid-column-one-third">
+
+  </div>
+</div>
+
+{% endblock %}

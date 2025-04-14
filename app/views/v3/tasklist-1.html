@@ -1,0 +1,148 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="govuk-grid-row" id="header">
+<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+<div class="moj-organisation-nav" aria-label="Organisation switcher">
+<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Save and return later
+</button>
+</div>
+</div>
+</div>
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Apply for funding</h1>
+
+<p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
+
+<p class="govuk-body">You have completed 0 of 3 sections</p>
+
+      <h2 class="govuk-heading-m">1. Check before you start</h2>
+
+      {% set completedStatus = {
+        text: "Completed"
+      } %}
+
+      {% set incompleteStatus = {
+        tag: {
+          text: "Incomplete",
+          classes: "govuk-tag--blue"
+        }
+      } %}
+
+      {# To switch between the completed and incomplete statues, use some inline logic within the component below, like this: "status: (completedStatus if ... else incompleteStatus)" #}
+
+      {{ govukTaskList({
+        idPrefix: "first-section",
+        items: [
+          {
+            title: {
+              text: "Confirm your land details are up to date"
+            },
+            href: "check-land-details",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Confirm you’re eligible to apply"
+            },
+       status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    },
+               {
+            title: {
+              text: "Enter your agreement name"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    }
+        ]
+      }) }}
+
+
+
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land for your actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "second-section",
+        items: [
+          {
+            title: {
+              text: "Select the land you want to do the actions on"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    }
+        ]
+      }) }}
+
+
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+
+      {{ govukTaskList({
+        idPrefix: "second-section",
+        items: [
+                 {
+            title: {
+              text: "Check your answers"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    },
+                 {
+            title: {
+              text: "Submit your application"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }
+          }
+        ]
+      }) }}
+
+    </div>
+  </div>
+
+</div>
+</main>
+
+{% endblock %}

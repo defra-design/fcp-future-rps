@@ -1,0 +1,65 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Review your application" %}
+
+{%- block beforeContent -%}
+
+{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+
+<a href="javascript:window.history.back()" class="govuk-back-link govuk-!-margin-bottom-0">Back</a>
+
+{% endblock %} 
+
+{% block content %}
+
+<div class="govuk-grid-row" id="header">
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+  <div class="moj-organisation-nav" aria-label="Organisation switcher">
+    <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Save and return later
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+             Choose existing agreement to add these actions to
+            </h1>
+          </legend>
+          {# <div id="changedName-hint" class="govuk-hint">
+            Do we need to explain this more?
+          </div> #}
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="changedName-2" name="existing-agreement" type="radio" value="existing">
+              <label class="govuk-label govuk-radios__label" for="changedName-2">
+                Spring 2025 lower field agreement
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="changedName" name="existing-agreement" type="radio" value="new">
+              <label class="govuk-label govuk-radios__label" for="changedName">
+                Winter 2024 agreement
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+    <form class="form" action="check-agreement-existing" method="post">
+      <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+        Continue
+      </button>
+    </form>
+
+    </div>
+  </div>
+
+{% endblock %}

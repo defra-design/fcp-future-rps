@@ -1,0 +1,84 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{# {{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }} #}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row" id="header">
+  <div class="govuk-grid-column-full">
+  <div class="moj-organisation-nav" aria-label="Organisation switcher">
+    <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Save and return later
+      </button>
+    </div>
+  </div>
+</div>
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form action="check-land-details" method="post">
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+              What do you want to add?
+            </h1>
+          </legend>
+          {# <div id="signIn-hint" class="govuk-hint">
+            Is this needed?
+          </div> #}
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action" name="action" type="radio" value="land-action" aria-describedby="action-item-hint">
+              <label class="govuk-label govuk-radios__label" for="action">
+                An action to your land
+              </label>
+              <div id="action-item-hint" class="govuk-hint govuk-radios__hint">
+                For example, lay bumblebee-friendly flowers on your land
+              </div>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="grant" name="grant" type="radio" value="capital-grant" aria-describedby="grant-item-hint">
+              <label class="govuk-label govuk-radios__label" for="grant">
+                A capital grant
+              </label>
+              <div id="grant-item-hint" class="govuk-hint govuk-radios__hint">
+                For example, help to buy trees for your land
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+
+        </form>
+
+    </div>
+  </div>
+
+{% endblock %}
