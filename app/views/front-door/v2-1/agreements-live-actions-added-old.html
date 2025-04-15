@@ -14,113 +14,77 @@
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <form action="agreement-update-accept" method="post"> 
-
-          <h1 class="govuk-heading-l">
-            Spring 2025 agreement
+          <h1 class="govuk-heading-xl">
+            Manage your agreements
           </h1>
          
-        <div class="agreements-wrapper">
-          <h2 class="govuk-heading-m">1 August 2025 to 1 August 2028</h2>
-          <table class="govuk-table">
-            {# <caption class="govuk-table__caption govuk-table__caption--m">Actions added 20 February 2025</caption>  #}
-            <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Land parcel</th>
-                <th scope="col" class="govuk-table__header">Action</th>
-                <th scope="col" class="govuk-table__header">Annual payment</th>
-              </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">SO3757 3098</td>
-                <td class="govuk-table__cell">Manage hedgerows
-                <br><br>
-                  12m to 24m watercourse buffer strip on cultivated land</td>
-                <td class="govuk-table__cell">&pound;550
-                  <br><br>
-                  &pound;1,770</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">SO3757 3170</td>
-                <td class="govuk-table__cell">Assess soil, produce a soil management plan and test soil organic matter
-                  <br><br>No-till farming</td>
-                <td class="govuk-table__cell">&pound;106
-                  <br><br><br>
-                  &pound;73</td>
-              </tr>
-             </tbody>
-           </table>
-           <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-              <span class="govuk-visually-hidden">Warning</span>
-                Your monthly payment will increase to £399.50.
-            </strong>
-          </div>
-          <p>Your previous monthly payment was £191.50. This change will take place the month after you accept this agreement.<br>
-            <a href="#">View full payment schedule</a>.</p>
-            <button type="submit" class="govuk-button" data-module="govuk-button">
-              Accept update
-            </button>
-        </div>
 
-       
+          <div class="govuk-tabs">
+            <ul class="govuk-tabs__list--payments" role="tablist">
+              {# <li class="govuk-tabs__list-item--payments">
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements" role="tab" aria-selected="false">Pending <span class="govuk-visually-hidden">agreements</span></a>
+              </li> #}
+              <li class="govuk-tabs__list-item--payments govuk-tabs__list-item--payments-selected">
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="#" role="tab" aria-selected="true">Live <span class="govuk-visually-hidden">agreements</span></a>
+              </li>
+              <li class="govuk-tabs__list-item--payments">
+                <a class="govuk-tabs__tab--payments govuk-link--no-visited-state" href="agreements-expired-actions-added" role="tab" aria-selected="false">Expired <span class="govuk-visually-hidden">agreements</span></a>
+              </li>
+            </ul>
+          </div>
+
+          <h2 class="govuk-heading-l">Winter 2024 agreement</h2>
+
+          <dl class="govuk-summary-list govuk-!-margin-bottom-8">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Name
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Winter 2024 agreement
+              </dd>
+            </div>
+            {# <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Covering period
+              </dt>
+              <dd class="govuk-summary-list__value">
+                20 February 2025 to 20 February 2028
+              </dd>
+            </div> #}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Total payment
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body ">
+                    £16,467.49
+                </p>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Status
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body ">
+                  <strong class="govuk-tag govuk-tag--red">
+                    Action needed
+                  </strong>
+                </p>
+                <p class="govuk-body govuk-!-margin-bottom-3 govuk-!-margin-top-3">Sign your updated agreement by 29 April 2025 to avoid delays to some of your payments.</p>
+                <p><a href="agreement-update-accept" class="govuk-button govuk-!-margin-bottom-2">Sign and accept agreement</a></p>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
 <br>
 
       <!-- Actions group 1 -->
 
-      <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
-        <div class="govuk-accordion__section">
-          <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                Writing well for the web
-              </span>
-            </h2>
-          </div>
-          <div id="accordion-default-content-1" class="govuk-accordion__section-content">
-            <p class="govuk-body">This is the content for Writing well for the web.</p>
-          </div>
-        </div>
-        <div class="govuk-accordion__section">
-          <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                Writing well for specialists
-              </span>
-            </h2>
-          </div>
-          <div id="accordion-default-content-2" class="govuk-accordion__section-content">
-            <p class="govuk-body">This is the content for Writing well for specialists.</p>
-          </div>
-        </div>
-        <div class="govuk-accordion__section">
-          <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
-                Know your audience
-              </span>
-            </h2>
-          </div>
-          <div id="accordion-default-content-3" class="govuk-accordion__section-content">
-            <p class="govuk-body">This is the content for Know your audience.</p>
-          </div>
-        </div>
-        <div class="govuk-accordion__section">
-          <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
-                How people read
-              </span>
-            </h2>
-          </div>
-          <div id="accordion-default-content-4" class="govuk-accordion__section-content">
-            <p class="govuk-body">This is the content for How people read.</p>
-          </div>
-        </div>
-      </div>
-
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
 
         <div class="actions-wrapper">
           <h2 class="govuk-heading-m">Actions added 15 April 2025 </h2>
@@ -243,47 +207,14 @@
                </tbody>
             </table>
           </div>
-
-          </div>
-
-          <div class="govuk-grid-column-one-third govuk-!-margin-top-8">
-            <div class="govuk-!-margin-top-4">
-              <h2 class="govuk-heading-s">Related information</h2>
-              {# <p class="govuk-body">
-                <strong class="govuk-tag govuk-tag--red">
-                  Attention needed
-                </strong>
-              </p> #}
-              <ul class="govuk-list">
-                <li>
-                  <a class="govuk-link" href="#">Terms and conditions</a>
-                </li>
-                <li>
-                  <a class="govuk-link" href="#">Payment schedule</a>
-                </li>
-                <li>
-                  <a class="govuk-link" href="#">View full agreement</a>
-                </li>
-              </ul>
-
-            </div>
-          </div>
-
-          {#   <p>Actions added 20 February 2025</p> #}
-          {#   <p>Actions added 15 April 2025</p> #}
-          {#   <p>Actions added 28 February 2025</p> #}
-
-          {#   <h3 class="govuk-heading-s">Documents to download</h3> #}
           
-          {# <br>
+          <br>
           <h3 class="govuk-heading-s">Documents to download</p>
           <ul class="govuk-list govuk-list--bullet">
             <li><a href="#">Full agreement</a></li>
             <li><a href="#">Terms and conditions</a></li>
-          </ul> #}
-        
-        
-        </form>
+          </ul>
+
         </div>
       </div>
 
