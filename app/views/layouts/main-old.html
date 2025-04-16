@@ -11,6 +11,17 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
 {{ govukHeader({
   homepageUrl: "../index",
   serviceName: "Manage land-based actions",
-  serviceUrl: " /index"
+  serviceUrl: " /index",
+  navigation: [
+    {
+      href: "#",
+      text: "Homepage",
+      active: true
+    },
+    {
+      href: "/front-door/landing",
+      text: "Business overview"
+    }
+  ]
 }) }}
 {% endblock %}

@@ -1,18 +1,28 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Manage your agreements" %}
+{% set pageName="Accept your updated agreement" %}
 
 {%- block beforeContent -%}
 
-{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+  <div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+      <strong class="govuk-tag govuk-phase-banner__content__tag">
+        Alpha
+      </strong>
+      <span class="govuk-phase-banner__text">
+        This is a new service - your feedback will help us to improve it.
+      </span>
+    </p>
+  </div>
+
+  {% include "_common/sub-header.html" %}
 
 {% endblock %} 
 
 {% block content %}
 
-            <div class="govuk-width-container">
-              <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
-                <div class="govuk-grid-row">
+       
+                <div class="govuk-grid-row" role="main">
                   <div class="govuk-grid-column-two-thirds">
                     <div class="govuk-panel govuk-panel--confirmation">
                       <h1 class="govuk-panel__title">
@@ -28,7 +38,7 @@
                     <p class="govuk-body">You can now start work on your actions. <a href="#">Read the guidance (opens in new tab)</a> to check what you must do to get paid for each action.</p>
                     <p class="govuk-body">You'll need to sign in again if you want to make further changes to your agreement.</p>   
                     
-                    <h2 class="govuk-heading-m">What happens next</h2>
+                    <h2 class="govuk-heading-m">Contact us if you need help</h2>
                     <p class="govuk-body">You can contact the Rural Payments Agency by phone or email for help and support.</p>
                     <p class="govuk-body">Telephone: 03000 200 301<br>
                       Monday to Friday, 8:30am to 5pm, except bank holidays</p>
@@ -38,8 +48,7 @@
 
                   </div>
                 </div>
-              </main>
-            </div> 
+                
 
 {% endblock %}
 

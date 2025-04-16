@@ -4,7 +4,19 @@
 
 {%- block beforeContent -%}
 
-{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+<div class="govuk-phase-banner">
+  <p class="govuk-phase-banner__content">
+    <strong class="govuk-tag govuk-phase-banner__content__tag">
+      Alpha
+    </strong>
+    <span class="govuk-phase-banner__text">
+      This is a new service - your feedback will help us to improve it.
+    </span>
+  </p>
+</div>
+
+{% include "_common/sub-header.html" %}
+
 {% endblock %} 
 
 {% block content %}
