@@ -1,0 +1,39 @@
+{% extends "layouts/main-thread.html" %}
+
+{% set pageName="Your updated agreement" %}
+
+{%- block beforeContent -%}
+
+{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+
+{% endblock %} 
+
+{% block content %}
+
+
+<div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Agreement: Lower field</h1>
+
+      <p class="govuk-body">You can now check the update to your actions.</p>
+
+      <p><a href="/front-door/v2-1/agreements-live-actions-added" class="govuk-link">Sign in to your account</a> to review your updated agreement.</p>  
+      
+      <h2 class="govuk-heading-m">Contact us if you need help</h2>
+      
+      <p class="govuk-body">You can contact the Rural Payments Agency by phone or email for help and support.</p>
+      
+      <p class="govuk-body">Telephone: 03000 200 301<br>
+      Monday to Friday, 8:30am to 5pm, except bank holidays</p>
+      
+      <p class="govuk-body"><a href="https://www.gov.uk/call-charges" target="_blank">Find out about call charges (opens in new tab)</a></p>
+      
+      <p class="govuk-body">Email: <a href="mailto:ruralpayments@defra.gov.uk">ruralpayments@defra.gov.uk</a></p>
+      
+      <p class="govuk-body">We respond to email queries within 5 working days.</p> 
+
+    </div>
+  </div>
+
+{% endblock %}
