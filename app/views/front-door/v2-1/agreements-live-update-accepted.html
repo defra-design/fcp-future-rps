@@ -6,183 +6,40 @@
 
 {# {% include "to-be/v3/components/sub-header/include.html" %} #}
 
-<a href="javascript:window.history.back()" class="govuk-back-link govuk-!-margin-bottom-0">Back</a>
-
 {% endblock %} 
 
 {% block content %}
 
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <form action="#" method="post"> 
+            <div class="govuk-width-container">
+              <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+                <div class="govuk-grid-row">
+                  <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-panel govuk-panel--confirmation">
+                      <h1 class="govuk-panel__title">
+                        Your updated agreement is live 
+                      </h1>
+                      <div class="govuk-panel__body">
+                        {# Your reference number<br><strong>HDJ2123F</strong> #}
+                      </div>
+                    </div>
+                    {# <p class="govuk-body">We have sent you a confirmation email.</p> #}
+                    <h2 class="govuk-heading-m">What happens next</h2>
+                    <p class="govuk-body">We have sent you an email confirming your updated agreement is now live.</p>
+                    <p class="govuk-body">You can now start work on your actions. <a href="#">Read the guidance (opens in new tab)</a> to check what you must do to get paid for each action.</p>
+                    <p class="govuk-body">You'll need to sign in again if you want to make further changes to your agreement.</p>   
+                    
+                    <h2 class="govuk-heading-m">What happens next</h2>
+                    <p class="govuk-body">You can contact the Rural Payments Agency by phone or email for help and support.</p>
+                    <p class="govuk-body">Telephone: 03000 200 301<br>
+                      Monday to Friday, 8:30am to 5pm, except bank holidays</p>
+                    <p class="govuk-body"><a href="https://www.gov.uk/call-charges" target="_blank">Find out about call charges (opens in new tab)</a></p>
+                    <p class="govuk-body">Email: <a href="mailto:ruralpayments@defra.gov.uk">ruralpayments@defra.gov.uk</a></p>
+                    <p class="govuk-body">We respond to email queries within 5 working days.</p>
 
-            <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-              <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                  Success
-                </h2>
-              </div>
-              <div class="govuk-notification-banner__content">
-                <h3 class="govuk-notification-banner__heading">
-                  Your agreement has been updated
-                </h3>
-                <p class="govuk-body">Your monthly payment has increased to £399.50.</p>
-              </div>
-            </div>
-
-          <h1 class="govuk-heading-l">
-            Spring 2025 agreement
-          </h1>
-          <p class="govuk-body">Your monthly payment is £399.50. <a href="#">View full payment schedule</a>.</p>
-
-         
-        {# <div class="agreements-wrapper"> #}
-          <h2 class="govuk-heading-m">1 August 2025 to 1 August 2028</h2>
-
-          <table class="govuk-table">
-            {# <caption class="govuk-table__caption govuk-table__caption--m">Actions added 20 February 2025</caption>  #}
-            <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Land parcel</th>
-                <th scope="col" class="govuk-table__header">Action</th>
-                <th scope="col" class="govuk-table__header">Annual payment</th>
-              </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">SO3757 3098</td>
-                <td class="govuk-table__cell">Manage hedgerows
-                <br><br>
-                  12m to 24m watercourse buffer strip on cultivated land</td>
-                <td class="govuk-table__cell">&pound;550
-                  <br><br>
-                  &pound;1,770</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">SO3757 3170</td>
-                <td class="govuk-table__cell">Assess soil, produce a soil management plan and test soil organic matter
-                  <br><br>No-till farming</td>
-                <td class="govuk-table__cell">&pound;106
-                  <br><br><br>
-                  &pound;73</td>
-              </tr>
-             </tbody>
-           </table>
-      
-
-
-      <!-- Actions group 1 -->
-
-      <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
-        <div class="govuk-accordion__section">
-          <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                1 January 2025 to 1 January 2028
-              </span>
-            </h2>
-          </div>
-          <div id="accordion-default-content-1" class="govuk-accordion__section-content">
-              <table class="govuk-table">
-              {# <caption class="govuk-table__caption govuk-table__caption--m">Actions added 20 February 2025</caption>  #}
-                <thead class="govuk-table__head">
-                  <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Land parcel</th>
-                    <th scope="col" class="govuk-table__header">Action</th>
-                    <th scope="col" class="govuk-table__header">Annual payment</th>
-                  </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">SO3757 3098</td>
-                      <td class="govuk-table__cell">Manage hedgerows
-                      <br><br>
-                        12m to 24m watercourse buffer strip on cultivated land</td>
-                      <td class="govuk-table__cell">&pound;550
-                        <br><br>
-                        &pound;1,770</td>
-                    </tr>
-                </tbody>
-              </table>
-          </div>
-        </div>
-        <div class="govuk-accordion__section">
-          <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                1 July 2023 to 1 July 2026
-              </span>
-            </h2>
-          </div>
-          <div id="accordion-default-content-2" class="govuk-accordion__section-content">
-            <table class="govuk-table">
-              {# <caption class="govuk-table__caption govuk-table__caption--m">Actions added 20 February 2025</caption>  #}
-                <thead class="govuk-table__head">
-                  <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Land parcel</th>
-                    <th scope="col" class="govuk-table__header">Action</th>
-                    <th scope="col" class="govuk-table__header">Annual payment</th>
-                  </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">SO3757 3098</td>
-                      <td class="govuk-table__cell">Manage hedgerows
-                      <br><br>
-                        12m to 24m watercourse buffer strip on cultivated land</td>
-                      <td class="govuk-table__cell">&pound;550
-                        <br><br>
-                        &pound;1,770</td>
-                    </tr>
-                </tbody>
-              </table>
-          </div>
-        </div>
-      </div>
-      
-
-          </div>
-
-          <div class="govuk-grid-column-one-third">
-            
-              <h2 class="govuk-heading-s">Related information</h2>
-              {# <p class="govuk-body">
-                <strong class="govuk-tag govuk-tag--red">
-                  Attention needed
-                </strong>
-              </p> #}
-              <ul class="govuk-list">
-                <li>
-                  <a class="govuk-link" href="#">Terms and conditions</a>
-                </li>
-                <li>
-                  <a class="govuk-link" href="#">Payment schedule</a>
-                </li>
-                <li>
-                  <a class="govuk-link" href="#">View full agreement</a>
-                </li>
-              </ul>
-
-            
-          </div>
-
-          {#   <p>Actions added 20 February 2025</p> #}
-          {#   <p>Actions added 15 April 2025</p> #}
-          {#   <p>Actions added 28 February 2025</p> #}
-
-          {#   <h3 class="govuk-heading-s">Documents to download</h3> #}
-          
-          {# <br>
-          <h3 class="govuk-heading-s">Documents to download</p>
-          <ul class="govuk-list govuk-list--bullet">
-            <li><a href="#">Full agreement</a></li>
-            <li><a href="#">Terms and conditions</a></li>
-          </ul> #}
-        
-        
-        </form>
-        </div>
-      </div>
+                  </div>
+                </div>
+              </main>
+            </div> 
 
 {% endblock %}
 
