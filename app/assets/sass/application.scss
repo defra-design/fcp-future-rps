@@ -132,6 +132,13 @@
 
 // Agreements pages
 
+@media (min-width: 40.0625em) {
+	.govuk-accordion__section-button {
+	  font-size: 1.2rem !important;
+	  line-height: 1.25;
+	}
+  }
+
 .agreements-wrapper {
 	padding: 10px;
 	background: #F0F0F0;
