@@ -155,6 +155,122 @@
 
 // START - Single front door styles from https://fcp-farming-front-door-59e0a6ac6fb8.herokuapp.com/to-be/v3/landing/landing
 
+
+// Account bar styles //
+
+.sub-header-container {
+	padding-top: 0px;
+  }
+  
+  .sub-header-user-name,
+  .sub-header-dif-business {
+	float: right;
+	text-align: right;
+	clear: both;
+  }
+  
+  /*** Small viewports ***/
+  @media all and (max-width: 40.0625em) {
+	.sub-header-user-name,
+	.sub-header-dif-business {
+	  float: inherit;
+	  text-align: left;
+	}
+  }
+  .login-nav {
+	font-family: "GDS Transport", arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-weight: 400;
+	font-size: 0.875rem;
+	line-height: 1.1428571429;
+	color: #0b0c0c;
+	margin-top: 15px;
+  }
+  .login-nav::after {
+	content: "";
+	display: block;
+	clear: both;
+  }
+  @media print {
+	.login-nav {
+	  font-family: sans-serif;
+	}
+  }
+  @media (min-width: 40.0625em) {
+	.login-nav {
+	  font-size: 1rem;
+	  line-height: 1.25;
+	}
+  }
+  @media print {
+	.login-nav {
+	  font-size: 14pt;
+	  line-height: 1.2;
+	}
+  }
+  @media print {
+	.login-nav {
+	  color: #000000;
+	}
+  }
+  
+  .login-nav-border {
+	border-bottom: 1px solid #b1b4b6;
+  }
+  
+  .login-nav-aligned {
+	float: right;
+  }
+  
+  .no-bread {
+	float: inherit;
+  }
+  
+  .login-nav__list {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	float: right;
+  }
+  
+  .login-nav__list-item {
+	position: relative;
+	margin-bottom: 5px;
+	margin-right: 20px;
+	padding-left: 0;
+	float: left;
+  }
+  
+  .login-nav__list li:last-child {
+	margin-right: 0;
+  }
+  
+  a.login-nav__link:link {
+	margin-right: 5px;
+	color: #0b0c0c;
+  }
+  
+  .login-nav__list li:last-child a.login-nav__link:link {
+	margin-right: 0;
+  }
+  
+  a.login-nav__link:visited {
+	color: #0b0c0c;
+  }
+  
+  a.login-nav__link:hover {
+	color: rgba(11, 12, 12, 0.99);
+  }
+  
+  /*** Small viewports ***/
+  @media all and (max-width: 40.0625em) {
+	.login-nav__list {
+	  float: none;
+	}
+  }
+
+
 // Past actions inlne list //
 .inline-filter-list {
     list-style-type: none;
