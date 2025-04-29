@@ -158,6 +158,23 @@
 
 // Account bar styles //
 
+.service-navigation {
+	width: 97%;
+	background: #f3f2f1;
+	background-clip: padding-box;
+	margin: -10px 0 10px 15px;
+	padding: 10px 0px 10px 0px;
+
+	.govuk-grid-column-two-thirds {
+		padding-left: 0 !important;
+	}
+
+	.govuk-grid-column-one-third {
+		padding-right: 5px !important;
+		padding-left: 0 !important;
+	}
+}
+
 .sub-header-container {
 	padding-top: 0px;
   }
