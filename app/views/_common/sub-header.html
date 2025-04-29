@@ -8,11 +8,13 @@
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Manage land-based actions</h3>
     </div>
     <div class="govuk-grid-column-one-third">
-      <p class="govuk-!-margin-bottom-1 sub-header-user-name">
+      <p class="govuk-body-s govuk-!-margin-bottom-1 sub-header-user-name">
         <a href="#" class="govuk-link govuk-link--no-visited-state">Sign out</a>
       </p>
     </div>
   </div>
+
+
 
   <div class="govuk-grid-column-two-thirds">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1" >Agile Farms Ltd</h3>
@@ -26,3 +28,11 @@
 </div>
 
 <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-0 govuk-!-margin-top-2">
+
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Beta"
+  },
+  html: 'This is a new service - your feedback will help us to improve it.'
+}) }}
