@@ -1,27 +1,19 @@
-{% extends "layouts/main.html" %}
+{% extends "layouts/main-thread.html" %}
 
 {% set pageName="Select land" %}
 
 {%- block beforeContent -%}
 
-{# {% include "to-be/v3/components/sub-header/include.html" %} #}
+  {% include "_common/sub-header-alpha.html" %}
 
-<a href="javascript:window.history.back()" class="govuk-back-link govuk-!-margin-bottom-0">Back</a>
-
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+  
 {% endblock %} 
 
 {% block content %}
-
-<div class="govuk-grid-row" id="header">
-  <div class="govuk-grid-column-full govuk-!-margin-bottom-5">
-  <div class="moj-organisation-nav" aria-label="Organisation switcher">
-    <div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
-      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        Save and return later
-      </button>
-    </div>
-  </div>
-</div>
 
  <div class="govuk-grid-row main" id="main">
   <div class="govuk-grid-column-one-half">
