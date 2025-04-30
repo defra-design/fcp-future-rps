@@ -4,36 +4,18 @@
   Future – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
+{%- block beforeContent -%}
 
-{% block beforeContent %}
+{% include "_common/sub-header-alpha.html" %}
 
-{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
-
-{{ govukPhaseBanner({
-  tag: {
-    text: "Prototype"
-  },
-  html: 'This is a prototype used for testing purposes only.'
-}) }}
   {{ govukBackLink({
     text: "Back",
     href: "javascript:window.history.back()"
   }) }}
-{% endblock %}
+  
+{% endblock %} 
 
 {% block content %}
-
-
-<div class="govuk-grid-row" id="header">
-<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
-<div class="moj-organisation-nav" aria-label="Organisation switcher">
-<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
-<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-  Save and return later
-</button>
-</div>
-</div>
-</div>
 
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
