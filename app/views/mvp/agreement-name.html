@@ -23,16 +23,19 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Enter your agreement name</h1>
- <div class="govuk-form-group"><p class="govuk-caption-m">
-      This will appear on your agreement documents, it is for your own use. For example 'Joe's Farm Funding 2025'.</p>
-    <input class="govuk-input govuk-!-width-two-thirds govuk-body govuk-!-margin-bottom-4" id="agree" name="agreementName" type="text" autocomplete="Agreement name">
-     <label class="govuk-label" for="agreement-name">
-      You have 40 characters remaining.
-    </label>
-  </div>
+      <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--l" for="event-name">
+            Enter your agreement name
+          </label>
+        </h1>
+        <div id="event-name-hint" class="govuk-hint">
+          This will appear on your agreement documents, it is for your own use. For example 'Joe's Farm Funding 2025'
+        </div>
+        <input class="govuk-input govuk-input--width-30" id="event-name" name="eventName" type="text" aria-describedby="event-name-hint">
+      </div>
 
-<form class="form" action="tasklist-5" method="post">
+        <form class="form" action="tasklist-5" method="post">
           <button type="submit" class="govuk-button" data-module="govuk-button">
             Continue
           </button>
