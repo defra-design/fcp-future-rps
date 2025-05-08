@@ -1,62 +1,60 @@
-{% extends "layouts/main.html" %}
+{% extends "layouts/main-thread.html" %}
 
 {% block pageTitle %}
-  Future – {{ serviceName }} – GOV.UK Prototype Kit
+    Submit your application
 {% endblock %}
 
-{# 
+
 {% block beforeContent %}
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
-{{ govukPhaseBanner({
-  tag: {
-    text: "Prototype"
-  },
-  html: 'This is a prototype used for testing purposes only.'
-}) }}
+  {% include "_common/sub-header.html" %}
+
   {{ govukBackLink({
     text: "Back",
     href: "javascript:window.history.back()"
   }) }}
-{% endblock %} #}
+
+{% endblock %}
 
 {% block content %}
 
-
-{# <div class="govuk-grid-row" id="header">
-<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
-<div class="moj-organisation-nav" aria-label="Organisation switcher">
-<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
-<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-  Save and return later
-</button>
-</div>
-</div>
-</div> #}
-
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">Submit your application</h1>
-      {# <p class="govuk-body">By submitting, you confirm that:</p>
-      <p class="govuk-body">• the information you've given in your application is correct<br>
-• you will complete the actions you’ve applied for<br>
-• you will have management control of the land parcels in your application for the duration of your agreement</p>
-      <p class="govuk-body">You will be able to add more actions to your agreement throughout the year.
-        </p> #}
-<!--<p class="govuk-body">-->
-<!--• add more actions<br>-->
-<!--• add more land</p>-->
 
-<form class="form" action="confirmation" method="post">
-      <div class="govuk-button-group">
-  <button type="submit" class="govuk-button" data-module="govuk-button">
-    I agree – submit my application
-  </button>
-  {# <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
-    Withdraw my application
-  </button> #}
+
+      <p>Your annual payment of £16,467.49 will be paid in quarterly instalments.</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>You’ll usually receive your first payment in the fourth month after your agreement’s start date.</li>
+        <li>The first 3 instalments will be paid by an automated BACS transfer.</li>
+        <li>You must submit an annual declaration (a simple tick box form) before you’re paid the fourth instalment.</li>
+      </ul>
+    
+    <p>You confirm that:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>you’ll have management control of the land for the 3-year duration of the agreement</li>
+      <li>you’re entering into an agreement with the RPA and confirm you have read and accepted the terms and conditions</li>
+    </ul>
+
+    <p>By submitting this application you confirm that:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>the information you have given is correct</li>
+      <li>you’ll complete the actions you have applied for</li>
+      <li>you’ll have management control of the land parcels selected for the duration of the actions you have applied for</li>
+    </ul>
+    <br>
+  <form class="form" action="confirmation" method="post">
+    <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+      I agree - submit my application
+    </button>
+  </form>
+
+  <p><a href="select-land.html" class="govuk-link">Withdraw your application and start again</a></p>
+
+
 </div>
         </form>
     </div>
