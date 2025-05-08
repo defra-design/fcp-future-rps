@@ -25,9 +25,9 @@
 
       <h1 class="govuk-heading-l">Apply for funding</h1>
 
-<p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
+{# <p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
 
-<p class="govuk-body">You have completed 0 of 3 sections</p>
+<p class="govuk-body">You have completed 0 of 3 sections</p> #}
 
       <h2 class="govuk-heading-m">1. Check before you start</h2>
 
@@ -56,7 +56,7 @@
           },
           {
             title: {
-              text: "Confirm you’re eligible to apply"
+              text: "Confirm you're eligible to apply"
             },
         href: "management-control",
         status: incompleteStatus
@@ -91,11 +91,28 @@
         ]
       }) }}
 
-
-         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select your actions</h2>
 
       {{ govukTaskList({
-        idPrefix: "second-section",
+        idPrefix: "third-section",
+        items: [
+          {
+            title: {
+              text: "Select which actions to do"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    }
+        ]
+      }) }}
+
+
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">4. Review and submit your application</h2>
+
+      {{ govukTaskList({
+        idPrefix: "fourth-section",
         items: [
                  {
             title: {

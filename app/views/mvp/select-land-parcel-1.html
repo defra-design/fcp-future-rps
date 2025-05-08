@@ -1,20 +1,12 @@
 {% extends "layouts/main-thread.html" %}
 
 {% block pageTitle %}
-  You are not eligible 
+Available actions for selected parcel
 {% endblock %}
-
 
 {% block beforeContent %}
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
-
-{{ govukPhaseBanner({
-  tag: {
-    text: "Beta"
-  },
-  html: 'This is a new service - your feedback will help us to improve it.'
-}) }}
 
   {% include "_common/sub-header.html" %}
 
@@ -30,10 +22,56 @@
  <div class="govuk-grid-row" role="main">
   <div class="govuk-grid-column-two-thirds">
 
-    <form action="/steel-thread/check-agreement" method="post">
+    <h1 class="govuk-heading-l">Choose which actions to do</h1>
 
+    <h2 class="govuk-heading-m">Chosen parcel</h2>
+
+    <form action="/steel-thread/check-agreement" method="post">
+    
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Parcel reference
+          </dt>
+          <dd class="govuk-summary-list__value">
+            SO3757 3158
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="select-land">Change<span class="govuk-visually-hidden"> Parcel reference</span></a>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">
+            Total size
+          </dt>
+          <dd class="govuk-summary-list__value">
+            32.0404 ha
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">
+            Land cover
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Arable land
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">
+            Layer Intersections: 
+          </dt>
+          <dd class="govuk-summary-list__value">
+            SSSI
+          </dd>
+        </div>
+      </dl>
+      
+
+      {# To switch between the completed and incomplete statues, use some inline logic within the component below, like this: "status: (completedStatus if ... else incompleteStatus)" #}
+
+        <br>
      <table class="govuk-table">
-  <caption class="govuk-table__caption govuk-table__caption--l">Available actions for selected parcel</caption>
+  <caption class="govuk-table__caption govuk-table__caption--m">Available actions</caption>
   <tbody class="govuk-table__body">
     <tr class="govuk-table__row">
       <td class="govuk-table__cell">Select</td>
@@ -41,6 +79,199 @@
       <td class="govuk-table__cell">Available</td>
       <td class="govuk-table__cell">Quantity</td>
       <td class="govuk-table__cell">Unit</td>
+    </tr>
+
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
+          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
+          </label>
+        </div></td>
+      <td class="govuk-table__cell">CIGL1: Take grassland field corners or blocks out of management</td>
+      <td class="govuk-table__cell">8.3405</td>
+      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+        </div></td>
+      <td class="govuk-table__cell">ha</td>
     </tr>
     <tr class="govuk-table__row">
       <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
@@ -59,220 +290,16 @@
       <td class="govuk-table__cell">ha</td>
     </tr>
        
-<!--        <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">AHL4: 4m to 12m grass buffer strip on arable and horticultural land</td>-->
-<!--      <td class="govuk-table__cell">8.3405</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--          <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">HRW1: Assess and record hedgerow condition</td>-->
-<!--      <td class="govuk-table__cell">120.0394</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">m</td>-->
-<!--    </tr>-->
-<!--              <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">HRW2: Manage hedgerows</td>-->
-<!--      <td class="govuk-table__cell">100.3332</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">m</td>-->
-<!--    </tr>-->
-<!--                  <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">MOR1 – Assess moorland and produce a written record</td>-->
-<!--      <td class="govuk-table__cell">21.3332</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                    <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">IGL1: Take grassland field corners or blocks out of management</td>-->
-<!--      <td class="govuk-table__cell">10.3332</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                        <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">IGL3: 4m to 12m grass buffer strip on improved grassland</td>-->
-<!--      <td class="govuk-table__cell">10.3332</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                            <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">IPM3: Companion crop on arable and horticultural land</td>-->
-<!--      <td class="govuk-table__cell">10.3332</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                                <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">IPM4: No use of insecticide on arable crops and permanent crops</td>-->
-<!--      <td class="govuk-table__cell">10.3332</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                                    <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">LIG1: Manage grassland with very low nutrient inputs (outside SDAs)</td>-->
-<!--      <td class="govuk-table__cell">20.2938</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                                        <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">LIG2: Manage grassland with very low nutrient inputs (SDAs)</td>-->
-<!--      <td class="govuk-table__cell">20.2938</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                                            <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">NUM2: Legumes on improved grassland</td>-->
-<!--      <td class="govuk-table__cell">6.3940</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
-<!--                                                <tr class="govuk-table__row">-->
-<!--      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">-->
-<!--          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">-->
-<!--          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">-->
-<!--          </label>-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">NUM3: Legume fallow</td>-->
-<!--      <td class="govuk-table__cell">6.3940</td>-->
-<!--      <td class="govuk-table__cell"><div class="govuk-date-input__item">-->
-<!--        <div class="govuk-form-group">-->
-<!--          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">-->
-<!--          </label>-->
-<!--          <input class="govuk-input govuk-date-input__input govuk-input&#45;&#45;width-6" id="quantity" name="quantity" type="text" inputmode="numeric">-->
-<!--        </div></td>-->
-<!--      <td class="govuk-table__cell">ha</td>-->
-<!--    </tr>-->
   </tbody>
 </table>
 
- <nav class="govuk-pagination" role="navigation" aria-label="Pagination">
-<!--    <div class="govuk-pagination__prev govuk-pagination__next">-->
-<!--    <p class="govuk-body">Showing <span class="govuk-!-font-weight-bold">1</span> to <span class="govuk-!-font-weight-bold">15</span> of <span class="govuk-!-font-weight-bold">17</span> actions</p></div>-->
-<!--  <div class="govuk-pagination__next">-->
-<!--    <a class="govuk-link govuk-pagination__link" href="select-land-parcel-1-page-2" rel="next">-->
-<!--      <span class="govuk-pagination__link-title">-->
-<!--        Next<span class="govuk-visually-hidden"> page</span>-->
-<!--      </span>-->
-<!--      <svg class="govuk-pagination__icon govuk-pagination__icon&#45;&#45;next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">-->
-<!--        <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>-->
-<!--      </svg>-->
-<!--    </a>-->
-<!--  </div>-->
-  
           <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
             Save and continue
          </button>
+
+         {# <p><a href="">Go back and choose another parcel</a></p> #}
         
-</nav>
+
 
     </form>
 

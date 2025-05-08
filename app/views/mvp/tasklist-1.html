@@ -24,9 +24,9 @@
 
       <h1 class="govuk-heading-l">Apply for funding</h1>
 
-<p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
+{# <p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
 
-<p class="govuk-body">You have completed 0 of 3 sections</p>
+<p class="govuk-body">You have completed 0 of 3 sections</p> #}
 
       <h2 class="govuk-heading-m">1. Check before you start</h2>
 
@@ -74,16 +74,14 @@
         ]
       }) }}
 
-
-
-         <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select your actions</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land for your actions</h2>
 
       {{ govukTaskList({
         idPrefix: "second-section",
         items: [
           {
             title: {
-              text: "Select which actions to do"
+              text: "Select the land you want to do the actions on"
             },
         status: {
         text: "Cannot start yet",
@@ -94,14 +92,14 @@
       }) }}
 
 
-      <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select land for your actions</h2>
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select your actions</h2>
 
       {{ govukTaskList({
         idPrefix: "third-section",
         items: [
           {
             title: {
-              text: "Select the land you want to do the actions on"
+              text: "Select which actions to do"
             },
         status: {
         text: "Cannot start yet",
