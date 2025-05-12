@@ -248,6 +248,23 @@ router.post('/public-body-answer3', function (req, res) {
 
 })
 
+router.post('/add-more-actions-answer', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var addMoreActionsAnswer = req.session.data['add-more-actions-answer']
+
+  // Check whether the variable matches a condition
+  if (addMoreActionsAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/mvp/select-land')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/mvp/tasklist-6')
+  }
+
+})
+
 router.post('/land-details-answer-ht', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
