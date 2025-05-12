@@ -248,10 +248,10 @@ router.post('/public-body-answer3', function (req, res) {
 
 })
 
-router.post('/add-more-actions-answer', function (req, res) {
+router.post('/add-more-actions', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
-  var addMoreActionsAnswer = req.session.data['add-more-actions-answer']
+  var addMoreActionsAnswer = req.session.data['add-more-actions']
 
   // Check whether the variable matches a condition
   if (addMoreActionsAnswer == "yes"){
