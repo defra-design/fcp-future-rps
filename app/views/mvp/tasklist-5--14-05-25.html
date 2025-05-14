@@ -25,9 +25,9 @@
 
       <h1 class="govuk-heading-l">Apply for funding</h1>
 
-<p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
+{# <p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
 
-<p class="govuk-body">You have completed 1 of 3 sections</p>
+<p class="govuk-body">You have completed 1 of 3 sections</p> #}
 
       <h2 class="govuk-heading-m">1. Check before you start</h2>
 
@@ -71,6 +71,7 @@
         ]
       }) }}
 
+
       <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land for your actions</h2>
 
       {{ govukTaskList({
@@ -82,29 +83,38 @@
             },
             href: "select-land",
             status: completedStatus 
-    },
+    }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select your actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "third-section",
+        items: [
           {
             title: {
               text: "Select which actions to do"
             },
           href: "select-land-parcel-1",
-          status: completedStatus      
+          status: incompleteStatus      
     }
         ]
       }) }}
 
-
-         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">4. Review and submit your application</h2>
 
       {{ govukTaskList({
-        idPrefix: "third-section",
+        idPrefix: "second-section",
         items: [
                  {
             title: {
               text: "Check your answers"
             },
-            href: "check-your-answers",
-        status: incompleteStatus
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
     },
                  {
             title: {
@@ -121,6 +131,4 @@
     </div>
   </div>
 
-</main>
-</div>
 {% endblock %}

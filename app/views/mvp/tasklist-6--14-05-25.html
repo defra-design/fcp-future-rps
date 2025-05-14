@@ -82,7 +82,15 @@
             },
             href: "select-land",
             status: completedStatus 
-    },
+    }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select your actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "third-section",
+        items: [
           {
             title: {
               text: "Select which actions to do"
@@ -94,10 +102,10 @@
       }) }}
 
 
-         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">4. Review and submit your application</h2>
 
       {{ govukTaskList({
-        idPrefix: "third-section",
+        idPrefix: "fourth-section",
         items: [
                  {
             title: {
