@@ -1,9 +1,8 @@
 {% extends "layouts/main-thread.html" %}
 
 {% block pageTitle %}
-    Apply for funding
+  Apply for funding
 {% endblock %}
-
 
 {% block beforeContent %}
 
@@ -52,14 +51,16 @@
               text: "Confirm your land details are up to date"
             },
             href: "check-land-details",
-            status: completedStatus
+            status: incompleteStatus
           },
           {
             title: {
               text: "Confirm you're eligible to apply"
             },
-        href: "management-control",
-        status: incompleteStatus
+       status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
     },
                {
             title: {
@@ -73,8 +74,7 @@
         ]
       }) }}
 
-
-         <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land and actions</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land for your actions</h2>
 
       {{ govukTaskList({
         idPrefix: "second-section",
@@ -87,7 +87,16 @@
         text: "Cannot start yet",
         classes: "govuk-task-list__status--cannot-start-yet"
       }          
-    },
+    }
+        ]
+      }) }}
+
+
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select your actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "third-section",
+        items: [
           {
             title: {
               text: "Select which actions to do"
@@ -101,7 +110,7 @@
       }) }}
 
 
-         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">4. Review and submit your application</h2>
 
       {{ govukTaskList({
         idPrefix: "fourth-section",
@@ -129,6 +138,5 @@
 
     </div>
   </div>
-
 
 {% endblock %}
