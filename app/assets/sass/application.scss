@@ -24,6 +24,21 @@
 
 // Add extra styles here
 
+// HMRC add to list tweaks - see https://design.tax.service.gov.uk/hmrc-design-patterns/add-to-a-list/ // 
+
+// Larger viewports
+
+ @media all and (min-width: 40.0625em) {
+
+	.parcel__key {
+	width:20% !important;
+	}	
+
+	.area__key {
+	width:20% !important;
+	}	
+
+ }
 
 /* Add a black background color to the top navigation */
 .topnav {
