@@ -265,6 +265,23 @@ router.post('/add-more-actions', function (req, res) {
 
 })
 
+router.post('/confirm-delete-action', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var confirmDeleteAnswer = req.session.data['confirm-delete-action']
+
+  // Check whether the variable matches a condition
+  if (confirmDeleteAnswer == "yes"){
+    // Send user to list page with deleted action
+    res.redirect('/mvp/add-more-actions2')
+
+  } else {
+    // Send user to tasklist page
+    res.redirect('/mvp/add-more-actions')
+  }
+
+})
+
 router.post('/land-details-answer-ht', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'

@@ -1,0 +1,63 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+    Add more actions?
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <form class="form" action="/confirm-delete-action" method="post">
+
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">
+                Are you sure you want to remove this action?
+              </h1>
+            </legend>
+            {# <div id="changedName-hint" class="govuk-hint">
+              This cannot be undone
+            </div> #}
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="changedName" name="confirm-delete-action" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="changedName">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="changedName-2" name="confirm-delete-action" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="changedName-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+    Continue
+  </button>
+
+</form>
+
+    </div>
+  </div>
+
+{% endblock %}
