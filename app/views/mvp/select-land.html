@@ -25,15 +25,15 @@
       <form class="govuk-form" action="select-land-parcel-1" method="post">
 
         <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
+          <fieldset class="govuk-fieldset" aria-describedby="parcel-hint">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
               <h1 class="govuk-fieldset__heading">
               Select land parcel for actions
               </h1>
             </legend>
-            {# <div id="signIn-hint" class="govuk-hint">
-              You’ll need an account to prove your identity and complete your Self Assessment
-            </div> #}
+            <div id="parcel-hint" class="govuk-hint">
+              You can <a href="#">view your land maps</a> to check these reference numbers against your parcels of land
+            </div>
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="signIn" name="signIn" type="radio" value="government-gateway" aria-describedby="signIn-item-hint">
