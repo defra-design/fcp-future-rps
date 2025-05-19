@@ -1,7 +1,7 @@
 {% extends "layouts/main-thread.html" %}
 
 {% block pageTitle %}
-  You are not eligible 
+  Select land parcel for actions
 {% endblock %}
 
 
@@ -21,42 +21,54 @@
 {% block content %}
 
   <div class="govuk-grid-row" role="main">
-    <div class="govuk-grid-column-one-half">
-          <h1 class="govuk-heading-l">Select land for your actions</h1>
+    <div class="govuk-grid-column-two-thirds">
+      <form class="govuk-form" action="select-land-parcel-1" method="post">
 
-  <p class="govuk-body"><a href="select-land-parcel-1" class="govuk-link">SO3757 3158</a><span class="list-parcels govuk-body">Total size: 32.0404 ha</span></p>
-  <p class="govuk-body"><a href="select-land-parcel-1" class="govuk-link">SO3757 3159</a><span class="list-parcels govuk-body">Total size: 31.4241 ha</span></p>
-  <p class="govuk-body"><a href="select-land-parcel-1" class="govuk-link">SO3757 3160</a><span class="list-parcels govuk-body">Total size: 1.4935 ha</span></p>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">
+              Select land parcel for actions
+              </h1>
+            </legend>
+            {# <div id="signIn-hint" class="govuk-hint">
+              You’ll need an account to prove your identity and complete your Self Assessment
+            </div> #}
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="signIn" name="signIn" type="radio" value="government-gateway" aria-describedby="signIn-item-hint">
+                <label class="govuk-label govuk-radios__label" for="signIn">
+                  SO3757 3158
+                </label>
+                <div id="signIn-item-hint" class="govuk-hint govuk-radios__hint">
+                  Total size: 32.0404 ha
+                </div>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="signIn-2" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
+                <label class="govuk-label govuk-radios__label" for="signIn-2">
+                  SO3757 3159
+                </label>
+                <div id="signIn-2-item-hint" class="govuk-hint govuk-radios__hint">
+                  Total size: 31.4241 ha
+                </div>
+              </div>
+                  <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="signIn-3" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
+                <label class="govuk-label govuk-radios__label" for="signIn-3">
+                  SO3757 3160
+                </label>
+                <div id="signIn-3-item-hint" class="govuk-hint govuk-radios__hint">
+                  Total size: 1.4935 ha
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
 
-  {# <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3161</a>
-  <span class="list-parcels govuk-body">Total size: 10.3492 ha</span></p>
-  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3162</a>
-  <span class="list-parcels govuk-body">Total size: 42.4324 ha</span></p>
-  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3163</a>
-  <span class="list-parcels govuk-body">Total size: 9.9754 ha</span></p>
-  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3164</a>
-  <span class="list-parcels govuk-body">Total size: 32.1239 ha</span></p>
-  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3165</a>
-  <span class="list-parcels govuk-body">Total size: 38.2931 ha</span></p>
-  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3166</a>
-  <span class="list-parcels govuk-body">Total size: 28.3482 ha</span></p>
-  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3167</a>
-  <span class="list-parcels govuk-body">Total size: 39.2931 ha</span></p>
-  <p class="govuk-body"><a href="#" class="govuk-link">SO3757 3168</a>
-  <span class="list-parcels govuk-body">Total size: 3.2131 ha</span></p> #}
+    <button class="govuk-button" data-module="govuk-button" type="submit">Continue</button>
 
- {# <nav class="govuk-pagination" role="navigation" aria-label="Pagination">
-<!--        <form class="form" action="select-map" method="post">-->
-<!--          <button type="submit" class="govuk-button govuk-button&#45;&#45;secondary" data-module="govuk-button">-->
-<!--Go back to select a different area-->
-<!--          </button>-->
-<!--        </form>-->
-</nav>  #}
-
-</div>
-
-  <div class="govuk-grid-column-one-half">
-
+      </form>
     </div>
   </div>
 
