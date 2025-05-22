@@ -78,13 +78,40 @@
         items: [
           {
             title: {
-              text: "Select the land and actions you want to use"
+              text: "Select the land you want to do the actions on"
             },
             href: "select-land",
             status: incompleteStatus    
+    },
+       
+          {
+            title: {
+              text: "Select which actions to do"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
     }
         ]
       }) }}
+
+      {# <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select your actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "third-section",
+        items: [
+          {
+            title: {
+              text: "Select which actions to do"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    }
+        ]
+      }) }} #}
 
          <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
 
