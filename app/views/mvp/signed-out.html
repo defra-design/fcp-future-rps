@@ -1,0 +1,31 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+    Signed out
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">
+         You have signed out
+        </h1>
+        <p class="govuk-body">
+         Something else
+        </p>
+      
+    </div>
+  </div>
+
+{% endblock %}

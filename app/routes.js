@@ -8,6 +8,19 @@ const router = govukPrototypeKit.requests.setupRouter()
 
 // Add your routes here
 
+router.post('/saveReturn-answer', function (req, res) {
+  // Make a variable and give it the value from 'how-many-balls'
+  var saveReturnAnswer = req.session.data['saveReturn-answer']
+  // Check whether the variable matches a condition
+  if (saveReturnAnswer == "dashboard"){
+    // Send user to next page
+    res.redirect('/mvp/mvp-dashboard')
+  } else {
+    // Send user to ineligible page
+    res.redirect('mvp/signed-out')
+  }
+})
+
 router.post('/land-details-answer', function (req, res) {
   // Make a variable and give it the value from 'how-many-balls'
   var landDetailsAnswer = req.session.data['land-details-answer']

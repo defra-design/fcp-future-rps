@@ -22,7 +22,6 @@
 
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
-      <form class="govuk-form" action="select-land-parcel-1" method="post">
 
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset" aria-describedby="parcel-hint">
@@ -67,12 +66,16 @@
         </div>
 
           <div class="govuk-button-group">
-            <button type="submit" class="govuk-button" data-module="govuk-button">
-              Continue
-            </button>
-            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-              Save and return later
-            </button>
+            <form class="govuk-form" action="select-land-parcel-1" method="post">
+              <button type="submit" class="govuk-button" data-module="govuk-button">
+                Continue
+              </button>
+            </form>
+            <form class="govuk-form" action="save-and-return" method="post">
+              <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                Save and return later
+              </button>
+            </form>
           </div>
 
       </form>
