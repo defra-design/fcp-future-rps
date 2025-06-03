@@ -24,10 +24,10 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">Apply for funding</h1>
-
+{# 
 <p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
 
-<p class="govuk-body">You have completed 1 of 3 sections</p>
+<p class="govuk-body">You have completed 1 of 3 sections</p> #}
 
       <h2 class="govuk-heading-m">1. Check before you start</h2>
 
@@ -78,17 +78,10 @@
         items: [
           {
             title: {
-              text: "Select the land you want to do the actions on"
+              text: "Select the land and actions you want to use"
             },
-            href: "select-land",
+            href: "add-more-actions",
             status: completedStatus 
-    },
-          {
-            title: {
-              text: "Select which actions to do"
-            },
-          href: "select-land-parcel-1",
-          status: completedStatus      
     }
         ]
       }) }}
