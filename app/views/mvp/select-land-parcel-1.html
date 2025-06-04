@@ -66,232 +66,242 @@ Available actions for selected parcel
         </div>
       </dl>
       
-
-      {# To switch between the completed and incomplete statues, use some inline logic within the component below, like this: "status: (completedStatus if ... else incompleteStatus)" #}
-
-        <br>
-     <table class="govuk-table">
-  <caption class="govuk-table__caption govuk-table__caption--m">Available actions</caption>
-  <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Select</td>
-      <td class="govuk-table__cell">Action</td>
-      <td class="govuk-table__cell">Available</td>
-      <td class="govuk-table__cell">Quantity</td>
-      <td class="govuk-table__cell">Unit</td>
-    </tr>
-
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Assess moorland and produce a written record: CMOR1</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h3 class="govuk-fieldset__heading">
+        Available actions
+      </h3>
+    </legend>
+    <div id="contact-hint" class="govuk-hint">
+      Select all the actions you want to do for this parcel
+    </div>
+    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact" name="contact" type="checkbox" value="email" data-aria-controls="conditional-contact">
+        <label class="govuk-label govuk-checkboxes__label" for="contact">
+          Assess moorland and produce a written record: CMOR1 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact">
         <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
           </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Moderate livestock grazing on moorland: UPL1</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Low livestock grazing on moorland: UPL2</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Limited livestock grazing on moorland: UPL3</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (100% GLU): UPL6</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Shepherding livestock on moorland (no required stock removal period): UPL7</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 4 months): UPL8:</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 6 months): UPL9</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 8 months): UPL10</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Keep native breeds on extensively managed habitats supplement (50-80%): SPM4</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
-          <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
-          <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
-          </label>
-        </div></td>
-      <td class="govuk-table__cell">Keep native breeds on extensively managed habitats supplement (more than 80%): SPM5</td>
-      <td class="govuk-table__cell">8.3405</td>
-      <td class="govuk-table__cell"><div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
-          </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
         </div>
-      </td>
-      <td class="govuk-table__cell">ha</td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-2" name="contact" type="checkbox" value="phone" data-aria-controls="conditional-contact-2">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-2">
+          	Moderate livestock grazing on moorland: UPL1 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-2">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-3" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-3">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-3">
+          	Low livestock grazing on moorland: UPL2 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-3">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-4" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-4">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-4">
+          	Limited livestock grazing on moorland: UPL3 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-4">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-5" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-5">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-5">
+          		Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-5">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-6" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-6">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-6">
+          	Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-6">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-7" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-7">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-7">
+          	Keep cattle and ponies on moorland supplement (100% GLU): UPL6 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-7">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-8" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-8">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-8">
+          		Shepherding livestock on moorland (no required stock removal period): UPL7 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-8">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-9" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-9">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-9">
+          		Shepherding livestock on moorland (remove stock for at least 4 months): UPL8 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-9">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-10" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-10">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-10">
+          		Shepherding livestock on moorland (remove stock for at least 6 months): UPL9 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-10">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+         <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-11" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-11">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-11">
+          		Shepherding livestock on moorland (remove stock for at least 8 months): UPL10 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-11">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-12" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-12">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-12">
+          			Keep native breeds on extensively managed habitats supplement (50-80%): SPM4 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-12">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="contact-13" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-13">
+        <label class="govuk-label govuk-checkboxes__label" for="contact-13">
+          		Keep native breeds on extensively managed habitats supplement (more than 80%): SPM5 (8.3405 ha available)
+        </label>
+      </div>
+      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-13">
+         <div class="govuk-form-group">
+          <label class="govuk-label" for="contact-by-email">
+            Quantity
+          </label>
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+            <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
 
           <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
             Continue
