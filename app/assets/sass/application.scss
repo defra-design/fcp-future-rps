@@ -40,6 +40,16 @@
 
  }
 
+ // Actions page styles //
+
+ .table-error-message {
+	border-left: 5px solid #d4351c;
+}
+
+.error-element {
+	margin-left: 10px !important;
+}
+
 /* Add a black background color to the top navigation */
 .topnav {
     overflow: hidden;

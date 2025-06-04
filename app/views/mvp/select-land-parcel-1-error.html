@@ -22,6 +22,21 @@ Available actions for selected parcel
  <div class="govuk-grid-row" role="main">
   <div class="govuk-grid-column-two-thirds">
 
+    <div class="govuk-error-summary" data-module="govuk-error-summary">
+      <div role="alert">
+        <h2 class="govuk-error-summary__title">
+          There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            <li>
+              <a href="#keep-cattle-70">You cannot do 'Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5'</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <h1 class="govuk-heading-l">Choose which actions to do</h1>
 
     <h2 class="govuk-heading-m">Chosen parcel</h2>
@@ -66,11 +81,9 @@ Available actions for selected parcel
         </div>
       </dl>
       
-
-      {# To switch between the completed and incomplete statues, use some inline logic within the component below, like this: "status: (completedStatus if ... else incompleteStatus)" #}
-
         <br>
-     <table class="govuk-table">
+
+<table class="govuk-table">
   <caption class="govuk-table__caption govuk-table__caption--m">Available actions</caption>
   <tbody class="govuk-table__body">
     <tr class="govuk-table__row">
@@ -161,12 +174,24 @@ Available actions for selected parcel
         </div></td>
       <td class="govuk-table__cell">ha</td>
     </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+    
+    <!-- error start -->
+    <tr class="govuk-table__row govuk-!-margin-top-5" id="keep-cattle-70">
+      <td colspan="5" class="govuk-table__cell table-error-message">
+        <div class="govuk-error-message error-element">
+          <span class="govuk-visually-hidden">Error:</span>
+          Error message to help user understand the problem, for example they've applied too
+          much area of an action to a parcel with another action already on it
+        </div>
+    </tr>
+    <tr class="govuk-table__row table-error-message">
+      <td class="govuk-table__cell">
+        <div class="govuk-checkboxes__item series-selector-items error-element">
           <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
           <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
           </label>
-        </div></td>
+        </div>
+      </td>
       <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5</td>
       <td class="govuk-table__cell">8.3405</td>
       <td class="govuk-table__cell"><div class="govuk-date-input__item">
@@ -177,6 +202,8 @@ Available actions for selected parcel
         </div></td>
       <td class="govuk-table__cell">ha</td>
     </tr>
+ <!-- error end -->
+
     <tr class="govuk-table__row">
       <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
           <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
@@ -292,6 +319,7 @@ Available actions for selected parcel
     </tr>
   </tbody>
 </table>
+
 
           <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
             Continue
