@@ -32,6 +32,12 @@ Available actions for selected parcel
             <li>
               <a href="#keep-cattle-70">You cannot add 'Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5'</a>
             </li>
+             <li>
+              <a href="#shep-stock">You cannot add 'Shepherding livestock on moorland (no required stock removal period): UPL7'</a>
+            </li>
+              <li>
+              <a href="#native-50-80">You cannot add 'Keep native breeds on extensively managed habitats supplement (50-80%): SPM4'</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -220,8 +226,19 @@ Available actions for selected parcel
         </div></td>
       <td class="govuk-table__cell">ha</td>
     </tr>
+
+     <!-- start error -->
+     <tr class="govuk-table__row govuk-!-margin-top-5" id="shep-stock">
+      <td colspan="5" class="govuk-table__cell table-error-message">
+        <div class="govuk-error-message error-element">
+          <span class="govuk-visually-hidden">Error:</span>
+          Error message to help user understand the problem, for example they've applied too
+          much area of an action to a parcel with another action already on it
+        </div>
+    </tr>
     <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+      <td class="govuk-table__cell table-error-message">
+        <div class="govuk-checkboxes__item series-selector-items error-element">
           <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
           <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
           </label>
@@ -236,6 +253,8 @@ Available actions for selected parcel
         </div></td>
       <td class="govuk-table__cell">ha</td>
     </tr>
+    <!-- end error -->
+
     <tr class="govuk-table__row">
       <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
           <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
@@ -284,12 +303,25 @@ Available actions for selected parcel
         </div></td>
       <td class="govuk-table__cell">ha</td>
     </tr>
+
+
+     <!-- start error -->
+     <tr class="govuk-table__row govuk-!-margin-top-5" id="native-50-80">
+      <td colspan="5" class="govuk-table__cell table-error-message">
+        <div class="govuk-error-message error-element">
+          <span class="govuk-visually-hidden">Error:</span>
+          Error message to help user understand the problem, for example they've applied too
+          much area of an action to a parcel with another action already on it
+        </div>
+    </tr>
     <tr class="govuk-table__row">
-      <td class="govuk-table__cell"><div class="govuk-checkboxes__item series-selector-items">
+      <td class="govuk-table__cell table-error-message">
+        <div class="govuk-checkboxes__item series-selector-items error-element">
           <input class="govuk-checkboxes__input" id="filter-type-B" type="checkbox">
           <label class="govuk-label govuk-checkboxes__label" for="filter-type-B">
           </label>
-        </div></td>
+        </div>
+      </td>
       <td class="govuk-table__cell">Keep native breeds on extensively managed habitats supplement (50-80%): SPM4</td>
       <td class="govuk-table__cell">8.3405</td>
       <td class="govuk-table__cell"><div class="govuk-date-input__item">
@@ -297,7 +329,8 @@ Available actions for selected parcel
           <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
           </label>
           <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="quantity" name="quantity" type="text" inputmode="numeric">
-        </div></td>
+        </div>
+      </td>
       <td class="govuk-table__cell">ha</td>
     </tr>
     <tr class="govuk-table__row">
