@@ -21,9 +21,6 @@
 
 
 
-
-// Add extra styles here
-
 // HMRC add to list tweaks - see https://design.tax.service.gov.uk/hmrc-design-patterns/add-to-a-list/ // 
 
 // Larger viewports
@@ -40,6 +37,8 @@
 
  }
 
+
+
  // Actions page styles //
 
  .table-error-message {
@@ -49,6 +48,17 @@
 .error-element {
 	margin-left: 10px !important;
 }
+
+tr .govuk-error-message {
+	margin-top: 4px !important;
+	margin-bottom: 0px !important;
+}
+
+ // End Actions page styles //
+
+
+
+ // Navigation styles //
 
 /* Add a black background color to the top navigation */
 .topnav {
