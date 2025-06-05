@@ -24,11 +24,53 @@ Available actions for selected parcel
 
     <h1 class="govuk-heading-l">Choose which actions to do</h1>
 
-    <h2 class="govuk-heading-m">Chosen parcel</h2>
+    {# <h2 class="govuk-heading-m">Chosen parcel</h2> #}
 
     <form action="add-more-actions" method="post">
+
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">
+      Chosen parcel: SO3757 3158
+    </h2>
+    <ul class="govuk-summary-card__actions">
+      <li class="govuk-summary-card__action">
+        <a class="govuk-link" href="select-land">Change<span class="govuk-visually-hidden"> chosen parcel</span></a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="govuk-summary-card__content">
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Total size
+        </dt>
+        <dd class="govuk-summary-list__value">
+          	32.0404 ha
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Land cover
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Moorland
+        </dd>
+      </div>
+       <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Intersections
+        </dt>
+        <dd class="govuk-summary-list__value">
+          None
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>
     
-      <dl class="govuk-summary-list">
+      {# <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
             Parcel reference
@@ -64,7 +106,7 @@ Available actions for selected parcel
             None
           </dd>
         </div>
-      </dl>
+      </dl> #}
       
 <div class="govuk-form-group">
   <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
