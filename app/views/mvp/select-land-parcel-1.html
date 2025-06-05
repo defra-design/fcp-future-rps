@@ -120,12 +120,12 @@ Available actions for selected parcel
     </div>
     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
       <div class="govuk-checkboxes__item">
-        <input class="govuk-checkboxes__input" id="contact" name="contact" type="checkbox" value="email" data-aria-controls="conditional-contact">
+        <input class="govuk-checkboxes__input" id="contact" name="contact" type="checkbox" value="email">
         <label class="govuk-label govuk-checkboxes__label" for="contact">
           Assess moorland and produce a written record: CMOR1
         </label>
       </div>
-      <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact">
+      {# <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact">
         <div class="govuk-form-group">
           <label class="govuk-label" for="contact-by-email">
             Quantity
@@ -138,7 +138,7 @@ Available actions for selected parcel
             <div class="govuk-input__suffix" aria-hidden="true">ha</div>
           </div>
         </div>
-      </div>
+      </div> #}
       <div class="govuk-checkboxes__item">
         <input class="govuk-checkboxes__input" id="contact-2" name="contact" type="checkbox" value="phone" data-aria-controls="conditional-contact-2">
         <label class="govuk-label govuk-checkboxes__label" for="contact-2">
