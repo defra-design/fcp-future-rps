@@ -1,7 +1,7 @@
-{% extends "layouts/main-thread.html" %}
+{% extends "layouts/main.html" %}
 
 {% block pageTitle %}
-    Apply for funding
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
 
@@ -9,25 +9,43 @@
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
-  {% include "_common/sub-header.html" %}
-
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
   {{ govukBackLink({
     text: "Back",
     href: "javascript:window.history.back()"
   }) }}
-
 {% endblock %}
 
 {% block content %}
 
-  <div class="govuk-grid-row" role="main">
+
+<div class="govuk-grid-row" id="header">
+<div class="govuk-grid-column-full govuk-!-margin-bottom-5">
+<div class="moj-organisation-nav" aria-label="Organisation switcher">
+<div class="moj-organisation-nav__title govuk-!-margin-bottom-5">Sarah Farmer</div>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Save and return later
+</button>
+</div>
+</div>
+</div>
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">Apply for funding</h1>
 
 <p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
 
-<p class="govuk-body">You have completed 1 of 3 sections</p>
+<p class="govuk-body">You have completed 2 of 3 sections</p>
 
       <h2 class="govuk-heading-m">1. Check before you start</h2>
 
@@ -89,14 +107,14 @@
               text: "Select additional parcels for your rotational actions"
             },
             href: "select-rotational-actions",
-            status: completedStatus             
+            status: completedStatus    
     },
     {
             title: {
               text: "Apply for your agreement level actions"
             },
             href: "apply-agreement-level",
-            status: incompleteStatus            
+            status: completedStatus    
     }
         ]
       }) }}
@@ -111,19 +129,15 @@
             title: {
               text: "Check your answers"
             },
-        status: {
-        text: "Cannot start yet",
-        classes: "govuk-task-list__status--cannot-start-yet"
-      }          
+            href: "check-your-answers",
+            status: completedStatus    
     },
                  {
             title: {
               text: "Submit your application"
             },
-        status: {
-        text: "Cannot start yet",
-        classes: "govuk-task-list__status--cannot-start-yet"
-      }
+            href: "submit-application",
+            status: incompleteStatus
           }
         ]
       }) }}
@@ -131,5 +145,6 @@
     </div>
   </div>
 
-
+</main>
+</div>
 {% endblock %}
