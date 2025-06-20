@@ -31,6 +31,52 @@
                 "type": "string",
                 "required": false,
                 "description": "Classes to add to the form group (for example to show error state for the whole group)."
+            },
+            {
+                "name": "attributes",
+                "type": "object",
+                "required": false,
+                "description": "HTML attributes (for example data attributes) to add to the form group."
+            },
+            {
+                "name": "beforeInputs",
+                "type": "object",
+                "required": false,
+                "description": "Content to add before all radio items within the checkboxes component.",
+                "params": [
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "required": true,
+                        "description": "Text to add before all radio items. If `html` is provided, the `text` option will be ignored."
+                    },
+                    {
+                        "name": "html",
+                        "type": "string",
+                        "required": true,
+                        "description": "HTML to add before all radio items. If `html` is provided, the `text` option will be ignored."
+                    }
+                ]
+            },
+            {
+                "name": "afterInputs",
+                "type": "object",
+                "required": false,
+                "description": "Content to add after all radio items within the checkboxes component.",
+                "params": [
+                    {
+                        "name": "text",
+                        "type": "string",
+                        "required": true,
+                        "description": "Text to add after all radio items. If `html` is provided, the `text` option will be ignored."
+                    },
+                    {
+                        "name": "html",
+                        "type": "string",
+                        "required": true,
+                        "description": "HTML to add after all radio items. If `html` is provided, the `text` option will be ignored."
+                    }
+                ]
             }
         ]
     },
@@ -44,7 +90,7 @@
         "name": "name",
         "type": "string",
         "required": true,
-        "description": "Name attribute for all radio items."
+        "description": "Name attribute for the radio items."
     },
     {
         "name": "items",
@@ -80,8 +126,22 @@
                 "name": "label",
                 "type": "object",
                 "required": false,
-                "description": "Additional options for the label used by each radio item within the radios component.",
-                "isComponent": true
+                "description": "Subset of options for the label used by each radio item within the radios component.",
+                "isComponent": true,
+                "params": [
+                    {
+                        "name": "classes",
+                        "type": "string",
+                        "required": false,
+                        "description": "Classes to add to the label tag."
+                    },
+                    {
+                        "name": "attributes",
+                        "type": "object",
+                        "required": false,
+                        "description": "HTML attributes (for example data attributes) to add to the label tag."
+                    }
+                ]
             },
             {
                 "name": "hint",

@@ -1,0 +1,118 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="home">Home</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Payment schedule
+      </h1>
+
+      <p>
+        Subject to you complying with your Agreement, the table below sets out a summary of the total payments for:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>each year of the Agreement</li>
+        <li>the total for the duration of the Agreement</li>
+      </ul>
+      <p>
+        Please note that these figures are correct as at the Agreement Start Date and may vary as a result of the processes set out in the Terms and Conditions.
+      </p>
+    </div> <!-- 2/3 col -->
+  </div> <!-- grid row -->
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Code</th>
+          <th scope="col" class="govuk-table__header">Year 1</th>
+          <th scope="col" class="govuk-table__header">Year 2</th>
+          <th scope="col" class="govuk-table__header">Year 3</th>
+          <th scope="col" class="govuk-table__header">Total agreement grant payment</th>
+        </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">BND1</td>
+          <td class="govuk-table__cell">£25.65</td>
+          <td class="govuk-table__cell">£25.65</td>
+          <td class="govuk-table__cell">£25.65</td>
+          <td class="govuk-table__cell">£76.95</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">BND2</td>
+          <td class="govuk-table__cell">£184.58</td>
+          <td class="govuk-table__cell">£184.58</td>
+          <td class="govuk-table__cell">£184.58</td>
+          <td class="govuk-table__cell">£553.74</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">CHRW1</td>
+          <td class="govuk-table__cell">£89.95</td>
+          <td class="govuk-table__cell">£89.95</td>
+          <td class="govuk-table__cell">£89.95</td>
+          <td class="govuk-table__cell">£269.85</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">CHRW2</td>
+          <td class="govuk-table__cell">£233.87</td>
+          <td class="govuk-table__cell">£233.87</td>
+          <td class="govuk-table__cell">£233.87</td>
+          <td class="govuk-table__cell">£701.61</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">CHRW3</td>
+          <td class="govuk-table__cell">£71.70</td>
+          <td class="govuk-table__cell">£71.70</td>
+          <td class="govuk-table__cell">£71.70</td>
+          <td class="govuk-table__cell">£215.10</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">CLIG3</td>
+          <td class="govuk-table__cell">£1,304.56</td>
+          <td class="govuk-table__cell">£1,304.56</td>
+          <td class="govuk-table__cell">£1,304.56</td>
+          <td class="govuk-table__cell">£3,913.68</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">CSAM1</td>
+          <td class="govuk-table__cell">£63.78</td>
+          <td class="govuk-table__cell">£63.78</td>
+          <td class="govuk-table__cell">£63.78</td>
+          <td class="govuk-table__cell">£191.31</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Total</td>
+          <td class="govuk-table__cell">£1,974.08</td>
+          <td class="govuk-table__cell">£1,974.08</td>
+          <td class="govuk-table__cell">£1,974.08</td>
+          <td class="govuk-table__cell">£5922.24</td>
+        </tr>
+        </tbody>
+      </table>
+    </div> <!-- full column -->
+  </div> <!-- grid row -->
+
+{% endblock %}
+

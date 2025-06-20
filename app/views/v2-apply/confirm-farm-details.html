@@ -1,0 +1,72 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+
+      <h1 class="govuk-heading-l">
+        Confirm your details
+      </h1>
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Alfred Waldron
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Business name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Agile Farm
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Address
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Agile Farm<br>10 Skirbeck Way<br>Maidstone<br>SK22 1DL
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            SBI number
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">123456789</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Contact details
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">07700 900457</p>
+            <p class="govuk-body">alfred.waldrons@example.com</p>
+          </dd>
+        </div>
+      </dl>
+
+      <form class="form" action="confirm-eligibility-details" method="post">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Confirm
+        </button>
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

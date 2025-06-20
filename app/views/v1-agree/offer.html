@@ -1,0 +1,166 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+
+{% block content %}
+<!-- main page heading included in it's own row so that the 2/3 and 1/3 columns align for related links -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Your funding offer
+      </h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <p class="govuk-body">
+        Review and accept your offer.
+      </p>
+
+      <!-- actions for the agreement -->
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">
+          Actions
+        </caption>
+
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Action</th>
+            <th scope="col" class="govuk-table__header">Code</th>
+            <th scope="col" class="govuk-table__header" style="width:200px">Land parcel</th>
+            <th scope="col" class="govuk-table__header" style="width:150px">Quantity</th>
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Manage ditches</td>
+            <td class="govuk-table__cell">WBD2</td>
+            <td class="govuk-table__cell">SO3757 3098</td>
+            <td class="govuk-table__cell">10,200 m</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Supplement: Nil fertiliser</td>
+            <td class="govuk-table__cell">WBD9</td>
+            <td class="govuk-table__cell">SO3757 3098</td>
+            <td class="govuk-table__cell">20 ha</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Manage ditches</td>
+            <td class="govuk-table__cell">WBD2</td>
+            <td class="govuk-table__cell">SO3757 3070</td>
+            <td class="govuk-table__cell">10,200 m</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Manage ditches</td>
+            <td class="govuk-table__cell">WBD2</td>
+            <td class="govuk-table__cell">SO3757 3050</td>
+            <td class="govuk-table__cell">10,200 m</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- payment relating to the actions -->
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">
+          Payments
+        </caption>
+
+        <p>If you accept this offer, these are the payments for the total quantity of land in each action.</p>
+
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Action</th>
+            <th scope="col" class="govuk-table__header">Code</th>
+            <th scope="col" class="govuk-table__header">Yearly payment rate</th>
+            <th scope="col" class="govuk-table__header">Quarterly payment</th>
+            <th scope="col" class="govuk-table__header">Annual payment</th>
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Manage ditches</td>
+            <td class="govuk-table__cell">WBD2</td>
+            <td class="govuk-table__cell">£4 per 100m for both sides</td>
+            <td class="govuk-table__cell">£85</td>
+            <td class="govuk-table__cell">£1,020</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Supplement: Nil fertiliser</td>
+            <td class="govuk-table__cell">WBD9</td>
+            <td class="govuk-table__cell">£156 per hectare</td>
+            <td class="govuk-table__cell">£260</td>
+            <td class="govuk-table__cell">£3,120</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell" style="border-bottom-width: 0px"></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px"></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px"></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px"><strong>£345</strong></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px"><strong>£4,140</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> <!-- full column -->
+  </div> <!-- grid-row -->
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-l">
+        Accept your offer
+      </h2>
+
+      <p>If you accept this offer for funding, you confirm that:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          you are entering into a legally binding agreement with Defra
+        </li>
+        <li>
+          the information you gave in your application is still true and accurate to the best of your knowledge
+        </li>
+        <li>
+          you have read, understood and agree to the <a href="../_common/not-testing">terms and conditions (opens in new tab)</a>
+        </li>
+        <li>
+          you will complete your selected actions by following the guidance in
+          <a href="../_common/not-testing">Find funding for land or farms (opens in new tab)</a> that explains what you must do to get paid
+        </li>
+      </ul>
+
+      <form action="offer-accepted" method="post">
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Accept offer
+          </button>
+        </div>
+      </form>
+
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          If you need to change something
+        </span>
+        </summary>
+
+        <div class="govuk-details__text">
+          <p>To make a change to this offer such as adding more land, contact the Rural Payments Agency.</p>
+
+          <p>Telephone: 03000 200 301</p>
+          <p>Monday to Friday, 8:30am to 5pm, except bank holidays</p>
+          <p><a href="">Find out about call charges (opens in new tab)</a></p>
+        </div>
+      </details>
+    </div> <!-- two-thirds col -->
+  </div> <!-- row -->
+
+{% endblock %}
+

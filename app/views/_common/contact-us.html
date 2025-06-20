@@ -1,0 +1,48 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback (opens in new tab)</a>.'
+  }) }}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        Contact Rural Payments for help
+      </h1>
+
+      <h2 class="govuk-heading-s">
+        Phone
+      </h2>
+      <ul class="govuk-list">
+        <li>Phone: 020 7946 0101</li>
+        <li>Monday to Friday, 8:30am to 5pm (except public holidays)</li>
+      </ul>
+      <p class="govuk-body">
+        <a class="govuk-link" href="#">Find out about call charges (opens in new tab)</a>
+      </p>
+
+      <h2 class="govuk-heading-s">
+        Email
+      </h2>
+      <p><a href="#">ruralpayments@defra.gov.uk</a></p>
+      <p>We respond to email queries within 5 working days.</p>
+
+    </div>
+  </div>
+{% endblock %}
+

@@ -11,8 +11,10 @@
     height: govuk-px-to-rem(40px);
     margin-top: 0;
     padding: govuk-spacing(1);
-    // setting any background-color makes text invisible when changing colours to dark backgrounds in Firefox (https://bugzilla.mozilla.org/show_bug.cgi?id=1335476)
-    // as background-color and color need to always be set together, color should not be set either
+    // Setting any background-color makes text invisible when changing colours
+    // to dark backgrounds in Firefox (https://bugzil.la/1335476). As
+    // background-color and color need to always be set together, color should
+    // not be set either
     border: $govuk-border-width-form-element solid $govuk-input-border-colour;
     border-radius: 0;
 
@@ -24,7 +26,8 @@
       outline: $govuk-focus-width solid $govuk-focus-colour;
       // Ensure outline appears outside of the element
       outline-offset: 0;
-      // Double the border by adding its width again. Use `box-shadow` for this // instead of changing `border-width` - this is for consistency with
+      // Double the border by adding its width again. Use `box-shadow` for this
+      // instead of changing `border-width` - this is for consistency with
       // components such as textarea where we avoid changing `border-width` as
       // it will change the element size. Also, `outline` cannot be utilised
       // here as it is already used for the yellow focus state.
@@ -58,12 +61,12 @@
   }
 
   .govuk-input--extra-letter-spacing {
-    @include govuk-font(false, $tabular: true);
+    @include govuk-font-tabular-numbers;
     letter-spacing: 0.05em;
   }
 
   // em measurements are based on the point size of the typeface
-  // Extra space is added on the right hand side to allow for the Safari prefill icon
+  // Extra space is added on the right to allow for the Safari prefill icon
 
   .govuk-input--width-30 {
     max-width: 29.5em;
@@ -119,26 +122,21 @@
   .govuk-input__prefix,
   .govuk-input__suffix {
     @include govuk-font($size: 19);
-
     box-sizing: border-box;
-    display: inline-block;
+    // Use flexbox to align text within the prefix and suffix
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-width: govuk-px-to-rem(40px);
     height: govuk-px-to-rem(40px);
     padding: govuk-spacing(1);
     border: $govuk-border-width-form-element solid $govuk-input-border-colour;
     background-color: govuk-colour("light-grey");
-
     text-align: center;
-    @include govuk-media-query($until: tablet) {
-      line-height: 1.6;
-    }
     white-space: nowrap;
-
     // Emphasise non-editable status of prefixes and suffixes
     cursor: default;
-
     flex: 0 0 auto;
-
     // Split prefix/suffix onto separate lines on narrow screens
     @include govuk-media-query($until: mobile) {
       display: block;

@@ -6,6 +6,40 @@
 // Add extra styles here
 
 
+.dataset-info dd, .dataset-info dt {
+  display: inline-block;
+  margin-bottom: 5px;
+  vertical-align: text-top;
+}
+.dataset-info dt {
+  width: 30%;
+  font-weight: bold;
+  white-space: nowrap;
+  margin-right: 5px;
+}
+.dataset-info dd {
+  margin-left: 0px;
+  width: 35%;
+}
+
+
+.toc {
+  font-size: 16px !important;
+  position: sticky;
+  float: left;
+  margin-bottom: 30px;
+  p {
+    margin-bottom: 0px;
+  }
+  a {
+    text-decoration: none;
+    font-size: 16px !important;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
 
 // JUST FOR STEEL THREAD //
 

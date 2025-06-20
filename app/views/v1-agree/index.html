@@ -1,0 +1,52 @@
+{% extends "layouts/main-thread.html" %}
+
+{% set pageName="Manage land based actions" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/index">Future RPS prototypes</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">
+      Version 1 (June 2024)
+      <span class="govuk-caption-l">Agreements</span>
+    </h1>
+
+    <!-- outline the scenario and purpose of the prototype -->
+    <p>An initial prototype to show how private beta day 1 will work for an external user.</p>
+    <p>
+      The scenario is that a user has previously been invited to join the private beta. They have gone through the process
+      of applying for an agreement with certain actions against certain parcels of their land. They then submitted it,
+      the internal RPA staff have processed the application and sent an email to the user to inform them that their
+      offer is now available.
+    </p>
+    <p>This flow will start with the user receiving that email to then sign back into the service to view their offer.</p>
+
+    <p><em>When we know, add what we want to get out the usability testing.</em></p>
+
+    <a class="govuk-button" href="offer-email">Start prototype</a>
+
+<!--
+    <h2 class="govuk-heading-m">
+      Design history
+    </h2>
+    <p><a href="_design-history" class="govuk-link">View the design history</a> which includes:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>goals</li>
+      <li>'How might we' statements</li>
+      <li>hypotheses</li>
+      <li>outcomes and decisions</li>
+    </ul>
+-->
+   
+{% endblock %}

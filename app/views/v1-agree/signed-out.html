@@ -1,0 +1,29 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback (opens in new tab)</a>.'
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        You have signed out
+      </h1>
+
+      <p class="govuk-body">
+        If this is not what you wanted, you can <a class="govuk-link" href="sign-in">sign back in</a>.
+      </p>
+    </div>
+  </div>
+{% endblock %}
+

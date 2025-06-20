@@ -9,7 +9,8 @@
             "hidden": false,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message\">\n<span class=\"govuk-visually-hidden\">Error:</span> Error message about full name goes here\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message\">\n  <span class=\"govuk-visually-hidden\">Error:</span> Error message about full name goes here\n</p>"
         },
         {
             "name": "translated",
@@ -20,7 +21,8 @@
             "hidden": false,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message\">\n<span class=\"govuk-visually-hidden\">Gwall:</span> Neges gwall am yr enw llawn yn mynd yma\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message\">\n  <span class=\"govuk-visually-hidden\">Gwall:</span> Neges gwall am yr enw llawn yn mynd yma\n</p>"
         },
         {
             "name": "id",
@@ -31,7 +33,8 @@
             "hidden": true,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p id=\"my-error-message-id\" class=\"govuk-error-message\">\n<span class=\"govuk-visually-hidden\">Error:</span> This is an error message\n</p>"
+            "screenshot": false,
+            "html": "<p id=\"my-error-message-id\" class=\"govuk-error-message\">\n  <span class=\"govuk-visually-hidden\">Error:</span> This is an error message\n</p>"
         },
         {
             "name": "classes",
@@ -42,7 +45,8 @@
             "hidden": true,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message custom-class\">\n<span class=\"govuk-visually-hidden\">Error:</span> This is an error message\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message custom-class\">\n  <span class=\"govuk-visually-hidden\">Error:</span> This is an error message\n</p>"
         },
         {
             "name": "html as text",
@@ -52,7 +56,8 @@
             "hidden": true,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message\">\n<span class=\"govuk-visually-hidden\">Error:</span> Unexpected &gt; in body\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message\">\n  <span class=\"govuk-visually-hidden\">Error:</span> Unexpected &gt; in body\n</p>"
         },
         {
             "name": "html",
@@ -62,7 +67,8 @@
             "hidden": true,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message\">\n<span class=\"govuk-visually-hidden\">Error:</span> Unexpected <b>bold text</b> in body copy\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message\">\n  <span class=\"govuk-visually-hidden\">Error:</span> Unexpected <b>bold text</b> in body copy\n</p>"
         },
         {
             "name": "attributes",
@@ -76,7 +82,8 @@
             "hidden": true,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message\" data-test=\"attribute\" id=\"my-error-message\">\n<span class=\"govuk-visually-hidden\">Error:</span> This is an error message\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message\" data-test=\"attribute\" id=\"my-error-message\">\n  <span class=\"govuk-visually-hidden\">Error:</span> This is an error message\n</p>"
         },
         {
             "name": "with visually hidden text",
@@ -87,7 +94,8 @@
             "hidden": true,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message\">\n<span class=\"govuk-visually-hidden\">Gwall:</span> Rhowch eich enw llawn\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message\">\n  <span class=\"govuk-visually-hidden\">Gwall:</span> Rhowch eich enw llawn\n</p>"
         },
         {
             "name": "visually hidden text removed",
@@ -98,7 +106,8 @@
             "hidden": true,
             "description": "",
             "previewLayoutModifiers": [],
-            "html": "<p class=\"govuk-error-message\">\nThere is an error on line 42\n</p>"
+            "screenshot": false,
+            "html": "<p class=\"govuk-error-message\">\n  There is an error on line 42\n</p>"
         }
     ]
 }

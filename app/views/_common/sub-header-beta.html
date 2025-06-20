@@ -1,0 +1,21 @@
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback (opens in new tab)</a>.'
+  }) }}
+
+  <div class="govuk-grid-row" style="padding-top:16px;">
+    <div class="govuk-grid-column-two-thirds">
+      <h3 class="govuk-heading-s" style="margin-bottom: 4px;">Agile Farm</h3>
+      <p class="govuk-body-s" style="margin-bottom: 8px;">Single business identifier (SBI): 123456789</p>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <h3 class="govuk-heading-s" style="float:right; margin-bottom: 8px;">Alfred Waldron</h3>
+    </div>
+  </div>
+  <hr>
+{% endblock %}

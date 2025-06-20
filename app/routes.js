@@ -269,11 +269,11 @@ router.post('/add-more-actions', function (req, res) {
   // Check whether the variable matches a condition
   if (addMoreActionsAnswer == "yes"){
     // Send user to next page
-    res.redirect('/mvp/select-land')
+    res.redirect('/v2-apply/select-land')
 
   } else {
     // Send user to ineligible page
-    res.redirect('/mvp/tasklist-6')
+    res.redirect('/v2-apply/submit-application')
   }
 
 })
@@ -286,11 +286,11 @@ router.post('/confirm-delete-action', function (req, res) {
   // Check whether the variable matches a condition
   if (confirmDeleteAnswer == "yes"){
     // Send user to list page with deleted action
-    res.redirect('/mvp/add-more-actions2')
+    res.redirect('/v2-apply/add-more-actions2')
 
   } else {
     // Send user to tasklist page
-    res.redirect('/mvp/add-more-actions')
+    res.redirect('/v2-apply/add-more-actions')
   }
 
 })
