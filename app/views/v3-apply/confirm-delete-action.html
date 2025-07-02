@@ -20,41 +20,53 @@
     <div class="govuk-grid-column-two-thirds">
       <form class="form" action="/confirm-delete-action" method="post">
 
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-              <h1 class="govuk-fieldset__heading">
+        <h1 class="govuk-heading-l">
+          Remove action from land parcel SO3757 3159
+        </h1>
+        <p class="govuk-body">
+          You have selected to remove Low livestock grazing on moorland: UPL2. 
+        </p>
+        <p class="govuk-body">
+          This will also remove:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4</li>
+          <li>Keep native breeds on extensively managed habitats supplement (more than 80%): SPM5</li>
+        </ul>
+         <p class="govuk-body">
+          Select yes if you want to:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>remove Low livestock grazing on moorland: UPL2 from land parcel SO3757 3159</li>
+          <li>remove this action and add a different action to this land parcel</li>
+        </ul>
+        <form action="/form-handler" method="post" novalidate>
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 Are you sure you want to remove this action?
-              </h1>
-            </legend>
-
-            <p>
-              You are agreeing to remove Assess moorland and produce a written record (CMOR1) from your land.
-            </p>
-
-            {# <div id="changedName-hint" class="govuk-hint">
-              This cannot be undone
-            </div> #}
-            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="changedName" name="confirm-delete-action" type="radio" value="yes">
-                <label class="govuk-label govuk-radios__label" for="changedName">
-                  Yes
-                </label>
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="interviewNeeds">
+                    Yes
+                  </label>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="interviewNeeds-2" name="interviewNeeds" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="interviewNeeds-2">
+                    No
+                  </label>
+                </div>
               </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="changedName-2" name="confirm-delete-action" type="radio" value="no">
-                <label class="govuk-label govuk-radios__label" for="changedName-2">
-                  No
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
+            </fieldset>
+          </div>
+          
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
 
-  <button type="submit" class="govuk-button" data-module="govuk-button">
-    Continue
-  </button>
 
 </form>
 
