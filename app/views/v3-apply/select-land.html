@@ -1,0 +1,86 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="parcel-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+              Select land parcel for actions
+            </h1>
+          </legend>
+          <div id="parcel-hint" class="govuk-hint">
+            Use your map to check these reference numbers against your parcels of land.
+          </div>
+
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="signIn" name="signIn" type="radio" value="government-gateway" aria-describedby="signIn-item-hint">
+              <label class="govuk-label govuk-radios__label" for="signIn">
+                SO3757 3158
+              </label>
+              <div id="signIn-item-hint" class="govuk-hint govuk-radios__hint">
+                Total size: 32.0404 ha
+              </div>
+            </div>
+
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="signIn-2" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
+              <label class="govuk-label govuk-radios__label" for="signIn-2">
+                SO3757 3159
+              </label>
+              <div id="signIn-2-item-hint" class="govuk-hint govuk-radios__hint">
+                Total size: 31.4241 ha
+              </div>
+            </div>
+
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="signIn-3" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
+              <label class="govuk-label govuk-radios__label" for="signIn-3">
+                SO3757 3160
+              </label>
+              <div id="signIn-3-item-hint" class="govuk-hint govuk-radios__hint">
+                Total size: 1.4935 ha
+              </div>
+            </div>
+          </div> <!-- radio group -->
+        </fieldset>
+      </div> <!-- form group -->
+      <p>
+        You will be able to add actions to the other land parcels before submitting your application.
+      </p>
+
+      <div class="govuk-button-group">
+        <form class="govuk-form" action="select-land-parcel-1" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+        <!-- not for day 1
+        <form class="govuk-form" action="save-and-return" method="post">
+          <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+            Save and return later
+          </button>
+        </form> -->
+      </div> <!-- buttons -->
+    </div> <!-- 2/3 col -->
+  </div> <!-- grid-row -->
+
+{% endblock %}

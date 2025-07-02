@@ -1,0 +1,140 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-full">
+      <form class="form" action="/add-more-actions" method="post">
+
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--l">
+            Actions you have currently added to your land
+          </caption>
+
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header" style="width:120px">Parcel</th>
+              <th scope="col" class="govuk-table__header">Action</th>
+              <th scope="col" class="govuk-table__header" style="width:100px">Quantity</th>
+              <th scope="col" class="govuk-table__header" style="width:140px">Yearly payment</th>
+              <th scope="col" class="govuk-table__header" style="width:170px"></th>
+            </tr>
+          </thead>
+
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">SO3757 3158</td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell">Assess moorland and produce a written record - CMOR1</td>
+              <td class="govuk-table__cell">32.040 ha</td>
+              <td class="govuk-table__cell" style="text-align: right">£339.63</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+              <td class="govuk-table__cell">32.040 ha</td>
+              <td class="govuk-table__cell" style="text-align: right">£4,998.30</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (minimum 30% GLU) - UPL4</td>
+              <td class="govuk-table__cell">32.040 ha</td>
+              <td class="govuk-table__cell" style="text-align: right">£224.28</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell">Keep native breeds on extensively managed habitats supplement (more than 80%) - SPM5</td>
+              <td class="govuk-table__cell">32.040 ha</td>
+              <td class="govuk-table__cell" style="text-align: right">£352.44</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell" style="text-align: right"><strong>Total yearly payment</strong></td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell" style="text-align: right"><strong>£5,974.64</strong></td>
+              <td class="govuk-table__cell"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do you want to add actions to another land parcel?
+            </legend>
+            {# <div id="add-another-hint" class="govuk-hint">
+              You must tell us about all your directors.
+            </div> #}
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another" name="add-more-actions" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="add-another">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="add-another-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
