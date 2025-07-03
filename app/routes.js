@@ -269,11 +269,11 @@ router.post('/add-more-actions', function (req, res) {
   // Check whether the variable matches a condition
   if (addMoreActionsAnswer == "yes"){
     // Send user to next page
-    res.redirect('/v2-apply/select-land')
+    res.redirect('/v3-apply/select-land')
 
   } else {
     // Send user to ineligible page
-    res.redirect('/v2-apply/submit-application')
+    res.redirect('/v3-apply/submit-application')
   }
 
 })
