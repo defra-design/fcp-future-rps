@@ -1,525 +1,364 @@
 {% extends "layouts/beta-header.html" %}
 
 {% block pageTitle %}
-  Manage land-based actions
+Manage land-based actions
 {% endblock %}
 
 {% block beforeContent %}
-  {% include "_common/sub-header-beta.html" %}
+{% include "_common/sub-header-beta.html" %}
 
-  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
-    <ol class="govuk-breadcrumbs__list">
-      <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" href="home">Home</a>
-      </li>
-    </ol>
-  </nav>
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="home">Home</a>
+    </li>
+  </ol>
+</nav>
 {% endblock %}
 
 
 {% block content %}
-  <!-- row for page heading and summary box -->
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl">
-        Agile Farm agreement
-      </h1>
+<!-- row for page heading and summary box -->
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      Agile Farm agreement
+    </h1>
 
-      <dl class="govuk-body dataset-info">
-        <dd>Agreement holder:</dd>
-        <dt>Agile Farm</dt>
-        <dd>SBI:</dd>
-        <dt>123456789</dt>
-        <dd>Address:</dd>
-        <dt>Agile Farms Ltd, 10 Skirbeck Way, Maidstone, SK22 1DL</dt>
-        <dd>Agreement name</dd>
-        <dt>Agile Farm</dt>
-        <dd>Agreement number</dd>
-        <dt>AF12344</dt>
-        <dd>Start date</dd>
-        <dt>1 July 2025</dt>
-      </dl>
-    </div>
+    <dl class="govuk-body dataset-info">
+      <dd>Agreement holder:</dd>
+      <dt>Agile Farm</dt>
+      <dd>SBI:</dd>
+      <dt>123456789</dt>
+      <dd>Address:</dd>
+      <dt>Agile Farm, 10 Skirbeck Way, Maidstone, SK22 1DL</dt>
+      <dd>Agreement name:</dd>
+      <dt>Agile Farm</dt>
+      <dd>Agreement number:</dd>
+      <dt>AF12344</dt>
+      <dd>Start date:</dd>
+      <dt>1 August 2025</dt>
+    </dl>
   </div>
+</div>
 
 <!-- division line for legibility -->
 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
 <!-- row for contents and all the content -->
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-quarter">
-      <nav role="navigation" aria-labelledby="subsection-title">
-        <div id="contents">
-          <p class="govuk-body-s">Contents</p>
-          <ul class="govuk-list toc">
-            <li><a href="#intro">1. Introduction and overview</a></li>
-            <li><a href="#parties">2. Parties to the agreement</a></li>
-            <li><a href="#land">3. Land covered by agreement</a></li>
-            <li><a href="#actions">4. Summary of parcel-based actions</a></li>
-            <li><a href="#payment">5. Summary of payments</a></li>
-            <li><a href="#schedule">6. Annual payment schedule</a></li>
-            <li><a href="#sign">7. Electronic signature</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div> <!-- 1/4 column -->
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-quarter">
+    <nav role="navigation" aria-labelledby="subsection-title">
+      <div id="contents">
+        <p class="govuk-body-s">Contents</p>
+        <ul class="govuk-list toc">
+          <li><a href="#intro">1. Introduction and overview</a></li>
+          <li><a href="#parties">2. Parties to the agreement</a></li>
+          <li><a href="#land">3. Land covered by agreement</a></li>
+          <li><a href="#actions">4. Summary of parcel-based actions</a></li>
+          <li><a href="#payment">5. Summary of payments</a></li>
+          <li><a href="#schedule">6. Annual payment schedule</a></li>
+          <li><a href="#sign">7. Electronic signature</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div> <!-- 1/4 column -->
 
-    <div class="govuk-grid-column-three-quarters">
-      <h2 id="intro" class="govuk-heading-l">
-        1. Introduction and overview
-      </h2>
-      <p>
-        This is the Sustainable Farming Incentive (SFI) "Agreement Document", which describes the sum to be paid (the "Grant")
-        to the agreement holder ("you") for delivering the SFI action(s) (the "Actions") you have chosen and for entering into
-        and managing your Agreement (the "SFI Management Payment").
-      </p>
-      <p>
-        The SFI "Agreement" comprises:
-      </p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>this Agreement Document</li>
-        <li>the Sustainable Farming Incentive Agreement "Terms and Conditions", which are applicable to the payment of the Grant</li>
-        <li>the Actions you have chosen</li>
-      </ul>
-      <p>
-        When you enter the Agreement, you are agreeing to the terms applicable to the payment of the Grant. You should review
-        the mandatory requirements of your Agreement to make sure you understand the full extent of your obligations under the Agreement.
-      </p>
+  <div class="govuk-grid-column-three-quarters">
+    <h2 id="intro" class="govuk-heading-l">
+      1. Introduction and overview
+    </h2>
+    <p>
+      This is the Sustainable Farming Incentive (SFI) "Agreement Document", which describes the sum to be paid (the "Grant")
+      to the agreement holder ("you") for delivering the SFI action(s) (the "Actions") you have chosen and for entering into
+      and managing your Agreement (the "SFI Management Payment").
+    </p>
+    <p>
+      The SFI "Agreement" comprises:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>this Agreement Document</li>
+      <li>the Sustainable Farming Incentive Agreement "Terms and Conditions", which are applicable to the payment of the Grant</li>
+      <li>the Actions you have chosen</li>
+    </ul>
+    <p>
+      When you enter the Agreement, you are agreeing to the terms applicable to the payment of the Grant. You should review
+      the mandatory requirements of your Agreement to make sure you understand the full extent of your obligations under the Agreement.
+    </p>
 
 
-      <h2 id="parties" class="govuk-heading-l">
-        2. Parties to the agreement
-      </h2>
-      <p>
-        This Agreement is between:
-      </p>
-      <p>
-        You, sample Farm Ltd, of 123 Farm Lane, Farmville, FA12 3RM and the Rural Payments Agency (acting as a delivery body
-        on behalf of the Department for Environment, Food and Rural Affairs), PO Box 324, Worksop, S95 1DF ("us", "we", "our").
-      </p>
+    <h2 id="parties" class="govuk-heading-l">
+      2. Parties to the agreement
+    </h2>
+    <p>
+      This Agreement is between:
+    </p>
+    <p>
+      You, Agile Farm, of 10 Skirbeck Way, Maidstone, SK22 1DL and the Rural Payments Agency (acting as a delivery body
+      on behalf of the Department for Environment, Food and Rural Affairs), PO Box 324, Worksop, S95 1DF ("us", "we", "our").
+    </p>
 
-      <h2 id="land" class="govuk-heading-l">
-        3. Land covered by agreement
-      </h2>
-      <p>
-        The "Agreement Land" comprising the following land parcels:
-      </p>
-      <table class="govuk-table">
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Parcel</th>
-            <th scope="col" class="govuk-table__header">Parcel name</th>
-            <th scope="col" class="govuk-table__header">Total parcel area (hectare)</th>
-          </tr>
-        </thead>
+    <h2 id="land" class="govuk-heading-l">
+      3. Land covered by agreement
+    </h2>
+    <p>
+      The "Agreement Land" comprising the following land parcels:
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Parcel</th>
+        <th scope="col" class="govuk-table__header">Parcel name</th>
+        <th scope="col" class="govuk-table__header">Total parcel area (hectare)</th>
+      </tr>
+      </thead>
 
-        <tbody class="govuk-table__body">
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">SX63599044</td>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">0.7306</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">SX63599173</td>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">1.5034</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">SX63599555</td>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">1.6108</td>
-          </tr>
-      <!--    <tr class="govuk-table__row">
-            <td class="govuk-table__cell">SX64590858</td>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">3.1213</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">SX64591081</td>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">0.8637</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">SX64591369</td>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">0.4016</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">SX64592661</td>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">2.7771</td>
-          </tr> -->
-        </tbody>
-      </table>
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell"></td>
+        <td class="govuk-table__cell">8.3805</td>
+      </tr>
+      <!--
+         <tr class="govuk-table__row">
+           <td class="govuk-table__cell">SX63599173</td>
+           <td class="govuk-table__cell"></td>
+           <td class="govuk-table__cell">1.5034</td>
+         </tr>
+         <tr class="govuk-table__row">
+           <td class="govuk-table__cell">SX63599555</td>
+           <td class="govuk-table__cell"></td>
+           <td class="govuk-table__cell">1.6108</td>
+         </tr>
+       -->
+      </tbody>
+    </table>
 
-      <p>
-        Please note that the Terms and Conditions contain separate obligations in relation to the "Agreement Land".
-      </p>
+    <p>
+      Please note that the Terms and Conditions contain separate obligations in relation to the "Agreement Land".
+    </p>
 
-      <h2 id="actions" class="govuk-heading-l">
-        4. Summary of parcel-based actions
-      </h2>
-      <p>
-        The following table sets out a summary of the Parcel based SFI Actions you have chosen and agree to complete
-        under the Agreement. The Terms and Conditions and the Actions set out the accompanying obligations for the chosen Actions.
-      </p>
-      <table class="govuk-table">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Parcel</th>
-          <th scope="col" class="govuk-table__header">Code</th>
-          <th scope="col" class="govuk-table__header">Description</th>
-          <th scope="col" class="govuk-table__header">Total parcel area (hectare)</th>
-          <th scope="col" class="govuk-table__header">Area (hectare) / Length (meter) / Unit</th>
-          <th scope="col" class="govuk-table__header">Start date</th>
-          <th scope="col" class="govuk-table__header">End date</th>
-        </tr>
-        </thead>
+    <h2 id="actions" class="govuk-heading-l">
+      4. Summary of parcel-based actions
+    </h2>
+    <p>
+      The following table sets out a summary of the Parcel based SFI Actions you have chosen and agree to complete
+      under the Agreement. The Terms and Conditions and the Actions set out the accompanying obligations for the chosen Actions.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header" style="width:115px">Parcel</th>
+        <th scope="col" class="govuk-table__header">Code</th>
+        <th scope="col" class="govuk-table__header">Description</th>
+        <th scope="col" class="govuk-table__header">Total parcel area (hectare)</th>
+        <!--  <th scope="col" class="govuk-table__header">Area (hectare) / Length (meter) / Unit</th> -->
+        <th scope="col" class="govuk-table__header">Start date</th>
+        <th scope="col" class="govuk-table__header">End date</th>
+      </tr>
+      </thead>
 
-        <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599044</td>
-          <td class="govuk-table__cell">BND1</td>
-          <td class="govuk-table__cell">Maintain dry stone walls</td>
-          <td class="govuk-table__cell">0.7306</td>
-          <td class="govuk-table__cell">95</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599044</td>
-          <td class="govuk-table__cell">CHRW1</td>
-          <td class="govuk-table__cell">Assess and record hedgerow condition</td>
-          <td class="govuk-table__cell">0.7306</td>
-          <td class="govuk-table__cell">207</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599044</td>
-          <td class="govuk-table__cell">CSAM1</td>
-          <td class="govuk-table__cell">Assess soil, produce a soil management plan and test soil organic matter</td>
-          <td class="govuk-table__cell">0.7306</td>
-          <td class="govuk-table__cell">0.7287</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599044</td>
-          <td class="govuk-table__cell">CLIG3</td>
-          <td class="govuk-table__cell">Manage grassland with very low nutrient inputs -outside SDAs or within SDAS</td>
-          <td class="govuk-table__cell">0.7306</td>
-          <td class="govuk-table__cell">0.7287</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599044</td>
-          <td class="govuk-table__cell">BND2</td>
-          <td class="govuk-table__cell">Maintain earth banks or stone-faced hedgebanks</td>
-          <td class="govuk-table__cell">0.7306</td>
-          <td class="govuk-table__cell">234</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599044</td>
-          <td class="govuk-table__cell">CHRW2</td>
-          <td class="govuk-table__cell">Manage hedgerows</td>
-          <td class="govuk-table__cell">0.7306</td>
-          <td class="govuk-table__cell">207</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599044</td>
-          <td class="govuk-table__cell">CSAM1</td>
-          <td class="govuk-table__cell">Assess soil, produce a soil management plan and test soil organic matter</td>
-          <td class="govuk-table__cell">0.7306</td>
-          <td class="govuk-table__cell">0.7287</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599173</td>
-          <td class="govuk-table__cell">CSAM1</td>
-          <td class="govuk-table__cell">Assess soil, produce a soil management plan and test soil organic matter</td>
-          <td class="govuk-table__cell">1.5034</td>
-          <td class="govuk-table__cell">0.7287</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599173</td>
-          <td class="govuk-table__cell">CHRW2</td>
-          <td class="govuk-table__cell">Manage hedgerows</td>
-          <td class="govuk-table__cell">1.5034</td>
-          <td class="govuk-table__cell">265</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599173</td>
-          <td class="govuk-table__cell">CHRW1</td>
-          <td class="govuk-table__cell">Assess and record hedgerow condition</td>
-          <td class="govuk-table__cell">1.5034</td>
-          <td class="govuk-table__cell">265</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599173</td>
-          <td class="govuk-table__cell">BND2</td>
-          <td class="govuk-table__cell">Maintain earth banks or stone-faced hedgebanks</td>
-          <td class="govuk-table__cell">1.5034</td>
-          <td class="govuk-table__cell">265</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599555</td>
-          <td class="govuk-table__cell">CSAM1</td>
-          <td class="govuk-table__cell">Assess soil, produce a soil management plan and test soil organic matter</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599555</td>
-          <td class="govuk-table__cell">CLIG3</td>
-          <td class="govuk-table__cell">Manage grassland with very low nutrient inputs -outside SDAs or within SDAS</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599555</td>
-          <td class="govuk-table__cell">CHRW3</td>
-          <td class="govuk-table__cell">Maintain or establish hedgerow trees</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">337</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599555</td>
-          <td class="govuk-table__cell">CHRW2</td>
-          <td class="govuk-table__cell">Manage hedgerows</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">337</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599555</td>
-          <td class="govuk-table__cell">CHRW1</td>
-          <td class="govuk-table__cell">Assess and record hedgerow condition</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">337</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">SX63599555</td>
-          <td class="govuk-table__cell">BND2</td>
-          <td class="govuk-table__cell">Maintain earth banks or stone-faced hedgebanks</td>
-          <td class="govuk-table__cell">1.6108</td>
-          <td class="govuk-table__cell">337</td>
-          <td class="govuk-table__cell">01/11/2024</td>
-          <td class="govuk-table__cell">31/10/2027</td>
-        </tr>
-        </tbody>
-      </table>
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell">CMOR1</td>
+        <td class="govuk-table__cell">Assess moorland and produce a written record</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <!--  <td class="govuk-table__cell">95</td> -->
+        <td class="govuk-table__cell">01/08/2025</td>
+        <td class="govuk-table__cell">31/07/2028</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell">UPL3</td>
+        <td class="govuk-table__cell">Limited livestock grazing on moorland</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <!--  <td class="govuk-table__cell">207</td> -->
+        <td class="govuk-table__cell">01/08/2025</td>
+        <td class="govuk-table__cell">31/07/2028</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell">UPL4</td>
+        <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (minimum 30% GLU)</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <!-- <td class="govuk-table__cell">0.7287</td> -->
+        <td class="govuk-table__cell">01/08/2025</td>
+        <td class="govuk-table__cell">31/07/2028</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell">SPM5</td>
+        <td class="govuk-table__cell">Keep native breeds on extensively managed habitats supplement (more than 80%)</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <!--  <td class="govuk-table__cell">0.7287</td> -->
+        <td class="govuk-table__cell">01/08/2025</td>
+        <td class="govuk-table__cell">31/07/2028</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell">UPL10</td>
+        <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 8 months)</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <!--  <td class="govuk-table__cell">234</td> -->
+        <td class="govuk-table__cell">01/08/2025</td>
+        <td class="govuk-table__cell">31/07/2028</td>
+      </tr>
+      </tbody>
+    </table>
 
-      <h2 id="payment" class="govuk-heading-l">
-        5. Summary of payments
-      </h2>
-      <p>
-        Subject to you complying with your Agreement, the table below sets out a summary of:
-      </p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>the total payments for the Actions you have chosen and agree to complete under the Agreement</li>
-        <li>the relevant additional payments</li>
-        <li>the indicative SFI management payment - if you have submitted 2 or more SFI applications, the SFI management
-          payment may be removed from this agreement offer as it will only be paid for the area, up to 50 hectares, entered
-          into SFI actions in the 'live' SFI agreement which starts first
-        </li>
-      </ul>
-      <p>
-        These payments will be made each year of your Agreement.
-      </p>
-      <p>
-        Please note that these figures are correct as at the Agreement Start Date and may vary as a result of the processes set out in the Terms and Conditions.
-      </p>
-      <table class="govuk-table">
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Code</th>
-            <th scope="col" class="govuk-table__header">Description</th>
-            <th scope="col" class="govuk-table__header">Total area (hectare)/ Length (meter)/ Unit</th>
-            <th scope="col" class="govuk-table__header">Payment rate</th>
-            <th scope="col" class="govuk-table__header">Total annual agreement grant payment</th>
-          </tr>
-        </thead>
+    <h2 id="payment" class="govuk-heading-l">
+      5. Summary of payments
+    </h2>
+    <p>
+      Subject to you complying with your Agreement, the table below sets out a summary of:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>the total payments for the Actions you have chosen and agree to complete under the Agreement</li>
+      <li>the relevant additional payments</li>
+      <li>the indicative SFI management payment - if you have submitted 2 or more SFI applications, the SFI management
+        payment may be removed from this agreement offer as it will only be paid for the area, up to 50 hectares, entered
+        into SFI actions in the 'live' SFI agreement which starts first
+      </li>
+    </ul>
+    <p>
+      These payments will be made each year of your Agreement.
+    </p>
+    <p>
+      Please note that these figures are correct as at the Agreement Start Date and may vary as a result of the processes set out in the Terms and Conditions.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Code</th>
+        <th scope="col" class="govuk-table__header">Description</th>
+        <th scope="col" class="govuk-table__header">Total area (hectare)</th>
+        <th scope="col" class="govuk-table__header">Payment rate</th>
+        <th scope="col" class="govuk-table__header">Total annual payment</th>
+      </tr>
+      </thead>
 
-        <tbody class="govuk-table__body">
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">BND1</td>
-            <td class="govuk-table__cell">Maintain dry stone walls</td>
-            <td class="govuk-table__cell">95.00 metres</td>
-            <td class="govuk-table__cell">£25.65 / 100m</td>
-            <td class="govuk-table__cell">£25.65</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">BND2</td>
-            <td class="govuk-table__cell">Maintain earth banks or stone-faced hedgebanks</td>
-            <td class="govuk-table__cell">1678.00 metres</td>
-            <td class="govuk-table__cell">£11.00 / 100m</td>
-            <td class="govuk-table__cell">£184.58</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">CHRW1</td>
-            <td class="govuk-table__cell">Assess and record hedgerow condition</td>
-            <td class="govuk-table__cell">1799.00 metres</td>
-            <td class="govuk-table__cell">£5.00 / 100m</td>
-            <td class="govuk-table__cell">£89.95</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">CHRW2</td>
-            <td class="govuk-table__cell">Manage hedgerows</td>
-            <td class="govuk-table__cell">1799.00 metres</td>
-            <td class="govuk-table__cell">£13.00 / 100m</td>
-            <td class="govuk-table__cell">£233.87</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">CHRW3</td>
-            <td class="govuk-table__cell">Maintain or establish hedgerow trees</td>
-            <td class="govuk-table__cell">717.00 metres</td>
-            <td class="govuk-table__cell">£10.00 / 100m</td>
-            <td class="govuk-table__cell">£71.70</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">CLIG3</td>
-            <td class="govuk-table__cell">Manage grassland with very low nutrient inputs - outside SDAs or within SDAs</td>
-            <td class="govuk-table__cell">8.64 hectares</td>
-            <td class="govuk-table__cell">£151.00 / ha</td>
-            <td class="govuk-table__cell">£1,304.56</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">CSAM1</td>
-            <td class="govuk-table__cell">Assess soil, test soil organic matter and produce a soil management plan</td>
-            <td class="govuk-table__cell">10.63 hectares</td>
-            <td class="govuk-table__cell">£6.00 / ha</td>
-            <td class="govuk-table__cell">£63.78</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>
-        If you are eligible for the Management Payment (MPAY1) the payment details will be shown within section 7 below.
-      </p>
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">CMOR1</td>
+        <td class="govuk-table__cell">Assess moorland and produce a written record</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <td class="govuk-table__cell">£10.60 / ha and £272 per year</td>
+        <td class="govuk-table__cell" style="text-align: right">£360.41</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">UPL3</td>
+        <td class="govuk-table__cell">Limited livestock grazing on moorland</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <td class="govuk-table__cell">£66 / hectare</td>
+        <td class="govuk-table__cell" style="text-align: right">£550.47</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">UPL4</td>
+        <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (minimum 30% GLU)</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <td class="govuk-table__cell">£7 / hectare</td>
+        <td class="govuk-table__cell" style="text-align: right">£58.39</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SPM5</td>
+        <td class="govuk-table__cell">Keep native breeds on extensively managed habitats supplement (more than 80%)</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <td class="govuk-table__cell">£11 / hectare</td>
+        <td class="govuk-table__cell" style="text-align: right">£233.87</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">UPL10</td>
+        <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 8 months)</td>
+        <td class="govuk-table__cell">8.3805</td>
+        <td class="govuk-table__cell">£48 / hectare</td>
+        <td class="govuk-table__cell" style="text-align: right">£400.34</td>
+      </tr>
+      </tbody>
+    </table>
+    <p>
+      If you are eligible for the Management Payment (MPAY1) the payment details will be shown within section 7 below.
+    </p>
 
-      <h2 id="schedule" class="govuk-heading-l">
-        6. Annual payment schedule
-      </h2>
-      <p>
-        Subject to you complying with your Agreement, the table below sets out a summary of the total payments for:
-      </p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>each year of the Agreement</li>
-        <li>the total for the duration of the Agreement</li>
-      </ul>
-      <p>
-        Please note that these figures are correct as at the Agreement Start Date and may vary as a result of the processes set out in the Terms and Conditions.
-      </p>
-      <table class="govuk-table">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Code</th>
-          <th scope="col" class="govuk-table__header">Year 1</th>
-          <th scope="col" class="govuk-table__header">Year 2</th>
-          <th scope="col" class="govuk-table__header">Year 3</th>
-          <th scope="col" class="govuk-table__header">Total agreement grant payment</th>
-        </tr>
-        </thead>
+    <h2 id="schedule" class="govuk-heading-l">
+      6. Annual payment schedule
+    </h2>
+    <p>
+      Subject to you complying with your Agreement, the table below sets out a summary of the total payments for:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>each year of the Agreement</li>
+      <li>the total for the duration of the actions</li>
+    </ul>
+    <p>
+      Please note that these figures are correct as at the Agreement Start Date and may vary as a result of the processes set out in the Terms and Conditions.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Code</th>
+        <th scope="col" class="govuk-table__header">Year 1</th>
+        <th scope="col" class="govuk-table__header">Year 2</th>
+        <th scope="col" class="govuk-table__header">Year 3</th>
+        <th scope="col" class="govuk-table__header">Total agreement grant payment</th>
+      </tr>
+      </thead>
 
-        <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">BND1</td>
-          <td class="govuk-table__cell">£25.65</td>
-          <td class="govuk-table__cell">£25.65</td>
-          <td class="govuk-table__cell">£25.65</td>
-          <td class="govuk-table__cell">£76.95</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">BND2</td>
-          <td class="govuk-table__cell">£184.58</td>
-          <td class="govuk-table__cell">£184.58</td>
-          <td class="govuk-table__cell">£184.58</td>
-          <td class="govuk-table__cell">£553.74</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">CHRW1</td>
-          <td class="govuk-table__cell">£89.95</td>
-          <td class="govuk-table__cell">£89.95</td>
-          <td class="govuk-table__cell">£89.95</td>
-          <td class="govuk-table__cell">£269.85</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">CHRW2</td>
-          <td class="govuk-table__cell">£233.87</td>
-          <td class="govuk-table__cell">£233.87</td>
-          <td class="govuk-table__cell">£233.87</td>
-          <td class="govuk-table__cell">£701.61</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">CHRW3</td>
-          <td class="govuk-table__cell">£71.70</td>
-          <td class="govuk-table__cell">£71.70</td>
-          <td class="govuk-table__cell">£71.70</td>
-          <td class="govuk-table__cell">£215.10</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">CLIG3</td>
-          <td class="govuk-table__cell">£1,304.56</td>
-          <td class="govuk-table__cell">£1,304.56</td>
-          <td class="govuk-table__cell">£1,304.56</td>
-          <td class="govuk-table__cell">£3,913.68</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">CSAM1</td>
-          <td class="govuk-table__cell">£63.78</td>
-          <td class="govuk-table__cell">£63.78</td>
-          <td class="govuk-table__cell">£63.78</td>
-          <td class="govuk-table__cell">£191.31</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">Total</td>
-          <td class="govuk-table__cell">£1,974.08</td>
-          <td class="govuk-table__cell">£1,974.08</td>
-          <td class="govuk-table__cell">£1,974.08</td>
-          <td class="govuk-table__cell">£5922.24</td>
-        </tr>
-        </tbody>
-      </table>
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">CMOR1</td>
+        <td class="govuk-table__cell" style="text-align: right">£360.41</td>
+        <td class="govuk-table__cell" style="text-align: right">£360.41</td>
+        <td class="govuk-table__cell" style="text-align: right">£360.41</td>
+        <td class="govuk-table__cell" style="text-align: right">£1,081.23</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">UPL3</td>
+        <td class="govuk-table__cell" style="text-align: right">£550.47</td>
+        <td class="govuk-table__cell" style="text-align: right">£550.47</td>
+        <td class="govuk-table__cell" style="text-align: right">£550.47</td>
+        <td class="govuk-table__cell" style="text-align: right">£1,651.41</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">UPL4</td>
+        <td class="govuk-table__cell" style="text-align: right">£58.39</td>
+        <td class="govuk-table__cell" style="text-align: right">£58.39</td>
+        <td class="govuk-table__cell" style="text-align: right">£58.39</td>
+        <td class="govuk-table__cell" style="text-align: right">£175.17</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SPM5</td>
+        <td class="govuk-table__cell" style="text-align: right">£233.87</td>
+        <td class="govuk-table__cell" style="text-align: right">£233.87</td>
+        <td class="govuk-table__cell" style="text-align: right">£233.87</td>
+        <td class="govuk-table__cell" style="text-align: right">£701.61</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">UPL10</td>
+        <td class="govuk-table__cell" style="text-align: right">£400.34</td>
+        <td class="govuk-table__cell" style="text-align: right">£400.34</td>
+        <td class="govuk-table__cell" style="text-align: right">£400.34</td>
+        <td class="govuk-table__cell" style="text-align: right">£1,201.02</td>
+      </tr>
+      </tbody>
+    </table>
 
-      <h2 id="sign" class="govuk-heading-l">
-        7. Electronic signature
-      </h2>
-      <p>
-        This Agreement has been signed by someone representing Agile Farm.
-      </p>
+    <h2 id="sign" class="govuk-heading-l">
+      7. Electronic signature
+    </h2>
+    <p>
+      This Agreement has been signed by someone representing Agile Farm.
+    </p>
 
-      <h2 class="govuk-heading-l">
-        Date protection
-      </h2>
-      <p>
-        The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give to RPA.
-        For information on how we handle personal data go to www.gov.uk and search 'Rural Payments Agency personal information charter'.
-      </p>
-    </div> <!-- 3/4 column -->
-  </div> <!-- grid row -->
+    <h2 class="govuk-heading-l">
+      Date protection
+    </h2>
+    <p>
+      The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give to RPA.
+      For information on how we handle personal data go to www.gov.uk and search 'Rural Payments Agency personal information charter'.
+    </p>
+  </div> <!-- 3/4 column -->
+</div> <!-- grid row -->
 
 {% endblock %}
 
