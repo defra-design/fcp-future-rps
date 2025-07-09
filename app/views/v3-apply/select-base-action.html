@@ -1,7 +1,7 @@
 {% extends "layouts/beta-header.html" %}
 
 {% block pageTitle %}
-  Manage land-based actions
+  Select actions
 {% endblock %}
 
 {% block beforeContent %}
@@ -25,9 +25,15 @@
       <p>The following list shows actions you can do on this parcel that are compatible with:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>the land details registered with the Rural Payments service</li>
-        <li>the total available area of this parcel (8.3405ha)</li>
         <li>actions you are already doing on this parcel</li>
       </ul>
+
+      <p>The total available area you can enter for each action is based on:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>land cover registered on your digital maps</li>
+        <li>land use code declared in the Rural Payments service</li>
+      </ul>
+      <p>You must check the land type is eligible for each action you select.</p>
 
       <details class="govuk-details">
         <summary class="govuk-details__summary">
@@ -69,14 +75,15 @@
                 </h3>
               </legend>
             <!-- CMOR1 -->
+            <p>Total available area for this action: 4.5123 ha</p>
+
             <div class="govuk-checkboxes__item">
               <input class="govuk-checkboxes__input" id="contact" name="contact" type="checkbox" value="phone" data-aria-controls="conditional-contact">
               <label class="govuk-label govuk-checkboxes__label" for="contact">
                 Assess moorland and produce a written record: CMOR1
               </label>
               <div class="govuk-hint govuk-checkboxes__hint">
-                <strong>£272</strong> per agreement per year<br>
-                Payment rate per year: <strong>£10.60 per ha</strong>
+                Payment rate per year: <strong>£10.60 per ha</strong> and <strong>£272 per agreement</strong>
               </div>
             </div>
             {# <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact">
@@ -99,13 +106,16 @@
 
        <hr>
 
-          <div class="govuk-form-group">
+          <div class="govuk-form-group govuk-!-margin-top-4">
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h3 class="govuk-fieldset__heading">
                  Livestock grazing on moorland
                 </h3>
               </legend>
+
+              <p>Total available area for this action: 3.5125 ha</p>
+
               <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                   <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="england" aria-describedby="UPL1-hint">
@@ -140,13 +150,16 @@
 
            <hr>
 
-               <div class="govuk-form-group">
+               <div class="govuk-form-group govuk-!-margin-top-4">
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h3 class="govuk-fieldset__heading">
                   Shepherding livestock on moorland
                 </h3>
               </legend>
+
+              <p>Total available area for this action: 8.3405 ha</p>
+
               <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                   <input class="govuk-radios__input" id="sheperding" name="sheperding" type="radio" value="england" aria-describedby="UPL7-hint">

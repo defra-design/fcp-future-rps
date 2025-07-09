@@ -1,7 +1,7 @@
 {% extends "layouts/beta-header.html" %}
 
 {% block pageTitle %}
-  Remove action
+  Remove parcel
 {% endblock %}
 
 {% block beforeContent %}
@@ -18,35 +18,21 @@
 
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
-      <form class="form" action="add-more-actions2" method="post">
+      <form class="form" action="select-land" method="post">
 
         <h1 class="govuk-heading-l">
-          Remove action from land parcel SO3757 3159
+          Remove land parcel SO3757 3159
         </h1>
-        <p class="govuk-body">
-          You have selected to remove Low livestock grazing on moorland: UPL2. 
-        </p>
-        <p class="govuk-body">
-          This will also remove:
-        </p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4</li>
-          <li>Keep native breeds on extensively managed habitats supplement (more than 80%): SPM5</li>
-        </ul>
-         <p class="govuk-body">
-          Select yes if you want to:
-        </p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>remove Low livestock grazing on moorland: UPL2 from land parcel SO3757 3159</li>
-          <li>remove this action and add a different action to this land parcel</li>
-        </ul>
+        <p class="govuk-body">If you remove this land parcel you will also remove all the actions added to this parcel.</p>
+        <p class="govuk-body">o you want to remove land parcel SO3757 3159 from this application?</p>
+
         <form action="/form-handler" method="post" novalidate>
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset">
            <!--   <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                Are you sure you want to remove this action?
+                Are you sure you want to remove this land parcel?
               </legend> -->
-              <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                   <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
                   <label class="govuk-label govuk-radios__label" for="interviewNeeds">
