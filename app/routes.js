@@ -303,7 +303,7 @@ router.post('/add-more-actions3', function (req, res) {
   // Check whether the variable matches a condition
   if (addMoreActionsAnswer == "yes"){
     // Send user to next page
-    res.redirect('/day1-locked/select-land')
+    res.redirect('/day1-locked/select-land2')
 
   } else {
     // Send user to ineligible page
