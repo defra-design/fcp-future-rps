@@ -17,7 +17,7 @@
 {% block content %}
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
-      <form class="form" action="/add-more-actions2" method="post">
+      <form class="form" action="/add-more-actions3" method="post">
 
         <table class="govuk-table">
           <caption class="govuk-table__caption govuk-table__caption--l">
@@ -54,70 +54,27 @@
               <td class="govuk-table__cell" style="text-align: right">£47.83 + £272 per agreement</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  {# <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action2"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li> #}
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
                 </ul>
               </td>
             </tr>
-            {# <tr class="govuk-table__row">
+            <tr class="govuk-table__row">
               <td class="govuk-table__cell"></td>
               <td class="govuk-table__cell">Low livestock grazing on moorland: UPL2</td>
-              <td class="govuk-table__cell">8.3405</td>
-              <td class="govuk-table__cell" style="text-align: right">£442.05</td>
+              <td class="govuk-table__cell">3.5125</td>
+              <td class="govuk-table__cell" style="text-align: right">£186.16</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action-change-upl2"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
                 </ul>
               </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"></td>
-              <td class="govuk-table__cell">Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4</td>
-              <td class="govuk-table__cell">8.3405</td>
-              <td class="govuk-table__cell" style="text-align: right">£58.39</td>
-              <td class="govuk-table__cell">
-                <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"></td>
-              <td class="govuk-table__cell">Keep native breeds on extensively managed habitats supplement (more than 80%) - SPM5</td>
-              <td class="govuk-table__cell">8.3405</td>
-              <td class="govuk-table__cell" style="text-align: right">£91.75</td>
-              <td class="govuk-table__cell">
-                <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
-                </ul>
-              </td>
-            </tr> #}
-               <tr class="govuk-table__row">
-              <td class="govuk-table__cell"></td>
-              <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 8 months): UPL10</td>
-              <td class="govuk-table__cell">8.3405</td>
-              <td class="govuk-table__cell" style="text-align: right">£400.34</td>
-              <td class="govuk-table__cell">
-                <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"></td>
-              <td class="govuk-table__cell" style="text-align: right"></td>
-              <td class="govuk-table__cell"></td>
-              <td class="govuk-table__cell" style="text-align: right"><strong>£720.17</strong></td>
-              <td class="govuk-table__cell"></td>
             </tr>
           </tbody>
         </table>
-        <p style="margin-top: -1em;"><a href="select-base-action3">Add another action to this land parcel</a></p>
-        <br>
+        {# <p style="margin-top: -1em;"><a href="select-base-action2">Add another action to this parcel</a></p> #}
+        {# <br> #}
 
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset">
@@ -129,13 +86,13 @@
             </div> #}
             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="add-another" name="add-more-actions2" type="radio" value="yes">
+                <input class="govuk-radios__input" id="add-another" name="add-more-actions3" type="radio" value="yes">
                 <label class="govuk-label govuk-radios__label" for="add-another">
                   Yes
                 </label>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions2" type="radio" value="no">
+                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions3" type="radio" value="no">
                 <label class="govuk-label govuk-radios__label" for="add-another-2">
                   No
                 </label>
