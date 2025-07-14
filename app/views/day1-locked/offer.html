@@ -1,0 +1,143 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Review funding offer
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+
+{% block content %}
+<!-- main page heading included in it's own row so that full page can be used for tables -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Review your funding offer
+      </h1>
+    </div>
+  </div>
+
+<!-- row at full column width for the action and payment tables -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <!-- actions for the agreement -->
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--l">
+          Actions
+        </caption>
+
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Action</th>
+            <th scope="col" class="govuk-table__header">Code</th>
+            <th scope="col" class="govuk-table__header" style="width:130px">Land parcel</th>
+            <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Assess moorland and produce a written record</td>
+            <td class="govuk-table__cell">CMOR1</td>
+            <td class="govuk-table__cell">SO3757 3159</td>
+            <td class="govuk-table__cell">4.5123</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Limited livestock grazing on moorland</td>
+            <td class="govuk-table__cell">UPL2</td>
+            <td class="govuk-table__cell">SO3757 3159</td>
+            <td class="govuk-table__cell">3.5125</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr class="govuk-section-break govuk-section-break--l">
+
+      <!-- payment relating to the actions -->
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--l">
+          Payments
+        </caption>
+
+        <p>If you accept this offer, you will receive these payments for each action.</p>
+
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Action</th>
+            <th scope="col" class="govuk-table__header">Code</th>
+            <th scope="col" class="govuk-table__header" style="width:120px">Payment rate for each year</th>
+            <th scope="col" class="govuk-table__header" style="width:110px; text-align: right">Quarterly payment</th>
+            <th scope="col" class="govuk-table__header" style="width:110px; text-align: right">Yearly payment</th>
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Assess moorland and produce a written record</td>
+            <td class="govuk-table__cell">CMOR1</td>
+            <td class="govuk-table__cell">£10.60 per ha</td>
+            <td class="govuk-table__cell" style="text-align: right">£11.96</td>
+            <td class="govuk-table__cell" style="text-align: right">£47.84</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Low livestock grazing on moorland</td>
+            <td class="govuk-table__cell">UPL2</td>
+            <td class="govuk-table__cell">£53 per ha</td>
+            <td class="govuk-table__cell" style="text-align: right">£46.54</td>
+            <td class="govuk-table__cell" style="text-align: right">£186.16</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell" style="border-bottom-width: 0px"></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px"></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px; text-align: right"></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px; text-align: right"><strong>£58.50</strong></td>
+            <td class="govuk-table__cell" style="border-bottom-width: 0px; text-align: right"><strong>£234.00</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> <!-- full column -->
+  </div> <!-- grid-row -->
+
+<!-- row at 2/3 column width for extra information -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">
+        Additional yearly payments
+      </h2>
+      <h3 class="govuk-heading-s">
+        Assess moorland and produce a written record: CMOR1
+      </h3>
+      <p>There is a payment of £272 per agreement per year for Assess moorland and produce a written record: CMOR1.</p>
+      <p>You will receive this payment if you are not already doing this action on another land parcel.</p>
+
+      <h3 class="govuk-heading-s">
+        Sustainable Farming Incentive (SFI) management payment
+      </h3>
+      <p>The SFI management payment is paid to you for:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>your first SFI agreement</li>
+        <li>the first 50 hectares or less you enter into SFI actions</li>
+      </ul>
+
+      <p>You’ll be paid:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>£40 per hectare for the first year of your agreement</li>
+        <li>£20 per hectare for the following 2 years of your agreement</li>
+      </ul>
+
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      <form action="accept-offer" method="post">
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </div>
+      </form>
+    </div> <!-- two-thirds col -->
+  </div> <!-- row -->
+
+{% endblock %}
+

@@ -1,0 +1,57 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Confirmation
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Offer accepted
+        </h1>
+        <div class="govuk-panel__body">
+          Agile Farm agreement is live
+        </div>
+      </div>
+<!--      <p>Defra have sent you an email confirming your agreement is live.</p> -->
+
+      <h2 class="govuk-heading-m">
+        What happens next
+      </h2>
+      <p>You can <a href="agreement">view your full agreement</a> including the terms and conditions for your selected actions.</p>
+      <p>The start date for these actions is 1 August 2025.</p>
+      <p><a href="../_common/not-testing" class="govuk-link">Read the guidance (opens in new tab)</a> to check what you must do to get paid for each action.</p>
+      <p>You will receive your first payment for these actions in October 2025.</p>
+
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          If you need help
+        </span>
+        </summary>
+
+        <div class="govuk-details__text">
+          <p>You can contact the Rural Payments Agency (RPA) by phone or email for help and support.</p>
+          <ul class="govuk-list">
+            <li>Telephone: 03000 200 301</li>
+            <li>Monday to Friday, 8:30am to 5pm (except bank holidays)</li>
+          </ul>
+          <p><a href="#">Find out about call charges (opens in new tab)</a></p>
+          <p>Email: <a href="#">ruralpayments@defra.gov.uk</a></p>
+          <p>The RPA responds to email queries within 5 working days.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+{% endblock %}
+
