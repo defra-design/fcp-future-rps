@@ -29,7 +29,7 @@
       <p class="govuk-body">
         Before you continue with this application, check that the registered land details on your digital maps are up to date. If they’re not, this may prevent you from applying for the SFI actions you select.
       </p>
-      <p class="govuk-body">
+      {# <p class="govuk-body">
         You need to check your digital maps show:
       </p>
       <ul class="govuk-list govuk-list--bullet">
@@ -39,9 +39,9 @@
       </ul>
       <p class="govuk-body">
        <a href="https://www.gov.uk/guidance/rural-payments-service" class="govuk-link">Check your digital maps</a>
-      </p>
+      </p> #}
 
-      <form class="form" action="/land-details-answer3" method="post">
+      <form class="form" action="/land-details-answer4" method="post">
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -49,12 +49,12 @@
             </legend>
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="landDetailsAnswer-1" name="land-details-answer3" type="radio" value="yes">
+                <input class="govuk-radios__input" id="landDetailsAnswer-1" name="land-details-answer4" type="radio" value="yes">
                 <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-1">
                   Yes
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="landDetailsAnswer-2" name="land-details-answer3" type="radio" value="no">
+                <input class="govuk-radios__input" id="landDetailsAnswer-2" name="land-details-answer4" type="radio" value="no">
                 <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-2">
                   No
                 </label>
