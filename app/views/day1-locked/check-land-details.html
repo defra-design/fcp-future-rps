@@ -24,49 +24,44 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Check your land details
+        Confirm your land details are up to date
       </h1>
-      <p class="govuk-body">
-        Before you continue with this application, check that the registered land details on your digital maps are up to date. If they’re not, this may prevent you from applying for the SFI actions you select.
-      </p>
-      {# <p class="govuk-body">
-        You need to check your digital maps show:
-      </p>
+      
+      <p>You confirm you have checked your digital maps are up to date and show:</p>
       <ul class="govuk-list govuk-list--bullet">
-          <li>all the land parcels you want to include in this application</li>
-          <li>the correct total area (in hectares) for each land parcel</li>
-          <li>the correct land covers for each land parcel, for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover</li>
-      </ul>
-      <p class="govuk-body">
-       <a href="https://www.gov.uk/guidance/rural-payments-service" class="govuk-link">Check your digital maps</a>
-      </p> #}
+        <li>all the land parcels you want to include in your application</li>
+        <li>the correct total area (in hectares) for each land parcel</li>
+        <li>the correct land covers for each land parcel, for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover</li>
+      </ul> 
 
-      <form class="form" action="/land-details-answer4" method="post">
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-              Do your digital maps show the correct land details?
-            </legend>
-            <div class="govuk-radios" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="landDetailsAnswer-1" name="land-details-answer4" type="radio" value="yes">
-                <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-1">
-                  Yes
-              </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="landDetailsAnswer-2" name="land-details-answer4" type="radio" value="no">
-                <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-2">
-                  No
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
+      <p>You confirm you have declared the correct land use codes for each land parcel in the Rural Payments service.</p>
+
+
+      <p>If your land details are not up to date:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>you may not be able to apply for the actions you select</li>
+          <li>the total area of land available to enter into an action may not be accurate</li>
+        </ul>
   
           <button type="submit" class="govuk-button" data-module="govuk-button">
             Continue
           </button>
         </form>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              If you need to update your details
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            Contact the Rural Payments Agency to update your details.<br><br>
+            Telephone: 03000 200 301<br>
+            Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+            <a href="https://www.gov.uk/call-charges" target="_blank">Find out about call charges (opens in new tab)</a>
+          </div>
+        </details>
+
 
     </div>
   </div>
