@@ -60,6 +60,19 @@ router.post('/land-details-answer3', function (req, res) {
   }
 })
 
+router.post('/land-details-answer4', function (req, res) {
+  // Make a variable and give it the value from 'how-many-balls'
+  var landDetailsAnswer = req.session.data['land-details-answer4']
+  // Check whether the variable matches a condition
+  if (landDetailsAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/day1-locked/check-land-details')
+  } else {
+    // Send user to ineligible page
+    res.redirect('/day1-locked/update-land-details')
+  }
+})
+
 router.post('/new-or-existing-answer', function (req, res) {
   // Make a variable and give it the value from 'how-many-balls'
   var NeworExistingsAnswer = req.session.data['new-or-existing-answer']
