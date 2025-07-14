@@ -1,0 +1,69 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+Remove action
+{% endblock %}
+
+{% block beforeContent %}
+{% include "_common/sub-header-beta.html" %}
+
+{{ govukBackLink({
+text: "Back",
+href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row" role="main">
+  <div class="govuk-grid-column-two-thirds">
+    <form class="form" action="add-more-actions" method="post">
+
+      <h1 class="govuk-heading-l">
+        Remove action from land parcel SO3757 3159?
+      </h1>
+      <p class="govuk-body">
+        You have selected to remove Low livestock grazing on moorland: UPL3
+      </p>
+      {# <p class="govuk-body">
+        Select yes if you want to either:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>remove Low livestock grazing on moorland: UPL2 from land parcel SO3757 3159</li>
+        <li>remove this action and add a different action to the same land parcel</li>
+      </ul> #}
+      <form action="/form-handler" method="post" novalidate>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <!--   <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                 Are you sure you want to remove this action?
+               </legend> -->
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="interviewNeeds">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="interviewNeeds-2" name="interviewNeeds" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="interviewNeeds-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+
+
+      </form>
+
+  </div>
+</div>
+
+{% endblock %}
