@@ -1,4 +1,4 @@
-{% extends "layouts/main-thread.html" %}
+{% extends "layouts/beta-header.html" %}
 
 {% block pageTitle %}
   Check your land details
@@ -6,10 +6,7 @@
 
 
 {% block beforeContent %}
-
-{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
-
-  {% include "_common/sub-header.html" %}
+  {% include "_common/sub-header-beta.html" %}
 
   {{ govukBackLink({
     text: "Back",
