@@ -19,7 +19,7 @@
     </div>
   </div>
 
-<!-- row at full column width for the action and payment tables -->
+  <!-- row at full column width for the action table -->
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <!-- actions for the agreement -->
@@ -54,22 +54,26 @@
       </table>
 
       <hr class="govuk-section-break govuk-section-break--l">
+    </div>
+  </div>
 
-      <!-- payment relating to the actions -->
+  <!-- payment relating to the actions
+       need to make this 2/3 col for the paragraphs (line length too long) -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">
+        Payments
+      </h2>
+      <p>If you accept this offer, you will receive these payments for each action.</p>
+      <p>Your agreement will start on the first day of the month after you have accepted your offer. You will receive your first payment 3 months later.</p>
+    </div>
+  </div>
+
+  <!-- back to full width for table -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
       <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-table__caption--l">
-          Payments
-        </caption>
-
-        {# <p>  If you accept this offer, you will receive these payments for each action.</p> #}
-
         <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th colspan="5" class="govuk-table__header table_header_info">
-              <p>If you accept this offer, you will receive these payments for each action.</p>
-              <p>Your agreement will start on the first day of the month after you have accepted your offer. You will receive your first payment 3 months later.</p>
-            </th>
-          </tr>
           <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Action</th>
             <th scope="col" class="govuk-table__header">Code</th>

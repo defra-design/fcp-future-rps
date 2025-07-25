@@ -17,7 +17,6 @@
 {% block content %}
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
-      <form class="form" action="/add-more-actions3" method="post">
 
         <table class="govuk-table">
           <caption class="govuk-table__caption govuk-table__caption--l">
@@ -74,12 +73,18 @@
           </tbody>
         </table>
         <p style="margin-top: -1em;"><a href="select-base-action2">Add another action to this land parcel</a></p>
-        
-        <br>
-            <p>There is a one-off payment of £272 per agreement per year for Assess moorland and produce a written record: CMOR1.</p>
-            <p>You will receive this payment if you are not already doing this action on another land parcel.</p>
-        <br>
+    </div>
+  </div>
 
+  <!-- row at 2/3 column width for extra information -->
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <br>
+      <p>There is a one-off payment of £272 per agreement per year for Assess moorland and produce a written record: CMOR1.</p>
+      <p>You will receive this payment if you are not already doing this action on another land parcel.</p>
+      <br>
+
+      <form class="form" action="/add-more-actions3" method="post">
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
