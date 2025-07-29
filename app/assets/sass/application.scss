@@ -198,8 +198,24 @@ tr .govuk-error-message {
 	margin-top: 1em;
 } 
 
+.no-bottom-border {
+	border-bottom: none;
+}
+
 .no-bottom-border > td {
 	border-bottom: none;
+}
+
+.actions-total {
+  display: block;
+  width: 78%;	
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.actions-total p {
+  margin: 0;
 }
 
 // Agreements pages
