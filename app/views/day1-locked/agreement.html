@@ -1,19 +1,19 @@
 {% extends "layouts/day1-header.html" %}
 
 {% block pageTitle %}
-  Agreement
+  Agile Farm agreement
 {% endblock %}
 
 {% block beforeContent %}
 {% include "_common/sub-header-beta.html" %}
-
+<!--
 <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
   <ol class="govuk-breadcrumbs__list">
     <li class="govuk-breadcrumbs__list-item">
       <a class="govuk-breadcrumbs__link" href="home">Home</a>
     </li>
   </ol>
-</nav>
+</nav> -->
 {% endblock %}
 
 
@@ -54,15 +54,21 @@
         <ul class="govuk-list toc">
           <li><a href="#intro">1. Introduction and overview</a></li>
           <li><a href="#parties">2. Parties to the agreement</a></li>
-          <li><a href="#land">3. Land covered by agreement</a></li>
-          <li><a href="#actions">4. Summary of parcel-based actions</a></li>
+          <li><a href="#land">3. Land covered by the agreement</a></li>
+          <li><a href="#actions">4. Summary of actions</a></li>
           <li><a href="#payment">5. Summary of payments</a></li>
-          <li><a href="#schedule">6. Annual payment schedule</a></li>
-          <li><a href="#sign">7. Electronic signature</a></li>
+          <li><a href="#schedule">6. Payment schedule</a></li>
+          <li><a href="#sign">7. Data protection</a></li>
         </ul>
+      </div>
+
+      <!-- print this page button -->
+      <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-bottom-6">
+        <button class="govuk-link govuk-body-s gem-c-print-link__button" data-module="print-link" data-print-link-module-started="true">Print this page</button>
       </div>
     </nav>
   </div> <!-- 1/4 column -->
+
 
   <div class="govuk-grid-column-three-quarters">
     <h2 id="intro" class="govuk-heading-l">
@@ -99,7 +105,7 @@
     </p>
 
     <h2 id="land" class="govuk-heading-l">
-      3. Land covered by agreement
+      3. Land covered by the agreement
     </h2>
     <p>
       The "Agreement Land" comprising the following land parcels:
@@ -108,15 +114,15 @@
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header">Parcel</th>
-        <th scope="col" class="govuk-table__header">Parcel name</th>
-        <th scope="col" class="govuk-table__header">Total parcel area (hectare)</th>
+      <!--  <th scope="col" class="govuk-table__header">Parcel name</th> -->
+        <th scope="col" class="govuk-table__header">Total parcel area (ha)</th>
       </tr>
       </thead>
 
       <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">SO3757 3159</td>
-        <td class="govuk-table__cell"></td>
+      <!--  <td class="govuk-table__cell"></td> -->
         <td class="govuk-table__cell">8.3405</td>
       </tr>
       </tbody>
@@ -127,7 +133,7 @@
     </p>
 
     <h2 id="actions" class="govuk-heading-l">
-      4. Summary of parcel-based actions
+      4. Summary of actions
     </h2>
     <p>
       The following table sets out a summary of the Parcel based SFI Actions you have chosen and agree to complete
@@ -138,8 +144,8 @@
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header" style="width:115px">Parcel</th>
         <th scope="col" class="govuk-table__header">Code</th>
-        <th scope="col" class="govuk-table__header">Description</th>
-        <th scope="col" class="govuk-table__header">Total parcel area (hectare)</th>
+        <th scope="col" class="govuk-table__header">Action</th>
+        <th scope="col" class="govuk-table__header">Total parcel area (ha)</th>
         <!--  <th scope="col" class="govuk-table__header">Area (hectare) / Length (meter) / Unit</th> -->
         <th scope="col" class="govuk-table__header">Start date</th>
         <th scope="col" class="govuk-table__header">End date</th>
@@ -172,7 +178,7 @@
       5. Summary of payments
     </h2>
     <p>
-      Subject to you complying with your Agreement, the table below sets out a summary of:
+      Subject to you complying with your Agreement, the following table sets out a summary of:
     </p>
     <ul class="govuk-list govuk-list--bullet">
       <li>the total payments for the Actions you have chosen and agree to complete under the Agreement</li>
@@ -192,10 +198,10 @@
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header">Code</th>
-        <th scope="col" class="govuk-table__header">Description</th>
-        <th scope="col" class="govuk-table__header">Total area (hectare)</th>
+        <th scope="col" class="govuk-table__header">Action</th>
+        <th scope="col" class="govuk-table__header">Total area (ha)</th>
         <th scope="col" class="govuk-table__header">Payment rate</th>
-        <th scope="col" class="govuk-table__header">Total annual payment</th>
+        <th scope="col" class="govuk-table__header">Total yearly payment</th>
       </tr>
       </thead>
 
@@ -204,14 +210,14 @@
         <td class="govuk-table__cell">CMOR1</td>
         <td class="govuk-table__cell">Assess moorland and produce a written record</td>
         <td class="govuk-table__cell">4.5123</td>
-        <td class="govuk-table__cell">£10.60 / ha and £272 per year</td>
+        <td class="govuk-table__cell">£10.60 per ha and £272 per year</td>
         <td class="govuk-table__cell" style="text-align: right">£319.84</td>
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">UPL2</td>
         <td class="govuk-table__cell">Low livestock grazing on moorland</td>
         <td class="govuk-table__cell">3.5125</td>
-        <td class="govuk-table__cell">£53 / hectare</td>
+        <td class="govuk-table__cell">£53 per ha</td>
         <td class="govuk-table__cell" style="text-align: right">£186.16</td>
       </tr>
       </tbody>
@@ -221,10 +227,10 @@
     </p>
 
     <h2 id="schedule" class="govuk-heading-l">
-      6. Annual payment schedule
+      6. Payment schedule
     </h2>
     <p>
-      Subject to you complying with your Agreement, the table below sets out a summary of the total payments for:
+      Subject to you complying with your Agreement, the following table sets out a summary of the total payments for:
     </p>
     <ul class="govuk-list govuk-list--bullet">
       <li>each year of the Agreement</li>
@@ -237,10 +243,10 @@
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header">Code</th>
-        <th scope="col" class="govuk-table__header">Year 1</th>
-        <th scope="col" class="govuk-table__header">Year 2</th>
-        <th scope="col" class="govuk-table__header">Year 3</th>
-        <th scope="col" class="govuk-table__header">Total agreement grant payment</th>
+        <th scope="col" class="govuk-table__header" style="text-align: right">Year 1</th>
+        <th scope="col" class="govuk-table__header" style="text-align: right">Year 2</th>
+        <th scope="col" class="govuk-table__header" style="text-align: right">Year 3</th>
+        <th scope="col" class="govuk-table__header" style="text-align: right">Total payment</th>
       </tr>
       </thead>
 
@@ -261,19 +267,16 @@
       </tr>
       </tbody>
     </table>
-
-    <h2 id="sign" class="govuk-heading-l">
-      7. Electronic signature
-    </h2>
     <p>
-      This Agreement has been signed by someone representing Agile Farm.
+      Under an SFI agreement, your annual payment value is paid in quarterly instalments. You’ll usually receive your
+      first payment in the fourth month after your agreement’s start date.
     </p>
 
     <h2 class="govuk-heading-l">
-      Date protection
+      7. Data protection
     </h2>
     <p>
-      The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give to RPA.
+      The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give to Rural Payments Agency (RPA).
       For information on how we handle personal data go to www.gov.uk and search 'Rural Payments Agency personal information charter'.
     </p>
   </div> <!-- 3/4 column -->
