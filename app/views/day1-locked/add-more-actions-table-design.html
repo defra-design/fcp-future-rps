@@ -1,0 +1,120 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Review selected actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-full">
+
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--l">
+            Review the actions you have selected
+          </caption>
+
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header" style="width:120px">Land parcel</th>
+              <th scope="col" class="govuk-table__header">Action</th>
+              <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+              <th scope="col" class="govuk-table__header" style="width:140px">Yearly payment</th>
+              <th scope="col" class="govuk-table__header" style="width:170px"></th>
+            </tr>
+          </thead>
+
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">SO3757 3159</td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  {# <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-land-parcel-1"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li> #}
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-parcel"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell">Assess moorland and produce a written record: CMOR1</td>
+              <td class="govuk-table__cell">4.5123</td>
+              <td class="govuk-table__cell" style="text-align: right">£47.83</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  {# <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action2"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li> #}
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action-just-CMOR1"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell" style="text-align: right"><strong>£47.83</strong></td>
+              <td class="govuk-table__cell">
+                {# <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action2"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul> #}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top: -1em;"><a href="select-base-action2">Add another action to this land parcel</a></p>
+    </div>
+  </div>
+
+  <!-- row at 2/3 column width for extra information -->
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <br>
+      <p>There is a one-off payment of £272 per agreement per year for Assess moorland and produce a written record: CMOR1.</p>
+      <p>You will receive this payment if you are not already doing this action on another land parcel.</p>
+      <br>
+
+      <form class="form" action="/add-more-actions3" method="post">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do you want to add actions to another land parcel?
+            </legend>
+            {# <div id="add-another-hint" class="govuk-hint">
+              You must tell us about all your directors.
+            </div> #}
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another" name="add-more-actions3" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="add-another">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions3" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="add-another-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
