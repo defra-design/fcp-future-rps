@@ -26,27 +26,18 @@ href: "javascript:window.history.back()"
       <p class="govuk-body">
         You have selected to remove Low livestock grazing on moorland: UPL2.
       </p>
+
       <p class="govuk-body">
-        This will also remove:
+        Select yes if you want to remove this action and add a different action to the same land parcel.
       </p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4</li>
-        <li>Keep native breeds on extensively managed habitats supplement (more than 80%): SPM5</li>
-      </ul>
-      <p class="govuk-body">
-        Select yes if you want to either:
-      </p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>remove Low livestock grazing on moorland: UPL2 from land parcel SO3757 3159</li>
-        <li>remove this action and add a different action to the same land parcel</li>
-      </ul>
+
       <form action="/form-handler" method="post" novalidate>
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset">
             <!--   <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                  Are you sure you want to remove this action?
                </legend> -->
-            <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
                 <label class="govuk-label govuk-radios__label" for="interviewNeeds">
@@ -66,6 +57,21 @@ href: "javascript:window.history.back()"
         <button type="submit" class="govuk-button" data-module="govuk-button">
           Continue
         </button>
+
+                <details class="govuk-details">
+          <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                If you have a question
+              </span>
+          </summary>
+          <div class="govuk-details__text">
+            Contact the Rural Payments Agency if you have a query.<br><br>
+            Telephone: 03000 200 301<br>
+            Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+            <a href="https://www.gov.uk/call-charges" target="_blank">Find out about call charges (opens in new tab)</a><br><br>
+            Email: <a href="mailto:ruralpayments@defra.gov.uk">ruralpayments@defra.gov.uk</a>
+          </div>
+        </details>
 
 
       </form>
