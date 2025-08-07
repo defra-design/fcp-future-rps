@@ -1,0 +1,30 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Signed out
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback (opens in new tab)</a>.'
+    })
+  }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">
+      There has been a problem with saving your application
+    </h1>
+
+    <p class="govuk-body">
+      You can <a class="govuk-link" href="sign-in">go back and try again, or continue with your application</a>.
+    </p>
+  </div>
+</div>
+{% endblock %}
+
