@@ -1,0 +1,31 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Accept offer
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+<!-- main page heading included in it's own row so that the 2/3 and 1/3 columns align for related links -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        You have requested an update to your offer
+      </h1>
+
+      <p>Your funding offer is currently being updated.</p>
+      <p>Defra will email you when it is ready for you to review.</p>
+    </div> <!-- two-thirds col -->
+  </div> <!-- row -->
+
+{% endblock %}
+
