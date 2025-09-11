@@ -1,0 +1,203 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  SFI Mapping Demo – {{ serviceName }}
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <h1 class="govuk-heading-xl">
+      SFI Mapping Component Demo
+    </h1>
+
+    <p class="govuk-body">
+      This demonstrates the editable SFI mapping component for selecting land parcels and assigning actions.
+    </p>
+
+    <!-- Basic SFI mapping component with default settings -->
+    <div data-sfi-mapping-component></div>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-l">How to use the SFI mapping component</h2>
+
+    <h3 class="govuk-heading-m">Basic usage</h3>
+    <p class="govuk-body">To add an SFI mapping component to your page:</p>
+    
+    <pre class="govuk-body-s" style="background-color: #f3f2f1; padding: 15px; overflow-x: auto;"><code>&lt;div data-sfi-mapping-component&gt;&lt;/div&gt;</code></pre>
+
+    <h3 class="govuk-heading-m">Advanced usage with options</h3>
+    <p class="govuk-body">Customize the component with specific options:</p>
+    
+    <pre class="govuk-body-s" style="background-color: #f3f2f1; padding: 15px; overflow-x: auto;"><code>&lt;div data-sfi-mapping-component 
+     data-sfi-mapping-options='{
+       "zoom": 1.2,
+       "enableEditing": true,
+       "showActionPanel": true,
+       "showPaymentCalculator": true
+     }'&gt;&lt;/div&gt;</code></pre>
+
+    <h3 class="govuk-heading-m">JavaScript initialization</h3>
+    <p class="govuk-body">Initialize with custom data:</p>
+    
+    <pre class="govuk-body-s" style="background-color: #f3f2f1; padding: 15px; overflow-x: auto;"><code>const sfiMap = new SFIMappingComponent('#my-map', {
+  parcels: customParcelData,
+  sfiActions: customSFIActions,
+  enableEditing: true,
+  showActionPanel: true
+});
+
+// Get application data
+const selectedParcels = sfiMap.getSelectedParcels();
+const parcelActions = sfiMap.getParcelActions();
+const totalPayment = sfiMap.getTotalPayment();
+const fullData = sfiMap.exportData();</code></pre>
+
+    <h3 class="govuk-heading-m">Available options</h3>
+    
+    {{ govukTable({
+      head: [
+        { text: "Option" },
+        { text: "Type" },
+        { text: "Default" },
+        { text: "Description" }
+      ],
+      rows: [
+        [
+          { text: "zoom" },
+          { text: "number" },
+          { text: "1" },
+          { text: "Initial zoom level" }
+        ],
+        [
+          { text: "enableEditing" },
+          { text: "boolean" },
+          { text: "true" },
+          { text: "Allow parcel selection and action assignment" }
+        ],
+        [
+          { text: "showActionPanel" },
+          { text: "boolean" },
+          { text: "true" },
+          { text: "Show SFI action assignment panel" }
+        ],
+        [
+          { text: "showPaymentCalculator" },
+          { text: "boolean" },
+          { text: "true" },
+          { text: "Show real-time payment calculations" }
+        ],
+        [
+          { text: "parcels" },
+          { text: "array" },
+          { text: "auto-generated" },
+          { text: "Custom parcel data with land use information" }
+        ],
+        [
+          { text: "sfiActions" },
+          { text: "array" },
+          { text: "2024 SFI actions" },
+          { text: "Available SFI actions with payment rates" }
+        ]
+      ]
+    }) }}
+
+    <h3 class="govuk-heading-m">SFI-specific features</h3>
+    
+    <ul class="govuk-list govuk-list--bullet">
+      <li><strong>Action eligibility checking</strong> - Actions are filtered by land use compatibility</li>
+      <li><strong>Area requirements</strong> - Minimum and maximum area limits enforced</li>
+      <li><strong>Real-time payment calculation</strong> - Shows annual payment as actions are assigned</li>
+      <li><strong>Bulk action assignment</strong> - Assign same actions to multiple selected parcels</li>
+      <li><strong>Action conflict detection</strong> - Prevents incompatible action combinations</li>
+      <li><strong>Visual action indicators</strong> - Parcels change color when actions are assigned</li>
+    </ul>
+
+    <h3 class="govuk-heading-m">Controls and interactions</h3>
+    
+    <ul class="govuk-list govuk-list--bullet">
+      <li><strong>Click parcels</strong> - Select/deselect for action assignment</li>
+      <li><strong>Edit mode toggle</strong> - Enable/disable parcel editing</li>
+      <li><strong>Action checkboxes</strong> - Select actions to assign to selected parcels</li>
+      <li><strong>Assign actions button</strong> - Apply selected actions to parcels</li>
+      <li><strong>Remove actions button</strong> - Clear all actions from selected parcels</li>
+      <li><strong>Search functionality</strong> - Find parcels by ID or name</li>
+      <li><strong>Payment summary</strong> - View total payments and area covered</li>
+    </ul>
+
+    <h3 class="govuk-heading-m">Included SFI actions (2024 rates)</h3>
+    
+    {{ govukTable({
+      head: [
+        { text: "Code" },
+        { text: "Action" },
+        { text: "Payment rate" },
+        { text: "Eligible land" }
+      ],
+      rows: [
+        [
+          { text: "NUM3" },
+          { text: "Herbal leys" },
+          { text: "£382/ha/year" },
+          { text: "Arable, Grassland" }
+        ],
+        [
+          { text: "AHL2" },
+          { text: "Flower-rich grass margins" },
+          { text: "£798/ha/year" },
+          { text: "Arable, Grassland" }
+        ],
+        [
+          { text: "IPM2" },
+          { text: "No insecticides on crops" },
+          { text: "£45/ha/year" },
+          { text: "Arable" }
+        ],
+        [
+          { text: "SAM2" },
+          { text: "Soil assessment and management" },
+          { text: "£58/ha/year" },
+          { text: "Arable, Grassland, Pasture" }
+        ],
+        [
+          { text: "LIG1" },
+          { text: "Unmanaged grassland areas" },
+          { text: "£590/ha/year" },
+          { text: "Grassland, Pasture" }
+        ],
+        [
+          { text: "LIG2" },
+          { text: "Winter bird food" },
+          { text: "£853/ha/year" },
+          { text: "Arable" }
+        ]
+      ]
+    }) }}
+
+    <h3 class="govuk-heading-m">Accessibility features</h3>
+    
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Full keyboard navigation with arrow keys</li>
+      <li>Screen reader announcements for all actions</li>
+      <li>ARIA labels and roles for all interactive elements</li>
+      <li>High contrast mode support</li>
+      <li>Focus management and visible focus indicators</li>
+      <li>Reduced motion preference support</li>
+    </ul>
+
+  </div>
+</div>
+
+{% endblock %}

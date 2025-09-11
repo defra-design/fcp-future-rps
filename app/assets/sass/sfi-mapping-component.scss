@@ -1,0 +1,473 @@
+/* SFI Mapping Component Styles */
+
+.sfi-mapping-component {
+  border: 1px solid #b1b4b6;
+  background-color: #ffffff;
+  margin-bottom: 30px;
+}
+
+.sfi-mapping-component__header {
+  padding: 20px;
+  border-bottom: 1px solid #b1b4b6;
+  background-color: #f3f2f1;
+}
+
+.sfi-mapping-component__mode-toggle {
+  text-align: right;
+}
+
+.sfi-mapping-component__search {
+  margin-top: 20px;
+}
+
+.sfi-mapping-component__main {
+  display: flex;
+  min-height: 700px;
+}
+
+.sfi-mapping-component__map-container {
+  flex: 1;
+  position: relative;
+  background-color: #f8f8f8;
+  overflow: hidden;
+}
+
+.sfi-mapping-component__controls {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sfi-mapping-component__controls button {
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sfi-mapping-component__map {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  position: relative;
+}
+
+.sfi-mapping-component__map:active {
+  cursor: grabbing;
+}
+
+.sfi-mapping-component__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+/* Parcel states */
+.sfi-mapping-component__parcel {
+  stroke: #0b0c0c;
+  stroke-width: 2;
+  fill: url(#sfi-field-pattern);
+  transition: all 0.2s ease;
+}
+
+.sfi-mapping-component__parcel--eligible {
+  fill: #00703c;
+  fill-opacity: 0.3;
+  cursor: pointer;
+}
+
+.sfi-mapping-component__parcel--eligible:hover {
+  fill-opacity: 0.5;
+  stroke-width: 3;
+  stroke: #005a30;
+}
+
+.sfi-mapping-component__parcel--eligible:focus {
+  fill-opacity: 0.6;
+  stroke-width: 4;
+  stroke: #ffdd00;
+  outline: none;
+}
+
+.sfi-mapping-component__parcel--selected {
+  fill: #1d70b8 !important;
+  fill-opacity: 0.7 !important;
+  stroke: #003078;
+  stroke-width: 3;
+}
+
+.sfi-mapping-component__parcel--has-actions {
+  fill: #f47738 !important;
+  fill-opacity: 0.6 !important;
+  stroke: #d4351c;
+  stroke-width: 2;
+}
+
+.sfi-mapping-component__parcel--selected.sfi-mapping-component__parcel--has-actions {
+  fill: #801650 !important;
+  fill-opacity: 0.8 !important;
+  stroke: #4c2c92;
+  stroke-width: 4;
+}
+
+.sfi-mapping-component__parcel--ineligible {
+  fill: #505a5f;
+  fill-opacity: 0.2;
+  stroke: #626a6e;
+  stroke-dasharray: 5,5;
+  cursor: not-allowed;
+}
+
+.sfi-mapping-component__parcel-label {
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  fill: #0b0c0c;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sfi-mapping-component__parcel-info {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #ffffff;
+  border: 2px solid #0b0c0c;
+  padding: 15px;
+  max-width: 280px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+/* Sidebar */
+.sfi-mapping-component__sidebar {
+  width: 350px;
+  border-left: 1px solid #b1b4b6;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.sfi-mapping-component__selection-panel,
+.sfi-mapping-component__action-panel,
+.sfi-mapping-component__payment-calculator,
+.sfi-mapping-component__legend {
+  padding: 20px;
+  border-bottom: 1px solid #b1b4b6;
+}
+
+.sfi-mapping-component__legend {
+  background-color: #f3f2f1;
+}
+
+.sfi-mapping-component__selected-list {
+  margin-top: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.sfi-mapping-component__selected-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f2f1;
+}
+
+.sfi-mapping-component__selected-item:last-child {
+  border-bottom: none;
+}
+
+.sfi-mapping-component__selected-item-content {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.sfi-mapping-component__parcel-actions {
+  margin-top: 5px;
+}
+
+.sfi-mapping-component__parcel-actions .govuk-tag {
+  margin-right: 5px;
+  margin-bottom: 2px;
+}
+
+.sfi-mapping-component__remove-parcel {
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 14px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.sfi-mapping-component__selection-actions {
+  margin-top: 15px;
+}
+
+/* Action panel */
+.sfi-mapping-component__action-list {
+  margin-top: 15px;
+}
+
+.sfi-mapping-component__action-list .govuk-checkboxes__item {
+  margin-bottom: 10px;
+}
+
+.sfi-mapping-component__action-list .govuk-checkboxes__label {
+  display: block;
+}
+
+.sfi-mapping-component__action-list .govuk-hint {
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.sfi-mapping-component__assign-actions,
+.sfi-mapping-component__remove-actions {
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+/* Payment calculator */
+.sfi-mapping-component__payment-content .govuk-summary-list__row {
+  border-bottom: 1px solid #b1b4b6;
+}
+
+.sfi-mapping-component__payment-content .govuk-summary-list__key {
+  font-weight: normal;
+}
+
+.sfi-mapping-component__payment-content .govuk-summary-list__value {
+  font-weight: bold;
+}
+
+#sfi-total-payment {
+  font-size: 19px;
+  color: #00703c;
+}
+
+/* Legend */
+.sfi-mapping-component__legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.sfi-mapping-component__legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.sfi-mapping-component__legend-icon {
+  width: 20px;
+  height: 15px;
+  margin-right: 10px;
+  border: 1px solid #0b0c0c;
+  display: inline-block;
+}
+
+.sfi-mapping-component__legend-icon--available {
+  background-color: #00703c;
+  opacity: 0.3;
+}
+
+.sfi-mapping-component__legend-icon--selected {
+  background-color: #1d70b8;
+  opacity: 0.7;
+}
+
+.sfi-mapping-component__legend-icon--has-actions {
+  background-color: #f47738;
+  opacity: 0.6;
+}
+
+.sfi-mapping-component__legend-icon--ineligible {
+  background-color: #505a5f;
+  opacity: 0.2;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 3px,
+    #626a6e 3px,
+    #626a6e 6px
+  );
+}
+
+/* Edit mode styles */
+.sfi-mapping-component--edit-mode .sfi-mapping-component__parcel--eligible {
+  stroke-width: 3;
+  stroke-dasharray: 3,3;
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { stroke-opacity: 1; }
+  50% { stroke-opacity: 0.5; }
+}
+
+.sfi-mapping-component--edit-mode .sfi-mapping-component__header {
+  background-color: #fff2e6;
+  border-color: #f47738;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .sfi-mapping-component__main {
+    flex-direction: column;
+  }
+  
+  .sfi-mapping-component__sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #b1b4b6;
+    max-height: none;
+  }
+  
+  .sfi-mapping-component__map-container {
+    min-height: 500px;
+  }
+  
+  .sfi-mapping-component__parcel-info {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-top: 15px;
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .sfi-mapping-component__selected-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .sfi-mapping-component__selected-item-content {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  .sfi-mapping-component__remove-parcel {
+    align-self: flex-start;
+  }
+  
+  .sfi-mapping-component__assign-actions,
+  .sfi-mapping-component__remove-actions {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .sfi-mapping-component__parcel--eligible {
+    fill: #000000;
+    fill-opacity: 0.1;
+    stroke-width: 3;
+  }
+  
+  .sfi-mapping-component__parcel--selected {
+    fill: #000000 !important;
+    fill-opacity: 0.3 !important;
+    stroke-width: 4;
+  }
+  
+  .sfi-mapping-component__parcel--has-actions {
+    fill: #000000 !important;
+    fill-opacity: 0.2 !important;
+    stroke-width: 3;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .sfi-mapping-component__parcel,
+  .sfi-mapping-component__svg {
+    transition: none;
+  }
+  
+  .sfi-mapping-component--edit-mode .sfi-mapping-component__parcel--eligible {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .sfi-mapping-component__controls,
+  .sfi-mapping-component__search,
+  .sfi-mapping-component__mode-toggle {
+    display: none;
+  }
+  
+  .sfi-mapping-component__map {
+    cursor: default;
+  }
+  
+  .sfi-mapping-component__main {
+    flex-direction: column;
+  }
+  
+  .sfi-mapping-component__sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #0b0c0c;
+  }
+  
+  .sfi-mapping-component__parcel--selected {
+    fill: #000000 !important;
+    fill-opacity: 0.5 !important;
+  }
+  
+  .sfi-mapping-component__parcel--has-actions {
+    fill: #666666 !important;
+    fill-opacity: 0.4 !important;
+  }
+}
+
+/* Focus styles for accessibility */
+.sfi-mapping-component__assign-actions:focus,
+.sfi-mapping-component__remove-actions:focus,
+.sfi-mapping-component__remove-parcel:focus,
+.sfi-mapping-component__clear-selection:focus {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+/* Loading state */
+.sfi-mapping-component--loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.sfi-mapping-component--loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 4px solid #f3f2f1;
+  border-top: 4px solid #1d70b8;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 1000;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

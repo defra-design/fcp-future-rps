@@ -3,6 +3,20 @@
 // https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
 //
 
+// Load SFI mapping component
+document.addEventListener('DOMContentLoaded', function() {
+  // Load the SFI mapping component script
+  const script = document.createElement('script');
+  script.src = '/public/javascripts/sfi-mapping-component.js';
+  script.onload = function() {
+    console.log('SFI mapping component loaded');
+  };
+  script.onerror = function() {
+    console.error('Failed to load SFI mapping component');
+  };
+  document.head.appendChild(script);
+});
+
 window.GOVUKPrototypeKit.documentReady(() => {
   // Add JavaScript here
   $(document).ready(function(){
