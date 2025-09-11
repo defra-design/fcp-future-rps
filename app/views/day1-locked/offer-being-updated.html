@@ -7,15 +7,11 @@
 {% block beforeContent %}
   {% include "_common/sub-header-beta.html" %}
 
-  {{ govukBackLink({
-    text: "Back",
-    href: "javascript:window.history.back()"
-  }) }}
 {% endblock %}
 
 
 {% block content %}
-<!-- main page heading included in it's own row so that the 2/3 and 1/3 columns align for related links -->
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">
