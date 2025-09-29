@@ -15,7 +15,7 @@
 
 {% block content %}
   <div class="govuk-grid-row" role="main">
-    <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
 
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset">
@@ -27,6 +27,12 @@
 
           <p class="govuk-body">The amount of land entered must be equal to or less than the available area in the land parcel.</p>
 
+          </fieldset>
+        </div>
+      </div>
+
+        <div class="govuk-grid-column-full">
+
           <div class="govuk-form-group">
             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
               <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes" style="min-width: 160px;">
@@ -37,23 +43,26 @@
                   </label>
                 </div>
               </div>
-              <div class="govuk-form-group" style="margin-bottom: 0;">
-                <label class="govuk-label" for="apply-selection">
+              <div class="govuk-form-group" style="margin-bottom: 0; margin-right: 40px; display: flex; align-items: center; gap: 10px;">
+                <label class="govuk-label" for="apply-selection" style="margin-bottom: 0;">
                   Apply to selection:
                 </label>
-                <select class="govuk-select" id="apply-selection" name="applySelection">
+                <select class="govuk-select govuk-select--width-10" id="apply-selection" name="applySelection">
+                  <option value="">Choose action</option>
                   <option value="all-available">All available area</option>
-                  <option value="custom">Custom amount</option>
                 </select>
               </div>
             </div>
           </div>
 
           <div class="govuk-form-group">
-            <table class="govuk-table">
+            <table class="govuk-table" role="table" aria-label="Land parcels selection and area input">
+              <caption class="govuk-table__caption govuk-visually-hidden">
+                Select land parcels and enter the amount of area to apply the action to. Each row shows a land parcel with its total size, available area, and an input field for the amount you want to enter.
+              </caption>
               <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                  <th scope="col" class="govuk-table__header" style="width: 60px;"></th>
+                  <th scope="col" class="govuk-table__header" style="width: 60px;" aria-label="Select parcel">Select</th>
                   <th scope="col" class="govuk-table__header">Land parcel</th>
                   <th scope="col" class="govuk-table__header">Total size (ha)</th>
                   <th scope="col" class="govuk-table__header">Available area (ha)</th>
@@ -62,7 +71,7 @@
               </thead>
               <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3160" name="selectedParcels" type="checkbox" value="SO3757-3160">
@@ -72,10 +81,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3160</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3160</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3160" name="amount-3160" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -83,7 +92,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3166" name="selectedParcels" type="checkbox" value="SO3757-3166">
@@ -93,10 +102,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3166</td>
-                  <td class="govuk-table__cell">32.0404</td>
-                  <td class="govuk-table__cell">29.7682</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3166</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">32.0404</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">29.7682</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3166" name="amount-3166" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -104,7 +113,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3167" name="selectedParcels" type="checkbox" value="SO3757-3167">
@@ -114,10 +123,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3167</td>
-                  <td class="govuk-table__cell">10.3492</td>
-                  <td class="govuk-table__cell">10.3492</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3167</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">10.3492</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">10.3492</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3167" name="amount-3167" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -125,7 +134,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3171" name="selectedParcels" type="checkbox" value="SO3757-3171">
@@ -135,10 +144,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3171</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3171</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3171" name="amount-3171" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -146,7 +155,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3174" name="selectedParcels" type="checkbox" value="SO3757-3174">
@@ -156,10 +165,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3174</td>
-                  <td class="govuk-table__cell">32.0404</td>
-                  <td class="govuk-table__cell">29.7682</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3174</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">32.0404</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">29.7682</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3174" name="amount-3174" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -167,7 +176,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3175" name="selectedParcels" type="checkbox" value="SO3757-3175">
@@ -177,10 +186,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3175</td>
-                  <td class="govuk-table__cell">10.3492</td>
-                  <td class="govuk-table__cell">10.3492</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3175</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">10.3492</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">10.3492</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3175" name="amount-3175" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -188,7 +197,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3176" name="selectedParcels" type="checkbox" value="SO3757-3176">
@@ -198,10 +207,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3176</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3176</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3176" name="amount-3176" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -209,7 +218,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3179" name="selectedParcels" type="checkbox" value="SO3757-3179">
@@ -219,10 +228,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3179</td>
-                  <td class="govuk-table__cell">32.0404</td>
-                  <td class="govuk-table__cell">29.7682</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3179</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">32.0404</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">29.7682</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3179" name="amount-3179" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -230,7 +239,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3180" name="selectedParcels" type="checkbox" value="SO3757-3180">
@@ -240,10 +249,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3180</td>
-                  <td class="govuk-table__cell">10.3492</td>
-                  <td class="govuk-table__cell">10.3492</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3180</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">10.3492</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">10.3492</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3180" name="amount-3180" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -251,7 +260,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3181" name="selectedParcels" type="checkbox" value="SO3757-3181">
@@ -261,10 +270,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3181</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">1.4935</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3181</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">1.4935</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3181" name="amount-3181" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -272,7 +281,7 @@
                   </td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                       <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="parcel-3182" name="selectedParcels" type="checkbox" value="SO3757-3182">
@@ -282,10 +291,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="govuk-table__cell">SO3757 3182</td>
-                  <td class="govuk-table__cell">32.0404</td>
-                  <td class="govuk-table__cell">29.7682</td>
-                  <td class="govuk-table__cell">
+                  <td class="govuk-table__cell" style="vertical-align: middle;">SO3757 3182</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">32.0404</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">29.7682</td>
+                  <td class="govuk-table__cell" style="vertical-align: middle;">
                     <div class="govuk-input__wrapper">
                       <input class="govuk-input govuk-input--width-10" id="amount-3182" name="amount-3182" type="text" spellcheck="false">
                       <div class="govuk-input__suffix" aria-hidden="true">ha</div>
@@ -298,6 +307,8 @@
         </fieldset>
       </div>
 
+      </div>
+
       <div class="govuk-button-group">
         <form class="govuk-form" action="#" method="post">
           <button type="submit" class="govuk-button" data-module="govuk-button">
@@ -308,4 +319,65 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var selectAllCheckbox = document.getElementById('select-all');
+    var parcelCheckboxes = document.querySelectorAll('input[name="selectedParcels"]');
+    var applySelectionDropdown = document.getElementById('apply-selection');
+    
+    // Handle select all checkbox
+    selectAllCheckbox.addEventListener('change', function() {
+      var isChecked = this.checked;
+      parcelCheckboxes.forEach(function(checkbox) {
+        checkbox.checked = isChecked;
+      });
+    });
+    
+    // Handle individual parcel checkboxes
+    parcelCheckboxes.forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+        // Check if all individual checkboxes are selected
+        var allSelected = Array.from(parcelCheckboxes).every(function(cb) {
+          return cb.checked;
+        });
+        
+        // Update select all checkbox state
+        selectAllCheckbox.checked = allSelected;
+        selectAllCheckbox.indeterminate = !allSelected && Array.from(parcelCheckboxes).some(function(cb) {
+          return cb.checked;
+        });
+      });
+    });
+    
+    // Handle apply to selection dropdown
+    applySelectionDropdown.addEventListener('change', function() {
+      if (this.value === 'all-available') {
+        // Get all table rows
+        var tableRows = document.querySelectorAll('tbody tr');
+        
+        tableRows.forEach(function(row) {
+          // Get the checkbox for this row
+          var checkbox = row.querySelector('input[name="selectedParcels"]');
+          
+          // Only fill if the checkbox is checked
+          if (checkbox && checkbox.checked) {
+            // Get the available area value (4th column, index 3)
+            var availableAreaCell = row.children[3];
+            var availableArea = availableAreaCell.textContent.trim();
+            
+            // Get the input field for this row (5th column, index 4)
+            var inputField = row.querySelector('input[type="text"]');
+            
+            if (inputField) {
+              inputField.value = availableArea;
+            }
+          }
+        });
+      }
+    });
+  });
+</script>
 {% endblock %}

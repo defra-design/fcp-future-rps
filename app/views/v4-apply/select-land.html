@@ -28,37 +28,48 @@
 
            <div id="parcel-hint" class="govuk-hint">
             Use your map to check these reference numbers against your parcels of land.
-          </div> 
+          </div> <br>
 
           <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="signIn" name="selectedParcels" type="checkbox" value="government-gateway" aria-describedby="signIn-item-hint">
-              <label class="govuk-label govuk-checkboxes__label" for="signIn">
+              <input class="govuk-checkboxes__input" id="select-all" name="selectAll" type="checkbox" value="select-all">
+              <label class="govuk-label govuk-checkboxes__label" for="select-all">
+                Select all
+              </label>
+            </div>
+          </div>
+            <br>
+            <br>
+
+          <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-1" name="selectedParcels" type="checkbox" value="SO3757-3158" aria-describedby="parcel-1-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-1">
                 SO3757 3158
               </label>
-              <div id="signIn-item-hint" class="govuk-hint govuk-checkboxes__hint">
+              <div id="parcel-1-item-hint" class="govuk-hint govuk-checkboxes__hint">
                 Total size: 32.0404 ha<br>
                 Total available area: 32.0404 ha
               </div>
             </div>
 
             <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="signIn-2" name="selectedParcels" type="checkbox" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
-              <label class="govuk-label govuk-checkboxes__label" for="signIn-2">
+              <input class="govuk-checkboxes__input" id="parcel-2" name="selectedParcels" type="checkbox" value="SO3757-3159" aria-describedby="parcel-2-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-2">
                 SO3757 3159
               </label>
-              <div id="signIn-2-item-hint" class="govuk-hint govuk-checkboxes__hint">
+              <div id="parcel-2-item-hint" class="govuk-hint govuk-checkboxes__hint">
                 Total size 32.0404ha<br>
                 Total available area: 32.0404 ha
               </div>
             </div>
 
             <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="signIn-3" name="selectedParcels" type="checkbox" value="govuk-one-login" aria-describedby="signIn-3-item-hint">
-              <label class="govuk-label govuk-checkboxes__label" for="signIn-3">
+              <input class="govuk-checkboxes__input" id="parcel-3" name="selectedParcels" type="checkbox" value="SO3757-3160" aria-describedby="parcel-3-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-3">
                 SO3757 3160
               </label>
-              <div id="signIn-3-item-hint" class="govuk-hint govuk-checkboxes__hint">
+              <div id="parcel-3-item-hint" class="govuk-hint govuk-checkboxes__hint">
                 Total size: 1.4935 ha<br>
                 Total available area: 1.4935 ha
               </div>
@@ -307,4 +318,37 @@
     </div> <!-- 2/3 col -->
   </div> <!-- grid-row -->
 
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var selectAllCheckbox = document.getElementById('select-all');
+    var parcelCheckboxes = document.querySelectorAll('input[name="selectedParcels"]');
+    
+    // Handle select all checkbox
+    selectAllCheckbox.addEventListener('change', function() {
+      var isChecked = this.checked;
+      parcelCheckboxes.forEach(function(checkbox) {
+        checkbox.checked = isChecked;
+      });
+    });
+    
+    // Handle individual parcel checkboxes
+    parcelCheckboxes.forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+        // Check if all individual checkboxes are selected
+        var allSelected = Array.from(parcelCheckboxes).every(function(cb) {
+          return cb.checked;
+        });
+        
+        // Update select all checkbox state
+        selectAllCheckbox.checked = allSelected;
+        selectAllCheckbox.indeterminate = !allSelected && Array.from(parcelCheckboxes).some(function(cb) {
+          return cb.checked;
+        });
+      });
+    });
+  });
+</script>
 {% endblock %}
