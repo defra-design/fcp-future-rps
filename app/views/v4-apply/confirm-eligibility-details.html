@@ -1,0 +1,69 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Confirm eligibility
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Confirm you will be eligible
+      </h1>
+
+      <p>You confirm you will:</p>
+      <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+        <li>
+          have management control of the land you are including in your application for the duration of the actions you select
+        </li>
+        <li>check your land will remain eligible for the duration of the actions you select</li>
+        <li>
+          get an Historic Environment Farm Environment Record (HEFER) from Historic England if you apply for actions on land with
+          historic or archaeological features - you must not start doing these actions until you have your HEFER
+        </li>
+        <li>
+          get site of special scientific interest (SSSI) consent from Natural England if you select to do actions on SSSI land - 
+          you must not start doing these actions until you have your SSSI consent
+        </li>
+        <li>
+          check if you can do your selected actions on your land if you have land with a conditional exemption from inheritance tax or maintenance fund
+        </li>
+        <li>
+          not apply for actions that include activities you are legally required to carry out or are already funded by other sources - this applies to public bodies
+        </li>
+      </ul>
+
+      <form class="form" action="select-land" method="post">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+             If you have a question
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          Contact the Rural Payments Agency if you have a query.<br><br>
+          Telephone: 03000 200 301<br>
+          Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+          <a href="https://www.gov.uk/call-charges" target="_blank">Find out about call charges (opens in new tab)</a>
+        </div>
+      </details>
+
+    </div>
+  </div>
+{% endblock %}

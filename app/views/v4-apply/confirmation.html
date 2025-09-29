@@ -1,0 +1,40 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Application complete
+        </h1>
+        <div class="govuk-panel__body">
+          Your reference number<br><strong>HDJ1234D</strong>
+        </div>
+      </div>
+
+      <p class="govuk-body">Defra have sent you an email confirming they have received your application.</p>
+
+      <h2 class="govuk-heading-m">What happens next</h2>
+      <p class="govuk-body">Defra will email you when your funding offer is available to check. This will be within 5 working days.</p>
+      <p class="govuk-body">You will need to sign in to your account to accept your funding offer.</p>
+      <p class="govuk-body">You should not start work on the actions you have applied for until:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>you have accepted your offer</li>
+        <li>the Rural Payments Agency confirms your start date</li>
+      </ul>
+
+      <p><a href="../bd1-common-v1/home">Return home</a></p>
+        
+    </div>
+  </div>
+{% endblock %}
