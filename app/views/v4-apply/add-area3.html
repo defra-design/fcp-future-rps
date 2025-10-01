@@ -34,8 +34,8 @@
         <div class="govuk-grid-column-full">
 
           <div class="govuk-form-group">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes" style="min-width: 160px;">
+            <div style="display: flex; justify-content: flex-start;">
+              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes" style="min-width: 155px;">
                 <div class="govuk-checkboxes__item">
                   <input class="govuk-checkboxes__input" id="select-all" name="selectAll" type="checkbox" value="select-all">
                   <label class="govuk-label govuk-checkboxes__label" for="select-all">
@@ -43,14 +43,10 @@
                   </label>
                 </div>
               </div>
-              <div class="govuk-form-group" style="margin-bottom: 0; margin-right: 40px; display: flex; align-items: center; gap: 10px;">
-                <label class="govuk-label" for="apply-selection" style="margin-bottom: 0;">
-                  Apply to selection:
-                </label>
-                <select class="govuk-select govuk-select--width-10" id="apply-selection" name="applySelection">
-                  <option value="">Choose action</option>
-                  <option value="all-available">All available area</option>
-                </select>
+              <div>
+                <button type="button" class="govuk-button govuk-button--secondary" style="margin-bottom: 0;" id="apply-all-available" data-module="govuk-button">
+                  Apply all available area
+                </button>
               </div>
             </div>
           </div>
@@ -326,7 +322,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     var selectAllCheckbox = document.getElementById('select-all');
     var parcelCheckboxes = document.querySelectorAll('input[name="selectedParcels"]');
-    var applySelectionDropdown = document.getElementById('apply-selection');
+    var applyAllAvailableButton = document.getElementById('apply-all-available');
     
     // Handle select all checkbox
     selectAllCheckbox.addEventListener('change', function() {
@@ -352,31 +348,29 @@
       });
     });
     
-    // Handle apply to selection dropdown
-    applySelectionDropdown.addEventListener('change', function() {
-      if (this.value === 'all-available') {
-        // Get all table rows
-        var tableRows = document.querySelectorAll('tbody tr');
+    // Handle apply all available area button
+    applyAllAvailableButton.addEventListener('click', function() {
+      // Get all table rows
+      var tableRows = document.querySelectorAll('tbody tr');
+      
+      tableRows.forEach(function(row) {
+        // Get the checkbox for this row
+        var checkbox = row.querySelector('input[name="selectedParcels"]');
         
-        tableRows.forEach(function(row) {
-          // Get the checkbox for this row
-          var checkbox = row.querySelector('input[name="selectedParcels"]');
+        // Only fill if the checkbox is checked
+        if (checkbox && checkbox.checked) {
+          // Get the available area value (4th column, index 3)
+          var availableAreaCell = row.children[3];
+          var availableArea = availableAreaCell.textContent.trim();
           
-          // Only fill if the checkbox is checked
-          if (checkbox && checkbox.checked) {
-            // Get the available area value (4th column, index 3)
-            var availableAreaCell = row.children[3];
-            var availableArea = availableAreaCell.textContent.trim();
-            
-            // Get the input field for this row (5th column, index 4)
-            var inputField = row.querySelector('input[type="text"]');
-            
-            if (inputField) {
-              inputField.value = availableArea;
-            }
+          // Get the input field for this row (5th column, index 4)
+          var inputField = row.querySelector('input[type="text"]');
+          
+          if (inputField) {
+            inputField.value = availableArea;
           }
-        });
-      }
+        }
+      });
     });
   });
 </script>
