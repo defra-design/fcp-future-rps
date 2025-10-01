@@ -305,13 +305,17 @@
 
       </div>
 
-      <div class="govuk-button-group">
-        <form action="add-more-actions3" method="post">
-          <button type="submit" class="govuk-button" data-module="govuk-button">
-            Continue
-          </button>
-        </form>
-      </div>
+        <form class="govuk-form" action="add-more-actions3" method="post">
+
+          <div class="govuk-button-group">
+                <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
+                  Continue
+                </button>
+                <a class="govuk-link" href="#">Clear all</a>
+          </div>
+
+      </form>
+
     </div>
   </div>
 
@@ -323,8 +327,8 @@
     var selectAllCheckbox = document.getElementById('select-all');
     var parcelCheckboxes = document.querySelectorAll('input[name="selectedParcels"]');
     var applyAllAvailableButton = document.getElementById('apply-all-available');
+    var cancelLink = document.querySelector('.govuk-button-group .govuk-link');
     
-    // Handle select all checkbox
     selectAllCheckbox.addEventListener('change', function() {
       var isChecked = this.checked;
       parcelCheckboxes.forEach(function(checkbox) {
@@ -332,15 +336,12 @@
       });
     });
     
-    // Handle individual parcel checkboxes
     parcelCheckboxes.forEach(function(checkbox) {
       checkbox.addEventListener('change', function() {
-        // Check if all individual checkboxes are selected
         var allSelected = Array.from(parcelCheckboxes).every(function(cb) {
           return cb.checked;
         });
         
-        // Update select all checkbox state
         selectAllCheckbox.checked = allSelected;
         selectAllCheckbox.indeterminate = !allSelected && Array.from(parcelCheckboxes).some(function(cb) {
           return cb.checked;
@@ -348,22 +349,15 @@
       });
     });
     
-    // Handle apply all available area button
     applyAllAvailableButton.addEventListener('click', function() {
-      // Get all table rows
       var tableRows = document.querySelectorAll('tbody tr');
       
       tableRows.forEach(function(row) {
-        // Get the checkbox for this row
         var checkbox = row.querySelector('input[name="selectedParcels"]');
         
-        // Only fill if the checkbox is checked
         if (checkbox && checkbox.checked) {
-          // Get the available area value (4th column, index 3)
           var availableAreaCell = row.children[3];
           var availableArea = availableAreaCell.textContent.trim();
-          
-          // Get the input field for this row (5th column, index 4)
           var inputField = row.querySelector('input[type="text"]');
           
           if (inputField) {
@@ -372,6 +366,22 @@
         }
       });
     });
+    
+    if (cancelLink) {
+      cancelLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        var allInputFields = document.querySelectorAll('.govuk-input');
+        allInputFields.forEach(function(input) {
+          input.value = '';
+        });
+        
+        selectAllCheckbox.checked = false;
+        parcelCheckboxes.forEach(function(checkbox) {
+          checkbox.checked = false;
+        });
+      });
+    }
   });
 </script>
 {% endblock %}
