@@ -325,6 +325,23 @@ router.post('/add-more-actions3', function (req, res) {
 
 })
 
+router.post('/add-more-actions4', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var addMoreActionsAnswer = req.session.data['add-more-actions4']
+
+  // Check whether the variable matches a condition
+  if (addMoreActionsAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/v4-apply/select-base-action2')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/v4-apply/submit-application')
+  }
+
+})
+
 router.post('/confirm-delete-action', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
