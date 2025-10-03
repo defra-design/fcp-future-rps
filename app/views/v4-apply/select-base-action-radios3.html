@@ -30,7 +30,16 @@
         <label class="govuk-label govuk-!-margin-top-2" for="search">
           Search by action name or code
         </label>
-        <input class="govuk-input text-input govuk-!-margin-bottom-3" style="width:250px; height:44px; margin-right: -4px" id="searchbox" type="text" value="" placeholder="">
+        <div style="position: relative; display: inline-block;">
+          <input class="govuk-input text-input govuk-!-margin-bottom-3" style="width:250px; height:44px; margin-right: -4px; padding-right: 35px;" id="searchbox" type="text" value="" placeholder="">
+          <button id="clear-search" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; display: none; padding: 5px; margin-bottom: 1rem;" aria-label="Clear search">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="9" fill="#505a5f" stroke="#505a5f" stroke-width="1"/>
+              <line x1="6" y1="6" x2="14" y2="14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="14" y1="6" x2="6" y2="14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
         <button id="button_1" class="govuk-button blue-button" style="height: 42px" data-module="govuk-button">
           <svg style="display: block; margin-left:0px" class="gem-c-search__icon" width="21" height="21" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
             <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
@@ -38,24 +47,26 @@
           </svg>
         </button>
       </div>
-      <p class="govuk-body govuk-!-margin-bottom-1">
-        Contents
-      </p>
-      <ul class="govuk-list">
-        <li>- <a href="#agroforestry">Agroforestry</a></li>
-        <li>- <a href="#boundary">Boundary features</a></li>
-        <li>- <a href="#buffer">Buffer strips</a></li>
-        <li>- <a href="#farmland">Farmland wildlife (arable)</a></li>
-        <li>- <a href="#heritage">Heritage</a></li>
-        <li>- <a href="#integrated">Integrated pest management</a></li>
-        <li>- <a href="#moorland">Moorland</a></li>
-        <li>- <a href="#nutrient">Nutrient management</a></li>
-        <li>- <a href="#organic">Organic farming</a></li>
-        <li>- <a href="#precision">Precision farming</a></li>
-        <li>- <a href="#soil">Soil health</a></li>
-        <li>- <a href="#water">Waterbodies</a></li>
-        <li>- <a href="#wildlife">Wildlife (grassland)</a></li>
-      </ul>
+      <div id="contents-section">
+        <p class="govuk-body govuk-!-margin-bottom-1">
+          Contents
+        </p>
+        <ul class="govuk-list">
+          <li>- <a href="#agroforestry">Agroforestry</a></li>
+          <li>- <a href="#boundary">Boundary features</a></li>
+          <li>- <a href="#buffer">Buffer strips</a></li>
+          <li>- <a href="#farmland">Farmland wildlife (arable)</a></li>
+          <li>- <a href="#heritage">Heritage</a></li>
+          <li>- <a href="#integrated">Integrated pest management</a></li>
+          <li>- <a href="#moorland">Moorland</a></li>
+          <li>- <a href="#nutrient">Nutrient management</a></li>
+          <li>- <a href="#organic">Organic farming</a></li>
+          <li>- <a href="#precision">Precision farming</a></li>
+          <li>- <a href="#soil">Soil health</a></li>
+          <li>- <a href="#water">Waterbodies</a></li>
+          <li>- <a href="#wildlife">Wildlife (grassland)</a></li>
+        </ul>
+      </div>
     </div>
 
     <!-- agroforestry -->
@@ -1209,4 +1220,250 @@
     </div> <!-- 2/3 col -->
   </div> <!-- grid-row -->
 
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchBox = document.getElementById('searchbox');
+    const searchButton = document.getElementById('button_1');
+    const clearButton = document.getElementById('clear-search');
+    const contentsSection = document.getElementById('contents-section');
+    
+    // More reliable way to get the results container - find the one with form groups
+    const allTwoThirdsColumns = document.querySelectorAll('.govuk-grid-column-two-thirds');
+    console.log('Total two-thirds columns found:', allTwoThirdsColumns.length);
+    
+    // Debug: check each column
+    let resultsContainer = null;
+    allTwoThirdsColumns.forEach((col, index) => {
+      const formGroups = col.querySelectorAll('.govuk-form-group');
+      console.log(`Column ${index}: ${formGroups.length} form groups`);
+      if (formGroups.length > 0 && !resultsContainer) {
+        resultsContainer = col;
+        console.log(`✓ Using column ${index} as results container`);
+      }
+    });
+    
+    if (!resultsContainer) {
+      console.error('Could not find results container!');
+      return;
+    }
+    
+    let originalState = null;
+    let isSearchActive = false;
+    
+    // Function to save state - will be called when we're sure content is loaded
+    function saveOriginalState() {
+      if (!originalState && resultsContainer) {
+        const formGroups = resultsContainer.querySelectorAll('.govuk-form-group');
+        console.log('Attempting to save state, form groups found:', formGroups.length);
+        
+        if (formGroups.length > 0) {
+          originalState = {
+            containerHTML: resultsContainer.innerHTML,
+            contentsSectionDisplay: contentsSection.style.display
+          };
+          console.log('✓ Original state saved successfully!');
+          console.log('  HTML length:', originalState.containerHTML.length);
+          console.log('  Form groups:', formGroups.length);
+        } else {
+          console.warn('⚠ No form groups found yet, will retry...');
+        }
+      }
+    }
+    
+    // Try to save state multiple times with increasing delays
+    setTimeout(saveOriginalState, 50);
+    setTimeout(saveOriginalState, 200);
+    setTimeout(saveOriginalState, 500);
+
+    // Show/hide clear button based on input
+    searchBox.addEventListener('input', function() {
+      clearButton.style.display = this.value.length > 0 ? 'block' : 'none';
+    });
+
+    // Calculate relevance score for a radio option
+    function calculateRelevance(labelText, searchTerm) {
+      const lowerLabel = labelText.toLowerCase();
+      const lowerSearch = searchTerm.toLowerCase();
+      
+      // Exact match
+      if (lowerLabel === lowerSearch) return 1000;
+      
+      // Starts with search term
+      if (lowerLabel.startsWith(lowerSearch)) return 900;
+      
+      // Contains search term as whole word
+      const regex = new RegExp('\\b' + lowerSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+      if (regex.test(lowerLabel)) return 800;
+      
+      // Contains search term
+      if (lowerLabel.includes(lowerSearch)) return 700;
+      
+      // Calculate word match score
+      const searchWords = lowerSearch.split(/\s+/);
+      const labelWords = lowerLabel.split(/\s+/);
+      let matchScore = 0;
+      
+      searchWords.forEach(searchWord => {
+        labelWords.forEach(labelWord => {
+          if (labelWord.startsWith(searchWord)) matchScore += 50;
+          else if (labelWord.includes(searchWord)) matchScore += 25;
+        });
+      });
+      
+      return matchScore;
+    }
+
+    // Perform search
+    function performSearch() {
+      const searchTerm = searchBox.value.trim();
+      
+      if (!searchTerm) {
+        return;
+      }
+      
+      // Ensure state is saved before searching
+      saveOriginalState();
+      
+      if (!originalState) {
+        console.error('Original state not available');
+        return;
+      }
+
+      isSearchActive = true;
+
+      // Hide contents section
+      contentsSection.style.display = 'none';
+
+      // Collect all radio items with their relevance scores from the original saved state
+      const radioItems = [];
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = originalState.containerHTML;
+      const allFieldsets = tempDiv.querySelectorAll('.govuk-form-group');
+      
+      console.log('Number of fieldsets found:', allFieldsets.length);
+      console.log('Searching for:', searchTerm);
+      
+      allFieldsets.forEach(fieldset => {
+        const radioInputs = fieldset.querySelectorAll('.govuk-radios__item');
+        radioInputs.forEach(radioItem => {
+          const label = radioItem.querySelector('.govuk-radios__label');
+          if (label) {
+            const labelText = label.textContent.trim();
+            const relevance = calculateRelevance(labelText, searchTerm);
+            
+            if (relevance > 0) {
+              radioItems.push({
+                element: radioItem.cloneNode(true),
+                relevance: relevance,
+                labelText: labelText
+              });
+            }
+          }
+        });
+      });
+      
+      console.log('Total matches found:', radioItems.length);
+
+      // Sort by relevance (highest first)
+      radioItems.sort((a, b) => b.relevance - a.relevance);
+
+      // Clear the results container
+      resultsContainer.innerHTML = '';
+
+      // Create search results section
+      if (radioItems.length > 0) {
+        const resultsFieldset = document.createElement('div');
+        resultsFieldset.className = 'govuk-form-group govuk-!-margin-top-4';
+        
+        const fieldsetElement = document.createElement('fieldset');
+        fieldsetElement.className = 'govuk-fieldset';
+        
+        const legend = document.createElement('legend');
+        legend.className = 'govuk-fieldset__legend govuk-fieldset__legend--m';
+        legend.innerHTML = `<h3 class="govuk-fieldset__heading">Search results (${radioItems.length})</h3>`;
+        
+        const radiosDiv = document.createElement('div');
+        radiosDiv.className = 'govuk-radios';
+        radiosDiv.setAttribute('data-module', 'govuk-radios');
+        
+        // Add sorted radio items
+        radioItems.forEach(item => {
+          radiosDiv.appendChild(item.element);
+        });
+        
+        fieldsetElement.appendChild(legend);
+        fieldsetElement.appendChild(radiosDiv);
+        resultsFieldset.appendChild(fieldsetElement);
+        resultsContainer.appendChild(resultsFieldset);
+      } else {
+        // No results found - show helpful message
+        const noResultsContainer = document.createElement('div');
+        noResultsContainer.className = 'govuk-!-margin-top-4';
+        noResultsContainer.innerHTML = `
+          <p class="govuk-body govuk-!-font-weight-bold">There are no matching results.</p>
+          <p class="govuk-body">Improve your search results by:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>removing filters</li>
+            <li>double-checking your spelling</li>
+            <li>using fewer keywords</li>
+            <li>searching for something less specific</li>
+          </ul>
+        `;
+        resultsContainer.appendChild(noResultsContainer);
+      }
+
+      // Add the form and cancel link back
+      const form = document.createElement('form');
+      form.action = 'select-land3';
+      form.method = 'post';
+      form.innerHTML = `
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Continue
+        </button>
+      `;
+      resultsContainer.appendChild(form);
+
+      const cancelLink = document.createElement('p');
+      cancelLink.innerHTML = '<a href="../_common/not-testing" class="govuk-link">Cancel application</a>';
+      resultsContainer.appendChild(cancelLink);
+    }
+
+    // Clear search and restore original state
+    function clearSearch() {
+      if (!originalState) {
+        console.error('Cannot clear - original state not available');
+        return;
+      }
+      
+      // Restore original container content
+      resultsContainer.innerHTML = originalState.containerHTML;
+      contentsSection.style.display = originalState.contentsSectionDisplay || '';
+      
+      searchBox.value = '';
+      clearButton.style.display = 'none';
+      isSearchActive = false;
+    }
+
+    // Event listeners
+    searchButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      performSearch();
+    });
+
+    searchBox.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        performSearch();
+      }
+    });
+
+    clearButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      clearSearch();
+    });
+  });
+</script>
 {% endblock %}
