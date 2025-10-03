@@ -333,7 +333,7 @@ router.post('/add-more-actions4', function (req, res) {
   // Check whether the variable matches a condition
   if (addMoreActionsAnswer == "yes"){
     // Send user to next page
-    res.redirect('/v4-apply/select-base-action2')
+    res.redirect('/v4-apply/select-base-action-radios2')
 
   } else {
     // Send user to ineligible page
@@ -350,7 +350,7 @@ router.post('/add-more-actions5', function (req, res) {
   // Check whether the variable matches a condition
   if (addMoreActionsAnswer == "yes"){
     // Send user to next page
-    res.redirect('/v4-apply/select-base-action3')
+    res.redirect('/v4-apply/select-base-action-radios3')
 
   } else {
     // Send user to ineligible page

@@ -15,7 +15,7 @@
 
 {% block content %}
   <div class="govuk-grid-row" role="main">
-        <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds">
 
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset">
@@ -25,11 +25,14 @@
             </h1>
           </legend>
 
-          <p class="govuk-body">The amount of land entered must be equal to or less than the available area in the land parcel.</p>
-
-          </fieldset>
-        </div>
+          <p class="govuk-body">The quantity of land entered into Legume fallow: CNUM3 must be either:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>the same as</li>
+            <li>less than the total available area of each land parcel</li>
+          </ul>
+        </fieldset>
       </div>
+    </div>
 
         <div class="govuk-grid-column-full">
 
@@ -1466,9 +1469,10 @@
                 <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
                   Continue
                 </button>
-                <a class="govuk-link" href="#">Clear all</a>
+                <a class="govuk-link" href="#">Reset form</a>
           </div>
 
+        <p><a href="../_common/not-testing" class="govuk-link">Cancel application</a></p>
       </form>
 
     </div>
