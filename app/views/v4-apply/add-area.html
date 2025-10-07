@@ -1487,24 +1487,70 @@
     var parcelCheckboxes = document.querySelectorAll('input[name="selectedParcels"]');
     var applyAllAvailableButton = document.getElementById('apply-all-available');
     var cancelLink = document.querySelector('.govuk-button-group .govuk-link');
+    var amountInputs = document.querySelectorAll('input[type="text"][id^="amount-"]');
+    
+    // Load saved values from sessionStorage
+    function loadSavedValues() {
+      amountInputs.forEach(function(input) {
+        var savedValue = sessionStorage.getItem(input.id);
+        if (savedValue) {
+          input.value = savedValue;
+        }
+      });
+      
+      // Also restore checkbox states
+      parcelCheckboxes.forEach(function(checkbox) {
+        var savedCheckState = sessionStorage.getItem(checkbox.id);
+        if (savedCheckState === 'true') {
+          checkbox.checked = true;
+        }
+      });
+      
+      // Update select all checkbox state
+      updateSelectAllState();
+    }
+    
+    // Save values to sessionStorage whenever they change
+    amountInputs.forEach(function(input) {
+      input.addEventListener('input', function() {
+        if (this.value) {
+          sessionStorage.setItem(this.id, this.value);
+        } else {
+          sessionStorage.removeItem(this.id);
+        }
+      });
+    });
+    
+    // Save checkbox states
+    parcelCheckboxes.forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+        sessionStorage.setItem(this.id, this.checked);
+      });
+    });
+    
+    // Update select all checkbox state
+    function updateSelectAllState() {
+      var allSelected = Array.from(parcelCheckboxes).every(function(cb) {
+        return cb.checked;
+      });
+      
+      selectAllCheckbox.checked = allSelected;
+      selectAllCheckbox.indeterminate = !allSelected && Array.from(parcelCheckboxes).some(function(cb) {
+        return cb.checked;
+      });
+    }
     
     selectAllCheckbox.addEventListener('change', function() {
       var isChecked = this.checked;
       parcelCheckboxes.forEach(function(checkbox) {
         checkbox.checked = isChecked;
+        sessionStorage.setItem(checkbox.id, isChecked);
       });
     });
     
     parcelCheckboxes.forEach(function(checkbox) {
       checkbox.addEventListener('change', function() {
-        var allSelected = Array.from(parcelCheckboxes).every(function(cb) {
-          return cb.checked;
-        });
-        
-        selectAllCheckbox.checked = allSelected;
-        selectAllCheckbox.indeterminate = !allSelected && Array.from(parcelCheckboxes).some(function(cb) {
-          return cb.checked;
-        });
+        updateSelectAllState();
       });
     });
     
@@ -1521,6 +1567,8 @@
           
           if (inputField) {
             inputField.value = availableArea;
+            // Save to sessionStorage
+            sessionStorage.setItem(inputField.id, availableArea);
           }
         }
       });
@@ -1533,14 +1581,19 @@
         var allInputFields = document.querySelectorAll('.govuk-input');
         allInputFields.forEach(function(input) {
           input.value = '';
+          sessionStorage.removeItem(input.id);
         });
         
         selectAllCheckbox.checked = false;
         parcelCheckboxes.forEach(function(checkbox) {
           checkbox.checked = false;
+          sessionStorage.removeItem(checkbox.id);
         });
       });
     }
+    
+    // Load saved values when page loads
+    loadSavedValues();
   });
 </script>
 {% endblock %}
