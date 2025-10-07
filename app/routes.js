@@ -359,6 +359,57 @@ router.post('/add-more-actions5', function (req, res) {
 
 })
 
+router.post('/confirm-delete-all-actions', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var confirmDeleteAnswer = req.session.data['confirm-delete-all-actions']
+
+  // Check whether the variable matches a condition
+  if (confirmDeleteAnswer == "yes"){
+    // Send user to list page with deleted action
+    res.redirect('/v4-apply/select-base-action-radios')
+
+  } else {
+    // Send user to tasklist page
+    res.redirect('/v4-apply/add-more-actions')
+  }
+
+})
+
+router.post('/confirm-delete-all-actions2', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var confirmDeleteAnswer = req.session.data['confirm-delete-all-actions2']
+
+  // Check whether the variable matches a condition
+  if (confirmDeleteAnswer == "yes"){
+    // Send user to list page with deleted action
+    res.redirect('/v4-apply/select-base-action-radios')
+
+  } else {
+    // Send user to tasklist page
+    res.redirect('/v4-apply/add-more-actions2')
+  }
+
+})
+
+router.post('/confirm-delete-all-actions3', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var confirmDeleteAnswer = req.session.data['confirm-delete-all-actions3']
+
+  // Check whether the variable matches a condition
+  if (confirmDeleteAnswer == "yes"){
+    // Send user to list page with deleted action
+    res.redirect('/v4-apply/select-base-action-radios')
+
+  } else {
+    // Send user to tasklist page
+    res.redirect('/v4-apply/add-more-actions3')
+  }
+
+})
+
 router.post('/confirm-delete-action', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'
