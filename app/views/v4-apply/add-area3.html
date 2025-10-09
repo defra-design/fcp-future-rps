@@ -588,6 +588,19 @@
     var cancelLink = document.querySelector('.govuk-button-group .govuk-link');
     var amountInputs = document.querySelectorAll('input[type="text"][id^="amount-"]');
     
+    // Check if user came from select-land3.html and clear storage if so
+    if (document.referrer.includes('select-land3')) {
+      // Clear all saved input values
+      amountInputs.forEach(function(input) {
+        sessionStorage.removeItem(input.id);
+      });
+      
+      // Clear all saved checkbox states
+      parcelCheckboxes.forEach(function(checkbox) {
+        sessionStorage.removeItem(checkbox.id);
+      });
+    }
+    
     // Load saved values from sessionStorage
     function loadSavedValues() {
       amountInputs.forEach(function(input) {
