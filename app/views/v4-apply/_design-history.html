@@ -47,6 +47,89 @@
           <li>enabling bulk actions such as 'select all' and quickly applying (for example) the whole available area to chosen land parcels for actions.</li>
         </ul>
 
+        <h2 class="govuk-heading-m">Design approach</h2>
+
+        <h3 class="govuk-heading-s">Iteration 1 - ideation and formative evaluation with farmers</h3>
+
+        <h4 class="govuk-heading-s">Foundational assumptions</h4>
+
+        <p>We approached the ideation work with the following assumptions:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Users have decided which actions to apply to which parcels in advance</li>
+          <li>Users plan by parcel first, then consider actions for that parcel</li>
+          <li>Users prefer to select parcels first and then apply actions second</li>
+          <li>Users would like to add one or more actions to one or more parcels</li>
+          <li>Users are visual workers and think in terms of fields</li>
+          <li>Actions with different ambition levels can be grouped together</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Research and data analysis</h4>
+
+        <p>We reviewed previous research findings and analysed land model data to understand how actions are classified by land use types, land types, and other aspects.</p>
+
+        <p>The land model data revealed the different actions within SFI and their relationship to land cover type, land cover class, and land use.</p>
+
+        <p>This analysis provided an indication of classifications for finding actions and the scale of certain categories users would encounter when searching for actions. As part of the foundational design research, we examined existing patterns from tools such as 'Find funding for land or farms', including search functionality, categorisations, filters, and jump tags for navigating large lists of items. We also explored different models for applying actions to parcels, including one action to many parcels, one parcel to many actions, and variations of these approaches.</p>
+
+        <h4 class="govuk-heading-s">"How might we" statements</h4>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>How might we make it quick and easy to apply one or more actions to one or more parcels?</li>
+          <li>How might we display large lists in a useable way?</li>
+          <li>How might we allow a farmer to choose their preferred action when more than one option is available?</li>
+          <li>How might we enable users to review the actions and parcels they have added?</li>
+          <li>How might we enable users to modify the actions and parcels they have added?</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">High-level user journeys</h4>
+
+        <p>We sketched high-level user journeys mapping user actions, such as viewing and selecting actions from a list, alongside the backend processes that would filter options based on existing land data, perform available area calculations, and automate tasks on behalf of the user.</p>
+
+        <p>Using swim lane diagrams, we documented the components that would be used on specific pages as users progress through the journey—from filtering and choosing actions to selecting parcels.</p>
+
+        <p>We developed four different user journey variations based on whether users select actions first or parcels first, including single actions to many parcels, many parcels to single actions, and other permutations.</p>
+
+        <p>These journeys were mapped at a high level, and the team evaluated the comparative merits and drawbacks of each approach.</p>
+
+        <h4 class="govuk-heading-s">Screen design exploration</h4>
+
+        <p>Building on the high-level user journeys, we sketched screen designs using GOV.UK components on Mural. We explored methods to optimise how users find actions from a long list:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Categorisation of actions using headings within a long list</li>
+          <li>Search functionality to improve findability when users know which action they require</li>
+          <li>Jump tags linked to action categories to enable rapid navigation</li>
+          <li>'Select all' functionality to enable users to quickly select all items on a page</li>
+          <li>Bulk selection capability allowing users to select all parcels from a long list without individual selection</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Data requirements exploration</h4>
+
+        <p>We examined the data items related to actions and parcels to determine what information would help users make informed decisions:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Payment rates for actions</li>
+          <li>Total size of the parcel</li>
+          <li>Total available area of the parcel</li>
+          <li>Whether SSSI features were present on the parcel</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Bulk actions and compliance considerations</h4>
+
+        <p>We explored the feasibility of allowing users to apply a particular area measurement to multiple selected parcels simultaneously, rather than entering the value individually for each parcel. For example, if users wished to apply the whole available area to all selected parcels, the system could enable bulk application of this value across all selections.</p>
+
+        <p>Research questions to be explored with farmers and RPA colleagues included:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Whether this functionality would be practical for farmers' working practices</li>
+          <li>Whether this capability is desirable for farmers when applying actions to multiple parcels</li>
+          <li>Whether this approach is permissible from a policy and compliance perspective</li>
+          <li>Whether RPA processors viewing bulk-applied figures might perceive insufficient due diligence in application completion</li>
+        </ul>
+
+        <h3 class="govuk-heading-s">Iteration 2 - iteration of design, prototyping and usability testing with farmers</h3>
+
   </div>
 </div>
 
