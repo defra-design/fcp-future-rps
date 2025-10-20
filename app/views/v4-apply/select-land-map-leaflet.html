@@ -53,6 +53,9 @@
       margin: 5px 0;
       font-size: 16px;
     }
+    .leaflet-control-attribution {
+      display: none !important;
+    }
   </style>
 {% endblock %}
 
@@ -168,31 +171,6 @@
                 </div>
               </div>
 
-              <!-- CHRW2 -->
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="action-chrw2" name="actions" type="checkbox" value="CHRW2" data-aria-controls="conditional-chrw2">
-                <label class="govuk-label govuk-checkboxes__label" for="action-chrw2">
-                  <strong>CHRW2</strong> - Manage hedgerows
-                </label>
-                <div class="govuk-hint govuk-checkboxes__hint">
-                  Payment rate: £13 per 100m
-                </div>
-              </div>
-              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-chrw2">
-                <div class="govuk-form-group">
-                  <label class="govuk-label" for="quantity-chrw2">
-                    Quantity
-                  </label>
-                  <div class="govuk-hint govuk-checkboxes__hint">
-                    500 100m available
-                  </div>
-                  <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5" id="quantity-chrw2" name="quantity-chrw2" type="text" spellcheck="false">
-                    <div class="govuk-input__suffix" aria-hidden="true">100m</div>
-                  </div>
-                </div>
-              </div>
-
               <!-- CSAM2 -->
               <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="action-csam2" name="actions" type="checkbox" value="CSAM2" data-aria-controls="conditional-csam2">
@@ -293,31 +271,6 @@
                 </div>
               </div>
 
-              <!-- WBD1 -->
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="action-wbd1" name="actions" type="checkbox" value="WBD1" data-aria-controls="conditional-wbd1">
-                <label class="govuk-label govuk-checkboxes__label" for="action-wbd1">
-                  <strong>WBD1</strong> - Manage ponds
-                </label>
-                <div class="govuk-hint govuk-checkboxes__hint">
-                  Payment rate: £257 per pond
-                </div>
-              </div>
-              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-wbd1">
-                <div class="govuk-form-group">
-                  <label class="govuk-label" for="quantity-wbd1">
-                    Quantity
-                  </label>
-                  <div class="govuk-hint govuk-checkboxes__hint">
-                    3 ponds available
-                  </div>
-                  <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5" id="quantity-wbd1" name="quantity-wbd1" type="text" spellcheck="false">
-                    <div class="govuk-input__suffix" aria-hidden="true">pond</div>
-                  </div>
-                </div>
-              </div>
-
               <!-- CNUM2 -->
               <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="action-cnum2" name="actions" type="checkbox" value="CNUM2" data-aria-controls="conditional-cnum2">
@@ -389,31 +342,6 @@
                   <div class="govuk-input__wrapper">
                     <input class="govuk-input govuk-input--width-5" id="quantity-cigl1" name="quantity-cigl1" type="text" spellcheck="false">
                     <div class="govuk-input__suffix" aria-hidden="true">ha</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- BND1 -->
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="action-bnd1" name="actions" type="checkbox" value="BND1" data-aria-controls="conditional-bnd1">
-                <label class="govuk-label govuk-checkboxes__label" for="action-bnd1">
-                  <strong>BND1</strong> - Maintain dry stone walls
-                </label>
-                <div class="govuk-hint govuk-checkboxes__hint">
-                  Payment rate: £27 per 100m
-                </div>
-              </div>
-              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-bnd1">
-                <div class="govuk-form-group">
-                  <label class="govuk-label" for="quantity-bnd1">
-                    Quantity
-                  </label>
-                  <div class="govuk-hint govuk-checkboxes__hint">
-                    250 100m available
-                  </div>
-                  <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5" id="quantity-bnd1" name="quantity-bnd1" type="text" spellcheck="false">
-                    <div class="govuk-input__suffix" aria-hidden="true">100m</div>
                   </div>
                 </div>
               </div>
@@ -704,7 +632,7 @@
           [51.7480, -1.2500],
           [51.7480, -1.2540]
         ],
-        actions: ['CNUM3', 'CAHL1', 'CAHL2', 'CHRW2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'WBD1', 'CNUM2'],
+        actions: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2'],
         color: '#8FBC8F'
       },
       'upper-field': {
@@ -718,7 +646,7 @@
           [51.7500, -1.2510],
           [51.7500, -1.2540]
         ],
-        actions: ['CNUM3', 'CAHL1', 'CHRW2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'WBD1', 'CNUM2', 'SOH1', 'BND1'],
+        actions: ['CNUM3', 'CAHL1', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1'],
         color: '#DEB887'
       },
       'woods-view': {
@@ -732,7 +660,7 @@
           [51.7510, -1.2480],
           [51.7510, -1.2510]
         ],
-        actions: ['CAHL2', 'CHRW2', 'CSAM2', 'BFS1', 'AHW7', 'WBD1', 'SOH1', 'CIGL1', 'BND1', 'AHW3'],
+        actions: ['CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'SOH1', 'CIGL1', 'AHW3', 'CNUM3'],
         color: '#228B22'
       },
       'long-meadow': {
@@ -746,7 +674,7 @@
           [51.7468, -1.2510],
           [51.7468, -1.2540]
         ],
-        actions: ['CNUM2', 'CIGL1', 'CSAM3', 'CAHL1', 'CHRW2', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'PRF1', 'BND1'],
+        actions: ['CNUM2', 'CIGL1', 'CSAM3', 'CAHL1', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'PRF1'],
         color: '#90EE90'
       },
       'river-pasture': {
@@ -760,7 +688,7 @@
           [51.7483, -1.2470],
           [51.7483, -1.2499]
         ],
-        actions: ['BFS1', 'WBD1', 'CAHL1', 'CAHL2', 'CHRW2', 'CIPM2', 'CNUM2', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1'],
+        actions: ['BFS1', 'CAHL1', 'CAHL2', 'CIPM2', 'CNUM2', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1'],
         color: '#87CEEB'
       },
       'top-barn-field': {
@@ -774,7 +702,7 @@
           [51.7500, -1.2485],
           [51.7500, -1.2509]
         ],
-        actions: ['CNUM3', 'SOH1', 'PRF1', 'CSAM2', 'CAHL2', 'BFS1', 'CIPM2', 'CIGL1', 'BND1', 'AHW3', 'CSAM3'],
+        actions: ['CNUM3', 'SOH1', 'PRF1', 'CSAM2', 'CAHL2', 'BFS1', 'CIPM2', 'CIGL1', 'AHW3', 'CSAM3'],
         color: '#F4A460'
       },
       'lower-paddock': {
@@ -788,7 +716,7 @@
           [51.7460, -1.2490],
           [51.7460, -1.2509]
         ],
-        actions: ['CIGL1', 'CNUM2', 'CHRW2', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CSAM3', 'PRF1'],
+        actions: ['CIGL1', 'CNUM2', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CSAM3', 'PRF1'],
         color: '#98FB98'
       },
       'oak-tree-field': {
@@ -802,7 +730,7 @@
           [51.7511, -1.2515],
           [51.7511, -1.2540]
         ],
-        actions: ['CNUM3', 'CHRW2', 'BND1', 'CIPM2', 'AHW7', 'CAHL1', 'BFS1', 'SOH1', 'CIGL1', 'CNUM2', 'AHW3', 'CSAM3'],
+        actions: ['CNUM3', 'CIPM2', 'AHW7', 'CAHL1', 'BFS1', 'SOH1', 'CIGL1', 'CNUM2', 'AHW3', 'CSAM3'],
         color: '#6B8E23'
       },
       'south-slope': {
@@ -816,7 +744,7 @@
           [51.7458, -1.2520],
           [51.7458, -1.2540]
         ],
-        actions: ['SOH1', 'PRF1', 'BND1', 'CNUM3', 'AHW3', 'CAHL2', 'CSAM2', 'BFS1', 'CIPM2', 'WBD1'],
+        actions: ['SOH1', 'PRF1', 'CNUM3', 'AHW3', 'CAHL2', 'CSAM2', 'BFS1', 'CIPM2'],
         color: '#DAA520'
       },
       'mill-field': {
@@ -830,7 +758,7 @@
           [51.7490, -1.2485],
           [51.7490, -1.2509]
         ],
-        actions: ['CSAM2', 'CNUM2', 'BFS1', 'AHW7', 'CIPM2', 'WBD1', 'SOH1', 'CAHL1', 'BND1', 'CHRW2', 'CIGL1', 'CSAM3'],
+        actions: ['CSAM2', 'CNUM2', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'CAHL1', 'CIGL1', 'CSAM3'],
         color: '#BC8F8F'
       },
       'far-corner': {
@@ -844,7 +772,7 @@
           [51.7452, -1.2470],
           [51.7452, -1.2489]
         ],
-        actions: ['CNUM3', 'CSAM3', 'PRF1', 'AHW3', 'CIPM2', 'BFS1', 'WBD1', 'CAHL1', 'CHRW2', 'BND1'],
+        actions: ['CNUM3', 'CSAM3', 'PRF1', 'AHW3', 'CIPM2', 'BFS1', 'CAHL1'],
         color: '#D2B48C'
       }
     };
