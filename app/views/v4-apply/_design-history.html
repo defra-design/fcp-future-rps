@@ -1,0 +1,53 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Design history" %}
+
+{%- block beforeContent -%}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="/index">Future RPS prototypes</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="index">Version 4 (application journey)</a>
+    </li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      Future Facing application journey - Version 4
+      <span class="govuk-caption-xl">Design history</span>
+    </h1>
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">
+
+    <h2 class="govuk-heading-m">Applications with large numbers of parcels and actions - speed, complexity, usability, error rates...</h2>
+
+    <h3 class="govuk-heading-s">The problem</h3>
+    <p>The <a href="https://fcp-combined-offer-144beafe3ff7.herokuapp.com/sfi-private-beta/select-actions">current SFI process</a> (password: farming) for adding actions to parcels is complex, time consuming and doesn't match a farmer's mental model.<br>
+        This has resulted in: </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>farmers paying agents to help them apply</li>
+        <li>invalid applications being made</li>
+        <li>some farmers avoiding applying altogether as it is a barrier</li>
+      </ul>
+
+       <h3 class="govuk-heading-s">Product Owner hypotheses</h3>
+       <p>Our Product Owner hypothesised that it may be possible to reduce completion time for SFI applications which involved large numbers of actions and parcels by exploring:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>giving the user the choice of choosing either actions, or parcels first.</li>
+          <li>allowing multiple actions to be added to the same parcel at once, and vice versa.</li>
+          <li>enabling bulk actions such as 'select all' and quickly applying (for example) the whole available area to chosen land parcels for actions.</li>
+        </ul>
+
+  </div>
+</div>
+
+{% endblock %}
