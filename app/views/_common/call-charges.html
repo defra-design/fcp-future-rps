@@ -1,0 +1,65 @@
+{% extends "layouts/main-thread.html" %}
+
+{% set pageName = "Call charges and phone numbers - Farm payments - GOV.UK" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Call charges and phone numbers
+      </h1>
+
+      <p class="govuk-body">
+        The cost of calling a phone number depends on the digits it starts with, your phone provider and whether you use a landline or mobile.
+      </p>
+      <p class="govuk-body">
+        The costs below are approximate. Check with your phone provider to find out the actual cost, particularly if you’re calling from abroad.
+        Calls from payphones can cost more.
+      </p>
+      <p class="govuk-body">
+        Contact your phone provider if you have problems with call charges or phone bills.
+      </p>
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Number starts with</th>
+          <th scope="col" class="govuk-table__header">Description</th>
+          <th scope="col" class="govuk-table__header" style="width:130px">Cost from landlines per minute (approximate)</th>
+          <th scope="col" class="govuk-table__header" style="width:130px">Cost from mobiles per minute (approximate)</th>
+        </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">01, 02</td>
+          <td class="govuk-table__cell">Geographic numbers for specific parts of the UK</td>
+          <td class="govuk-table__cell">up to 16p</td>
+          <td class="govuk-table__cell">3p to 65p</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">03, 0345</td>
+          <td class="govuk-table__cell">UK-wide numbers</td>
+          <td class="govuk-table__cell">up to 16p</td>
+          <td class="govuk-table__cell">3p to 65p</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">030</td>
+          <td class="govuk-table__cell">Not-for-profit organisations, charities and public bodies</td>
+          <td class="govuk-table__cell">up to 10p</td>
+          <td class="govuk-table__cell">3p to 40p</td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+{% endblock %}
+
