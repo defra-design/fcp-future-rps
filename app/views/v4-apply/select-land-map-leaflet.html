@@ -571,7 +571,13 @@
             </div>
           </div>
 
-        <button type="submit" class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
+        <button type="button" id="save-actions-button" class="govuk-button govuk-button--secondary govuk-!-margin-top-6" data-module="govuk-button">
+          Save actions for this parcel
+        </button><br>
+
+        <p id="save-confirmation-message" style="display: none;">Your actions have been saved for this parcel. Choose another parcel or continue to review your application.</p>
+
+        <button type="submit" id="continue-button" disabled class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
           Continue
         </button>
 
@@ -1071,6 +1077,12 @@
           });
         }
       };
+      
+      // Show confirmation message and enable Continue button when Save actions button is clicked
+      $('#save-actions-button').click(function() {
+        $('#save-confirmation-message').show();
+        $('#continue-button').prop('disabled', false);
+      });
     });
   </script>
 {% endblock %}
