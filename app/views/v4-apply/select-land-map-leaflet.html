@@ -89,8 +89,12 @@
                 <td class="govuk-table__cell" id="total-area">120.3451</td>
               </tr>
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Number of actions applied for</td>
-                <td class="govuk-table__cell" id="actions-applied">0</td>
+                <td class="govuk-table__cell">Available area (ha)</td>
+                <td class="govuk-table__cell" id="available-area">120.3451</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Number of existing actions</td>
+                <td class="govuk-table__cell" id="num-actions">0</td>
               </tr>
             </tbody>
           </table>
@@ -103,23 +107,23 @@
             <tbody class="govuk-table__body">
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('upper-field'); return false;" class="govuk-link">Upper field</a></td>
-                <td class="govuk-table__cell">5.2341 ha</td>
+                <td class="govuk-table__cell">5.2341 ha (5.2341 ha available)</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('long-meadow'); return false;" class="govuk-link">Long meadow</a></td>
-                <td class="govuk-table__cell">8.4521 ha</td>
+                <td class="govuk-table__cell">8.4521 ha (4.4521 ha available)</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('river-pasture'); return false;" class="govuk-link">River pasture</a></td>
-                <td class="govuk-table__cell">15.3267 ha</td>
+                <td class="govuk-table__cell">15.3267 ha (15.3267 ha available)</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('lower-paddock'); return false;" class="govuk-link">Lower paddock</a></td>
-                <td class="govuk-table__cell">3.9152 ha</td>
+                <td class="govuk-table__cell">3.9152 ha (1 ha available)</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('woods-view'); return false;" class="govuk-link">Woods view</a></td>
-                <td class="govuk-table__cell">12.8765 ha</td>
+                <td class="govuk-table__cell">12.8765 ha (7.5000 ha available)</td>
               </tr>
             </tbody>
           </table>
@@ -136,23 +140,23 @@
                  <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('south-slope'); return false;" class="govuk-link">South slope</a></td>
-                          <td class="govuk-table__cell">9.6721 ha</td>
+                          <td class="govuk-table__cell">9.6721 ha (9.6721 ha available)</td>
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('mill-field'); return false;" class="govuk-link">Mill field</a></td>
-                          <td class="govuk-table__cell">7.1358 ha</td>
+                          <td class="govuk-table__cell">7.1358 ha (7.1358 ha available)</td>
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('top-barn-field'); return false;" class="govuk-link">Top barn field</a></td>
-                          <td class="govuk-table__cell">6.7894 ha</td>
+                          <td class="govuk-table__cell">6.7894 ha (6.7894 ha available)</td>
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('far-corner'); return false;" class="govuk-link">Far corner</a></td>
-                          <td class="govuk-table__cell">4.5692 ha</td>
+                          <td class="govuk-table__cell">4.5692 ha (4.5692 ha available)</td>
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('oak-tree-field'); return false;" class="govuk-link">Oak tree field</a></td>
-                          <td class="govuk-table__cell">11.2483 ha</td>
+                          <td class="govuk-table__cell">11.2483 ha (11.2483 ha available)</td>
                         </tr>
                 </tbody>
               </table>
@@ -626,6 +630,8 @@
         osRef: 'S03',
         numParcels: 20,
         totalArea: '120.3451',
+        availableArea: '120.3451',
+        numActions: 0,
         coords: [
           [51.7498, -1.2540],
           [51.7498, -1.2510],
@@ -642,6 +648,8 @@
         osRef: 'S01',
         numParcels: 15,
         totalArea: '5.2341',
+        availableArea: '5.2341',
+        numActions: 0,
         coords: [
           [51.7510, -1.2541],
           [51.7510, -1.2520],
@@ -658,6 +666,8 @@
         osRef: 'S02',
         numParcels: 8,
         totalArea: '12.8765',
+        availableArea: '7.5000',
+        numActions: 1,
         coords: [
           [51.7522, -1.2542],
           [51.7522, -1.2512],
@@ -674,6 +684,8 @@
         osRef: 'S04',
         numParcels: 12,
         totalArea: '8.4521',
+        availableArea: '4.4521',
+        numActions: 1,
         coords: [
           [51.7483, -1.2538],
           [51.7485, -1.2512],
@@ -690,6 +702,8 @@
         osRef: 'S05',
         numParcels: 18,
         totalArea: '15.3267',
+        availableArea: '15.3267',
+        numActions: 0,
         coords: [
           [51.7498, -1.2510],
           [51.7505, -1.2518],
@@ -706,6 +720,8 @@
         osRef: 'S06',
         numParcels: 10,
         totalArea: '6.7894',
+        availableArea: '6.7894',
+        numActions: 0,
         coords: [
           [51.7510, -1.2520],
           [51.7517, -1.2510],
@@ -722,6 +738,8 @@
         osRef: 'S07',
         numParcels: 5,
         totalArea: '3.9152',
+        availableArea: '1',
+        numActions: 2,
         coords: [
           [51.7478, -1.2509],
           [51.7485, -1.2512],
@@ -738,6 +756,8 @@
         osRef: 'S08',
         numParcels: 14,
         totalArea: '11.2483',
+        availableArea: '11.2483',
+        numActions: 0,
         coords: [
           [51.7522, -1.2542],
           [51.7528, -1.2540],
@@ -753,6 +773,8 @@
         osRef: 'S09',
         numParcels: 11,
         totalArea: '9.6721',
+        availableArea: '9.6721',
+        numActions: 0,
         coords: [
           [51.7468, -1.2537],
           [51.7471, -1.2513],
@@ -769,6 +791,8 @@
         osRef: 'S10',
         numParcels: 9,
         totalArea: '7.1358',
+        availableArea: '7.1358',
+        numActions: 0,
         coords: [
           [51.7497, -1.2482],
           [51.7505, -1.2485],
@@ -785,6 +809,8 @@
         osRef: 'S11',
         numParcels: 6,
         totalArea: '4.5692',
+        availableArea: '4.5692',
+        numActions: 0,
         coords: [
           [51.7476, -1.2486],
           [51.7483, -1.2482],
@@ -908,6 +934,8 @@
       document.getElementById('page-parcel-name').textContent = parcel.name;
       document.getElementById('os-ref').textContent = parcel.osRef;
       document.getElementById('total-area').textContent = parcel.totalArea;
+      document.getElementById('available-area').textContent = parcel.availableArea;
+      document.getElementById('num-actions').textContent = parcel.numActions;
       document.getElementById('actions-heading').textContent = 'Available actions on ' + parcel.name;
 
       // Update actions list
