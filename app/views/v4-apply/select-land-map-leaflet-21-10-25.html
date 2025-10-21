@@ -71,105 +71,7 @@
       
       <!-- Left column - Parcel info (1/2) -->
       <div class="govuk-grid-column-one-half">
-
-        <div id="map"></div>
-        <p class="govuk-body-s govuk-!-margin-top-2">
-          {# Click on the field parcels to select and see details.
-        </p> #}
-
-        <div class="govuk-!-margin-bottom-6">
-          <table class="govuk-table">
-            <tbody class="govuk-table__body" id="parcel-info">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">OS Map Sheet Reference</td>
-                <td class="govuk-table__cell" id="os-ref">S03</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Total area (ha)</td>
-                <td class="govuk-table__cell" id="total-area">120.3451</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Number of actions applied for</td>
-                <td class="govuk-table__cell" id="actions-applied">0</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Nearby parcels list -->
-        <h2 class="govuk-heading-s">Nearby parcels</h2>
-        <div>
-          <table class="govuk-table">
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('upper-field'); return false;" class="govuk-link">Upper field</a></td>
-                <td class="govuk-table__cell">5.2341 ha</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('long-meadow'); return false;" class="govuk-link">Long meadow</a></td>
-                <td class="govuk-table__cell">8.4521 ha</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('river-pasture'); return false;" class="govuk-link">River pasture</a></td>
-                <td class="govuk-table__cell">15.3267 ha</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('lower-paddock'); return false;" class="govuk-link">Lower paddock</a></td>
-                <td class="govuk-table__cell">3.9152 ha</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('woods-view'); return false;" class="govuk-link">Woods view</a></td>
-                <td class="govuk-table__cell">12.8765 ha</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-              <details class="govuk-details">
-                <summary class="govuk-details__summary">
-                  <span class="govuk-details__summary-text">
-                    Show 5 more parcels
-                  </span>
-                </summary>
-                <div class="govuk-details__text">
-                  <table class="govuk-table">
-                 <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('south-slope'); return false;" class="govuk-link">South slope</a></td>
-                          <td class="govuk-table__cell">9.6721 ha</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('mill-field'); return false;" class="govuk-link">Mill field</a></td>
-                          <td class="govuk-table__cell">7.1358 ha</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('top-barn-field'); return false;" class="govuk-link">Top barn field</a></td>
-                          <td class="govuk-table__cell">6.7894 ha</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('far-corner'); return false;" class="govuk-link">Far corner</a></td>
-                          <td class="govuk-table__cell">4.5692 ha</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('oak-tree-field'); return false;" class="govuk-link">Oak tree field</a></td>
-                          <td class="govuk-table__cell">11.2483 ha</td>
-                        </tr>
-                </tbody>
-              </table>
-              </div>
-            </details>
-
-
   
-        
-        </div>
-
-
-      
-
-      <!-- Right column - Interactive Map (1/2) -->
-      <div class="govuk-grid-column-one-half">
-
           <h2 class="govuk-heading-s" id="actions-heading">Available actions on Lower Field</h2>
         {# <p>You can search for an action or select from the list.</p> #}
         
@@ -179,7 +81,7 @@
             Search by name or code
           </label>
           <div style="display: flex; gap: 0; max-width: 400px;">
-            <input class="govuk-input" style="width:300px; height:46px;" id="search-actions-map" name="search" type="search" placeholder="Start typing to search...">
+            <input class="govuk-input" style="width:300px; height:44px;" id="search-actions-map" name="search" type="search" placeholder="Start typing to search...">
             <button type="button" id="search-button-map" class="govuk-button" style="height: 44px; margin-bottom: 0; background-color: #1d70b8;" data-module="govuk-button">
               <svg style="display: block; margin-left:0px" class="gem-c-search__icon" width="21" height="21" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
                 <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
@@ -571,21 +473,117 @@
             </div>
           </div>
 
-        <button type="button" id="save-actions-button" class="govuk-button govuk-button--secondary govuk-!-margin-top-6" data-module="govuk-button">
-          Save actions for this parcel
-        </button><br>
-
-        <p id="save-confirmation-message" style="display: none;">Your actions have been saved. Add actions to another parcel or continue to review your application.</p>
-
-        <button type="submit" id="continue-button" disabled class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
+        <button type="submit" class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
           Continue
         </button>
+        
+        </div>
 
+
+      </div>
+
+      <!-- Right column - Interactive Map (1/2) -->
+      <div class="govuk-grid-column-one-half">
+        <div id="map"></div>
+        <p class="govuk-body-s govuk-!-margin-top-2">
+          <strong>Tip:</strong> Click on field parcels to select them. Hover to see details.
+        </p>
+
+        <div class="govuk-!-margin-bottom-6">
+          <table class="govuk-table">
+            <tbody class="govuk-table__body" id="parcel-info">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">OS Map Sheet Reference</td>
+                <td class="govuk-table__cell" id="os-ref">S03</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Total area (ha)</td>
+                <td class="govuk-table__cell" id="total-area">120.3451</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Number of available actions</td>
+                <td class="govuk-table__cell" id="num-parcels">20</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Number of actions applied for</td>
+                <td class="govuk-table__cell" id="actions-applied">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Other parcels list -->
+        <h2 class="govuk-heading-m">Other parcels</h2>
+        <p class="govuk-body-s">Click on the map or select from the list below</p>
+        <div>
+          <table class="govuk-table">
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('upper-field'); return false;" class="govuk-link">Upper field</a></td>
+                <td class="govuk-table__cell">5.2341 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('woods-view'); return false;" class="govuk-link">Woods view</a></td>
+                <td class="govuk-table__cell">12.8765 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('long-meadow'); return false;" class="govuk-link">Long meadow</a></td>
+                <td class="govuk-table__cell">8.4521 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('river-pasture'); return false;" class="govuk-link">River pasture</a></td>
+                <td class="govuk-table__cell">15.3267 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('top-barn-field'); return false;" class="govuk-link">Top barn field</a></td>
+                <td class="govuk-table__cell">6.7894 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('lower-paddock'); return false;" class="govuk-link">Lower paddock</a></td>
+                <td class="govuk-table__cell">3.9152 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('oak-tree-field'); return false;" class="govuk-link">Oak tree field</a></td>
+                <td class="govuk-table__cell">11.2483 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('south-slope'); return false;" class="govuk-link">South slope</a></td>
+                <td class="govuk-table__cell">9.6721 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('mill-field'); return false;" class="govuk-link">Mill field</a></td>
+                <td class="govuk-table__cell">7.1358 ha</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('far-corner'); return false;" class="govuk-link">Far corner</a></td>
+                <td class="govuk-table__cell">4.5692 ha</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
 
       </div>
 
     </div>
+
+    <!-- Application summary section -->
+    {# <div class="govuk-grid-row ">
+      <div class="govuk-grid-column-full">
+
+
+
+        <h2 class="govuk-heading-m">Your application so far</h2>
+        <div class="govuk-!-margin-bottom-6">
+          <p class="govuk-body">Selected actions and parcels</p>
+          <ul class="govuk-list">
+            <li>Action 1</li>
+            <li>Action 2</li>
+            <li>Selected parcels</li>
+          </ul>
+        </div>
+      </div>
+    </div> #}
 
   </div>
 </div>
@@ -905,6 +903,7 @@
       // Update UI
       document.getElementById('page-parcel-name').textContent = parcel.name;
       document.getElementById('os-ref').textContent = parcel.osRef;
+      document.getElementById('num-parcels').textContent = parcel.numParcels;
       document.getElementById('total-area').textContent = parcel.totalArea;
       document.getElementById('actions-heading').textContent = 'Available actions on ' + parcel.name;
 
@@ -964,8 +963,6 @@
           }
           // Hide no results message
           $("#no-results-message").hide();
-          // Show save button when search is cleared
-          $("#save-actions-button").show();
         } else {
           // Search through items
           var visibleCount = 0;
@@ -991,13 +988,11 @@
             }
           });
           
-          // Show/hide no results message and save button based on visible count
+          // Show/hide no results message based on visible count
           if (visibleCount === 0) {
             $("#no-results-message").show();
-            $("#save-actions-button").hide();
           } else {
             $("#no-results-message").hide();
-            $("#save-actions-button").show();
           }
         }
       }
@@ -1081,12 +1076,6 @@
           });
         }
       };
-      
-      // Show confirmation message and enable Continue button when Save actions button is clicked
-      $('#save-actions-button').click(function() {
-        $('#save-confirmation-message').show();
-        $('#continue-button').prop('disabled', false);
-      });
     });
   </script>
 {% endblock %}
