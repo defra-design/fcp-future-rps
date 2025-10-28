@@ -1357,7 +1357,6 @@
       // Attach input event listeners to all quantity inputs
       $(document).on('input', 'input[id^="quantity-"]', function() {
         updateAvailableQuantities();
-        captureCurrentParcelState();
       });
       
       // Update quantities when parcel changes
@@ -1402,6 +1401,9 @@
       
       // Show confirmation message and enable Continue button when Save actions button is clicked
       $('#save-actions-button').click(function() {
+        // Capture the current parcel state when saving
+        captureCurrentParcelState();
+        
         $('#save-confirmation-message').show();
         $('#continue-button').prop('disabled', false);
       });
@@ -1457,8 +1459,8 @@
           }
         }
         
-        // Update application summary
-        captureCurrentParcelState();
+        // Don't update application summary in real-time
+        // Summary will be updated when user clicks "Save actions for this parcel"
       });
     });
   </script>
