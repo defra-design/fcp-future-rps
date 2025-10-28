@@ -94,7 +94,10 @@
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Number of existing actions</td>
-                <td class="govuk-table__cell" id="num-actions">0</td>
+                <td class="govuk-table__cell">
+                  <span id="num-actions">0</span>
+                  <span id="view-existing-link" style="display: none;"> - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a></span>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -582,19 +585,86 @@
         <p id="save-confirmation-message" style="display: none;">Your actions have been saved. Add actions to another parcel or continue to review your application.</p>
 
         <form action="add-more-actions" method="post">
-        <button type="submit" id="continue-button" disabled class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
-          Continue
-        </button>
+          <button type="submit" id="continue-button" disabled class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
+            Continue
+          </button>
         </form>
 
-
-
       </div>
-
     </div>
 
+
   </div>
-</div>
+
+   <hr>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <div style="background-color: #f3f2f1;">
+        <h2 class="govuk-heading-m govuk-!-margin-top-4">Application overview</h2>
+        <div class="govuk-accordion" data-module="govuk-accordion" id="application-summary-accordion">
+          
+          <!-- Existing parcels section -->
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h3 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-1">
+                  Parcels with existing actions on them
+                </span>
+              </h3>
+            </div>
+            <div id="application-summary-accordion-content-1" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-1">
+              <p class="govuk-body">The following parcels already have actions applied to them:</p>
+              
+              <ul class="govuk-list govuk-list--bullet">
+                <li class="govuk-!-margin-bottom-4">
+                  <strong>Woods View</strong>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
+                    <li>Total area: 12.8765 ha</li>
+                    <li>Available area: 7.5000 ha</li>
+                    <li>Number of existing actions: 1</li>
+                  </ul>
+                </li>
+                <li class="govuk-!-margin-bottom-4">
+                  <strong>Long Meadow</strong>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
+                    <li>Total area: 8.4521 ha</li>
+                    <li>Available area: 4.4521 ha</li>
+                    <li>Number of existing actions: 1</li>
+                  </ul>
+                </li>
+                <li class="govuk-!-margin-bottom-4">
+                  <strong>Lower Paddock</strong>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
+                    <li>Total area: 3.9152 ha</li>
+                    <li>Available area: 1 ha</li>
+                    <li>Number of existing actions: 2</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Selected parcels section -->
+          <div class="govuk-accordion__section govuk-accordion__section--expanded">
+            <div class="govuk-accordion__section-header">
+              <h3 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-2">
+                  Parcels you've just added actions to
+                </span>
+              </h3>
+            </div>
+            <div id="application-summary-accordion-content-2" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-2">
+              <p class="govuk-body" id="application-summary-intro" style="display: none;">You have selected actions for the following parcels:</p>
+              <div id="application-summary-empty" style="display: block;">
+                <p class="govuk-body" style="color: #505a5f;">No actions selected yet. Select a parcel and add actions to begin.</p>
+              </div>
+              <ul class="govuk-list govuk-list--bullet" id="application-summary-list" style="display: none;">
+                <!-- Selected parcels and actions will be dynamically added here -->
+              </ul>
+            </div>
+            </div>
+          </div>
+        </div>
 
 {% endblock %}
 
@@ -938,6 +1008,14 @@
       document.getElementById('num-actions').textContent = parcel.numActions;
       document.getElementById('actions-heading').textContent = 'Available actions on ' + parcel.name;
 
+      // Show/hide the "view" link based on number of existing actions
+      var viewLink = document.getElementById('view-existing-link');
+      if (parcel.numActions > 0) {
+        viewLink.style.display = 'inline';
+      } else {
+        viewLink.style.display = 'none';
+      }
+
       // Update actions list
       updateActionsList(parcel.actions);
 
@@ -983,6 +1061,132 @@
 
     // Search functionality
     $(document).ready(function(){
+      // Object to store all parcel selections
+      var parcelSelections = {};
+      
+      // Handle click on "view existing actions" link
+      $('#view-existing-actions-link').on('click', function(e) {
+        e.preventDefault();
+        
+        // Scroll to the accordion
+        $('#application-summary-accordion').get(0).scrollIntoView({behavior: 'smooth', block: 'start'});
+        
+        // Open the "Parcels with existing actions" accordion section
+        setTimeout(function() {
+          var $firstSection = $('#application-summary-accordion .govuk-accordion__section').first();
+          if (!$firstSection.hasClass('govuk-accordion__section--expanded')) {
+            $firstSection.find('.govuk-accordion__section-button').click();
+          }
+        }, 500);
+      });
+      
+      // Function to update the application summary
+      function updateApplicationSummary() {
+        var $summaryList = $('#application-summary-list');
+        var $emptyMessage = $('#application-summary-empty');
+        var $introText = $('#application-summary-intro');
+        
+        // Clear existing content
+        $summaryList.empty();
+        
+        // Check if there are any selections
+        var hasSelections = false;
+        
+        // Iterate through parcel selections
+        Object.keys(parcelSelections).forEach(function(parcelId) {
+          var parcelSelection = parcelSelections[parcelId];
+          
+          if (parcelSelection.actions && parcelSelection.actions.length > 0) {
+            hasSelections = true;
+            
+            var parcel = parcelData[parcelId];
+            var parcelName = parcel ? parcel.name : parcelId;
+            
+            // Create list item for this parcel
+            var $parcelItem = $('<li class="govuk-!-margin-bottom-4"></li>');
+            
+            // Add parcel name
+            $parcelItem.append('<strong>' + parcelName + '</strong>');
+            
+            // Create nested list for actions
+            var $actionList = $('<ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2"></ul>');
+            
+            parcelSelection.actions.forEach(function(action) {
+              var actionText = action.name + ' (' + action.code + ')';
+              if (action.quantity) {
+                actionText += ': ' + action.quantity + ' ha';
+              }
+              $actionList.append('<li>' + actionText + '</li>');
+            });
+            
+            $parcelItem.append($actionList);
+            $summaryList.append($parcelItem);
+          }
+        });
+        
+        // Show/hide appropriate elements
+        if (hasSelections) {
+          $introText.show();
+          $summaryList.show();
+          $emptyMessage.hide();
+        } else {
+          $introText.hide();
+          $summaryList.hide();
+          $emptyMessage.show();
+        }
+      }
+      
+      // Function to get action name from checkbox
+      function getActionName(actionCode) {
+        var $checkbox = $('input[value="' + actionCode + '"]');
+        var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
+        
+        // Extract just the action name (before the colon and code)
+        var parts = labelText.split(':');
+        if (parts.length > 1) {
+          return parts[0].trim();
+        }
+        return labelText;
+      }
+      
+      // Function to capture current parcel state
+      function captureCurrentParcelState() {
+        if (!currentSelectedParcel) return;
+        
+        var actions = [];
+        
+        // Get all checked actions for current parcel
+        $('input[name="actions"]:checked').each(function() {
+          var $checkbox = $(this);
+          var actionCode = $checkbox.val();
+          var actionName = getActionName(actionCode);
+          
+          // Get quantity if entered
+          var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
+          var quantity = $quantityInput.val() ? parseFloat($quantityInput.val()) : null;
+          
+          actions.push({
+            code: actionCode,
+            name: actionName,
+            quantity: quantity
+          });
+        });
+        
+        // Update or create parcel selection
+        if (actions.length > 0) {
+          parcelSelections[currentSelectedParcel] = {
+            parcelId: currentSelectedParcel,
+            parcelName: parcelData[currentSelectedParcel].name,
+            actions: actions
+          };
+        } else {
+          // Remove parcel if no actions selected
+          delete parcelSelections[currentSelectedParcel];
+        }
+        
+        updateApplicationSummary();
+      }
+      
       function performSearch() {
         var filter = $("#search-actions-map").val();
         
@@ -1153,6 +1357,7 @@
       // Attach input event listeners to all quantity inputs
       $(document).on('input', 'input[id^="quantity-"]', function() {
         updateAvailableQuantities();
+        captureCurrentParcelState();
       });
       
       // Update quantities when parcel changes
@@ -1251,6 +1456,9 @@
             });
           }
         }
+        
+        // Update application summary
+        captureCurrentParcelState();
       });
     });
   </script>
