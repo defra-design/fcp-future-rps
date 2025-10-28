@@ -1062,6 +1062,7 @@
         });
         
         var remainingHa = Math.max(0, totalAreaHa - totalUsedHa);
+        var isOverLimit = totalUsedHa > totalAreaHa;
         
         // Update all hectare hints
         $('.govuk-checkboxes__conditional').each(function() {
@@ -1074,8 +1075,48 @@
           }
         });
         
-        // Check if all available area is used
-        if (remainingHa === 0) {
+        // Handle over-limit errors
+        if (isOverLimit) {
+          var excessHa = totalUsedHa - totalAreaHa;
+          
+          // Add error styling to inputs with values
+          $('input[id^="quantity-"]').each(function() {
+            var $input = $(this);
+            var suffix = $input.siblings('.govuk-input__suffix').text();
+            var value = parseFloat($input.val()) || 0;
+            
+            if (suffix === 'ha' && value > 0) {
+              var $formGroup = $input.closest('.govuk-form-group');
+              
+              // Add error class to input
+              $input.addClass('govuk-input--error');
+              
+              // Add error class to form group if not already present
+              if (!$formGroup.hasClass('govuk-form-group--error')) {
+                $formGroup.addClass('govuk-form-group--error');
+              }
+              
+              // Add error message if not already present
+              if (!$formGroup.find('.govuk-error-message').length) {
+                var errorHtml = '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Total area exceeds ' + totalAreaHa + ' ha available on this parcel</p>';
+                $formGroup.find('label').after(errorHtml);
+              }
+            }
+          });
+        } else {
+          // Remove error styling when within limit
+          $('input[id^="quantity-"]').each(function() {
+            var $input = $(this);
+            var $formGroup = $input.closest('.govuk-form-group');
+            
+            $input.removeClass('govuk-input--error');
+            $formGroup.removeClass('govuk-form-group--error');
+            $formGroup.find('.govuk-error-message').remove();
+          });
+        }
+        
+        // Check if all available area is used (but not exceeded)
+        if (remainingHa === 0 && !isOverLimit) {
           // Disable all unchecked, compatible (non-disabled) checkboxes
           $('input[name="actions"]').each(function() {
             var $cb = $(this);
