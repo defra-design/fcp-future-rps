@@ -1117,6 +1117,54 @@
         $('#save-confirmation-message').show();
         $('#continue-button').prop('disabled', false);
       });
+      
+      // Handle action checkbox changes to simulate SFI compatibility rules
+      $(document).on('change', 'input[name="actions"]', function() {
+        var $checkbox = $(this);
+        var isChecked = $checkbox.is(':checked');
+        
+        if (isChecked) {
+          // Get all visible checkboxes that are not currently checked
+          var $allCheckboxes = $('input[name="actions"]').filter(function() {
+            var $item = $(this).closest('.govuk-checkboxes__item');
+            return $item.css('display') !== 'none' && !$(this).is(':checked');
+          });
+          
+          // Randomly disable 50% of the unchecked checkboxes
+          var totalToDisable = Math.floor($allCheckboxes.length * 0.5);
+          
+          // Shuffle the array of checkboxes
+          var shuffled = $allCheckboxes.toArray().sort(function() { return 0.5 - Math.random(); });
+          
+          // Disable the first 50%
+          for (var i = 0; i < totalToDisable; i++) {
+            var $itemToDisable = $(shuffled[i]);
+            $itemToDisable.prop('disabled', true);
+            
+            // Add visual styling to show it's disabled
+            $itemToDisable.closest('.govuk-checkboxes__item').css('opacity', '0.5');
+            
+            // Add hint to explain why it's disabled
+            var $label = $itemToDisable.siblings('.govuk-checkboxes__label');
+            if (!$label.find('.compatibility-hint').length) {
+              $label.append('<span class="compatibility-hint" style="display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;">Not compatible with selected actions</span>');
+            }
+          }
+        } else {
+          // When unchecking, check if we should re-enable checkboxes
+          // Only re-enable if no other checkboxes are checked
+          var $checkedBoxes = $('input[name="actions"]:checked');
+          
+          if ($checkedBoxes.length === 0) {
+            // Re-enable all checkboxes
+            $('input[name="actions"]').each(function() {
+              $(this).prop('disabled', false);
+              $(this).closest('.govuk-checkboxes__item').css('opacity', '1');
+              $(this).siblings('.govuk-checkboxes__label').find('.compatibility-hint').remove();
+            });
+          }
+        }
+      });
     });
   </script>
 {% endblock %}
