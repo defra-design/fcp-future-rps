@@ -1046,7 +1046,7 @@
         if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) return;
         
         var parcel = parcelData[currentSelectedParcel];
-        var totalAreaHa = parseFloat(parcel.totalArea);
+        var totalAreaHa = parseFloat(parcel.availableArea);
         
         // Calculate total used for hectares
         var totalUsedHa = 0;
@@ -1073,6 +1073,40 @@
             $hint.text(remainingHa.toFixed(4) + ' ha available');
           }
         });
+        
+        // Check if all available area is used
+        if (remainingHa === 0) {
+          // Disable all unchecked, compatible (non-disabled) checkboxes
+          $('input[name="actions"]').each(function() {
+            var $cb = $(this);
+            var $item = $cb.closest('.govuk-checkboxes__item');
+            
+            // Only disable if: not checked, visible, and not already disabled due to compatibility
+            if (!$cb.is(':checked') && $item.css('display') !== 'none' && !$cb.prop('disabled')) {
+              $cb.prop('disabled', true);
+              $cb.attr('data-disabled-reason', 'area-full');
+              $item.css('opacity', '0.5');
+              
+              var $label = $cb.siblings('.govuk-checkboxes__label');
+              if (!$label.find('.area-full-hint').length) {
+                $label.append('<span class="area-full-hint" style="display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;">All available area on land parcel used</span>');
+              }
+            }
+          });
+        } else {
+          // Re-enable checkboxes that were disabled due to area being full
+          $('input[name="actions"]').each(function() {
+            var $cb = $(this);
+            if ($cb.attr('data-disabled-reason') === 'area-full') {
+              $cb.prop('disabled', false);
+              $cb.removeAttr('data-disabled-reason');
+              
+              var $item = $cb.closest('.govuk-checkboxes__item');
+              $item.css('opacity', '1');
+              $cb.siblings('.govuk-checkboxes__label').find('.area-full-hint').remove();
+            }
+          });
+        }
       }
       
       // Attach input event listeners to all quantity inputs
@@ -1088,6 +1122,14 @@
         // Clear all quantity inputs
         $('input[id^="quantity-"]').val('');
         
+        // Re-enable all checkboxes and clear all hints when changing parcels
+        $('input[name="actions"]').each(function() {
+          $(this).prop('disabled', false);
+          $(this).removeAttr('data-disabled-reason');
+          $(this).closest('.govuk-checkboxes__item').css('opacity', '1');
+          $(this).siblings('.govuk-checkboxes__label').find('.compatibility-hint, .area-full-hint').remove();
+        });
+        
         // Reset hints to show total available
         if (parcelData[parcelId]) {
           var parcel = parcelData[parcelId];
@@ -1097,7 +1139,7 @@
             var $suffix = $conditional.find('.govuk-input__suffix');
             
             if ($suffix.text() === 'ha') {
-              $hint.text(parcel.totalArea + ' ha available');
+              $hint.text(parcel.availableArea + ' ha available');
             } else if ($suffix.text() === '100m') {
               // Keep original values for 100m
               if ($hint.text().indexOf('500') > -1) {
@@ -1156,11 +1198,15 @@
           var $checkedBoxes = $('input[name="actions"]:checked');
           
           if ($checkedBoxes.length === 0) {
-            // Re-enable all checkboxes
+            // Re-enable all checkboxes that were disabled due to compatibility
             $('input[name="actions"]').each(function() {
-              $(this).prop('disabled', false);
-              $(this).closest('.govuk-checkboxes__item').css('opacity', '1');
-              $(this).siblings('.govuk-checkboxes__label').find('.compatibility-hint').remove();
+              var $cb = $(this);
+              // Only re-enable if it was disabled due to compatibility, not area-full
+              if ($cb.attr('data-disabled-reason') !== 'area-full') {
+                $cb.prop('disabled', false);
+                $cb.closest('.govuk-checkboxes__item').css('opacity', '1');
+                $cb.siblings('.govuk-checkboxes__label').find('.compatibility-hint').remove();
+              }
             });
           }
         }
