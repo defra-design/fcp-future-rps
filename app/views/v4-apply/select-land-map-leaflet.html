@@ -615,48 +615,78 @@
             <div id="application-summary-accordion-content-1" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-1">
               <p class="govuk-body">The following parcels already have actions applied to them:</p>
               
-              <ul class="govuk-list govuk-list--bullet">
-                <li class="govuk-!-margin-bottom-4">
-                  <strong>Woods View</strong>
-                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
-                    <li>Total area: 12.8765 ha</li>
-                    <li>Available area: 7.5000 ha</li>
-                    <li>Number of existing actions: 1</li>
-                    <li>Existing actions:
-                      <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                        <li>Multi-species winter cover crop: CSAM2</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                  <strong>Long Meadow</strong>
-                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
-                    <li>Total area: 8.4521 ha</li>
-                    <li>Available area: 4.4521 ha</li>
-                    <li>Number of existing actions: 1</li>
-                    <li>Existing actions:
-                      <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                        <li>Legumes on improved grassland: CNUM2</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                  <strong>Lower Paddock</strong>
-                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
-                    <li>Total area: 3.9152 ha</li>
-                    <li>Available area: 1 ha</li>
-                    <li>Number of existing actions: 2</li>
-                    <li>Existing actions:
-                      <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1">
-                        <li>Take grassland field corners or blocks out of management: CIGL1</li>
-                        <li>Pollen and nectar flower mix: CAHL1</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
+              <h2 class="govuk-heading-m">Woods View</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">12.8765 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">7.5000 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of existing actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Existing actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Multi-species winter cover crop: CSAM2</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-m">Long Meadow</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">8.4521 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">4.4521 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of existing actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Existing actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Legumes on improved grassland: CNUM2</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-m">Lower Paddock</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">3.9152 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">1 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of existing actions</dt>
+                  <dd class="govuk-summary-list__value">2</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Existing actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Take grassland field corners or blocks out of management: CIGL1</li>
+                      <li>Pollen and nectar flower mix: CAHL1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
             </div>
           </div>
 
@@ -674,9 +704,9 @@
               <div id="application-summary-empty" style="display: block;">
                 <p class="govuk-body" style="color: #505a5f;">No actions selected yet. Select a parcel and add actions to begin.</p>
               </div>
-              <ul class="govuk-list govuk-list--bullet" id="application-summary-list" style="display: none;">
+              <div id="application-summary-list" style="display: none;">
                 <!-- Selected parcels and actions will be dynamically added here -->
-              </ul>
+              </div>
             </div>
             </div>
           </div>
@@ -1098,12 +1128,12 @@
       
       // Function to update the application summary
       function updateApplicationSummary() {
-        var $summaryList = $('#application-summary-list');
+        var $summaryContainer = $('#application-summary-list');
         var $emptyMessage = $('#application-summary-empty');
         var $introText = $('#application-summary-intro');
         
         // Clear existing content
-        $summaryList.empty();
+        $summaryContainer.empty();
         
         // Check if there are any selections
         var hasSelections = false;
@@ -1118,15 +1148,52 @@
             var parcel = parcelData[parcelId];
             var parcelName = parcel ? parcel.name : parcelId;
             
-            // Create list item for this parcel
-            var $parcelItem = $('<li class="govuk-!-margin-bottom-4"></li>');
+            // Create H2 heading for parcel name
+            var $parcelHeading = $('<h2 class="govuk-heading-m"></h2>').text(parcelName);
+            $summaryContainer.append($parcelHeading);
             
-            // Add parcel name
-            $parcelItem.append('<strong>' + parcelName + '</strong>');
+            // Create summary list
+            var $summaryList = $('<dl class="govuk-summary-list govuk-!-margin-bottom-9"></dl>');
             
-            // Create nested list for actions
-            var $actionList = $('<ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2"></ul>');
+            // Add total area row
+            var $totalAreaRow = $('<div class="govuk-summary-list__row"></div>');
+            var $totalAreaKey = $('<dt class="govuk-summary-list__key"></dt>').text('Total area');
+            var $totalAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(parcel.totalArea + ' ha');
+            $totalAreaRow.append($totalAreaKey).append($totalAreaValue);
+            $summaryList.append($totalAreaRow);
             
+            // Calculate total area used by actions
+            var totalUsedArea = 0;
+            parcelSelection.actions.forEach(function(action) {
+              if (action.quantity) {
+                totalUsedArea += parseFloat(action.quantity);
+              }
+            });
+            
+            // Calculate available area left (available area minus area used)
+            var availableAreaLeft = parseFloat(parcel.availableArea) - totalUsedArea;
+            
+            // Add available area left row
+            var $availableAreaRow = $('<div class="govuk-summary-list__row"></div>');
+            var $availableAreaKey = $('<dt class="govuk-summary-list__key"></dt>').text('Available area left');
+            var $availableAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(availableAreaLeft.toFixed(4) + ' ha');
+            $availableAreaRow.append($availableAreaKey).append($availableAreaValue);
+            $summaryList.append($availableAreaRow);
+            
+            // Add area used row
+            var $areaUsedRow = $('<div class="govuk-summary-list__row"></div>');
+            var $areaUsedKey = $('<dt class="govuk-summary-list__key"></dt>').text('Area used for actions');
+            var $areaUsedValue = $('<dd class="govuk-summary-list__value"></dd>').text(totalUsedArea.toFixed(4) + ' ha');
+            $areaUsedRow.append($areaUsedKey).append($areaUsedValue);
+            $summaryList.append($areaUsedRow);
+            
+            // Add actions row
+            var $actionsRow = $('<div class="govuk-summary-list__row"></div>');
+            var $actionsKey = $('<dt class="govuk-summary-list__key"></dt>').text('Actions');
+            var $actionsValue = $('<dd class="govuk-summary-list__value"></dd>');
+            
+            // Create action list
+            var $actionList = $('<ul class="govuk-list"></ul>');
             parcelSelection.actions.forEach(function(action) {
               var actionText = action.name + ' (' + action.code + ')';
               if (action.quantity) {
@@ -1135,19 +1202,23 @@
               $actionList.append('<li>' + actionText + '</li>');
             });
             
-            $parcelItem.append($actionList);
-            $summaryList.append($parcelItem);
+            $actionsValue.append($actionList);
+            $actionsRow.append($actionsKey).append($actionsValue);
+            $summaryList.append($actionsRow);
+            
+            // Append the summary list to the container
+            $summaryContainer.append($summaryList);
           }
         });
         
         // Show/hide appropriate elements
         if (hasSelections) {
           $introText.show();
-          $summaryList.show();
+          $summaryContainer.show();
           $emptyMessage.hide();
         } else {
           $introText.hide();
-          $summaryList.hide();
+          $summaryContainer.hide();
           $emptyMessage.show();
         }
       }
