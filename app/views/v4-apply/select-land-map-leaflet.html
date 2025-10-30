@@ -65,7 +65,8 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l" id="page-heading">Select land for your actions</h1>
-    <p>This shows the available actions for the selected parcel based on the land data held for you. Select a parcel from the map or list below.</p><br><br>
+    <p id="select-parcel-text">Select a parcel from the map or list below.</p>
+    <p id="selected-parcel-text" style="display: none;">This shows the available actions for the selected parcel based on the land data held for you.</p><br><br>
 
     <!-- Two column layout -->
     <div class="govuk-grid-row">
@@ -249,6 +250,7 @@
       <!-- Right column - Interactive Map (1/2) -->
       <div class="govuk-grid-column-one-half">
 
+        <div id="actions-section" style="display: none;">
           <h2 class="govuk-heading-s" id="actions-heading">Available actions</h2>
         {# <p>You can search for an action or select from the list.</p> #}
         
@@ -661,6 +663,7 @@
             Continue
           </button>
         </form>
+        </div>
 
       </div>
     </div>
@@ -1349,6 +1352,8 @@
 
       // Update UI
       document.getElementById('page-heading').textContent = "Choose actions for '" + parcel.name + "'";
+      document.getElementById('select-parcel-text').style.display = 'none';
+      document.getElementById('selected-parcel-text').style.display = 'block';
       document.getElementById('os-ref').textContent = parcel.osRef;
       document.getElementById('total-area').textContent = parcel.totalArea;
       document.getElementById('available-area').textContent = parcel.availableArea;
@@ -1357,6 +1362,9 @@
 
       // Show the parcel info table
       document.getElementById('parcel-info-container').style.display = 'block';
+
+      // Show the actions section
+      document.getElementById('actions-section').style.display = 'block';
 
       // Show/hide parcel lists based on location
       if (parcel.location === 'oxfordshire') {
