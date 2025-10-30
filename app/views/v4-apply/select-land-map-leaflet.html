@@ -65,8 +65,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l" id="page-heading">Select land for your actions</h1>
-    <p id="select-parcel-text">Select a parcel from the map or list below.</p>
-    <p id="selected-parcel-text" style="display: none;">This shows the available actions for the selected parcel based on the land data held for you.</p><br><br>
+    <p id="select-parcel-text">Your available land is grouped by Ordnance Survey map sheet references. To view your land parcels, click on the OS map sheet reference links in the table, or the icons in the map.<br><br>
+        You'll then be able to add actions to parcels.</p>
+    <p id="selected-parcel-text" style="display: none;">This shows the available actions for the selected parcel based on the land data held for you.</p>
 
     <!-- Two column layout -->
     <div class="govuk-grid-row">
@@ -80,6 +81,7 @@
         </p> #}
 
         <div class="govuk-!-margin-bottom-6" id="parcel-info-container" style="display: none;">
+
           <table class="govuk-table">
             <tbody class="govuk-table__body" id="parcel-info">
               <tr class="govuk-table__row">
@@ -106,9 +108,10 @@
         </div>
 
         <!-- Nearby parcels list -->
-        <h2 class="govuk-heading-s">Your parcels</h2>
+        <div id="parcels-list-section" style="display: none;">
+        {# <h2 class="govuk-heading-s">Your parcels</h2> #}
         <div id="oxfordshire-parcels">
-        <p class="govuk-body-s">Oxfordshire</p>
+        <h2 class="govuk-heading-s">Oak Tree Farm parcels</h2>
         <div>
           <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -139,7 +142,7 @@
               <details class="govuk-details">
                 <summary class="govuk-details__summary">
                   <span class="govuk-details__summary-text">
-                    Show 5 more Oxfordshire parcels
+                    Show 5 more Oak Tree Farm parcels
                   </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -172,7 +175,7 @@
         </div>
 
         <div id="buckinghamshire-parcels">
-        <p class="govuk-body-s govuk-!-margin-top-6">Buckinghamshire</p>
+        <h2 class="govuk-heading-s">Blackberry Farm parcels</h2>
         <div>
           <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -203,7 +206,7 @@
               <details class="govuk-details">
                 <summary class="govuk-details__summary">
                   <span class="govuk-details__summary-text">
-                    Show 5 more Buckinghamshire parcels
+                    Show 5 more Blackberry Farm parcels
                   </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -243,12 +246,59 @@
   
         
         </div>
+        </div>
 
 
       
 
       <!-- Right column - Interactive Map (1/2) -->
       <div class="govuk-grid-column-one-half">
+
+        <div id="os-map-references">
+        <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">OS Map Sheet Reference SO1</a></p>
+        <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Number of available land parcels</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">20</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Total area (ha)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">120.3451</td>
+          </tr>
+          <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Number of land parcels used for SFI actions</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+              <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Number of SFI actions applied for</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">OS Map Sheet Reference BO9</a></p>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Number of available land parcels</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">17</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Total area (ha)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">80.3160</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Number of land parcels used for SFI actions</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+              <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Number of SFI actions applied for</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+        </tbody>
+      </table>
+        </div>
 
         <div id="actions-section" style="display: none;">
           <h2 class="govuk-heading-s" id="actions-heading">Available actions</h2>
@@ -672,6 +722,7 @@
   </div>
 
    <hr>
+    <div id="parcels-actions-summary-section" style="display: none;">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         <div style="background-color: #f3f2f1; margin-top: 20px; padding: 20px; border-radius: 5px;">
@@ -786,6 +837,8 @@
             </div>
           </div>
         </div>
+    </div>
+    </div>
 
 {% endblock %}
 
@@ -1024,7 +1077,7 @@
         actions: ['CNUM3', 'CSAM3', 'PRF1', 'AHW3', 'CIPM2', 'BFS1', 'CAHL1'],
         color: '#D2B48C'
       },
-      // Buckinghamshire parcels (approximately 50 miles east)
+      // Blackberry Farm parcels (approximately 50 miles east)
       'north-field-bucks': {
         name: 'North Field',
         osRef: 'B01',
@@ -1312,8 +1365,12 @@
       // Click event
       polygon.on('click', function(e) {
         selectParcel(parcelId);
-        // Zoom to the parcel when clicked
-        map.setView(this.getBounds().getCenter(), 14);
+        // Only zoom if no parcel is currently selected, otherwise just pan
+        if (currentSelectedParcel === null) {
+          map.setView(this.getBounds().getCenter(), 14);
+        } else {
+          map.panTo(this.getBounds().getCenter());
+        }
       });
 
       // Add label
@@ -1329,8 +1386,12 @@
       // Make label clickable
       label.on('click', function(e) {
         selectParcel(parcelId);
-        // Zoom to the parcel when clicked
-        map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
+        // Only zoom if no parcel is currently selected, otherwise just pan
+        if (currentSelectedParcel === null) {
+          map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
+        } else {
+          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
+        }
       });
     });
 
@@ -1338,6 +1399,9 @@
     function selectParcel(parcelId) {
       var parcel = parcelData[parcelId];
       if (!parcel) return;
+
+      // Track if this is the first selection
+      var isFirstSelection = (currentSelectedParcel === null);
 
       // Reset previous selection
       if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
@@ -1360,11 +1424,20 @@
       document.getElementById('num-actions').textContent = parcel.numActions;
       document.getElementById('actions-heading').textContent = 'Available actions on ' + parcel.name;
 
+      // Hide the OS Map References tables
+      document.getElementById('os-map-references').style.display = 'none';
+
+      // Show the parcels and actions summary section
+      document.getElementById('parcels-actions-summary-section').style.display = 'block';
+
       // Show the parcel info table
       document.getElementById('parcel-info-container').style.display = 'block';
 
       // Show the actions section
       document.getElementById('actions-section').style.display = 'block';
+
+      // Show the parcels list section
+      document.getElementById('parcels-list-section').style.display = 'block';
 
       // Show/hide parcel lists based on location
       if (parcel.location === 'oxfordshire') {
@@ -1390,9 +1463,15 @@
       // Update actions list
       updateActionsList(parcel.actions);
 
-      // Pan map to parcel
+      // Pan map to parcel - maintain zoom if switching between parcels
       if (parcelPolygons[parcelId]) {
-        map.fitBounds(parcelPolygons[parcelId].getBounds(), {padding: [50, 50]});
+        if (isFirstSelection) {
+          // First selection, fit bounds
+          map.fitBounds(parcelPolygons[parcelId].getBounds(), {padding: [50, 50]});
+        } else {
+          // Switching parcels, just pan to center maintaining zoom
+          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
+        }
       }
     }
 
@@ -1881,6 +1960,31 @@
         
         // Don't update application summary in real-time
         // Summary will be updated when user clicks "Save actions for this parcel"
+      });
+      
+      // Handle clicks on OS Map Sheet Reference links
+      $(document).ready(function() {
+        // Click handler for Oak Tree Farm link (SO1)
+        $('a.govuk-link').filter(function() {
+          return $(this).text() === 'OS Map Sheet Reference SO1';
+        }).on('click', function(e) {
+          e.preventDefault();
+          // Show the parcels and actions summary section
+          document.getElementById('parcels-actions-summary-section').style.display = 'block';
+          // Zoom to Oak Tree Farm location - shifted east to center parcels in visible area
+          map.setView([51.7505, -1.2520], 15);
+        });
+        
+        // Click handler for Blackberry Farm link (BO9)
+        $('a.govuk-link').filter(function() {
+          return $(this).text() === 'OS Map Sheet Reference BO9';
+        }).on('click', function(e) {
+          e.preventDefault();
+          // Show the parcels and actions summary section
+          document.getElementById('parcels-actions-summary-section').style.display = 'block';
+          // Zoom to Blackberry Farm location - shifted east to center parcels in visible area
+          map.setView([51.9525, -0.7520], 15);
+        });
       });
     });
   </script>
