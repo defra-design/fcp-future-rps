@@ -729,7 +729,27 @@
         <h2 class="govuk-heading-m">Parcels and actions summary</h2>
         <div class="govuk-accordion" data-module="govuk-accordion" id="application-summary-accordion">
           
-          <!-- Existing parcels section -->
+
+          <!-- Selected parcels section -->
+          <div class="govuk-accordion__section govuk-accordion__section--expanded">
+            <div class="govuk-accordion__section-header">
+              <h3 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-2">
+                  Parcels you've just added actions to
+                </span>
+              </h3>
+            </div>
+            <div id="application-summary-accordion-content-2" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-2">
+              <p class="govuk-body" id="application-summary-intro" style="display: none;">You have selected actions for the following parcels:</p>
+              <div id="application-summary-empty" style="display: block;">
+                <p class="govuk-body" style="color: #505a5f;">No actions selected yet. Select a parcel and add actions to begin.</p>
+              </div>
+              <div id="application-summary-list" style="display: none;">
+                <!-- Selected parcels and actions will be dynamically added here -->
+              </div>
+            </div>
+            </div>
+                      <!-- Existing parcels section -->
           <div class="govuk-accordion__section">
             <div class="govuk-accordion__section-header">
               <h3 class="govuk-accordion__section-heading">
@@ -893,25 +913,6 @@
             </div>
           </div>
 
-          <!-- Selected parcels section -->
-          <div class="govuk-accordion__section govuk-accordion__section--expanded">
-            <div class="govuk-accordion__section-header">
-              <h3 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-2">
-                  Parcels you've just added actions to
-                </span>
-              </h3>
-            </div>
-            <div id="application-summary-accordion-content-2" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-2">
-              <p class="govuk-body" id="application-summary-intro" style="display: none;">You have selected actions for the following parcels:</p>
-              <div id="application-summary-empty" style="display: block;">
-                <p class="govuk-body" style="color: #505a5f;">No actions selected yet. Select a parcel and add actions to begin.</p>
-              </div>
-              <div id="application-summary-list" style="display: none;">
-                <!-- Selected parcels and actions will be dynamically added here -->
-              </div>
-            </div>
-            </div>
           </div>
         </div>
     </div>
