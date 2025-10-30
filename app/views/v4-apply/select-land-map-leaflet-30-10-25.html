@@ -34,7 +34,6 @@
       font-weight: normal;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
       white-space: nowrap;
-      cursor: pointer;
     }
     .leaflet-popup-content-wrapper {
       font-family: "GDS Transport", arial, sans-serif;
@@ -64,8 +63,8 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-l" id="page-heading">Select land for your actions</h1>
-    <p>This shows the available actions for the selected parcel based on the land data held for you. Select a parcel from the map or list below.</p><br><br>
+    <h1 class="govuk-heading-l">Choose actions for '<span id="page-parcel-name">Lower Field</span>'</h1>
+    <p>This shows the available actions for the selected parcel based on the land data held for you.</p><br><br>
 
     <!-- Two column layout -->
     <div class="govuk-grid-row">
@@ -78,25 +77,25 @@
           {# Click on the field parcels to select and see details.
         </p> #}
 
-        <div class="govuk-!-margin-bottom-6" id="parcel-info-container" style="display: none;">
+        <div class="govuk-!-margin-bottom-6">
           <table class="govuk-table">
             <tbody class="govuk-table__body" id="parcel-info">
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">OS Map Sheet Reference</td>
-                <td class="govuk-table__cell" id="os-ref">-</td>
+                <td class="govuk-table__cell" id="os-ref">S03</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Total area (ha)</td>
-                <td class="govuk-table__cell" id="total-area">-</td>
+                <td class="govuk-table__cell" id="total-area">120.3451</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Available area (ha)</td>
-                <td class="govuk-table__cell" id="available-area">-</td>
+                <td class="govuk-table__cell" id="available-area">120.3451</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Number of existing actions</td>
                 <td class="govuk-table__cell">
-                  <span id="num-actions">-</span>
+                  <span id="num-actions">0</span>
                   <span id="view-existing-link" style="display: none;"> - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a></span>
                 </td>
               </tr>
@@ -105,9 +104,7 @@
         </div>
 
         <!-- Nearby parcels list -->
-        <h2 class="govuk-heading-s">Your parcels</h2>
-        <div id="oxfordshire-parcels">
-        <p class="govuk-body-s">Oxfordshire</p>
+        <h2 class="govuk-heading-s">Nearby parcels</h2>
         <div>
           <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -138,7 +135,7 @@
               <details class="govuk-details">
                 <summary class="govuk-details__summary">
                   <span class="govuk-details__summary-text">
-                    Show 5 more Oxfordshire parcels
+                    Show 5 more parcels
                   </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -168,75 +165,6 @@
               </table>
               </div>
             </details>
-        </div>
-
-        <div id="buckinghamshire-parcels">
-        <p class="govuk-body-s govuk-!-margin-top-6">Buckinghamshire</p>
-        <div>
-          <table class="govuk-table">
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('north-field-bucks'); return false;" class="govuk-link">North field</a></td>
-                <td class="govuk-table__cell">95.4231 ha (95.4231 ha available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('eastern-meadow'); return false;" class="govuk-link">Eastern meadow</a></td>
-                <td class="govuk-table__cell">78.5624 ha (78.5624 ha available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('spring-pasture'); return false;" class="govuk-link">Spring pasture</a></td>
-                <td class="govuk-table__cell">64.3215 ha (64.3215 ha available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('brook-field'); return false;" class="govuk-link">Brook field</a></td>
-                <td class="govuk-table__cell">52.7841 ha (52.7841 ha available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('valley-bottom'); return false;" class="govuk-link">Valley bottom</a></td>
-                <td class="govuk-table__cell">88.9423 ha (88.9423 ha available)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-              <details class="govuk-details">
-                <summary class="govuk-details__summary">
-                  <span class="govuk-details__summary-text">
-                    Show 5 more Buckinghamshire parcels
-                  </span>
-                </summary>
-                <div class="govuk-details__text">
-                  <table class="govuk-table">
-                 <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('hilltop-field'); return false;" class="govuk-link">Hilltop field</a></td>
-                          <td class="govuk-table__cell">43.2156 ha (43.2156 ha available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('corner-paddock'); return false;" class="govuk-link">Corner paddock</a></td>
-                          <td class="govuk-table__cell">18.5673 ha (18.5673 ha available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('hedge-field'); return false;" class="govuk-link">Hedge field</a></td>
-                          <td class="govuk-table__cell">67.8945 ha (67.8945 ha available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('chalk-slope'); return false;" class="govuk-link">Chalk slope</a></td>
-                          <td class="govuk-table__cell">55.3287 ha (55.3287 ha available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('stream-meadow'); return false;" class="govuk-link">Stream meadow</a></td>
-                          <td class="govuk-table__cell">39.6742 ha (39.6742 ha available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('woodland-edge'); return false;" class="govuk-link">Woodland edge</a></td>
-                          <td class="govuk-table__cell">28.4516 ha (28.4516 ha available)</td>
-                        </tr>
-                </tbody>
-              </table>
-              </div>
-            </details>
-        </div>
 
 
   
@@ -249,7 +177,7 @@
       <!-- Right column - Interactive Map (1/2) -->
       <div class="govuk-grid-column-one-half">
 
-          <h2 class="govuk-heading-s" id="actions-heading">Available actions</h2>
+          <h2 class="govuk-heading-s" id="actions-heading">Available actions on Lower Field</h2>
         {# <p>You can search for an action or select from the list.</p> #}
         
         <!-- Search box -->
@@ -258,8 +186,8 @@
             Search by name or code
           </label>
           <div style="display: flex; gap: 0; max-width: 400px;">
-            <input class="govuk-input" style="width:300px; height:46px;" id="search-actions-map" name="search" type="search" placeholder="Start typing to search..." disabled>
-            <button type="button" id="search-button-map" class="govuk-button" style="height: 44px; margin-bottom: 0; background-color: #1d70b8;" data-module="govuk-button" disabled>
+            <input class="govuk-input" style="width:300px; height:46px;" id="search-actions-map" name="search" type="search" placeholder="Start typing to search...">
+            <button type="button" id="search-button-map" class="govuk-button" style="height: 44px; margin-bottom: 0; background-color: #1d70b8;" data-module="govuk-button">
               <svg style="display: block; margin-left:0px" class="gem-c-search__icon" width="21" height="21" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
                 <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
                 <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
@@ -793,10 +721,10 @@
     crossorigin=""></script>
 
   <script>
-    // Initialize the map - centered between both locations
+    // Initialize the map - centered on farmland in Oxfordshire
     var map = L.map('map', {
-      center: [51.85, -1.0], // Adjusted to show both locations without overlap
-      zoom: 9,
+      center: [51.7520, -1.2577], // Rural Oxfordshire farmland
+      zoom: 14,
       zoomControl: true,
       scrollWheelZoom: true
     });
@@ -820,7 +748,6 @@
         totalArea: '120.3451',
         availableArea: '120.3451',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7498, -1.2540],
           [51.7498, -1.2510],
@@ -839,7 +766,6 @@
         totalArea: '5.2341',
         availableArea: '5.2341',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7510, -1.2541],
           [51.7510, -1.2520],
@@ -858,7 +784,6 @@
         totalArea: '12.8765',
         availableArea: '7.5000',
         numActions: 1,
-        location: 'oxfordshire',
         coords: [
           [51.7522, -1.2542],
           [51.7522, -1.2512],
@@ -877,7 +802,6 @@
         totalArea: '8.4521',
         availableArea: '4.4521',
         numActions: 1,
-        location: 'oxfordshire',
         coords: [
           [51.7483, -1.2538],
           [51.7485, -1.2512],
@@ -896,7 +820,6 @@
         totalArea: '15.3267',
         availableArea: '15.3267',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7498, -1.2510],
           [51.7505, -1.2518],
@@ -915,7 +838,6 @@
         totalArea: '6.7894',
         availableArea: '6.7894',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7510, -1.2520],
           [51.7517, -1.2510],
@@ -934,7 +856,6 @@
         totalArea: '3.9152',
         availableArea: '1',
         numActions: 2,
-        location: 'oxfordshire',
         coords: [
           [51.7478, -1.2509],
           [51.7485, -1.2512],
@@ -953,7 +874,6 @@
         totalArea: '11.2483',
         availableArea: '11.2483',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7522, -1.2542],
           [51.7528, -1.2540],
@@ -971,7 +891,6 @@
         totalArea: '9.6721',
         availableArea: '9.6721',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7468, -1.2537],
           [51.7471, -1.2513],
@@ -990,7 +909,6 @@
         totalArea: '7.1358',
         availableArea: '7.1358',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7497, -1.2482],
           [51.7505, -1.2485],
@@ -1009,7 +927,6 @@
         totalArea: '4.5692',
         availableArea: '4.5692',
         numActions: 0,
-        location: 'oxfordshire',
         coords: [
           [51.7476, -1.2486],
           [51.7483, -1.2482],
@@ -1017,215 +934,6 @@
           [51.7493, -1.2468],
           [51.7485, -1.2465],
           [51.7473, -1.2470]
-        ],
-        actions: ['CNUM3', 'CSAM3', 'PRF1', 'AHW3', 'CIPM2', 'BFS1', 'CAHL1'],
-        color: '#D2B48C'
-      },
-      // Buckinghamshire parcels (approximately 50 miles east)
-      'north-field-bucks': {
-        name: 'North Field',
-        osRef: 'B01',
-        numParcels: 18,
-        totalArea: '95.4231',
-        availableArea: '95.4231',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9520, -0.7577],
-          [51.9520, -0.7547],
-          [51.9512, -0.7545],
-          [51.9507, -0.7549],
-          [51.9505, -0.7575],
-          [51.9510, -0.7578]
-        ],
-        actions: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2'],
-        color: '#8FBC8F'
-      },
-      'eastern-meadow': {
-        name: 'Eastern Meadow',
-        osRef: 'B02',
-        numParcels: 12,
-        totalArea: '78.5624',
-        availableArea: '78.5624',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9532, -0.7578],
-          [51.9532, -0.7548],
-          [51.9527, -0.7546],
-          [51.9520, -0.7547],
-          [51.9520, -0.7577],
-          [51.9525, -0.7579]
-        ],
-        actions: ['CNUM3', 'CAHL1', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1'],
-        color: '#DEB887'
-      },
-      'spring-pasture': {
-        name: 'Spring Pasture',
-        osRef: 'B03',
-        numParcels: 10,
-        totalArea: '64.3215',
-        availableArea: '64.3215',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9544, -0.7579],
-          [51.9544, -0.7549],
-          [51.9539, -0.7547],
-          [51.9532, -0.7548],
-          [51.9532, -0.7578],
-          [51.9537, -0.7580]
-        ],
-        actions: ['CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'SOH1', 'CIGL1', 'AHW3', 'CNUM3'],
-        color: '#228B22'
-      },
-      'brook-field': {
-        name: 'Brook Field',
-        osRef: 'B04',
-        numParcels: 14,
-        totalArea: '52.7841',
-        availableArea: '52.7841',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9505, -0.7575],
-          [51.9507, -0.7549],
-          [51.9500, -0.7546],
-          [51.9493, -0.7550],
-          [51.9490, -0.7574],
-          [51.9497, -0.7577]
-        ],
-        actions: ['CNUM2', 'CIGL1', 'CSAM3', 'CAHL1', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'PRF1'],
-        color: '#90EE90'
-      },
-      'valley-bottom': {
-        name: 'Valley Bottom',
-        osRef: 'B05',
-        numParcels: 16,
-        totalArea: '88.9423',
-        availableArea: '88.9423',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9520, -0.7547],
-          [51.9527, -0.7546],
-          [51.9527, -0.7513],
-          [51.9519, -0.7510],
-          [51.9512, -0.7513],
-          [51.9512, -0.7545]
-        ],
-        actions: ['BFS1', 'CAHL1', 'CAHL2', 'CIPM2', 'CNUM2', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1'],
-        color: '#87CEEB'
-      },
-      'hilltop-field': {
-        name: 'Hilltop Field',
-        osRef: 'B06',
-        numParcels: 8,
-        totalArea: '43.2156',
-        availableArea: '43.2156',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9532, -0.7548],
-          [51.9539, -0.7547],
-          [51.9539, -0.7522],
-          [51.9532, -0.7519],
-          [51.9527, -0.7522],
-          [51.9527, -0.7546]
-        ],
-        actions: ['CNUM3', 'SOH1', 'PRF1', 'CSAM2', 'CAHL2', 'BFS1', 'CIPM2', 'CIGL1', 'AHW3', 'CSAM3'],
-        color: '#F4A460'
-      },
-      'corner-paddock': {
-        name: 'Corner Paddock',
-        osRef: 'B07',
-        numParcels: 4,
-        totalArea: '18.5673',
-        availableArea: '18.5673',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9500, -0.7546],
-          [51.9507, -0.7549],
-          [51.9512, -0.7545],
-          [51.9512, -0.7513],
-          [51.9505, -0.7510],
-          [51.9498, -0.7514]
-        ],
-        actions: ['CIGL1', 'CNUM2', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CSAM3', 'PRF1'],
-        color: '#98FB98'
-      },
-      'hedge-field': {
-        name: 'Hedge Field',
-        osRef: 'B08',
-        numParcels: 11,
-        totalArea: '67.8945',
-        availableArea: '67.8945',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9544, -0.7579],
-          [51.9550, -0.7577],
-          [51.9552, -0.7549],
-          [51.9546, -0.7547],
-          [51.9544, -0.7549]
-        ],
-        actions: ['CNUM3', 'CIPM2', 'AHW7', 'CAHL1', 'BFS1', 'SOH1', 'CIGL1', 'CNUM2', 'AHW3', 'CSAM3'],
-        color: '#6B8E23'
-      },
-      'chalk-slope': {
-        name: 'Chalk Slope',
-        osRef: 'B09',
-        numParcels: 9,
-        totalArea: '55.3287',
-        availableArea: '55.3287',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9490, -0.7574],
-          [51.9493, -0.7550],
-          [51.9485, -0.7547],
-          [51.9478, -0.7551],
-          [51.9477, -0.7572],
-          [51.9482, -0.7575]
-        ],
-        actions: ['SOH1', 'PRF1', 'CNUM3', 'AHW3', 'CAHL2', 'CSAM2', 'BFS1', 'CIPM2'],
-        color: '#DAA520'
-      },
-      'stream-meadow': {
-        name: 'Stream Meadow',
-        osRef: 'B10',
-        numParcels: 7,
-        totalArea: '39.6742',
-        availableArea: '39.6742',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9519, -0.7510],
-          [51.9527, -0.7513],
-          [51.9532, -0.7519],
-          [51.9532, -0.7492],
-          [51.9522, -0.7490],
-          [51.9515, -0.7495]
-        ],
-        actions: ['CSAM2', 'CNUM2', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'CAHL1', 'CIGL1', 'CSAM3'],
-        color: '#BC8F8F'
-      },
-      'woodland-edge': {
-        name: 'Woodland Edge',
-        osRef: 'B11',
-        numParcels: 5,
-        totalArea: '28.4516',
-        availableArea: '28.4516',
-        numActions: 0,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9498, -0.7514],
-          [51.9505, -0.7510],
-          [51.9512, -0.7513],
-          [51.9515, -0.7495],
-          [51.9507, -0.7492],
-          [51.9495, -0.7497]
         ],
         actions: ['CNUM3', 'CSAM3', 'PRF1', 'AHW3', 'CIPM2', 'BFS1', 'CAHL1'],
         color: '#D2B48C'
@@ -1309,8 +1017,6 @@
       // Click event
       polygon.on('click', function(e) {
         selectParcel(parcelId);
-        // Zoom to the parcel when clicked
-        map.setView(this.getBounds().getCenter(), 14);
       });
 
       // Add label
@@ -1322,13 +1028,6 @@
           iconSize: null
         })
       }).addTo(map);
-      
-      // Make label clickable
-      label.on('click', function(e) {
-        selectParcel(parcelId);
-        // Zoom to the parcel when clicked
-        map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
-      });
     });
 
     // Function to select a parcel
@@ -1348,28 +1047,12 @@
       }
 
       // Update UI
-      document.getElementById('page-heading').textContent = "Choose actions for '" + parcel.name + "'";
+      document.getElementById('page-parcel-name').textContent = parcel.name;
       document.getElementById('os-ref').textContent = parcel.osRef;
       document.getElementById('total-area').textContent = parcel.totalArea;
       document.getElementById('available-area').textContent = parcel.availableArea;
       document.getElementById('num-actions').textContent = parcel.numActions;
       document.getElementById('actions-heading').textContent = 'Available actions on ' + parcel.name;
-
-      // Show the parcel info table
-      document.getElementById('parcel-info-container').style.display = 'block';
-
-      // Show/hide parcel lists based on location
-      if (parcel.location === 'oxfordshire') {
-        document.getElementById('oxfordshire-parcels').style.display = 'block';
-        document.getElementById('buckinghamshire-parcels').style.display = 'none';
-      } else if (parcel.location === 'buckinghamshire') {
-        document.getElementById('oxfordshire-parcels').style.display = 'none';
-        document.getElementById('buckinghamshire-parcels').style.display = 'block';
-      }
-
-      // Enable search box
-      document.getElementById('search-actions-map').disabled = false;
-      document.getElementById('search-button-map').disabled = false;
 
       // Show/hide the "view" link based on number of existing actions
       var viewLink = document.getElementById('view-existing-link');
@@ -1391,10 +1074,6 @@
     // Function to select parcel from list
     function selectParcelById(parcelId) {
       selectParcel(parcelId);
-      // Zoom to the parcel
-      if (parcelPolygons[parcelId]) {
-        map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
-      }
       // Scroll to map
       document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
     }
@@ -1650,12 +1329,8 @@
       // Handle clicking the X icon to clear search (works in browsers that support it)
       $("#search-actions-map").on('search', performSearch);
 
-      // Don't select any parcel by default - let user choose from the map or list
-      // Update UI to show no selection
-      document.getElementById('actions-heading').textContent = 'Available actions';
-      
-      // Hide all action checkboxes initially
-      $('.govuk-checkboxes__item').hide();
+      // Initialize with Lower Field selected
+      selectParcel('lower-field');
       
       // Function to update available quantities based on what's been entered
       function updateAvailableQuantities() {
