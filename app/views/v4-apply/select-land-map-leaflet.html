@@ -741,6 +741,7 @@
             <div id="application-summary-accordion-content-1" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-1">
               <p class="govuk-body">These parcels have existing actions on them from current SFI agreements:</p>
               
+              <div id="oak-tree-existing-actions">
               <h2 class="govuk-heading-m">Woods View</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
@@ -813,6 +814,82 @@
                   </dd>
                 </div>
               </dl>
+              </div>
+              
+              <div id="blackberry-existing-actions">
+              <h2 class="govuk-heading-m">Spring Pasture</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">64.3215 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">44.3215 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of existing actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Existing actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Assess soil, produce soil management plan, test soil organic matter: SOH1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-m">Brook Field</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">52.7841 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">32.7841 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of existing actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Existing actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Herbal leys: CAHL1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-m">Valley Bottom</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">88.9423 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">60.9423 ha</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of existing actions</dt>
+                  <dd class="govuk-summary-list__value">2</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Existing actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Take grassland field corners or blocks out of management: CIGL1</li>
+                      <li>Winter bird food on arable land: BFS1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              </div>
             </div>
           </div>
 
@@ -1121,8 +1198,8 @@
         osRef: 'B03',
         numParcels: 10,
         totalArea: '64.3215',
-        availableArea: '64.3215',
-        numActions: 0,
+        availableArea: '44.3215',
+        numActions: 1,
         location: 'buckinghamshire',
         coords: [
           [51.9544, -0.7579],
@@ -1140,8 +1217,8 @@
         osRef: 'B04',
         numParcels: 14,
         totalArea: '52.7841',
-        availableArea: '52.7841',
-        numActions: 0,
+        availableArea: '32.7841',
+        numActions: 1,
         location: 'buckinghamshire',
         coords: [
           [51.9505, -0.7575],
@@ -1159,8 +1236,8 @@
         osRef: 'B05',
         numParcels: 16,
         totalArea: '88.9423',
-        availableArea: '88.9423',
-        numActions: 0,
+        availableArea: '60.9423',
+        numActions: 2,
         location: 'buckinghamshire',
         coords: [
           [51.9520, -0.7547],
@@ -1439,13 +1516,17 @@
       // Show the parcels list section
       document.getElementById('parcels-list-section').style.display = 'block';
 
-      // Show/hide parcel lists based on location
+      // Show/hide parcel lists and existing actions based on location
       if (parcel.location === 'oxfordshire') {
         document.getElementById('oxfordshire-parcels').style.display = 'block';
         document.getElementById('buckinghamshire-parcels').style.display = 'none';
+        document.getElementById('oak-tree-existing-actions').style.display = 'block';
+        document.getElementById('blackberry-existing-actions').style.display = 'none';
       } else if (parcel.location === 'buckinghamshire') {
         document.getElementById('oxfordshire-parcels').style.display = 'none';
         document.getElementById('buckinghamshire-parcels').style.display = 'block';
+        document.getElementById('oak-tree-existing-actions').style.display = 'none';
+        document.getElementById('blackberry-existing-actions').style.display = 'block';
       }
 
       // Enable search box
