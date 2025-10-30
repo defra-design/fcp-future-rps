@@ -1365,6 +1365,23 @@
       }
     };
 
+    // Payment rates per hectare for each action
+    var paymentRates = {
+      'CNUM3': 593,
+      'CAHL1': 739,
+      'CAHL2': 853,
+      'CSAM2': 129,
+      'BFS1': 707,
+      'AHW7': 589,
+      'CIPM2': 798,
+      'CNUM2': 102,
+      'SOH1': 73,
+      'CIGL1': 333,
+      'AHW3': 764,
+      'CSAM3': 382,
+      'PRF1': 27
+    };
+
     // Default style for parcels
     function defaultStyle(feature) {
       return {
@@ -1681,19 +1698,38 @@
             var $actionsKey = $('<dt class="govuk-summary-list__key"></dt>').text('Actions');
             var $actionsValue = $('<dd class="govuk-summary-list__value"></dd>');
             
-            // Create action list
+            // Create action list with payment calculations
             var $actionList = $('<ul class="govuk-list"></ul>');
+            var totalPayment = 0;
+            
             parcelSelection.actions.forEach(function(action) {
               var actionText = action.name + ' (' + action.code + ')';
-              if (action.quantity) {
+              var payment = 0;
+              
+              if (action.quantity && paymentRates[action.code]) {
+                var quantity = parseFloat(action.quantity);
+                payment = quantity * paymentRates[action.code];
+                totalPayment += payment;
+                actionText += ': ' + action.quantity + ' ha (£' + payment.toFixed(2) + ')';
+              } else if (action.quantity) {
                 actionText += ': ' + action.quantity + ' ha';
               }
+              
               $actionList.append('<li>' + actionText + '</li>');
             });
             
             $actionsValue.append($actionList);
             $actionsRow.append($actionsKey).append($actionsValue);
             $summaryList.append($actionsRow);
+            
+            // Add total payment row if there are payments
+            if (totalPayment > 0) {
+              var $paymentRow = $('<div class="govuk-summary-list__row"></div>');
+              var $paymentKey = $('<dt class="govuk-summary-list__key"></dt>').text('Total payment for this parcel');
+              var $paymentValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>£' + totalPayment.toFixed(2) + '</strong>');
+              $paymentRow.append($paymentKey).append($paymentValue);
+              $summaryList.append($paymentRow);
+            }
             
             // Append the summary list to the container
             $summaryContainer.append($summaryList);
