@@ -1626,9 +1626,9 @@
         
         // Open the "Parcels with existing actions" accordion section
         setTimeout(function() {
-          var $firstSection = $('#application-summary-accordion .govuk-accordion__section').first();
-          if (!$firstSection.hasClass('govuk-accordion__section--expanded')) {
-            $firstSection.find('.govuk-accordion__section-button').click();
+          var $existingSection = $('#application-summary-accordion .govuk-accordion__section').eq(1);
+          if (!$existingSection.hasClass('govuk-accordion__section--expanded')) {
+            $existingSection.find('.govuk-accordion__section-button').click();
           }
         }, 500);
       });
