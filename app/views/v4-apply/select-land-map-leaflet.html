@@ -721,7 +721,7 @@
 
   </div>
 
-   <hr>
+   {# <hr> #}
     <div id="parcels-actions-summary-section" style="display: none;">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
@@ -1522,6 +1522,9 @@
       // Hide the OS Map References tables
       document.getElementById('os-map-references').style.display = 'none';
 
+      // Hide the save confirmation message when switching parcels
+      document.getElementById('save-confirmation-message').style.display = 'none';
+
       // Show the parcels and actions summary section
       document.getElementById('parcels-actions-summary-section').style.display = 'block';
 
@@ -2023,6 +2026,14 @@
         
         $('#save-confirmation-message').show();
         $('#continue-button').prop('disabled', false);
+        
+        // Open the "Parcels you've just added actions to" accordion section
+        setTimeout(function() {
+          var $addedSection = $('#application-summary-accordion .govuk-accordion__section').first();
+          if (!$addedSection.hasClass('govuk-accordion__section--expanded')) {
+            $addedSection.find('.govuk-accordion__section-button').click();
+          }
+        }, 300);
       });
       
       // Handle action checkbox changes to simulate SFI compatibility rules
