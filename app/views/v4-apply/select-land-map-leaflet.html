@@ -743,7 +743,7 @@
               </h3>
             </div>
             <div id="application-summary-accordion-content-2" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-2">
-              <p class="govuk-body" id="application-summary-intro" style="display: none;">You have selected actions for the following parcels:</p>
+              <p class="govuk-body" id="application-summary-intro" style="display: none;">You have selected actions for the following parcels</p>
               <div id="application-summary-empty" style="display: block;">
                 <p class="govuk-body" style="color: #505a5f;">No actions selected yet. Select a parcel and add actions to begin.</p>
               </div>
@@ -762,7 +762,7 @@
               </h3>
             </div>
             <div id="application-summary-accordion-content-1" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-1">
-              <p class="govuk-body">These parcels have existing actions on them from current SFI agreements:</p>
+              <p class="govuk-body">These parcels have existing actions on them from current SFI agreements</p>
               
               <div id="oak-tree-existing-actions">
               <h2 class="govuk-heading-m">Woods View</h2>
@@ -1683,6 +1683,13 @@
               }
             });
             
+            // Add area used row
+            var $areaUsedRow = $('<div class="govuk-summary-list__row"></div>');
+            var $areaUsedKey = $('<dt class="govuk-summary-list__key"></dt>').text('Area used for actions');
+            var $areaUsedValue = $('<dd class="govuk-summary-list__value"></dd>').text(totalUsedArea.toFixed(4) + ' ha');
+            $areaUsedRow.append($areaUsedKey).append($areaUsedValue);
+            $summaryList.append($areaUsedRow);
+            
             // Calculate available area left (available area minus area used)
             var availableAreaLeft = parseFloat(parcel.availableArea) - totalUsedArea;
             
@@ -1692,13 +1699,6 @@
             var $availableAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(availableAreaLeft.toFixed(4) + ' ha');
             $availableAreaRow.append($availableAreaKey).append($availableAreaValue);
             $summaryList.append($availableAreaRow);
-            
-            // Add area used row
-            var $areaUsedRow = $('<div class="govuk-summary-list__row"></div>');
-            var $areaUsedKey = $('<dt class="govuk-summary-list__key"></dt>').text('Area used for actions');
-            var $areaUsedValue = $('<dd class="govuk-summary-list__value"></dd>').text(totalUsedArea.toFixed(4) + ' ha');
-            $areaUsedRow.append($areaUsedKey).append($areaUsedValue);
-            $summaryList.append($areaUsedRow);
             
             // Add actions row
             var $actionsRow = $('<div class="govuk-summary-list__row"></div>');
