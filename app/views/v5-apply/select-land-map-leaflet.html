@@ -2198,6 +2198,11 @@
           e.preventDefault();
           // Show the parcels and actions summary section
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
+          // Show the parcels list section
+          document.getElementById('parcels-list-section').style.display = 'block';
+          // Show Oak Tree Farm (Oxfordshire) parcels, hide Blackberry Farm parcels
+          document.getElementById('oxfordshire-parcels').style.display = 'block';
+          document.getElementById('buckinghamshire-parcels').style.display = 'none';
           // Zoom to Oak Tree Farm location - shifted east to center parcels in visible area
           map.setView([51.7505, -1.2520], 15);
         });
@@ -2209,6 +2214,11 @@
           e.preventDefault();
           // Show the parcels and actions summary section
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
+          // Show the parcels list section
+          document.getElementById('parcels-list-section').style.display = 'block';
+          // Show Blackberry Farm (Buckinghamshire) parcels, hide Oak Tree Farm parcels
+          document.getElementById('buckinghamshire-parcels').style.display = 'block';
+          document.getElementById('oxfordshire-parcels').style.display = 'none';
           // Zoom to Blackberry Farm location - shifted east to center parcels in visible area
           map.setView([51.9525, -0.7520], 15);
         });
