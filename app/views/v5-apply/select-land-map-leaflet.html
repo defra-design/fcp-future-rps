@@ -57,9 +57,6 @@
     .leaflet-control-attribution {
       display: none !important;
     }
-    #parcels-list-section .govuk-table__cell {
-      border-bottom: none;
-    }
   </style>
 {% endblock %}
 
@@ -116,63 +113,59 @@
         <div id="oxfordshire-parcels">
         <h2 class="govuk-heading-s">Oak Tree Farm parcels</h2>
         <div>
-          <table class="govuk-table">
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('upper-field'); return false;" class="govuk-link">Upper field</a></td>
-                <td class="govuk-table__cell">5.2341 ha (5.2341 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('long-meadow'); return false;" class="govuk-link">Long meadow</a></td>
-                <td class="govuk-table__cell">8.4521 ha (4.4521 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('river-pasture'); return false;" class="govuk-link">River pasture</a></td>
-                <td class="govuk-table__cell">15.3267 ha (15.3267 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('lower-paddock'); return false;" class="govuk-link">Lower paddock</a></td>
-                <td class="govuk-table__cell">3.9152 ha (1 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('woods-view'); return false;" class="govuk-link">Woods view</a></td>
-                <td class="govuk-table__cell">12.8765 ha (7.5000 available)</td>
-              </tr>
-            </tbody>
-          </table>
+          <ul class="govuk-list govuk-list--spaced">
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('upper-field'); return false;" class="govuk-link">Upper field</a>
+              <span>5.2341 ha (5.2341 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('long-meadow'); return false;" class="govuk-link">Long meadow</a>
+              <span>8.4521 ha (4.4521 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('river-pasture'); return false;" class="govuk-link">River pasture</a>
+              <span>15.3267 ha (15.3267 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('lower-paddock'); return false;" class="govuk-link">Lower paddock</a>
+              <span>3.9152 ha (1 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('woods-view'); return false;" class="govuk-link">Woods view</a>
+              <span>12.8765 ha (7.5000 available)</span>
+            </li>
+          </ul>
         </div>
 
               <details class="govuk-details">
                 <summary class="govuk-details__summary">
                   <span class="govuk-details__summary-text">
-                    Show 5 more Oak Tree Farm parcels
+                    Show 5 more parcels
                   </span>
                 </summary>
                 <div class="govuk-details__text">
-                  <table class="govuk-table">
-                 <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('south-slope'); return false;" class="govuk-link">South slope</a></td>
-                          <td class="govuk-table__cell">9.6721 ha (9.6721 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('mill-field'); return false;" class="govuk-link">Mill field</a></td>
-                          <td class="govuk-table__cell">7.1358 ha (7.1358 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('top-barn-field'); return false;" class="govuk-link">Top barn field</a></td>
-                          <td class="govuk-table__cell">6.7894 ha (6.7894 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('far-corner'); return false;" class="govuk-link">Far corner</a></td>
-                          <td class="govuk-table__cell">4.5692 ha (4.5692 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('oak-tree-field'); return false;" class="govuk-link">Oak tree field</a></td>
-                          <td class="govuk-table__cell">11.2483 ha (11.2483 available)</td>
-                        </tr>
-                </tbody>
-              </table>
+                  <ul class="govuk-list govuk-list--spaced">
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('south-slope'); return false;" class="govuk-link">South slope</a>
+                      <span>9.6721 ha (9.6721 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('mill-field'); return false;" class="govuk-link">Mill field</a>
+                      <span>7.1358 ha (7.1358 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('top-barn-field'); return false;" class="govuk-link">Top barn field</a>
+                      <span>6.7894 ha (6.7894 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('far-corner'); return false;" class="govuk-link">Far corner</a>
+                      <span>4.5692 ha (4.5692 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('oak-tree-field'); return false;" class="govuk-link">Oak tree field</a>
+                      <span>11.2483 ha (11.2483 available)</span>
+                    </li>
+                  </ul>
               </div>
             </details>
         </div>
@@ -180,72 +173,68 @@
         <div id="buckinghamshire-parcels">
         <h2 class="govuk-heading-s">Blackberry Farm parcels</h2>
         <div>
-          <table class="govuk-table">
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('north-field-bucks'); return false;" class="govuk-link">North field</a></td>
-                <td class="govuk-table__cell">95.4231 ha (95.4231 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('eastern-meadow'); return false;" class="govuk-link">Eastern meadow</a></td>
-                <td class="govuk-table__cell">78.5624 ha (78.5624 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('spring-pasture'); return false;" class="govuk-link">Spring pasture</a></td>
-                <td class="govuk-table__cell">64.3215 ha (64.3215 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('brook-field'); return false;" class="govuk-link">Brook field</a></td>
-                <td class="govuk-table__cell">52.7841 ha (52.7841 available)</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('valley-bottom'); return false;" class="govuk-link">Valley bottom</a></td>
-                <td class="govuk-table__cell">88.9423 ha (88.9423 available)</td>
-              </tr>
-            </tbody>
-          </table>
+          <ul class="govuk-list govuk-list--spaced">
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('north-field-bucks'); return false;" class="govuk-link">North field</a>
+              <span>95.4231 ha (95.4231 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('eastern-meadow'); return false;" class="govuk-link">Eastern meadow</a>
+              <span>78.5624 ha (78.5624 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('spring-pasture'); return false;" class="govuk-link">Spring pasture</a>
+              <span>64.3215 ha (64.3215 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('brook-field'); return false;" class="govuk-link">Brook field</a>
+              <span>52.7841 ha (52.7841 available)</span>
+            </li>
+            <li style="display: flex; justify-content: space-between;">
+              <a href="#" onclick="selectParcelById('valley-bottom'); return false;" class="govuk-link">Valley bottom</a>
+              <span>88.9423 ha (88.9423 available)</span>
+            </li>
+          </ul>
         </div>
 
               <details class="govuk-details">
                 <summary class="govuk-details__summary">
                   <span class="govuk-details__summary-text">
-                    Show 5 more Blackberry Farm parcels
+                    Show 5 more parcels
                   </span>
                 </summary>
                 <div class="govuk-details__text">
-                  <table class="govuk-table">
-                 <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('hilltop-field'); return false;" class="govuk-link">Hilltop field</a></td>
-                          <td class="govuk-table__cell">43.2156 ha (43.2156 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('corner-paddock'); return false;" class="govuk-link">Corner paddock</a></td>
-                          <td class="govuk-table__cell">18.5673 ha (18.5673 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('hedge-field'); return false;" class="govuk-link">Hedge field</a></td>
-                          <td class="govuk-table__cell">67.8945 ha (67.8945 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('chalk-slope'); return false;" class="govuk-link">Chalk slope</a></td>
-                          <td class="govuk-table__cell">55.3287 ha (55.3287 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('stream-meadow'); return false;" class="govuk-link">Stream meadow</a></td>
-                          <td class="govuk-table__cell">39.6742 ha (39.6742 available)</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                          <td class="govuk-table__cell"><a href="#" onclick="selectParcelById('woodland-edge'); return false;" class="govuk-link">Woodland edge</a></td>
-                          <td class="govuk-table__cell">28.4516 ha (28.4516 available)</td>
-                        </tr>
-                </tbody>
-              </table>
+                  <ul class="govuk-list govuk-list--spaced">
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('hilltop-field'); return false;" class="govuk-link">Hilltop field</a>
+                      <span>43.2156 ha (43.2156 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('corner-paddock'); return false;" class="govuk-link">Corner paddock</a>
+                      <span>18.5673 ha (18.5673 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('hedge-field'); return false;" class="govuk-link">Hedge field</a>
+                      <span>67.8945 ha (67.8945 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('chalk-slope'); return false;" class="govuk-link">Chalk slope</a>
+                      <span>55.3287 ha (55.3287 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('stream-meadow'); return false;" class="govuk-link">Stream meadow</a>
+                      <span>39.6742 ha (39.6742 available)</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                      <a href="#" onclick="selectParcelById('woodland-edge'); return false;" class="govuk-link">Woodland edge</a>
+                      <span>28.4516 ha (28.4516 available)</span>
+                    </li>
+                  </ul>
               </div>
             </details>
         </div>
 
-        <p><a href="#" id="back-to-farm-selection-link" class="govuk-link">Back to OS map reference farm selection</a></p>
+        <p><a href="#" id="back-to-farm-selection-link" class="govuk-link">Back to farm selection</a></p>
   
         
         </div>
