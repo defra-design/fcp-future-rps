@@ -1,0 +1,55 @@
+{% extends "layouts/main-thread.html" %}
+
+{% set pageName="Manage land based actions" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/index">SFI Reform prototypes</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">
+      Version 4 (Sept and Oct 2025)
+      <span class="govuk-caption-l">Application</span>
+    </h1>
+
+    <!-- outline the scenario and purpose of the prototype -->
+    <h2 class="govuk-heading-m">
+      Design history
+    </h2>
+    <p>View the <a href="_design-history">design history</a>.</p>
+
+
+    <h2 class="govuk-heading-m">
+      Hypotheses we explored
+    </h2>
+    <p>Many actions, many parcels design hypotheses.</p>
+    <p><em>Usability testing took place on this prototype on wk/comm 6 Oct 25</em></p>
+
+    <br>
+    <a class="govuk-button" href="sign-in">Start prototype</a>
+    
+
+<!--
+    <h2 class="govuk-heading-m">
+      Design history
+    </h2>
+    <p><a href="_design-history" class="govuk-link">View the design history</a> which includes:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>goals</li>
+      <li>'How might we' statements</li>
+      <li>hypotheses</li>
+      <li>outcomes and decisions</li>
+    </ul>
+-->
+   
+{% endblock %}
