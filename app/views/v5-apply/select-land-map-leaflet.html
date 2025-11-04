@@ -1666,9 +1666,29 @@
             var parcel = parcelData[parcelId];
             var parcelName = parcel ? parcel.name : parcelId;
             
+            // Create container for heading and remove link
+            var $headingContainer = $('<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;"></div>');
+            
             // Create H2 heading for parcel name
-            var $parcelHeading = $('<h2 class="govuk-heading-m"></h2>').text(parcelName);
-            $summaryContainer.append($parcelHeading);
+            var $parcelHeading = $('<h2 class="govuk-heading-m" style="margin: 0;"></h2>').text(parcelName);
+            
+            // Create remove link
+            var $removeLink = $('<a class="govuk-link" href="#" style="font-size: 19px; line-height: 1.31579;"></a>')
+              .text('Remove')
+              .attr('data-parcel-id', parcelId)
+              .on('click', function(e) {
+                e.preventDefault();
+                var targetParcelId = $(this).attr('data-parcel-id');
+                
+                // Remove the parcel from parcelSelections
+                delete parcelSelections[targetParcelId];
+                
+                // Update the summary display
+                updateApplicationSummary();
+              });
+            
+            $headingContainer.append($parcelHeading).append($removeLink);
+            $summaryContainer.append($headingContainer);
             
             // Create summary list
             var $summaryList = $('<dl class="govuk-summary-list govuk-!-margin-bottom-9"></dl>');
@@ -1705,34 +1725,55 @@
             $availableAreaRow.append($availableAreaKey).append($availableAreaValue);
             $summaryList.append($availableAreaRow);
             
-            // Add actions row
-            var $actionsRow = $('<div class="govuk-summary-list__row"></div>');
-            var $actionsKey = $('<dt class="govuk-summary-list__key"></dt>').text('Actions');
-            var $actionsValue = $('<dd class="govuk-summary-list__value"></dd>');
-            
-            // Create action list with payment calculations
-            var $actionList = $('<ul class="govuk-list"></ul>');
+            // Add individual rows for each action with Change link (GOV.UK pattern)
             var totalPayment = 0;
             
             parcelSelection.actions.forEach(function(action) {
-              var actionText = action.name + ' (' + action.code + ')';
+              var $actionRow = $('<div class="govuk-summary-list__row"></div>');
+              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.name + ' (' + action.code + ')');
+              var $actionValue = $('<dd class="govuk-summary-list__value"></dd>');
+              
               var payment = 0;
+              var valueText = '';
               
               if (action.quantity && paymentRates[action.code]) {
                 var quantity = parseFloat(action.quantity);
                 payment = quantity * paymentRates[action.code];
                 totalPayment += payment;
-                actionText += ': ' + action.quantity + ' ha (£' + payment.toFixed(2) + ')';
+                valueText = action.quantity + ' ha (£' + payment.toFixed(2) + ')';
               } else if (action.quantity) {
-                actionText += ': ' + action.quantity + ' ha';
+                valueText = action.quantity + ' ha';
+              } else {
+                valueText = 'No area entered';
               }
               
-              $actionList.append('<li>' + actionText + '</li>');
+              $actionValue.text(valueText);
+              
+              // Add Change link
+              var $actionActions = $('<dd class="govuk-summary-list__actions"></dd>');
+              var $changeLink = $('<a class="govuk-link" href="#"></a>')
+                .text('Change')
+                .attr('data-parcel-id', parcelId)
+                .attr('data-action-code', action.code)
+                .on('click', function(e) {
+                  e.preventDefault();
+                  var targetParcelId = $(this).attr('data-parcel-id');
+                  var targetActionCode = $(this).attr('data-action-code');
+                  
+                  // Select the parcel
+                  selectParcel(targetParcelId);
+                  
+                  // Wait a moment for the UI to update, then restore the saved state
+                  setTimeout(function() {
+                    restoreParcelState(targetParcelId);
+                  }, 100);
+                });
+              
+              $actionActions.append($changeLink);
+              
+              $actionRow.append($actionKey).append($actionValue).append($actionActions);
+              $summaryList.append($actionRow);
             });
-            
-            $actionsValue.append($actionList);
-            $actionsRow.append($actionsKey).append($actionsValue);
-            $summaryList.append($actionsRow);
             
             // Add total payment row if there are payments
             if (totalPayment > 0) {
@@ -1809,6 +1850,55 @@
         }
         
         updateApplicationSummary();
+      }
+      
+      // Function to restore parcel state from saved selections
+      function restoreParcelState(parcelId) {
+        // First, uncheck all checkboxes and clear all inputs
+        $('input[name="actions"]').prop('checked', false);
+        $('input[type="text"][id^="quantity-"]').val('');
+        
+        // Hide all conditional content
+        $('.govuk-checkboxes__conditional').addClass('govuk-checkboxes__conditional--hidden');
+        
+        // Get saved selections for this parcel
+        var savedSelections = parcelSelections[parcelId];
+        if (!savedSelections || !savedSelections.actions) return;
+        
+        // Restore each saved action
+        savedSelections.actions.forEach(function(action) {
+          // Check the checkbox
+          var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
+          if ($checkbox.length > 0) {
+            $checkbox.prop('checked', true);
+            
+            // Show the conditional content by removing the hidden class
+            var conditionalId = 'conditional-' + action.code.toLowerCase();
+            var $conditional = $('#' + conditionalId);
+            if ($conditional.length > 0) {
+              $conditional.removeClass('govuk-checkboxes__conditional--hidden');
+            }
+            
+            // Restore the quantity if it exists
+            if (action.quantity) {
+              var $quantityInput = $('#quantity-' + action.code.toLowerCase());
+              if ($quantityInput.length > 0) {
+                $quantityInput.val(action.quantity);
+              }
+            }
+          }
+        });
+        
+        // Update available quantities to reflect the restored values
+        updateAvailableQuantities();
+        
+        // Scroll to the actions section
+        var $actionsSection = $('#actions-section');
+        if ($actionsSection.length > 0) {
+          $('html, body').animate({
+            scrollTop: $actionsSection.offset().top - 20
+          }, 500);
+        }
       }
       
       function performSearch() {
