@@ -245,7 +245,7 @@
             </details>
         </div>
 
-
+        <p><a href="#" id="back-to-farm-selection-link" class="govuk-link">Back to OS map reference farm selection</a></p>
   
         
         </div>
@@ -2121,6 +2121,44 @@
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
           // Zoom to Blackberry Farm location - shifted east to center parcels in visible area
           map.setView([51.9525, -0.7520], 15);
+        });
+        
+        // Click handler for "Back to OS map reference farm selection" link
+        $('#back-to-farm-selection-link').on('click', function(e) {
+          e.preventDefault();
+          
+          // Reset map to initial view showing both farm locations
+          map.setView([51.85, -1.0], 9);
+          
+          // Show OS map references section
+          document.getElementById('os-map-references').style.display = 'block';
+          
+          // Hide parcel info container
+          document.getElementById('parcel-info-container').style.display = 'none';
+          
+          // Hide actions section
+          document.getElementById('actions-section').style.display = 'none';
+          
+          // Hide parcels list section
+          document.getElementById('parcels-list-section').style.display = 'none';
+          
+          // Reset page heading
+          document.getElementById('page-heading').textContent = "Select land";
+          document.getElementById('select-parcel-text').style.display = 'block';
+          document.getElementById('selected-parcel-text').style.display = 'none';
+          
+          // Hide save confirmation message
+          document.getElementById('save-confirmation-message').style.display = 'none';
+          
+          // Reset selected parcel styling
+          if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
+            parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+          }
+          
+          // Clear current selection (but keep data in parcelSelections)
+          currentSelectedParcel = null;
+          
+          // Note: All user actions are preserved in parcelSelections object and accordion sections
         });
       });
     });
