@@ -1621,16 +1621,19 @@
       $('#view-existing-actions-link').on('click', function(e) {
         e.preventDefault();
         
-        // Scroll to the accordion
-        $('#application-summary-accordion').get(0).scrollIntoView({behavior: 'smooth', block: 'start'});
+        // Open the "Parcels with existing actions" accordion section first
+        var $existingSection = $('#application-summary-accordion .govuk-accordion__section').eq(1);
+        if (!$existingSection.hasClass('govuk-accordion__section--expanded')) {
+          $existingSection.find('.govuk-accordion__section-button').click();
+        }
         
-        // Open the "Parcels with existing actions" accordion section
+        // Scroll to the accordion content
         setTimeout(function() {
-          var $existingSection = $('#application-summary-accordion .govuk-accordion__section').eq(1);
-          if (!$existingSection.hasClass('govuk-accordion__section--expanded')) {
-            $existingSection.find('.govuk-accordion__section-button').click();
+          var contentElement = document.getElementById('application-summary-accordion-content-1');
+          if (contentElement) {
+            contentElement.scrollIntoView({behavior: 'smooth', block: 'start'});
           }
-        }, 500);
+        }, 300);
       });
       
       // Function to update the application summary
