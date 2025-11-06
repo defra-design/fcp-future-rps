@@ -1,0 +1,74 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Check your land details
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Check your land details
+      </h1>
+      <p class="govuk-body">
+        Before you continue with this application, check that the registered land details on your digital maps are up to date. If they’re not, this may prevent you from applying for the SFI actions you select.
+      </p>
+      <p class="govuk-body">
+        You need to check your digital maps show:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+          <li>all the land parcels you want to include in this application</li>
+          <li>the correct total area (in hectares) for each land parcel</li>
+          <li>the correct land covers for each land parcel, for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover</li>
+      </ul>
+      <p class="govuk-body">
+       <a href="https://www.gov.uk/guidance/rural-payments-service" class="govuk-link">Check your digital maps</a>
+      </p>
+
+      <form class="form" action="/land-details-answer3" method="post">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do your digital maps show the correct land details?
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="landDetailsAnswer-1" name="land-details-answer3" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-1">
+                  Yes
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="landDetailsAnswer-2" name="land-details-answer3" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="landDetailsAnswer-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+  
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+    </div>
+  </div>
+
+{% endblock %}

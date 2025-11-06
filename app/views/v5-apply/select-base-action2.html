@@ -1,0 +1,1193 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Select actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+
+    <form action="select-land2" method="post">
+
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">
+        Select actions
+      </h1>
+      <p class="govuk-body-l">You can select multiple actions</p>    
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <div id="search">
+        <label class="govuk-label govuk-!-margin-top-2" for="search">
+          Search by action name or code
+        </label>
+        <input class="govuk-input text-input govuk-!-margin-bottom-3" style="width:160px; height:44px; margin-right: -4px" id="searchbox" type="text" value="" placeholder="">
+        <button id="button_1" class="govuk-button blue-button" style="height: 42px" data-module="govuk-button">
+          <svg style="display: block; margin-left:0px" class="gem-c-search__icon" width="21" height="21" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+            <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
+          </svg>
+        </button>
+      </div>
+      <p class="govuk-body govuk-!-margin-bottom-1">
+        Contents
+      </p>
+      <ul class="govuk-list">
+        <li><a href="#agroforestry">Agroforestry</a></li>
+        <li><a href="#boundary-features">Boundary features</a></li>
+        <li><a href="#buffer-strips">Buffer strips</a></li>
+        <li><a href="#farmland-wildlife-arable">Farmland wildlife (arable)</a></li>
+        <li><a href="#heritage">Heritage</a></li>
+        <li><a href="#integrated-pest-management">Integrated pest management</a></li>
+        <li><a href="#moorland">Moorland</a></li>
+        <li><a href="#nutrient-management">Nutrient management</a></li>
+        <li><a href="#organic-farming">Organic farming</a></li>
+        <li><a href="#precision-farming">Precision farming</a></li>
+        <li><a href="#soil-health">Soil health</a></li>
+        <li><a href="#waterbodies">Waterbodies</a></li>
+        <li><a href="#wildlife-grassland">Wildlife (grassland)</a></li>
+      </ul>
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+{# 
+       <h1 class="govuk-heading-l">
+        Select an action
+      </h1>
+      <p class="govuk-body">You will be able to add more actions before submitting your application.</p>
+
+
+      <hr> #}
+
+            <!-- SFI 2024 Actions list - used for Design purposes but not necessarrily applicable moving forward -->
+            {# <p>Total available area for this action: 4.5123 ha</p> #}
+
+          <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="agroforestry">
+                 Agroforestry
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  <!-- AGF1/AGF2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-agf1" name="selectedActions" type="checkbox" value="AGF1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-agf1">
+                      Maintain in-field agroforestry on less sensitive land: AGF1 or AGF2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£248 - £385 per ha</strong>
+                    </div>
+                  </div>
+              </div>
+             </fieldset>
+            </div>
+
+          <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="boundary-features">
+                 Boundary features
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+
+                  <!-- CHRW1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-chrw1" name="selectedActions" type="checkbox" value="CHRW1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-chrw1">
+                      Assess and record hedgerow condition: CHRW1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£5 per 100m</strong>
+                    </div>
+                  </div>
+
+                  <!-- CHRW2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-chrw2" name="selectedActions" type="checkbox" value="CHRW2">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-chrw2">
+                      Manage hedgerows: CHRW2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£13 per 100m</strong>
+                    </div>
+                  </div>
+
+                  <!-- CHRW3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-chrw3" name="selectedActions" type="checkbox" value="CHRW3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-chrw3">
+                      Maintain or establish hedgerow trees: CHRW3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£10 per 100m</strong>
+                    </div>
+                  </div>
+
+                  <!-- BND1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bnd1" name="selectedActions" type="checkbox" value="BND1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bnd1">
+                      Maintain dry stone walls: BND1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£27 per 100m</strong>
+                    </div>
+                  </div>
+
+                  <!-- BND2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bnd2" name="selectedActions" type="checkbox" value="BND2">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bnd2">
+                      Maintain earth banks or stone-faced hedgebanks: BND2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£11 per 100m</strong>
+                    </div>
+                  </div>
+
+                  </div>
+                </fieldset>
+          </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="buffer-strips">
+                 Buffer strips
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+               <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <!-- CAHL4 -->
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="action-cahl4" name="selectedActions" type="checkbox" value="CAHL4">
+                  <label class="govuk-label govuk-checkboxes__label" for="action-cahl4">
+                    4m to 12m grass buffer strip on arable and horticultural land: CAHL4
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    Payment rate per year: <strong>£515 per ha</strong>
+                  </div>
+                </div>
+                 <!-- BFS4 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bfs4" name="selectedActions" type="checkbox" value="BFS4">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bfs4">
+                      Protect in-field trees on arable land: BFS4
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£553 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- BFS5 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bfs5" name="selectedActions" type="checkbox" value="BFS5">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bfs5">
+                      Protect in-field trees on intensive grassland: BFS5
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£295 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- BFS6 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bfs6" name="selectedActions" type="checkbox" value="BFS6">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bfs6">
+                      6m to 12m habitat strip next to watercourses: BFS6
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£742 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- BFS2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bfs2" name="selectedActions" type="checkbox" value="BFS2">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bfs2">
+                      Buffer in-field ponds on arable land: BFS2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£681 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- BFS3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bfs3" name="selectedActions" type="checkbox" value="BFS3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bfs3">
+                      Buffer in-field ponds on improved grassland: BFS3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£311 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- BFS1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-bfs1" name="selectedActions" type="checkbox" value="BFS1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-bfs1">
+                      12m to 24m watercourse buffer strip on cultivated land: BFS1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£707 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- CIGL3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cigl3" name="selectedActions" type="checkbox" value="CIGL3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cigl3">
+                      4m to 12m grass buffer strip on improved grassland: CIGL3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£235 per ha</strong>
+                    </div>
+                  </div>
+
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="farmland-wildlife-arable">
+                 Farmland wildlife (arable)
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                   <!-- AHW9 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw9" name="selectedActions" type="checkbox" value="AHW9">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw9">
+                      Unharvested cereal headland: AHW9
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£1,072 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW10 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw10" name="selectedActions" type="checkbox" value="AHW10">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw10">
+                      Low input harvested cereal crop: AHW10
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£354 per plot</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW11 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw11" name="selectedActions" type="checkbox" value="AHW11">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw11">
+                      Cultivated areas for arable plants: AHW11
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£660 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW12 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw12" name="selectedActions" type="checkbox" value="AHW12">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw12">
+                      Manage woodland edges on arable land: AHW12
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£428 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW4 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw4" name="selectedActions" type="checkbox" value="AHW4">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw4">
+                      Skylark plots: AHW4
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£11 per plot</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW5 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw5" name="selectedActions" type="checkbox" value="AHW5">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw5">
+                      Nesting plots for lapwing: AHW5
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£765 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW7 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw7" name="selectedActions" type="checkbox" value="AHW7">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw7">
+                      Enhanced overwinter stubble: AHW7
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£589 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW8 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw8" name="selectedActions" type="checkbox" value="AHW8">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw8">
+                      Whole crop spring cereals and overwinter stubble: AHW8
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£596 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- CAHL1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cahl1" name="selectedActions" type="checkbox" value="CAHL1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cahl1">
+                      Pollen and nectar flower mix: CAHL1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£739 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- CAHL2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cahl2" name="selectedActions" type="checkbox" value="CAHL2">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cahl2">
+                      Winter bird food on arable and horticultural land: CAHL2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£853 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- CAHL3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cahl3" name="selectedActions" type="checkbox" value="CAHL3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cahl3">
+                      Grassy field corners or blocks: CAHL3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£590 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw1" name="selectedActions" type="checkbox" value="AHW1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw1">
+                      Bumblebird mix: AHW1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£747 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- AHW3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-ahw3" name="selectedActions" type="checkbox" value="AHW3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-ahw3">
+                      Beetle banks: AHW3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£764 per ha</strong>
+                    </div>
+                  </div>
+
+                </div>
+              </fieldset>
+             </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="heritage">
+                 Heritage
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  <!-- HEF1 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-hef1" name="selectedActions" type="checkbox" value="HEF1">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-hef1">
+                        Maintain weatherproof traditional farm or forestry buildings: HEF1
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£5 per m2</strong>
+                      </div>
+                    </div>
+
+                    <!-- HEF2 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-hef2" name="selectedActions" type="checkbox" value="HEF2">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-hef2">
+                        Maintain weatherproof traditional farm or forestry buildings in remote areas: HEF2
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£8 per m2</strong>
+                      </div>
+                    </div>
+
+                    <!-- HEF5 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-hef5" name="selectedActions" type="checkbox" value="HEF5">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-hef5">
+                        Control scrub on historic and archaeological features: HEF5
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£215 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- HEF6 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-hef6" name="selectedActions" type="checkbox" value="HEF6">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-hef6">
+                        Manage historic and archaeological features on grassland: HEF6
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£55 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- HEF8 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-hef8" name="selectedActions" type="checkbox" value="HEF8">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-hef8">
+                        Maintain designed or engineered waterbodies: HEF8
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£2,512 per ha</strong>
+                      </div>
+                    </div>
+
+                    </div>
+                  </fieldset>
+                 </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="integrated-pest-management">
+                 Integrated pest management
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  
+                  <!-- CIPM1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cipm1" name="selectedActions" type="checkbox" value="CIPM1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cipm1">
+                      Assess integrated pest management and produce a plan: CIPM1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£1,129 per plan</strong>
+                    </div>
+                  </div>
+
+                  <!-- CIPM3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cipm3" name="selectedActions" type="checkbox" value="CIPM3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cipm3">
+                      Companion crop on arable and horticultural land: CIPM3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£55 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- CIPM4 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cipm4" name="selectedActions" type="checkbox" value="CIPM4">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cipm4">
+                      No use of insecticide on arable crops and permanent crops: CIPM4
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£45 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- CIPM2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cipm2" name="selectedActions" type="checkbox" value="CIPM2">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cipm2">
+                      Flower-rich grass margins, blocks or in-field strips: CIPM2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£798 per ha</strong>
+                    </div>
+                  </div>
+
+                  </div>
+                </fieldset>
+              </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="moorland">
+                 Mooorland
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                    <!-- CMOR1 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-cmor1" name="selectedActions" type="checkbox" value="CMOR1">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-cmor1">
+                        Assess moorland and produce a written record: CMOR1
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£10.60 per ha</strong> and <strong>£272 per agreement</strong>
+                      </div>
+                    </div>
+
+                    <!-- UPL1/UPL2/UPL3 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-upl" name="selectedActions" type="checkbox" value="UPL">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-upl">
+                        Livestock grazing on moorland: UPL1, UPL2 and UPL3
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£20 - £66 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- UPL7/UPL8/UPL9/UPL10 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-upl-shepherd" name="selectedActions" type="checkbox" value="UPL_SHEPHERD">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-upl-shepherd">
+                        Shepherding livestock on moorland: UPL7, UPL8, UPL9 and UPL10
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£33 - £48 per ha</strong>
+                      </div>
+                    </div>
+
+                </div>
+              </fieldset>
+            </div>
+              
+              
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="nutrient-management">
+                 Nutrient management
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                       <!-- CNUM2 -->
+                          <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="action-cnum2" name="selectedActions" type="checkbox" value="CNUM2">
+                            <label class="govuk-label govuk-checkboxes__label" for="action-cnum2">
+                              Legumes on improved grassland: CNUM2
+                            </label>
+                            <div class="govuk-hint govuk-checkboxes__hint">
+                              Payment rate per year: <strong>£102 per ha</strong>
+                            </div>
+                          </div>
+
+                          <!-- CNUM3 -->
+                          <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="action-cnum3" name="selectedActions" type="checkbox" value="CNUM3">
+                            <label class="govuk-label govuk-checkboxes__label" for="action-cnum3">
+                              Legume fallow: CNUM3
+                            </label>
+                            <div class="govuk-hint govuk-checkboxes__hint">
+                              Payment rate per year: <strong>£593 per ha</strong>
+                            </div>
+                          </div>
+
+                        <!-- CNUM1 -->
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="action-cnum1" name="selectedActions" type="checkbox" value="CNUM1">
+                          <label class="govuk-label govuk-checkboxes__label" for="action-cnum1">
+                            Assess nutrient management and produce a review report: CNUM1
+                          </label>
+                          <div class="govuk-hint govuk-checkboxes__hint">
+                            Payment rate per year: <strong>£652 per report</strong>
+                          </div>
+                        </div>
+
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="organic-farming">
+                 Organic farming
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+
+                     <!-- OFA1 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofa1" name="selectedActions" type="checkbox" value="OFA1">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofa1">
+                          Overwinter stubble (organic land): OFA1
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£264 per ha</strong>
+                        </div>
+                      </div>
+
+                      <!-- OFA6 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofa6" name="selectedActions" type="checkbox" value="OFA6">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofa6">
+                          Undersown cereal crop (organic land): OFA6
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£380 per ha</strong>
+                        </div>
+                      </div>
+
+                      <!-- OFM1 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofm1" name="selectedActions" type="checkbox" value="OFM1">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofm1">
+                          Organic land management – improved permanent grassland: OFM1
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£20 per ha</strong>
+                        </div>
+                      </div>
+
+                         <!-- OFM2 -->
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="action-ofm2" name="selectedActions" type="checkbox" value="OFM2">
+                          <label class="govuk-label govuk-checkboxes__label" for="action-ofm2">
+                            Organic land management – unimproved permanent grassland: OFM2
+                          </label>
+                          <div class="govuk-hint govuk-checkboxes__hint">
+                            Payment rate per year: <strong>£41 per ha</strong>
+                          </div>
+                        </div>
+
+                      <!-- OFM3 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofm3" name="selectedActions" type="checkbox" value="OFM3">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofm3">
+                          Organic land management – enclosed rough grazing: OFM3
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£97 per ha</strong>
+                        </div>
+                      </div>
+
+                      <!-- OFM4 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofm4" name="selectedActions" type="checkbox" value="OFM4">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofm4">
+                          Organic land management – rotational land: OFM4
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£132 per ha</strong>
+                        </div>
+                      </div>
+
+
+                    <!-- OFM5 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofm5" name="selectedActions" type="checkbox" value="OFM5">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofm5">
+                          Organic land management – horticultural land: OFM5
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£707 per plot</strong>
+                        </div>
+                      </div>
+
+                      <!-- OFM6 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofm6" name="selectedActions" type="checkbox" value="OFM6">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofm6">
+                          Organic land management – top fruit: OFM6
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£1,920 per ha</strong>
+                        </div>
+                      </div>
+
+
+                      <!-- OFC1 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofc1" name="selectedActions" type="checkbox" value="OFC1">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofc1">
+                          Organic conversion – improved permanent grassland: OFC1
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£187 per ha</strong>
+                        </div>
+                      </div>
+
+
+                        <!-- OFC2 -->
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="action-ofc2" name="selectedActions" type="checkbox" value="OFC2">
+                          <label class="govuk-label govuk-checkboxes__label" for="action-ofc2">
+                            Organic conversion – unimproved permanent grassland: OFC2
+                          </label>
+                          <div class="govuk-hint govuk-checkboxes__hint">
+                            Payment rate per year: <strong>£96 per ha</strong>
+                          </div>
+                        </div>
+
+
+                      <!-- OFC3 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofc3" name="selectedActions" type="checkbox" value="OFC3">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofc3">
+                          Organic conversion – rotational land: OFC3
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£298 per ha</strong>
+                        </div>
+                      </div>
+
+                      <!-- OFC4 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofc4" name="selectedActions" type="checkbox" value="OFC4">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofc4">
+                          Organic conversion – horticultural land: OFC4
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£874 per ha</strong>
+                        </div>
+                      </div>
+
+
+                      <!-- OFC5 -->
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="action-ofc5" name="selectedActions" type="checkbox" value="OFC5">
+                        <label class="govuk-label govuk-checkboxes__label" for="action-ofc5">
+                          Organic conversion – top fruit: OFC5
+                        </label>
+                        <div class="govuk-hint govuk-checkboxes__hint">
+                          Payment rate per year: <strong>£1,920 per ha</strong>
+                        </div>
+                      </div>
+
+
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="precision-farming">
+                 Precision farming
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                   <!-- PRF1 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-prf1" name="selectedActions" type="checkbox" value="PRF1">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-prf1">
+                        Variable rate application of nutrients: PRF1
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£27 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- PRF2 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-prf2" name="selectedActions" type="checkbox" value="PRF2">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-prf2">
+                        Camera or remote sensor guided herbicide spraying: PRF2
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£43 per ha</strong>
+                      </div>
+                    </div>
+
+
+                    <!-- PRF3 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-prf3" name="selectedActions" type="checkbox" value="PRF3">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-prf3">
+                        Non-mechanical robotic weeding: PRF3
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£101 per plot</strong>
+                      </div>
+                    </div>
+
+                    <!-- PRF4 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-prf4" name="selectedActions" type="checkbox" value="PRF4">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-prf4">
+                        Mechanical robotic weeding: PRF4
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£150 per ha</strong>
+                      </div>
+                    </div>
+
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="soil-health">
+                 Soil health
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                  <!-- CSAM1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-csma1" name="selectedActions" type="checkbox" value="CSMA1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-csma1">
+                      Assess soil, produce a soil management plan and test soil organic matter: CSAM1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£6 per ha</strong> and <strong>£97 per agreement</strong>
+                    </div>
+                  </div>
+
+                 <!-- CSAM2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-csam2" name="selectedActions" type="checkbox" value="CSAM2">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-csam2">
+                      Multi-species winter cover crop: CSAM2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£129 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- CSAM3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-csam3" name="selectedActions" type="checkbox" value="CSAM3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-csam3">
+                      Herbal leys: CSAM3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£382 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- SOH1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-soh1" name="selectedActions" type="checkbox" value="SOH1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-soh1">
+                      No-till farming: SOH1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£73 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- SOH2 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-soh2" name="selectedActions" type="checkbox" value="SOH2">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-soh2">
+                      Multi-species spring-sown cover crop: SOH2
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£163 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- SOH3 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-soh3" name="selectedActions" type="checkbox" value="SOH3">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-soh3">
+                      Multi-species summer-sown cover crop: SOH3
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£163 per ha</strong>
+                    </div>
+                  </div>
+
+                  <!-- SOH4 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-soh4" name="selectedActions" type="checkbox" value="SOH4">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-soh4">
+                      Winter cover following maize crops: SOH4
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£203 per ha</strong>
+                    </div>
+                  </div>
+
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="waterbodies">
+                 Waterbodies
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                    <!-- WBD1 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-wbd1" name="selectedActions" type="checkbox" value="WBD1">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-wbd1">
+                        Manage ponds: WBD1
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£257 per pond</strong>
+                      </div>
+                    </div>
+
+                    <!-- WBD2 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-wbd2" name="selectedActions" type="checkbox" value="WBD2">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-wbd2">
+                        Manage ditches: WBD2
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£4 per 100m</strong>
+                      </div>
+                    </div>
+
+                    <!-- WBD3 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-wbd3" name="selectedActions" type="checkbox" value="WBD3">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-wbd3">
+                        In-field grass strips: WBD3
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£765 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- WBD4 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-wbd4" name="selectedActions" type="checkbox" value="WBD4">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-wbd4">
+                        Arable reversion to grassland with low fertiliser input: WBD4
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£489 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- WBD6 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-wbd6" name="selectedActions" type="checkbox" value="WBD6">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-wbd6">
+                        Remove livestock from intensive grassland during the autumn and winter (outside SDAs): WBD6
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£115 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- WBD7 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-wbd7" name="selectedActions" type="checkbox" value="WBD7">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-wbd7">
+                        Remove livestock from grassland during the autumn and winter (SDAs): WBD7
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£115 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- WBD8 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-wbd8" name="selectedActions" type="checkbox" value="WBD8">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-wbd8">
+                        Manage grassland to reduce nutrient levels in groundwater: WBD8
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£396 per ha</strong>
+                      </div>
+                    </div>
+
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="wildlife-grassland">
+                 Wildlife (grassland)
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                  <!-- CIGL1 -->
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="action-cigl1" name="selectedActions" type="checkbox" value="CIGL1">
+                    <label class="govuk-label govuk-checkboxes__label" for="action-cigl1">
+                      Take grassland field corners or blocks out of management: CIGL1
+                    </label>
+                    <div class="govuk-hint govuk-checkboxes__hint">
+                      Payment rate per year: <strong>£333 per ha</strong>
+                    </div>
+                  </div>
+
+                    <!-- CIGL2 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-cigl2" name="selectedActions" type="checkbox" value="CIGL2">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-cigl2">
+                        Winter bird food on improved grassland: CIGL2
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£515 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- CLIG3 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-clig3" name="selectedActions" type="checkbox" value="CLIG3">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-clig3">
+                        Manage grassland with very low nutrient inputs: CLIG3
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£235 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- GRH1 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-grh1" name="selectedActions" type="checkbox" value="GRH1">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-grh1">
+                        Manage rough grazing for birds: GRH1
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£121 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- GRH6 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-grh6" name="selectedActions" type="checkbox" value="GRH6">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-grh6">
+                        Manage priority habitat species-rich grassland (endorsed): GRH6
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£646 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- SCR1 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-scr1" name="selectedActions" type="checkbox" value="SCR1">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-scr1">
+                        Create scrub and open habitat mosaics: SCR1
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£588 per ha</strong>
+                      </div>
+                    </div>
+
+                    <!-- SCR2 -->
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="action-scr2" name="selectedActions" type="checkbox" value="SCR2">
+                      <label class="govuk-label govuk-checkboxes__label" for="action-scr2">
+                        Manage scrub and open habitat mosaics: SCR2
+                      </label>
+                      <div class="govuk-hint govuk-checkboxes__hint">
+                        Payment rate per year: <strong>£350 per ha</strong>
+                      </div>
+                    </div>
+
+
+                </div>
+              </fieldset>
+            </div>
+
+            <form action="select-supp-actions" method="post">
+              <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+                Continue
+              </button>
+            </form>
+
+            {# <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h3 class="govuk-fieldset__heading" id="buffer-strips-alternative">
+                 Buffer strips
+                </h3>
+              </legend>
+              <p>Total available area for this action: 8.3405 ha</p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+            <!-- WBD5 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="action-wbd5" name="selectedActions" type="checkbox" value="WBD5">
+              <label class="govuk-label govuk-checkboxes__label" for="action-wbd5">
+                Manage intensive grassland adjacent to a watercourse: WBD5
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£311 per ha</strong>
+              </div>
+            </div>
+
+
+            <!-- AHW6 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="action-ahw6" name="selectedActions" type="checkbox" value="AHW6">
+              <label class="govuk-label govuk-checkboxes__label" for="action-ahw6">
+                Basic overwinter stubble: AHW6
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£58 per ha</strong>
+              </div>
+            </div>
+
+ #}
+
+
+      {# <p>
+        See <a href="https://www.gov.uk/find-funding-for-land-or-farms">Find funding for land or farms (opens in new tab)</a>
+        for the full list of actions including the eligibility criteria for each.
+      </p> #}
+
+      {# <p><a href="">Go back and choose another parcel</a></p> #}
+    </div> <!-- 2/3 col -->
+  </div> <!-- grid-row -->
+
+{% endblock %}

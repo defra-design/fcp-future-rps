@@ -245,7 +245,6 @@
             </details>
         </div>
 
-
   
         
         </div>
@@ -1584,9 +1583,13 @@
     // Function to select parcel from list
     function selectParcelById(parcelId) {
       selectParcel(parcelId);
-      // Zoom to the parcel
+      // Only zoom if no parcel is currently selected, otherwise just pan
       if (parcelPolygons[parcelId]) {
-        map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
+        if (currentSelectedParcel === null) {
+          map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
+        } else {
+          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
+        }
       }
       // Scroll to map
       document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});

@@ -1,0 +1,433 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Select actions to do with Limited livestock grazing on moorland: UPL3
+      </h1>
+
+      <p>You can do the following actions in combination with this action on land parcel SO3757 3159.</p>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend">
+                You can select one of:
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="england" aria-describedby="UPL1-hint">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+                   Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4
+                  </label>
+                   <div id="UPL1-hint" class="govuk-hint govuk-radios__hint">
+                    Payment rate per year: <strong>£7 per ha</strong>
+                  </div>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="whereDoYouLive-2" name="whereDoYouLive" type="radio" value="scotland" aria-describedby="UPL2-hint">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive-2">
+                     Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5
+                  </label>
+                   <div id="UPL2-hint" class="govuk-hint govuk-radios__hint">
+                    Payment rate per year: <strong>£18 per ha</strong>
+                  </div>
+                </div>
+                 <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="whereDoYouLive-3" name="whereDoYouLive" type="radio" value="scotland" aria-describedby="UPL2-hint">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive-3">
+                   Keep cattle and ponies on moorland supplement (100% GLU): UPL6
+                  </label>
+                   <div id="UPL2-hint" class="govuk-hint govuk-radios__hint">
+                    Payment rate per year: <strong>£23 per ha</strong>
+                  </div>
+                </div>
+                 <div class="govuk-radios__divider">or</div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="whereDoYouLive-4" name="whereDoYouLive" type="radio" value="wales"  aria-describedby="UPL3-hint">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive-4">
+                    None of the above
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+           <hr>
+
+          <div class="govuk-form-group govuk-!-margin-top-4">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend">
+                You can also select one of:
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="sheperding" name="sheperding" type="radio" value="england" aria-describedby="UPL7-hint">
+                  <label class="govuk-label govuk-radios__label" for="sheperding">
+                    Keep native breeds on extensively managed habitats supplement (50-80%): SPM4
+                  </label>
+                   <div id="UPL7-hint" class="govuk-hint govuk-radios__hint">
+                    Payment rate per year: <strong>£7 per ha</strong>
+                  </div>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="sheperding-2" name="sheperding" type="radio" value="scotland" aria-describedby="UPL8-hint">
+                  <label class="govuk-label govuk-radios__label" for="sheperding-2">
+                    Keep native breeds on extensively managed habitats supplement (more than 80%): SPM5
+                  </label>
+                   <div id="UPL8-hint" class="govuk-hint govuk-radios__hint">
+                    Payment rate per year: <strong>£11 per ha</strong>
+                  </div>
+                </div>
+                <div class="govuk-radios__divider">or</div>
+                 <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="sheperding-5" name="sheperding" type="radio" value="wales" aria-describedby="UPL3-hint">
+                  <label class="govuk-label govuk-radios__label" for="sheperding-5">
+                    None of the above
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+            {# <!-- UPL1 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-2" name="contact" type="checkbox" value="phone" data-aria-controls="conditional-contact-2">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-2">
+                Moderate livestock grazing on moorland: UPL1
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£20 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-2">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UPL2 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-3" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-3">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-3">
+                  Low livestock grazing on moorland: UPL2
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£53 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-3">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UPL3 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-4" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-4">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-4">
+                  Limited livestock grazing on moorland: UPL3
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£66 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-4">
+               <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UPL4 -->
+            <!-- not initially shown due to compatibility -->
+<!--            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-5" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-5">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-5">
+                Keep cattle and ponies on moorland supplement (minimum 30% GLU): UPL4
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£7 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-5">
+               <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+-->
+            <!-- UPL5 -->
+            <!-- not initially shown due to compatibility -->
+<!--            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-6" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-6">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-6">
+                Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£18 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-6">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+-->
+            <!-- UPL6 -->
+            <!-- not initially shown due to compatibility -->
+<!--            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-7" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-7">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-7">
+                Keep cattle and ponies on moorland supplement (100% GLU): UPL6
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£23 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-7">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+-->
+            <!-- UPL7 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-8" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-8">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-8">
+                Shepherding livestock on moorland (no required stock removal period): UPL7
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£33 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-8">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UPL8 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-9" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-9">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-9">
+                Shepherding livestock on moorland (remove stock for at least 4 months): UPL8
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£43 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-9">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UPL9 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-10" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-10">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-10">
+                Shepherding livestock on moorland (remove stock for at least 6 months): UPL9
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£45 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-10">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UPL10 -->
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-11" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-11">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-11">
+                Shepherding livestock on moorland (remove stock for at least 8 months): UPL10
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£48 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-11">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div> #}
+
+            <!-- SPM4 -->
+            <!-- not initially shown due to compatibility -->
+<!--            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-12" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-12">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-12">
+                Keep native breeds on extensively managed habitats supplement (50-80%): SPM4
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£7 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-12">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+-->
+            <!-- SPM5 -->
+            <!-- not initially shown due to compatibility -->
+<!--            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="contact-13" name="contact" type="checkbox" value="text message" data-aria-controls="conditional-contact-13">
+              <label class="govuk-label govuk-checkboxes__label" for="contact-13">
+                Keep native breeds on extensively managed habitats supplement (more than 80%): SPM5
+              </label>
+              <div class="govuk-hint govuk-checkboxes__hint">
+                Payment rate per year: <strong>£11 per ha</strong>
+              </div>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-13">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-by-email">
+                  Quantity
+                </label>
+                <div id="government-gateway-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                  32.0404 ha available
+                </div>
+                <div class="govuk-input__wrapper">
+                  <input class="govuk-input govuk-input--width-5" id="weight" name="weight" type="text" spellcheck="false">
+                  <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                </div>
+              </div>
+            </div>
+-->
+          </div> <!-- all checkboxes -->
+        </fieldset>
+      </div> <!-- form-group -->
+
+
+      <form action="add-more-actions3" method="post">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+
+      {# <p>
+        See <a href="https://www.gov.uk/find-funding-for-land-or-farms">Find funding for land or farms (opens in new tab)</a>
+        for the full list of actions including the eligibility criteria for each.
+      </p> #}
+
+      {# <p><a href="">Go back and choose another parcel</a></p> #}
+    </div> <!-- 2/3 col -->
+  </div> <!-- grid-row -->
+
+{% endblock %}
