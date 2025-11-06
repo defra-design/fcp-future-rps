@@ -1,7 +1,7 @@
 {% extends "layouts/day1-header.html" %}
 
 {% block pageTitle %}
-  Review funding offer
+  Review your agreement offer
 {% endblock %}
 
 {% block beforeContent %}
@@ -14,11 +14,35 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">
-        Review your funding offer
+        Review your agreement offer
       </h1>
+
+      <p class="govuk-body">
+        If you accept this agreement offer, the resulting agreement will be between Defra and:
+      </p>
+      <p class="govuk-body">
+        Agile Farms Ltd<br>
+        10 Skirkbeck Way, Maidstone, SK22 1DL<br>
+        SBI: 123456789
+      </p>
+      <p class="govuk-body">
+        Your agreement will start on the first day of the month after you accept this offer.
+      </p>
+      <p class="govuk-body">
+        The <a href="#">terms and conditions (opens in new tab)</a> and
+        <a href="#">Farm payments information (opens in new tab)</a> set out the rules:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>which apply to your agreement</li>
+        <li>you must follow when you enter your agreement</li>
+      </ul>
+      <p class="govuk-body">
+        <a href="#">Print this agreement offer</a>.
+      </p>
     </div>
   </div>
 
+  <hr class="govuk-section-break govuk-section-break--m">
   <!-- row at full column width for the action table -->
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -34,6 +58,7 @@
             <th scope="col" class="govuk-table__header">Code</th>
             <th scope="col" class="govuk-table__header" style="width:130px">Land parcel</th>
             <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+            <th scope="col" class="govuk-table__header" style="width:120px">Duration</th>
           </tr>
         </thead>
 
@@ -43,12 +68,14 @@
             <td class="govuk-table__cell">CMOR1</td>
             <td class="govuk-table__cell">SO3757 3159</td>
             <td class="govuk-table__cell">4.5123</td>
+            <td class="govuk-table__cell">1 year</td>
           </tr>
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">Low livestock grazing on moorland</td>
             <td class="govuk-table__cell">UPL2</td>
             <td class="govuk-table__cell">SO3757 3159</td>
             <td class="govuk-table__cell">3.5125</td>
+            <td class="govuk-table__cell">1 year</td>
           </tr>
         </tbody>
       </table>
@@ -64,10 +91,10 @@
       <h2 class="govuk-heading-l">
         Payments
       </h2>
-      <p>If you accept this offer, you will receive these payments for each action.</p>
+      <p>If you accept this agreement offer, you will receive the following payments for each action.</p>
       <p>
-        You will receive your payments in equal instalments. Your first payment may be a different amount due to the
-        Rural Payments Agency rounding it up, so your other payments are evenly split.
+        You will receive your payments in 4 instalments. Your first payment may be a different amount due to
+        the Rural Payments Agency rounding it up. Your other 3 payments are evenly split.
       </p>
       <p>
         You will usually receive your first payment in the fourth month after your agreement’s start date.
@@ -76,9 +103,8 @@
       <h3 class="govuk-heading-m">
         Additional yearly payments
       </h3>
-      <p>Assess moorland and produce a written record: CMOR1</p>
       <p>
-        There is a payment of £272 per agreement per year for Assess moorland and produce a written record: CMOR1.
+        There is a payment of £272 per agreement per year for action 'Assess moorland and produce a written record: CMOR1'.
       </p>
       <p>
         You will receive this payment if you are not already doing this action on another land parcel.
@@ -111,9 +137,9 @@
             <td class="govuk-table__cell" style="text-align: right">£47.84</td>
           </tr>
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">One-off payment per agreement per year for Assess moorland and produce a written record</td>
+            <td class="govuk-table__cell">Assess moorland and produce a written record</td>
             <td class="govuk-table__cell">CMOR1</td>
-            <td class="govuk-table__cell">£272</td>
+            <td class="govuk-table__cell">£272 per agreement</td>
             <td class="govuk-table__cell" style="text-align: right">£68</td>
             <td class="govuk-table__cell" style="text-align: right">£68</td>
             <td class="govuk-table__cell" style="text-align: right">£272</td>
@@ -189,7 +215,7 @@
             <li>Telephone: 020 8026 2395</li>
             <li>Monday to Friday, 8:30am to 5pm (except bank holidays)</li>
           </ul>
-          <p><a href="https://www.gov.uk/call-charges" target="_blank">Find out about call charges (opens in new tab)</a></p>
+          <p><a href="">Find out about call charges (opens in new tab)</a></p>
           <p>Email: <a href="#">farmpayments@rpa.gov.uk</a></p>
           <p>The RPA responds to email queries within 10 working days.</p>
         </div>
