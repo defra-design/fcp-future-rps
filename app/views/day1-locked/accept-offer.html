@@ -19,36 +19,71 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">
-        Accept your offer
+        Accept your agreement offer
       </h1>
 
-      <p>If you accept this offer for funding, you confirm that:</p>
+      <p>Your agreement consists will consist of the:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>agreement document</li>
+        <li><a href="">terms and conditions (opens in new tab)</a></li>
+        <li>actions you have selected</li>
+      </ul>
+
+      <p>By accepting this offer, you confirm that:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>
-          you are entering into a legally binding agreement with Defra
+          you will comply with the obligations under the your agreement
         </li>
         <li>
-          you and your land will remain eligible for the duration of the actions you have selected
+          the information you gave and the declarations you made in your application remain true and accurate to the
+          best of your knowledge and belief
         </li>
         <li>
-          you will get any required regulatory consents, permissions and licences before you do your selected actions
+          you have full capacity and authority to enter into the agreement
         </li>
         <li>
-          you will complete your selected actions by following the guidance on
-          <a href="../_common/not-testing">funding for land or farms (opens in new tab)</a> that explains what you must do to get paid
+          you are not aware of any circumstances which would render you ineligible or otherwise prevent you from
+          complying with your obligation under the agreement
         </li>
         <li>
-          you will submit an annual declaration to confirm you have complied, or expect to have complied with the requirements
-          of the actions you have selected for that year – the Rural Payments Agency will contact you when you need to do this
+          your obligations under the agreement do not and will not duplicate or conflict in whole or in part with
+          any other legal or contractual obligations you are subject to
         </li>
         <li>
-          you will comply with the <a href="../_common/not-testing">terms and conditions (opens in new tab)</a> for your selected actions
+          you will at all times comply with all relevant law (as defined in the terms and conditions) in the
+          performance of your obligations under the agreement
         </li>
       </ul>
 
+      <p class="govuk-body">
+        Check the terms and conditions to understand what can happen if you deliberately give wrong or incomplete
+        information, or do not report changes as soon as possible.
+      </p>
+      <p class="govuk-body">
+        If you are accepting this offer on behalf of the agreement holder, you confirm you are authorised to:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>accept this agreement on the agreement holder’s behalf</li>
+        <li>enter into the agreement on the agreement holder’s behalf</li>
+      </ul>
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+          <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="waste" name="waste" type="checkbox" value="carcasses" onchange="document.getElementById('accept').disabled = !this.checked;">
+              <label class="govuk-label govuk-checkboxes__label" for="waste">
+                I confirm I have read the information in the this previous section and accept this agreement offer.
+                I accept it either on my own behalf, or as someone authorised to act on behalf of the agreement holder.
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
       <form action="offer-accepted" method="post">
         <div class="govuk-button-group">
-          <button type="submit" class="govuk-button" data-module="govuk-button">
+          <button type="submit" class="govuk-button" data-module="govuk-button" name="accept" id="accept" disabled>
             Accept offer
           </button>
         </div>
@@ -62,7 +97,7 @@
         </summary>
 
         <div class="govuk-details__text">
-          <p>Contact the Rural Payments Agency (RPA) to update your offer.</p>
+          <p>Contact the Rural Payments Agency (RPA) by phone or email for help and support.</p>
           <ul class="govuk-list">
             <li>Telephone: 020 8026 2395</li>
             <li>Monday to Friday, 8:30am to 5pm (except bank holidays)</li>

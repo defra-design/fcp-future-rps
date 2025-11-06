@@ -1,0 +1,127 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Select land parcel
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <!-- error summary box -->
+      <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div role="alert">
+          <h2 class="govuk-error-summary__title">
+            There is a problem
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+              <li>
+                <a href="#land">Select a land parcel</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-form-group govuk-form-group--error">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">
+                Select land parcel for actions
+              </h1>
+            </legend>
+
+            <div id="parcel-hint" class="govuk-hint">
+              Use your map to check these reference numbers against your land parcels.
+            </div>
+
+            <p id="land" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span> Select a land parcel
+            </p>
+
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="signIn" name="signIn" type="radio" value="government-gateway" aria-describedby="signIn-item-hint">
+                <label class="govuk-label govuk-radios__label" for="signIn">
+                  SO3757 3158
+                </label>
+                <div id="signIn-item-hint" class="govuk-hint govuk-radios__hint">
+                  Total size: 32.0404 hectares
+                </div>
+              </div>
+
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="signIn-2" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
+                <label class="govuk-label govuk-radios__label" for="signIn-2">
+                  SO3757 3159
+                </label>
+                <div id="signIn-2-item-hint" class="govuk-hint govuk-radios__hint">
+                  Total size: 8.3405 hectares
+                </div>
+              </div>
+
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="signIn-3" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
+                <label class="govuk-label govuk-radios__label" for="signIn-3">
+                  SO3757 3160
+                </label>
+                <div id="signIn-3-item-hint" class="govuk-hint govuk-radios__hint">
+                  Total size: 1.4935 hectares
+                </div>
+              </div>
+            </div> <!-- radio group -->
+          </fieldset>
+        </div> <!-- form group -->
+      </div>
+
+      <p>
+        You will be able to add actions to the other land parcels before submitting your application.
+      </p>
+
+      <div class="govuk-button-group">
+        <form class="govuk-form" action="select-base-action" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>       
+        
+
+        <!-- not for day 1
+        <form class="govuk-form" action="save-and-return" method="post">
+          <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+            Save and return later
+          </button>
+        </form> -->
+      </div> <!-- buttons -->
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                If you have a question
+              </span>
+          </summary>
+          <div class="govuk-details__text">
+            Contact the Rural Payments Agency (RPA) if you have a query.<br><br>
+            Telephone: 020 8026 2395<br>
+            Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+            <p><a href="../_common/call-charges" target="_blank">Find out about call charges (opens in new tab)</a><br><br>
+              Email: <a href="mailto:farmpayments@rpa.gov.uk">farmpayments@rpa.gov.uk</a></p>
+            <p>The RPA responds to email queries within 10 working days.</p>
+          </div>
+        </details>
+
+    </div> <!-- 2/3 col -->
+  </div> <!-- grid-row -->
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+Remove action
+{% endblock %}
+
+{% block beforeContent %}
+{% include "_common/sub-header-beta.html" %}
+
+{{ govukBackLink({
+text: "Back",
+href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row" role="main">
+  <div class="govuk-grid-column-two-thirds">
+    <form class="form" action="add-more-actions2" method="post">
+
+      <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div role="alert">
+          <h2 class="govuk-error-summary__title">
+            There is a problem
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+              <li>
+                <a href="#error">Select if you want to remove Low livestock grazing on moorland: UPL2 from this application</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-form-group govuk-form-group--error">
+        <h1 class="govuk-heading-l">
+          Remove action from land parcel SO3757 3159
+        </h1>
+        <p class="govuk-body">
+          Do you want to remove Low livestock grazing on moorland: UPL2 from your application?
+        </p>
+
+        <form action="/form-handler" method="post" novalidate>
+          <p id="error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> Select if you want to remove Low livestock grazing on moorland: UPL2 from this application
+          </p>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <!--   <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                   Are you sure you want to remove this action?
+                 </legend> -->
+              <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="interviewNeeds">
+                    Yes
+                  </label>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="interviewNeeds-2" name="interviewNeeds" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="interviewNeeds-2">
+                    No
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                If you have a question
+              </span>
+          </summary>
+          <div class="govuk-details__text">
+            Contact the Rural Payments Agency (RPA) if you have a query.<br><br>
+            Telephone: 020 8026 2395<br>
+            Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+            <p><a href="../_common/call-charges" target="_blank">Find out about call charges (opens in new tab)</a><br><br>
+              Email: <a href="mailto:farmpayments@rpa.gov.uk">farmpayments@rpa.gov.uk</a></p>
+            <p>The RPA responds to email queries within 10 working days.</p>
+          </div>
+        </details>
+
+
+      </form>
+
+  </div>
+</div>
+
+{% endblock %}
