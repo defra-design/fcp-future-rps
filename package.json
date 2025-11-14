@@ -5,6 +5,7 @@
     "start": "govuk-prototype-kit start"
   },
   "dependencies": {
+    "@defra/defra-map": "file:../defra-map",
     "@dwp/dwp-frontend": "3.3.0",
     "@govuk-prototype-kit/common-templates": "2.0.1",
     "@govuk-prototype-kit/step-by-step": "2.2.3",
