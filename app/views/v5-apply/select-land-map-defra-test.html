@@ -28,6 +28,64 @@
     body.am-is-loading .defra-map-container {
       opacity: 0.5;
     }
+    
+    /* MapLibre popup styling to match GOV.UK and Leaflet */
+    .custom-popup {
+      position: absolute;
+      background: white;
+      padding: 8px 10px;
+      border-radius: 3px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      font-family: "GDS Transport", arial, sans-serif;
+      max-width: 180px;
+      min-width: 150px;
+      font-size: 12px;
+      z-index: 1000;
+      pointer-events: auto;
+    }
+    
+    .custom-popup::before {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      margin-left: -10px;
+      border: 10px solid transparent;
+      border-top-color: white;
+    }
+    
+    .custom-popup-close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 4px 8px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #0b0c0c;
+      line-height: 1;
+    }
+    
+    .custom-popup-close:hover {
+      color: #505a5f;
+    }
+    
+    .custom-popup h3 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      padding-right: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0b0c0c;
+    }
+    
+    .custom-popup p {
+      margin: 4px 0;
+      font-size: 12px;
+      line-height: 1.3;
+      color: #0b0c0c;
+    }
   </style>
   
   {% include "_common/sub-header-beta.html" %}
@@ -194,6 +252,50 @@
     var map;
     var selectedParcelId = null;
     var parcelGeoJSON; // Store globally so we can access it from list clicks
+    var currentPopup = null; // Store current popup so we can close it
+
+    // Function to create and show a popup
+    function showPopup(lngLat, content) {
+      // Remove existing popup if any
+      closePopup();
+      
+      // Create popup element
+      var popup = document.createElement('div');
+      popup.className = 'custom-popup';
+      popup.innerHTML = content + '<button class="custom-popup-close" onclick="closePopup()">&times;</button>';
+      
+      // Add to map container
+      var mapContainer = map.getContainer();
+      mapContainer.appendChild(popup);
+      
+      // Position the popup
+      var point = map.project(lngLat);
+      popup.style.left = point.x + 'px';
+      popup.style.top = (point.y - popup.offsetHeight - 15) + 'px'; // 15px for arrow
+      
+      currentPopup = popup;
+      
+      // Close popup when clicking outside
+      setTimeout(function() {
+        document.addEventListener('click', closePopupOnClickOutside);
+      }, 0);
+    }
+    
+    // Function to close popup
+    window.closePopup = function() {
+      if (currentPopup) {
+        currentPopup.remove();
+        currentPopup = null;
+        document.removeEventListener('click', closePopupOnClickOutside);
+      }
+    };
+    
+    // Close popup when clicking outside
+    function closePopupOnClickOutside(e) {
+      if (currentPopup && !currentPopup.contains(e.target)) {
+        closePopup();
+      }
+    }
 
     // Function to select a parcel (used by both map clicks and list clicks)
     function selectParcel(parcelId, zoomToParcel) {
@@ -468,8 +570,14 @@
           // Use the shared selection function (false = don't zoom, already visible)
           selectParcel(parcelId, false);
           
-          // Show details
-          alert('Selected: ' + feature.properties.name + '\nArea: ' + feature.properties.area + '\nOS Ref: ' + feature.properties.osRef);
+          // Show popup with parcel details
+          var popupContent = 
+            '<h3>' + feature.properties.name + '</h3>' +
+            '<p><strong>Total area:</strong> ' + feature.properties.area + '</p>' +
+            '<p><strong>OS Ref:</strong> ' + feature.properties.osRef + '</p>' +
+            '<p style="margin-top: 10px;"><em>Land use: Permanent grassland</em></p>';
+          
+          showPopup(e.lngLat, popupContent);
         }
       });
 
