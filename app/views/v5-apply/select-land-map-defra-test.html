@@ -21,6 +21,7 @@
       margin-bottom: 20px;
       height: 500px;
       width: 100%;
+      position: relative;
     }
     
     #map {
@@ -32,35 +33,30 @@
       opacity: 0.5;
     }
     
-    /* MapLibre popup styling to match GOV.UK and Leaflet */
-    .custom-popup {
+    /* Fixed info panel on left side of map */
+    .parcel-info-panel {
       position: absolute;
-      background: white;
-      padding: 8px 10px;
-      border-radius: 3px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      font-family: "GDS Transport", arial, sans-serif;
-      max-width: 180px;
-      min-width: 150px;
-      font-size: 12px;
-      z-index: 1000;
-      pointer-events: auto;
-    }
-    
-    .custom-popup::before {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      margin-left: -10px;
-      border: 10px solid transparent;
-      border-top-color: white;
-    }
-    
-    .custom-popup-close {
-      position: absolute;
+      left: 0;
       top: 0;
-      right: 0;
+      width: 200px;
+      height: 100%;
+      background: white;
+      border-right: 2px solid #b1b4b6;
+      box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+      z-index: 1000;
+      font-family: "GDS Transport", arial, sans-serif;
+      overflow-y: auto;
+      display: none; /* Hidden by default */
+    }
+    
+    .parcel-info-panel.visible {
+      display: block;
+    }
+    
+    .parcel-info-panel-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
       padding: 4px 8px;
       background: none;
       border: none;
@@ -70,24 +66,32 @@
       line-height: 1;
     }
     
-    .custom-popup-close:hover {
+    .parcel-info-panel-close:hover {
       color: #505a5f;
     }
     
-    .custom-popup h3 {
+    .parcel-info-panel-content {
+      padding: 15px;
+    }
+    
+    .parcel-info-panel h3 {
       margin-top: 0;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
       padding-right: 20px;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
       color: #0b0c0c;
     }
     
-    .custom-popup p {
-      margin: 4px 0;
-      font-size: 12px;
-      line-height: 1.3;
+    .parcel-info-panel p {
+      margin: 8px 0;
+      font-size: 14px;
+      line-height: 1.4;
       color: #0b0c0c;
+    }
+    
+    .parcel-info-panel p strong {
+      font-weight: 700;
     }
   </style>
   
@@ -110,42 +114,43 @@
       html: '<strong>Note:</strong> This uses the @defra/defra-map v2 component with DefraMap class. The map uses MapLibre GL for rendering and includes zoom controls and scale bar plugins.'
     }) }}
 
-    <!-- Two column layout -->
-    <div class="govuk-grid-row">
-      
-      <!-- Left column - Map (1/2) -->
-      <div class="govuk-grid-column-one-half">
-        <h2 class="govuk-heading-m">Interactive Map</h2>
-        
-        <!-- Map container -->
-        <div class="defra-map-container">
-          <div id="map" data-zoom="15" data-center="[-1.2520, 51.7495]"></div>
+    <!-- Full width map -->
+    <h2 class="govuk-heading-m">Interactive Map</h2>
+    
+    <!-- Map container -->
+    <div class="defra-map-container">
+      <!-- Info panel (fixed to left side) -->
+      <div id="parcel-info-panel" class="parcel-info-panel">
+        <button class="parcel-info-panel-close" onclick="closeInfoPanel()">&times;</button>
+        <div class="parcel-info-panel-content" id="parcel-info-content">
+          <!-- Content will be inserted here -->
         </div>
-        
-        <details class="govuk-details">
-          <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-              Map controls guide
-            </span>
-          </summary>
-          <div class="govuk-details__text">
-            <ul class="govuk-list govuk-list--bullet">
-              <li>Use zoom controls (+/-) to zoom in and out</li>
-              <li>Click and drag to pan the map</li>
-              <li>Use keyboard: Arrow keys to pan, +/- to zoom</li>
-              <li>Scale bar shows map scale</li>
-            </ul>
-          </div>
-        </details>
       </div>
+      
+      <div id="map" data-zoom="15" data-center="[-1.2520, 51.7495]"></div>
+    </div>
+    
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Map controls guide
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Use zoom controls (+/-) to zoom in and out</li>
+          <li>Click and drag to pan the map</li>
+          <li>Use keyboard: Arrow keys to pan, +/- to zoom</li>
+          <li>Scale bar shows map scale</li>
+        </ul>
+      </div>
+    </details>
 
-      <!-- Right column - Parcel info (1/2) -->
-      <div class="govuk-grid-column-one-half">
-        <h2 class="govuk-heading-m">Land Parcels</h2>
-        
-        <p class="govuk-body">Your available land parcels in Oxfordshire:</p>
-        
-        <ul class="govuk-list govuk-list--spaced">
+    <h2 class="govuk-heading-m">Land Parcels</h2>
+    
+    <p class="govuk-body">Your available land parcels in Oxfordshire:</p>
+    
+    <ul class="govuk-list govuk-list--spaced">
           <li style="display: flex; justify-content: space-between;">
             <a href="#" class="govuk-link" onclick="selectParcelFromList('lower-field'); return false;">Lower Field</a>
             <span>120.35 ha</span>
@@ -168,46 +173,34 @@
           </li>
         </ul>
 
-        {{ govukWarningText({
-          text: "Click on any colored parcel to select it. The selected parcel will highlight with a green border. This demonstrates GeoJSON layer overlays with click interactions.",
-          iconFallbackText: "Note"
-        }) }}
+    {{ govukWarningText({
+      text: "Click on any colored parcel to select it. The selected parcel will highlight with a green border. This demonstrates GeoJSON layer overlays with click interactions.",
+      iconFallbackText: "Note"
+    }) }}
 
-        <h3 class="govuk-heading-s govuk-!-margin-top-6">Technical Details</h3>
-        <dl class="govuk-summary-list govuk-summary-list--no-border">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Component</dt>
-            <dd class="govuk-summary-list__value">defra.DefraMap</dd>
-          </div>
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Map Provider</dt>
-            <dd class="govuk-summary-list__value">MapLibre GL JS</dd>
-          </div>
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Base Map</dt>
-            <dd class="govuk-summary-list__value">OpenFreeMap Liberty</dd>
-          </div>
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Behaviour</dt>
-            <dd class="govuk-summary-list__value">Hybrid (interactive + accessible)</dd>
-          </div>
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Plugins</dt>
-            <dd class="govuk-summary-list__value">Zoom controls, Scale bar</dd>
-          </div>
-        </dl>
-
-        <h3 class="govuk-heading-s govuk-!-margin-top-6">Next Steps</h3>
-        <p class="govuk-body-s">To add parcel polygons and interactions:</p>
-        <ol class="govuk-list govuk-list--number govuk-body-s">
-          <li>Access the MapLibre instance via <code>map.getMap()</code></li>
-          <li>Add GeoJSON source with parcel coordinates</li>
-          <li>Add fill and line layers for visualization</li>
-          <li>Add click event listeners for interaction</li>
-          <li>Implement popup/info panel updates</li>
-        </ol>
+    <h3 class="govuk-heading-s govuk-!-margin-top-6">Technical Details</h3>
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Component</dt>
+        <dd class="govuk-summary-list__value">defra.DefraMap</dd>
       </div>
-    </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Map Provider</dt>
+        <dd class="govuk-summary-list__value">MapLibre GL JS</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Base Map</dt>
+        <dd class="govuk-summary-list__value">OpenFreeMap Liberty</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Behaviour</dt>
+        <dd class="govuk-summary-list__value">Hybrid (interactive + accessible)</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Plugins</dt>
+        <dd class="govuk-summary-list__value">Zoom controls, Scale bar</dd>
+      </div>
+    </dl>
 
   </div>
 </div>
@@ -255,50 +248,20 @@
     var map;
     var selectedParcelId = null;
     var parcelGeoJSON; // Store globally so we can access it from list clicks
-    var currentPopup = null; // Store current popup so we can close it
 
-    // Function to create and show a popup
-    function showPopup(lngLat, content) {
-      // Remove existing popup if any
-      closePopup();
-      
-      // Create popup element
-      var popup = document.createElement('div');
-      popup.className = 'custom-popup';
-      popup.innerHTML = content + '<button class="custom-popup-close" onclick="closePopup()">&times;</button>';
-      
-      // Add to map container
-      var mapContainer = map.getContainer();
-      mapContainer.appendChild(popup);
-      
-      // Position the popup
-      var point = map.project(lngLat);
-      popup.style.left = point.x + 'px';
-      popup.style.top = (point.y - popup.offsetHeight - 15) + 'px'; // 15px for arrow
-      
-      currentPopup = popup;
-      
-      // Close popup when clicking outside
-      setTimeout(function() {
-        document.addEventListener('click', closePopupOnClickOutside);
-      }, 0);
+    // Function to show info panel
+    function showInfoPanel(content) {
+      var panel = document.getElementById('parcel-info-panel');
+      var contentDiv = document.getElementById('parcel-info-content');
+      contentDiv.innerHTML = content;
+      panel.classList.add('visible');
     }
     
-    // Function to close popup
-    window.closePopup = function() {
-      if (currentPopup) {
-        currentPopup.remove();
-        currentPopup = null;
-        document.removeEventListener('click', closePopupOnClickOutside);
-      }
+    // Function to close info panel
+    window.closeInfoPanel = function() {
+      var panel = document.getElementById('parcel-info-panel');
+      panel.classList.remove('visible');
     };
-    
-    // Close popup when clicking outside
-    function closePopupOnClickOutside(e) {
-      if (currentPopup && !currentPopup.contains(e.target)) {
-        closePopup();
-      }
-    }
 
     // Function to select a parcel (used by both map clicks and list clicks)
     function selectParcel(parcelId, zoomToParcel) {
@@ -585,14 +548,14 @@
           // Use the shared selection function (false = don't zoom, already visible)
           selectParcel(parcelId, false);
           
-          // Show popup with parcel details
-          var popupContent = 
+          // Show info panel with parcel details
+          var panelContent = 
             '<h3>' + feature.properties.name + '</h3>' +
             '<p><strong>Total area:</strong> ' + feature.properties.area + '</p>' +
             '<p><strong>OS Ref:</strong> ' + feature.properties.osRef + '</p>' +
             '<p style="margin-top: 10px;"><em>Land use: Permanent grassland</em></p>';
           
-          showPopup(e.lngLat, popupContent);
+          showInfoPanel(panelContent);
         }
       });
 
