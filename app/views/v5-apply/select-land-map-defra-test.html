@@ -1,0 +1,496 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Defra Map Test - Land Parcel Selection
+{% endblock %}
+
+{% block bodyStart %}
+  <script>document.body.classList.add('am-is-loading')</script>
+{% endblock %}
+
+{% block beforeContent %}
+  <!-- Defra Map CSS -->
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Fdefra-map/dist/css/defra-map.css">
+  
+  <style>
+    .defra-map-container {
+      border: 2px solid #b1b4b6;
+      margin-bottom: 20px;
+      height: 500px;
+      width: 100%;
+    }
+    
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+    
+    body.am-is-loading .defra-map-container {
+      opacity: 0.5;
+    }
+  </style>
+  
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">Defra Map Component Test</h1>
+    <p class="govuk-body">This is a test page showing the defra-map component with basic land parcel selection functionality.</p>
+    
+    {{ govukInsetText({
+      html: '<strong>Note:</strong> This uses the @defra/defra-map v2 component with DefraMap class. The map uses MapLibre GL for rendering and includes zoom controls and scale bar plugins.'
+    }) }}
+
+    <!-- Two column layout -->
+    <div class="govuk-grid-row">
+      
+      <!-- Left column - Map (1/2) -->
+      <div class="govuk-grid-column-one-half">
+        <h2 class="govuk-heading-m">Interactive Map</h2>
+        
+        <!-- Map container -->
+        <div class="defra-map-container">
+          <div id="map" data-zoom="15" data-center="[-1.2520, 51.7495]"></div>
+        </div>
+        
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Map controls guide
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <ul class="govuk-list govuk-list--bullet">
+              <li>Use zoom controls (+/-) to zoom in and out</li>
+              <li>Click and drag to pan the map</li>
+              <li>Use keyboard: Arrow keys to pan, +/- to zoom</li>
+              <li>Scale bar shows map scale</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <!-- Right column - Parcel info (1/2) -->
+      <div class="govuk-grid-column-one-half">
+        <h2 class="govuk-heading-m">Land Parcels</h2>
+        
+        <p class="govuk-body">Your available land parcels in Oxfordshire:</p>
+        
+        <ul class="govuk-list govuk-list--spaced">
+          <li style="display: flex; justify-content: space-between;">
+            <a href="#" class="govuk-link" onclick="selectParcelFromList('lower-field'); return false;">Lower Field</a>
+            <span>120.35 ha</span>
+          </li>
+          <li style="display: flex; justify-content: space-between;">
+            <a href="#" class="govuk-link" onclick="selectParcelFromList('upper-field'); return false;">Upper Field</a>
+            <span>5.23 ha</span>
+          </li>
+          <li style="display: flex; justify-content: space-between;">
+            <a href="#" class="govuk-link" onclick="selectParcelFromList('woods-view'); return false;">Woods View</a>
+            <span>12.88 ha</span>
+          </li>
+          <li style="display: flex; justify-content: space-between;">
+            <a href="#" class="govuk-link" onclick="selectParcelFromList('river-pasture'); return false;">River Pasture</a>
+            <span>15.33 ha</span>
+          </li>
+          <li style="display: flex; justify-content: space-between;">
+            <a href="#" class="govuk-link" onclick="selectParcelFromList('lower-paddock'); return false;">Lower Paddock</a>
+            <span>3.92 ha</span>
+          </li>
+        </ul>
+
+        {{ govukWarningText({
+          text: "Click on any colored parcel to select it. The selected parcel will highlight with a green border. This demonstrates GeoJSON layer overlays with click interactions.",
+          iconFallbackText: "Note"
+        }) }}
+
+        <h3 class="govuk-heading-s govuk-!-margin-top-6">Technical Details</h3>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Component</dt>
+            <dd class="govuk-summary-list__value">defra.DefraMap</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Map Provider</dt>
+            <dd class="govuk-summary-list__value">MapLibre GL JS</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Base Map</dt>
+            <dd class="govuk-summary-list__value">OpenFreeMap Liberty</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Behaviour</dt>
+            <dd class="govuk-summary-list__value">Hybrid (interactive + accessible)</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Plugins</dt>
+            <dd class="govuk-summary-list__value">Zoom controls, Scale bar</dd>
+          </div>
+        </dl>
+
+        <h3 class="govuk-heading-s govuk-!-margin-top-6">Next Steps</h3>
+        <p class="govuk-body-s">To add parcel polygons and interactions:</p>
+        <ol class="govuk-list govuk-list--number govuk-body-s">
+          <li>Access the MapLibre instance via <code>map.getMap()</code></li>
+          <li>Add GeoJSON source with parcel coordinates</li>
+          <li>Add fill and line layers for visualization</li>
+          <li>Add click event listeners for interaction</li>
+          <li>Implement popup/info panel updates</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block pageScripts %}
+  <!-- Preact dependencies - MUST be loaded in this order -->
+  <script src="https://unpkg.com/preact@10.19.3/dist/preact.umd.js"></script>
+  <script src="https://unpkg.com/preact@10.19.3/hooks/dist/hooks.umd.js"></script>
+  <script src="https://unpkg.com/preact@10.19.3/compat/dist/compat.umd.js"></script>
+  <script src="https://unpkg.com/preact@10.19.3/jsx-runtime/dist/jsxRuntime.umd.js"></script>
+
+  <!-- Preact shim -->
+  <script src="/plugin-assets/%40defra%2Fdefra-map/assets/js/preactShim.js"></script>
+
+  <!-- Defra map libraries -->
+  <script src="/plugin-assets/%40defra%2Fdefra-map/dist/umd/maplibre-provider.js"></script>
+  <script src="/plugin-assets/%40defra%2Fdefra-map/dist/umd/scale-bar-plugin.js"></script>
+  <script src="/plugin-assets/%40defra%2Fdefra-map/dist/umd/zoom-controls-plugin.js"></script>
+  <script src="/plugin-assets/%40defra%2Fdefra-map/dist/umd/defra-map.js"></script>
+
+  <script>
+    // Initialize the defra map - centered on Oxfordshire farmland
+    var defraMap = new defra.DefraMap('map', {
+      mapProvider: defra.maplibreProvider,
+      behaviour: 'hybrid',
+      mapLabel: 'Land parcel selection map',
+      minZoom: 6,
+      maxZoom: 18,
+      containerHeight: '500px',
+      mapStyle: {
+        url: 'https://tiles.openfreemap.org/styles/liberty',
+        attribution: 'OpenFreeMap © OpenMapTiles Data from OpenStreetMap',
+        backgroundColor: '#f5f5f0'
+      },
+      plugins: [
+        defra.zoomControlsPlugin(),
+        defra.scaleBarPlugin({
+          units: 'metric'
+        })
+      ]
+    });
+
+    var map;
+    var selectedParcelId = null;
+    var parcelGeoJSON; // Store globally so we can access it from list clicks
+
+    // Function to select a parcel (used by both map clicks and list clicks)
+    function selectParcel(parcelId, zoomToParcel) {
+      if (!map) {
+        console.error('Map not ready yet');
+        return;
+      }
+
+      // Clear previous selection
+      if (selectedParcelId !== null) {
+        map.setFeatureState(
+          { source: 'parcels', id: selectedParcelId },
+          { selected: false }
+        );
+      }
+
+      // Set new selection
+      selectedParcelId = parcelId;
+      map.setFeatureState(
+        { source: 'parcels', id: selectedParcelId },
+        { selected: true }
+      );
+
+      // Find the parcel data
+      var parcel = parcelGeoJSON.features.find(function(f) {
+        return f.id === parcelId;
+      });
+
+      if (parcel) {
+        console.log('Selected parcel:', parcel.properties.name);
+
+        // Optionally zoom to the parcel
+        if (zoomToParcel) {
+          var coords = parcel.geometry.coordinates[0];
+          
+          // Calculate bounds manually (min/max lng/lat)
+          var lngs = coords.map(function(c) { return c[0]; });
+          var lats = coords.map(function(c) { return c[1]; });
+          var bounds = [
+            [Math.min.apply(null, lngs), Math.min.apply(null, lats)], // southwest
+            [Math.max.apply(null, lngs), Math.max.apply(null, lats)]  // northeast
+          ];
+          
+          map.fitBounds(bounds, { padding: 100, maxZoom: 15 });
+        }
+      }
+    }
+
+    // Function called from list links
+    window.selectParcelFromList = function(parcelId) {
+      selectParcel(parcelId, true); // true = zoom to parcel
+    };
+
+    // Wait for map to be ready via event
+    defraMap.on('map:ready', function(event) {
+      console.log('Map ready event received', event);
+      map = event.map;
+      
+      // Wait for style to load before adding layers
+      map.on('load', function() {
+        console.log('Map style loaded, initializing parcels...');
+        initializeParcels();
+      });
+    });
+
+    // Initialize parcels function
+    function initializeParcels() {
+      console.log('Map loaded, adding parcel layers...');
+
+      // Define your parcel data as GeoJSON with realistic field boundaries
+      parcelGeoJSON = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            id: 'lower-field',
+            properties: {
+              id: 'lower-field',
+              name: 'Lower Field',
+              osRef: 'S03',
+              area: '120.35 ha',
+              availableArea: '120.35 ha',
+              color: '#8FBC8F'
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[
+                [-1.2540, 51.7498],
+                [-1.2510, 51.7498],
+                [-1.2508, 51.7490],
+                [-1.2512, 51.7485],
+                [-1.2538, 51.7483],
+                [-1.2541, 51.7488],
+                [-1.2540, 51.7498]
+              ]]
+            }
+          },
+          {
+            type: 'Feature',
+            id: 'upper-field',
+            properties: {
+              id: 'upper-field',
+              name: 'Upper Field',
+              osRef: 'S01',
+              area: '5.23 ha',
+              availableArea: '5.23 ha',
+              color: '#DEB887'
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[
+                [-1.2541, 51.7510],
+                [-1.2520, 51.7510],
+                [-1.2518, 51.7505],
+                [-1.2510, 51.7498],
+                [-1.2540, 51.7498],
+                [-1.2542, 51.7503],
+                [-1.2541, 51.7510]
+              ]]
+            }
+          },
+          {
+            type: 'Feature',
+            id: 'woods-view',
+            properties: {
+              id: 'woods-view',
+              name: 'Woods View',
+              osRef: 'S02',
+              area: '12.88 ha',
+              availableArea: '7.50 ha',
+              color: '#228B22'
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[
+                [-1.2542, 51.7522],
+                [-1.2512, 51.7522],
+                [-1.2510, 51.7517],
+                [-1.2520, 51.7510],
+                [-1.2541, 51.7510],
+                [-1.2543, 51.7515],
+                [-1.2542, 51.7522]
+              ]]
+            }
+          },
+          {
+            type: 'Feature',
+            id: 'river-pasture',
+            properties: {
+              id: 'river-pasture',
+              name: 'River Pasture',
+              osRef: 'S05',
+              area: '15.33 ha',
+              availableArea: '15.33 ha',
+              color: '#87CEEB'
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[
+                [-1.2510, 51.7498],
+                [-1.2518, 51.7505],
+                [-1.2485, 51.7505],
+                [-1.2482, 51.7497],
+                [-1.2485, 51.7490],
+                [-1.2508, 51.7490],
+                [-1.2510, 51.7498]
+              ]]
+            }
+          },
+          {
+            type: 'Feature',
+            id: 'lower-paddock',
+            properties: {
+              id: 'lower-paddock',
+              name: 'Lower Paddock',
+              osRef: 'S07',
+              area: '3.92 ha',
+              availableArea: '1.00 ha',
+              color: '#98FB98'
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[
+                [-1.2509, 51.7478],
+                [-1.2512, 51.7485],
+                [-1.2508, 51.7490],
+                [-1.2485, 51.7490],
+                [-1.2482, 51.7483],
+                [-1.2486, 51.7476],
+                [-1.2509, 51.7478]
+              ]]
+            }
+          }
+        ]
+      };
+
+      // Add the GeoJSON source
+      map.addSource('parcels', {
+        type: 'geojson',
+        data: parcelGeoJSON
+      });
+
+      // Add fill layer for parcels
+      map.addLayer({
+        id: 'parcels-fill',
+        type: 'fill',
+        source: 'parcels',
+        paint: {
+          'fill-color': ['get', 'color'],
+          'fill-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'selected'], false],
+            0.8,
+            0.5
+          ]
+        }
+      });
+
+      // Add outline layer for parcels
+      map.addLayer({
+        id: 'parcels-outline',
+        type: 'line',
+        source: 'parcels',
+        paint: {
+          'line-color': [
+            'case',
+            ['boolean', ['feature-state', 'selected'], false],
+            '#00703c',
+            '#0b0c0c'
+          ],
+          'line-width': [
+            'case',
+            ['boolean', ['feature-state', 'selected'], false],
+            4,
+            2
+          ]
+        }
+      });
+
+      // Add labels for parcels
+      map.addLayer({
+        id: 'parcels-labels',
+        type: 'symbol',
+        source: 'parcels',
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': 12,
+          'text-anchor': 'center'
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': '#0b0c0c',
+          'text-halo-width': 2
+        }
+      });
+
+      // Change cursor on hover
+      map.on('mouseenter', 'parcels-fill', function() {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'parcels-fill', function() {
+        map.getCanvas().style.cursor = '';
+      });
+
+      // Handle click events
+      map.on('click', 'parcels-fill', function(e) {
+        if (e.features.length > 0) {
+          var feature = e.features[0];
+          var parcelId = feature.properties.id;
+          
+          // Use the shared selection function (false = don't zoom, already visible)
+          selectParcel(parcelId, false);
+          
+          // Show details
+          alert('Selected: ' + feature.properties.name + '\nArea: ' + feature.properties.area + '\nOS Ref: ' + feature.properties.osRef);
+        }
+      });
+
+      // Fit map to show all parcels (with more padding and higher zoom)
+      var bounds = new maplibregl.LngLatBounds();
+      parcelGeoJSON.features.forEach(function(feature) {
+        feature.geometry.coordinates[0].forEach(function(coord) {
+          bounds.extend(coord);
+        });
+      });
+      
+      // Use setTimeout to ensure URL params don't override
+      setTimeout(function() {
+        map.fitBounds(bounds, { 
+          padding: 80,
+          maxZoom: 16
+        });
+      }, 100);
+
+      console.log('Parcel layers added successfully!');
+      console.log('Parcel bounds:', bounds);
+    }
+  </script>
+{% endblock %}
