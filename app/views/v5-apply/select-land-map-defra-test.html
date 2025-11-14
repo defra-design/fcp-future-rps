@@ -12,6 +12,9 @@
   <!-- Defra Map CSS -->
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Fdefra-map/dist/css/defra-map.css">
   
+  <!-- MapLibre GL CSS for scale control -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
+  
   <style>
     .defra-map-container {
       border: 2px solid #b1b4b6;
@@ -221,6 +224,9 @@
   <!-- Preact shim -->
   <script src="/plugin-assets/%40defra%2Fdefra-map/assets/js/preactShim.js"></script>
 
+  <!-- MapLibre GL JS for scale control -->
+  <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
+
   <!-- Defra map libraries -->
   <script src="/plugin-assets/%40defra%2Fdefra-map/dist/umd/maplibre-provider.js"></script>
   <script src="/plugin-assets/%40defra%2Fdefra-map/dist/umd/scale-bar-plugin.js"></script>
@@ -242,10 +248,7 @@
         backgroundColor: '#f5f5f0'
       },
       plugins: [
-        defra.zoomControlsPlugin(),
-        defra.scaleBarPlugin({
-          units: 'metric'
-        })
+        defra.zoomControlsPlugin()
       ]
     });
 
@@ -353,6 +356,18 @@
     defraMap.on('map:ready', function(event) {
       console.log('Map ready event received', event);
       map = event.map;
+      
+      // Add native MapLibre scale control using global maplibregl
+      if (window.maplibregl && window.maplibregl.ScaleControl) {
+        var scale = new maplibregl.ScaleControl({
+          maxWidth: 100,
+          unit: 'metric'
+        });
+        map.addControl(scale, 'bottom-left');
+        console.log('Scale control added successfully');
+      } else {
+        console.warn('maplibregl.ScaleControl not available');
+      }
       
       // Wait for style to load before adding layers
       map.on('load', function() {
