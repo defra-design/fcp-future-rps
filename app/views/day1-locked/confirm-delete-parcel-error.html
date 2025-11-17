@@ -28,7 +28,7 @@ href: "javascript:window.history.back()"
           <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
               <li>
-                <a href="#error">Select if you want to remove SO3757 3159 from this application</a>
+                <a href="#error">Select yes to remove this land parcel from this application</a>
               </li>
             </ul>
           </div>
@@ -36,38 +36,44 @@ href: "javascript:window.history.back()"
       </div>
 
       <div class="govuk-form-group govuk-form-group--error">
-        <h1 class="govuk-heading-l">
+        {# <h1 class="govuk-heading-l">
           Remove land parcel SO3757 3159
         </h1>
         <p class="govuk-body">If you remove this land parcel you will also remove all the actions added to this parcel.</p>
         <p class="govuk-body">Do you want to remove land parcel SO3757 3159 from this application?</p>
 
-        <form action="/form-handler" method="post" novalidate>
-          <p id="error" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> Select if you want to remove SO3757 3159 from this application
-          </p>
+       #}
 
           <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset">
-              <!--   <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                   Are you sure you want to remove this land parcel?
-                 </legend> -->
-              <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
-                  <label class="govuk-label govuk-radios__label" for="interviewNeeds">
-                    Yes
-                  </label>
-                </div>
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="interviewNeeds-2" name="interviewNeeds" type="radio" value="no">
-                  <label class="govuk-label govuk-radios__label" for="interviewNeeds-2">
-                    No
-                  </label>
-                </div>
+          <fieldset class="govuk-fieldset" aria-describedby="removeParcel-hint">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                  <h1 class="govuk-fieldset__heading">
+                      Do you want to remove land parcel SO3757 3159 from this application?
+                  </h1>
+              </legend>
+               <div id="removeParcel-hint" class="govuk-hint">
+                  If you remove this land parcel you will also remove the actions added to the parcel.
               </div>
-            </fieldset>
-          </div>
+              <p id="error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> Select yes to remove this land parcel from this application
+              </p>
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="interviewNeeds">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="interviewNeeds-2" name="interviewNeeds" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="interviewNeeds-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
       </div>
 
       <button type="submit" class="govuk-button" data-module="govuk-button">

@@ -18,20 +18,19 @@ href: "javascript:window.history.back()"
 
 <div class="govuk-grid-row" role="main">
   <div class="govuk-grid-column-two-thirds">
+
     <form class="form" action="select-land" method="post">
 
-      <h1 class="govuk-heading-l">
-        Remove land parcel SO3757 3159
-      </h1>
-      <p class="govuk-body">If you remove this land parcel you will also remove all the actions added to this parcel.</p>
-      <p class="govuk-body">Do you want to remove land parcel SO3757 3159 from this application?</p>
-
-      <form action="/form-handler" method="post" novalidate>
         <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
-            <!--   <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                 Are you sure you want to remove this land parcel?
-               </legend> -->
+          <fieldset class="govuk-fieldset" aria-describedby="removeParcel-hint">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                  <h1 class="govuk-fieldset__heading">
+                      Do you want to remove land parcel SO3757 3159 from this application?
+                  </h1>
+              </legend>
+               <div id="removeParcel-hint" class="govuk-hint">
+                  If you remove this land parcel you will also remove the actions added to the parcel.
+              </div>
             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
