@@ -512,14 +512,22 @@
           
           // Show info panel with parcel details
           var props = feature.properties;
-          var parcelName = props.PARCEL_NAME || props.DESCRIPTION;
-          if (!parcelName) {
-            // Generate fictional name based on feature index
-            var featureIndex = parcelGeoJSON.features.findIndex(function(f) {
-              return (f.id || f.properties.SHEET_ID) === parcelId;
-            });
-            parcelName = generateParcelName(featureIndex);
+          
+          // Get parcel name from the stored GeoJSON (which has the generated names)
+          var storedFeature = parcelGeoJSON.features.find(function(f) {
+            var storedId = f.id || f.properties.SHEET_ID;
+            return storedId === parcelId || f.properties.SHEET_ID === props.SHEET_ID;
+          });
+          
+          var parcelName = 'Unknown Parcel';
+          if (storedFeature) {
+            // Extract just the name part from DISPLAY_LABEL (before the newline)
+            var displayLabel = storedFeature.properties.DISPLAY_LABEL;
+            if (displayLabel) {
+              parcelName = displayLabel.split('\n')[0];
+            }
           }
+          
           var area = props.AREA_HA ? parseFloat(props.AREA_HA).toFixed(4) + ' ha' : 'N/A';
           var panelContent = 
             '<h3>' + parcelName + '</h3>' +
