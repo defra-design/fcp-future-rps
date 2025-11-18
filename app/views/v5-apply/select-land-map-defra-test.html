@@ -111,8 +111,30 @@
     <p class="govuk-body">This is a test page showing the defra-map component with basic land parcel selection functionality.</p>
     
     {{ govukInsetText({
-      html: '<strong>Note:</strong> This uses the @defra/defra-map v2 component with DefraMap class. The map uses MapLibre GL for rendering and includes zoom controls and scale bar plugins.'
+      html: '<strong>Note:</strong> This uses MapLibre GL for rendering with live RPA API data integration. Enter an SBI to load customer land parcels, land cover, and boundaries.'
     }) }}
+
+    <!-- SBI Input Form -->
+    <div class="govuk-form-group" id="sbi-input-group">
+      <label class="govuk-label govuk-label--s" for="sbi-input">
+        Single Business Identifier (SBI)
+      </label>
+      <div class="govuk-hint">
+        Enter a 9-digit SBI to load land parcels. Use <strong>999999999</strong> for demo data.
+      </div>
+      <div style="display: flex; gap: 10px; align-items: flex-start;">
+        <input class="govuk-input govuk-input--width-10" id="sbi-input" name="sbi" type="text" value="999999999">
+        <button class="govuk-button" data-module="govuk-button" onclick="loadRPAData(); return false;">
+          Load Land Parcels
+        </button>
+      </div>
+      <div id="loading-message" style="display: none; margin-top: 10px;">
+        <p class="govuk-body"><strong>Loading...</strong></p>
+      </div>
+      <div id="error-message" style="display: none; margin-top: 10px;">
+        <p class="govuk-error-message"></p>
+      </div>
+    </div>
 
     <!-- Full width map -->
     <h2 class="govuk-heading-m">Interactive Map</h2>
@@ -148,30 +170,13 @@
 
     <h2 class="govuk-heading-m">Land Parcels</h2>
     
-    <p class="govuk-body">Your available land parcels in Oxfordshire:</p>
+    <div id="parcels-loading" style="display: none;">
+      <p class="govuk-body">Loading parcels...</p>
+    </div>
     
-    <ul class="govuk-list govuk-list--spaced">
-          <li style="display: flex; justify-content: space-between;">
-            <a href="#" class="govuk-link" onclick="selectParcelFromList('lower-field'); return false;">Lower Field</a>
-            <span>120.35 ha</span>
-          </li>
-          <li style="display: flex; justify-content: space-between;">
-            <a href="#" class="govuk-link" onclick="selectParcelFromList('upper-field'); return false;">Upper Field</a>
-            <span>5.23 ha</span>
-          </li>
-          <li style="display: flex; justify-content: space-between;">
-            <a href="#" class="govuk-link" onclick="selectParcelFromList('woods-view'); return false;">Woods View</a>
-            <span>12.88 ha</span>
-          </li>
-          <li style="display: flex; justify-content: space-between;">
-            <a href="#" class="govuk-link" onclick="selectParcelFromList('river-pasture'); return false;">River Pasture</a>
-            <span>15.33 ha</span>
-          </li>
-          <li style="display: flex; justify-content: space-between;">
-            <a href="#" class="govuk-link" onclick="selectParcelFromList('lower-paddock'); return false;">Lower Paddock</a>
-            <span>3.92 ha</span>
-          </li>
-        </ul>
+    <div id="parcels-list-container">
+      <p class="govuk-body">Enter an SBI above to load land parcels.</p>
+    </div>
 
     {{ govukWarningText({
       text: "Click on any colored parcel to select it. The selected parcel will highlight with a green border. This demonstrates GeoJSON layer overlays with click interactions.",
@@ -227,27 +232,45 @@
   <script src="/plugin-assets/%40defra%2Fdefra-map/dist/umd/defra-map.js"></script>
 
   <script>
-    // Initialize the defra map - centered on Oxfordshire farmland
-    var defraMap = new defra.DefraMap('map', {
-      mapProvider: defra.maplibreProvider,
-      behaviour: 'hybrid',
-      mapLabel: 'Land parcel selection map',
-      minZoom: 6,
+    // Initialize MapLibre directly with OSM raster tiles
+    var map = new maplibregl.Map({
+      container: 'map',
+      center: [-2.5, 53.0], // Center of England
+      zoom: 6,
+      minZoom: 5,
       maxZoom: 18,
-      containerHeight: '500px',
-      mapStyle: {
-        url: 'https://api.maptiler.com/maps/uk-openzoomstack-light/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
-        attribution: '© MapTiler © OpenStreetMap contributors',
-        backgroundColor: '#f5f5f0'
-      },
-      plugins: [
-        defra.zoomControlsPlugin()
-      ]
+      style: {
+        version: 8,
+        glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
+        sources: {
+          'osm-tiles': {
+            type: 'raster',
+            tiles: [
+              'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            ],
+            tileSize: 256,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }
+        },
+        layers: [
+          {
+            id: 'osm',
+            type: 'raster',
+            source: 'osm-tiles',
+            minzoom: 0,
+            maxzoom: 22
+          }
+        ]
+      }
     });
 
-    var map;
     var selectedParcelId = null;
     var parcelGeoJSON; // Store globally so we can access it from list clicks
+    
+    // Add zoom controls
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
     // Function to show info panel
     function showInfoPanel(content) {
@@ -265,10 +288,6 @@
 
     // Function to select a parcel (used by both map clicks and list clicks)
     function selectParcel(parcelId, zoomToParcel) {
-      if (!map) {
-        console.error('Map not ready yet');
-        return;
-      }
 
       // Clear previous selection
       if (selectedParcelId !== null) {
@@ -315,165 +334,83 @@
       selectParcel(parcelId, true); // true = zoom to parcel
     };
 
-    // Wait for map to be ready via event
-    defraMap.on('map:ready', function(event) {
-      console.log('Map ready event received', event);
-      map = event.map;
-      
-      // Add native MapLibre scale control using global maplibregl
-      if (window.maplibregl && window.maplibregl.ScaleControl) {
-        var scale = new maplibregl.ScaleControl({
-          maxWidth: 100,
-          unit: 'metric'
-        });
-        map.addControl(scale, 'bottom-left');
-        console.log('Scale control added successfully');
-      } else {
-        console.warn('maplibregl.ScaleControl not available');
-      }
-      
-      // Wait for style to load before adding layers
-      map.on('load', function() {
-        console.log('Map style loaded, initializing parcels...');
-        initializeParcels();
-      });
+    // Add scale control
+    var scale = new maplibregl.ScaleControl({
+      maxWidth: 100,
+      unit: 'metric'
+    });
+    map.addControl(scale, 'bottom-left');
+
+    // Wait for map to load before enabling interactions
+    map.on('load', function() {
+      console.log('Map loaded and ready');
+      document.body.classList.remove('am-is-loading');
     });
 
-    // Initialize parcels function
-    function initializeParcels() {
-      console.log('Map loaded, adding parcel layers...');
-
-      // Define your parcel data as GeoJSON with realistic field boundaries
-      parcelGeoJSON = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            id: 'lower-field',
-            properties: {
-              id: 'lower-field',
-              name: 'Lower Field',
-              osRef: 'S03',
-              area: '120.35 ha',
-              availableArea: '120.35 ha',
-              color: '#8FBC8F'
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [-1.2540, 51.7498],
-                [-1.2510, 51.7498],
-                [-1.2508, 51.7490],
-                [-1.2512, 51.7485],
-                [-1.2538, 51.7483],
-                [-1.2541, 51.7488],
-                [-1.2540, 51.7498]
-              ]]
-            }
-          },
-          {
-            type: 'Feature',
-            id: 'upper-field',
-            properties: {
-              id: 'upper-field',
-              name: 'Upper Field',
-              osRef: 'S01',
-              area: '5.23 ha',
-              availableArea: '5.23 ha',
-              color: '#DEB887'
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [-1.2541, 51.7510],
-                [-1.2520, 51.7510],
-                [-1.2518, 51.7505],
-                [-1.2510, 51.7498],
-                [-1.2540, 51.7498],
-                [-1.2542, 51.7503],
-                [-1.2541, 51.7510]
-              ]]
-            }
-          },
-          {
-            type: 'Feature',
-            id: 'woods-view',
-            properties: {
-              id: 'woods-view',
-              name: 'Woods View',
-              osRef: 'S02',
-              area: '12.88 ha',
-              availableArea: '7.50 ha',
-              color: '#228B22'
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [-1.2542, 51.7522],
-                [-1.2512, 51.7522],
-                [-1.2510, 51.7517],
-                [-1.2520, 51.7510],
-                [-1.2541, 51.7510],
-                [-1.2543, 51.7515],
-                [-1.2542, 51.7522]
-              ]]
-            }
-          },
-          {
-            type: 'Feature',
-            id: 'river-pasture',
-            properties: {
-              id: 'river-pasture',
-              name: 'River Pasture',
-              osRef: 'S05',
-              area: '15.33 ha',
-              availableArea: '15.33 ha',
-              color: '#87CEEB'
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [-1.2510, 51.7498],
-                [-1.2518, 51.7505],
-                [-1.2485, 51.7505],
-                [-1.2482, 51.7497],
-                [-1.2485, 51.7490],
-                [-1.2508, 51.7490],
-                [-1.2510, 51.7498]
-              ]]
-            }
-          },
-          {
-            type: 'Feature',
-            id: 'lower-paddock',
-            properties: {
-              id: 'lower-paddock',
-              name: 'Lower Paddock',
-              osRef: 'S07',
-              area: '3.92 ha',
-              availableArea: '1.00 ha',
-              color: '#98FB98'
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [-1.2509, 51.7478],
-                [-1.2512, 51.7485],
-                [-1.2508, 51.7490],
-                [-1.2485, 51.7490],
-                [-1.2482, 51.7483],
-                [-1.2486, 51.7476],
-                [-1.2509, 51.7478]
-              ]]
-            }
-          }
-        ]
-      };
-
+    // Function to load RPA data for a given SBI
+    async function loadRPAData() {
+      const sbiInput = document.getElementById('sbi-input');
+      const sbi = sbiInput.value.trim();
+      
+      if (!sbi) {
+        showError('Please enter an SBI');
+        return;
+      }
+      
+      showLoading(true);
+      hideError();
+      
+      try {
+        // Use local proxy endpoint to fetch data (bypasses CORS)
+        const url = `/api/rpa-proxy?sbi=${sbi}`;
+        
+        console.log('Fetching from local proxy:', url);
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Server returned ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data || !data.features || data.features.length === 0) {
+          showError('No land parcels found for this SBI');
+          showLoading(false);
+          return;
+        }
+        
+        // Store globally
+        parcelGeoJSON = data;
+        
+        // Display parcels on map
+        displayParcels(data);
+        
+        // Update parcels list
+        updateParcelsList(data);
+        
+        showLoading(false);
+        console.log(`Loaded ${data.features.length} parcels for SBI ${sbi}`);
+        
+      } catch (error) {
+        console.error('Error loading RPA data:', error);
+        showError(`Failed to load data: ${error.message}`);
+        showLoading(false);
+      }
+    }
+    
+    // Function to display parcels on the map
+    function displayParcels(geojson) {
+      // Remove existing parcel layers if any
+      if (map.getLayer('parcels-fill')) map.removeLayer('parcels-fill');
+      if (map.getLayer('parcels-outline')) map.removeLayer('parcels-outline');
+      if (map.getLayer('parcels-labels')) map.removeLayer('parcels-labels');
+      if (map.getSource('parcels')) map.removeSource('parcels');
+      
       // Add the GeoJSON source
       map.addSource('parcels', {
         type: 'geojson',
-        data: parcelGeoJSON
+        data: geojson
       });
 
       // Add fill layer for parcels
@@ -482,12 +419,12 @@
         type: 'fill',
         source: 'parcels',
         paint: {
-          'fill-color': ['get', 'color'],
+          'fill-color': '#87CEEB',
           'fill-opacity': [
             'case',
             ['boolean', ['feature-state', 'selected'], false],
             0.8,
-            0.5
+            0.4
           ]
         }
       });
@@ -507,25 +444,25 @@
           'line-width': [
             'case',
             ['boolean', ['feature-state', 'selected'], false],
-            4,
-            2
+            3,
+            1.5
           ]
         }
       });
 
-      // Add labels for parcels
+      // Add labels for parcels (using sheet_id or other identifier)
       map.addLayer({
         id: 'parcels-labels',
         type: 'symbol',
         source: 'parcels',
         layout: {
-          'text-field': ['get', 'name'],
-          'text-size': 12,
+          'text-field': ['get', 'SHEET_ID'],
+          'text-size': 11,
           'text-anchor': 'center'
         },
         paint: {
-          'text-color': '#ffffff',
-          'text-halo-color': '#0b0c0c',
+          'text-color': '#0b0c0c',
+          'text-halo-color': '#ffffff',
           'text-halo-width': 2
         }
       });
@@ -543,40 +480,85 @@
       map.on('click', 'parcels-fill', function(e) {
         if (e.features.length > 0) {
           var feature = e.features[0];
-          var parcelId = feature.properties.id;
+          var parcelId = feature.id || feature.properties.SHEET_ID;
           
-          // Use the shared selection function (false = don't zoom, already visible)
+          // Use the shared selection function
           selectParcel(parcelId, false);
           
           // Show info panel with parcel details
+          var props = feature.properties;
+          var parcelName = props.DESCRIPTION || props.SHEET_ID || 'Unknown';
           var panelContent = 
-            '<h3>' + feature.properties.name + '</h3>' +
-            '<p><strong>Total area:</strong> ' + feature.properties.area + '</p>' +
-            '<p><strong>OS Ref:</strong> ' + feature.properties.osRef + '</p>' +
-            '<p style="margin-top: 10px;"><em>Land use: Permanent grassland</em></p>';
+            '<h3>' + parcelName + '</h3>' +
+            '<p><strong>Sheet ID:</strong> ' + (props.SHEET_ID || 'N/A') + '</p>' +
+            '<p><strong>Area:</strong> ' + (props.AREA_HA ? props.AREA_HA.toFixed(4) + ' ha' : 'N/A') + '</p>' +
+            (props.LAND_USE ? '<p><strong>Land use:</strong> ' + props.LAND_USE + '</p>' : '') +
+            (props.LFA_CODE ? '<p><strong>LFA:</strong> ' + props.LFA_CODE + '</p>' : '');
           
           showInfoPanel(panelContent);
         }
       });
 
-      // Fit map to show all parcels (with more padding and higher zoom)
-      var bounds = new maplibregl.LngLatBounds();
-      parcelGeoJSON.features.forEach(function(feature) {
-        feature.geometry.coordinates[0].forEach(function(coord) {
-          bounds.extend(coord);
-        });
+      // Fit map to show all parcels
+      const bounds = new maplibregl.LngLatBounds();
+      geojson.features.forEach(function(feature) {
+        if (feature.geometry.type === 'Polygon') {
+          feature.geometry.coordinates[0].forEach(function(coord) {
+            bounds.extend(coord);
+          });
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          feature.geometry.coordinates.forEach(function(polygon) {
+            polygon[0].forEach(function(coord) {
+              bounds.extend(coord);
+            });
+          });
+        }
       });
       
-      // Use setTimeout to ensure URL params don't override
       setTimeout(function() {
         map.fitBounds(bounds, { 
-          padding: 80,
-          maxZoom: 16
+          padding: 50,
+          maxZoom: 15
         });
       }, 100);
-
-      console.log('Parcel layers added successfully!');
-      console.log('Parcel bounds:', bounds);
+    }
+    
+    // Function to update the parcels list
+    function updateParcelsList(geojson) {
+      const container = document.getElementById('parcels-list-container');
+      
+      let html = '<p class="govuk-body">Your land parcels (' + geojson.features.length + ' total):</p>';
+      html += '<ul class="govuk-list govuk-list--spaced">';
+      
+      geojson.features.forEach(function(feature) {
+        const props = feature.properties;
+        const id = feature.id || props.SHEET_ID || props.ID;
+        const name = props.DESCRIPTION || props.SHEET_ID || 'Parcel ' + id;
+        const area = props.AREA_HA ? props.AREA_HA.toFixed(4) + ' ha' : 'N/A';
+        
+        html += '<li style="display: flex; justify-content: space-between;">';
+        html += '<a href="#" class="govuk-link" onclick="selectParcelFromList(\'' + id + '\'); return false;">' + name + '</a>';
+        html += '<span>' + area + '</span>';
+        html += '</li>';
+      });
+      
+      html += '</ul>';
+      container.innerHTML = html;
+    }
+    
+    // Helper functions
+    function showLoading(show) {
+      document.getElementById('loading-message').style.display = show ? 'block' : 'none';
+    }
+    
+    function showError(message) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.querySelector('p').textContent = message;
+      errorDiv.style.display = 'block';
+    }
+    
+    function hideError() {
+      document.getElementById('error-message').style.display = 'none';
     }
   </script>
 {% endblock %}

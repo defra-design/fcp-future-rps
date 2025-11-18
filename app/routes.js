@@ -5,8 +5,206 @@
 
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
+const https = require('https')
 
 // Add your routes here
+
+// Mock RPA data for demo purposes (SBI: 999999999)
+function getMockRPAData() {
+  return {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "lower-field",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-1.2540, 51.7498],
+            [-1.2510, 51.7498],
+            [-1.2508, 51.7490],
+            [-1.2512, 51.7485],
+            [-1.2538, 51.7483],
+            [-1.2541, 51.7488],
+            [-1.2540, 51.7498]
+          ]]
+        },
+        "properties": {
+          "SBI": 999999999,
+          "ID": 1001,
+          "SHEET_ID": "SP0301",
+          "PARCEL_ID": "0001",
+          "AREA_HA": 120.3451,
+          "LFA_CODE": "DA",
+          "LAND_USE": "Permanent grassland",
+          "DESCRIPTION": "Lower Field"
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "upper-field",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-1.2541, 51.7510],
+            [-1.2520, 51.7510],
+            [-1.2518, 51.7505],
+            [-1.2510, 51.7498],
+            [-1.2540, 51.7498],
+            [-1.2542, 51.7503],
+            [-1.2541, 51.7510]
+          ]]
+        },
+        "properties": {
+          "SBI": 999999999,
+          "ID": 1002,
+          "SHEET_ID": "SP0102",
+          "PARCEL_ID": "0002",
+          "AREA_HA": 5.2341,
+          "LFA_CODE": "SDA",
+          "LAND_USE": "Arable land",
+          "DESCRIPTION": "Upper Field"
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "woods-view",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-1.2542, 51.7522],
+            [-1.2512, 51.7522],
+            [-1.2510, 51.7517],
+            [-1.2520, 51.7510],
+            [-1.2541, 51.7510],
+            [-1.2543, 51.7515],
+            [-1.2542, 51.7522]
+          ]]
+        },
+        "properties": {
+          "SBI": 999999999,
+          "ID": 1003,
+          "SHEET_ID": "SP0203",
+          "PARCEL_ID": "0003",
+          "AREA_HA": 12.8765,
+          "LFA_CODE": "DA",
+          "LAND_USE": "Woodland",
+          "DESCRIPTION": "Woods View"
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "long-meadow",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-1.2538, 51.7483],
+            [-1.2512, 51.7485],
+            [-1.2509, 51.7478],
+            [-1.2513, 51.7471],
+            [-1.2537, 51.7468],
+            [-1.2540, 51.7475],
+            [-1.2538, 51.7483]
+          ]]
+        },
+        "properties": {
+          "SBI": 999999999,
+          "ID": 1004,
+          "SHEET_ID": "SP0404",
+          "PARCEL_ID": "0004",
+          "AREA_HA": 8.4521,
+          "LFA_CODE": "SDA",
+          "LAND_USE": "Permanent grassland",
+          "DESCRIPTION": "Long Meadow"
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "river-pasture",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-1.2510, 51.7498],
+            [-1.2518, 51.7505],
+            [-1.2485, 51.7505],
+            [-1.2482, 51.7497],
+            [-1.2485, 51.7490],
+            [-1.2508, 51.7490],
+            [-1.2510, 51.7498]
+          ]]
+        },
+        "properties": {
+          "SBI": 999999999,
+          "ID": 1005,
+          "SHEET_ID": "SP0505",
+          "PARCEL_ID": "0005",
+          "AREA_HA": 15.3267,
+          "LFA_CODE": "DA",
+          "LAND_USE": "Permanent grassland",
+          "DESCRIPTION": "River Pasture"
+        }
+      }
+    ]
+  };
+}
+
+// RPA API proxy endpoint to bypass CORS
+router.get('/api/rpa-proxy', async function (req, res) {
+  const sbi = req.query.sbi;
+  
+  if (!sbi) {
+    return res.status(400).json({ error: 'SBI parameter is required' });
+  }
+  
+  // Return mock data for demo SBI
+  if (sbi === '999999999') {
+    console.log('Returning mock data for demo SBI:', sbi);
+    return res.json(getMockRPAData());
+  }
+  
+  try {
+    // Correct RPA API WFS endpoint format
+    const apiUrl = `https://environment.data.gov.uk/data-services/RPA/LandParcels/wfs?version=2.0.0&request=GetFeature&typeNames=RPA:LandParcels&cql_filter=SBI=${sbi}&srsname=EPSG:4326&outputFormat=application/json`;
+    
+    console.log('Proxying RPA API request for SBI:', sbi);
+    console.log('URL:', apiUrl);
+    
+    // Use Node's built-in https module
+    https.get(apiUrl, (apiResponse) => {
+      let data = '';
+      
+      apiResponse.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      apiResponse.on('end', () => {
+        console.log('RPA API response status:', apiResponse.statusCode);
+        
+        if (apiResponse.statusCode !== 200) {
+          return res.status(apiResponse.statusCode).json({ 
+            error: `RPA API returned ${apiResponse.statusCode}: ${apiResponse.statusMessage}` 
+          });
+        }
+        
+        try {
+          const jsonData = JSON.parse(data);
+          console.log('RPA API returned', jsonData.features?.length || 0, 'parcels');
+          res.json(jsonData);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          res.status(500).json({ error: 'Invalid JSON response from RPA API' });
+        }
+      });
+    }).on('error', (error) => {
+      console.error('RPA API proxy error:', error);
+      res.status(500).json({ error: error.message });
+    });
+    
+  } catch (error) {
+    console.error('RPA API proxy error:', error);
+    res.status(500).json({ error: error.message });
+  }
+})
 
 router.post('/saveReturn-answer', function (req, res) {
   // Make a variable and give it the value from 'how-many-balls'
