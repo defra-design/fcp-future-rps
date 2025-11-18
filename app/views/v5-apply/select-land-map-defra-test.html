@@ -123,7 +123,7 @@
         Enter a 9-digit SBI to load land parcels. Use <strong>999999999</strong> for demo data.
       </div>
       <div style="display: flex; gap: 10px; align-items: flex-start;">
-        <input class="govuk-input govuk-input--width-10" id="sbi-input" name="sbi" type="text" value="999999999">
+        <input class="govuk-input govuk-input--width-10" id="sbi-input" name="sbi" type="text" value="106332870">
         <button class="govuk-button" data-module="govuk-button" onclick="loadRPAData(); return false;">
           Load Land Parcels
         </button>
@@ -347,6 +347,20 @@
       document.body.classList.remove('am-is-loading');
     });
 
+    // Generate a fictional parcel name based on index
+    function generateParcelName(index) {
+      const fieldNames = [
+        'Lower Meadow', 'Upper Field', 'Oak Tree Field', 'Long Pasture', 'Brook Field',
+        'Hill Field', 'Barn Field', 'Woodland Edge', 'River Meadow', 'North Field',
+        'South Field', 'East Pasture', 'West Meadow', 'Church Field', 'Mill Field',
+        'Willow Field', 'Cherry Orchard', 'Sheep Pasture', 'Top Field', 'Bottom Field',
+        'Middle Meadow', 'Green Field', 'White Field', 'Home Field', 'Far Field',
+        'Spring Field', 'Hedge Field', 'Stone Field', 'Bridge Meadow', 'Lane Field',
+        'Gate Field', 'Well Pasture', 'Ash Field'
+      ];
+      return fieldNames[index % fieldNames.length];
+    }
+
     // Function to load RPA data for a given SBI
     async function loadRPAData() {
       const sbiInput = document.getElementById('sbi-input');
@@ -407,6 +421,16 @@
       if (map.getLayer('parcels-labels')) map.removeLayer('parcels-labels');
       if (map.getSource('parcels')) map.removeSource('parcels');
       
+      // Add generated parcel names to features for labeling
+      geojson.features.forEach(function(feature, index) {
+        var parcelName = feature.properties.PARCEL_NAME || feature.properties.DESCRIPTION;
+        if (!parcelName) {
+          parcelName = generateParcelName(index);
+        }
+        var sheetId = feature.properties.SHEET_ID || '';
+        feature.properties.DISPLAY_LABEL = parcelName + '\n' + sheetId;
+      });
+
       // Add the GeoJSON source
       map.addSource('parcels', {
         type: 'geojson',
@@ -450,15 +474,16 @@
         }
       });
 
-      // Add labels for parcels (using sheet_id or other identifier)
+      // Add labels for parcels (showing name and ID)
       map.addLayer({
         id: 'parcels-labels',
         type: 'symbol',
         source: 'parcels',
         layout: {
-          'text-field': ['get', 'SHEET_ID'],
+          'text-field': ['get', 'DISPLAY_LABEL'],
           'text-size': 11,
-          'text-anchor': 'center'
+          'text-anchor': 'center',
+          'text-justify': 'center'
         },
         paint: {
           'text-color': '#0b0c0c',
@@ -487,11 +512,19 @@
           
           // Show info panel with parcel details
           var props = feature.properties;
-          var parcelName = props.DESCRIPTION || props.SHEET_ID || 'Unknown';
+          var parcelName = props.PARCEL_NAME || props.DESCRIPTION;
+          if (!parcelName) {
+            // Generate fictional name based on feature index
+            var featureIndex = parcelGeoJSON.features.findIndex(function(f) {
+              return (f.id || f.properties.SHEET_ID) === parcelId;
+            });
+            parcelName = generateParcelName(featureIndex);
+          }
+          var area = props.AREA_HA ? parseFloat(props.AREA_HA).toFixed(4) + ' ha' : 'N/A';
           var panelContent = 
             '<h3>' + parcelName + '</h3>' +
-            '<p><strong>Sheet ID:</strong> ' + (props.SHEET_ID || 'N/A') + '</p>' +
-            '<p><strong>Area:</strong> ' + (props.AREA_HA ? props.AREA_HA.toFixed(4) + ' ha' : 'N/A') + '</p>' +
+            '<p><strong>Parcel ID:</strong> ' + (props.SHEET_ID || 'N/A') + '</p>' +
+            '<p><strong>Area:</strong> ' + area + '</p>' +
             (props.LAND_USE ? '<p><strong>Land use:</strong> ' + props.LAND_USE + '</p>' : '') +
             (props.LFA_CODE ? '<p><strong>LFA:</strong> ' + props.LFA_CODE + '</p>' : '');
           
@@ -530,14 +563,19 @@
       let html = '<p class="govuk-body">Your land parcels (' + geojson.features.length + ' total):</p>';
       html += '<ul class="govuk-list govuk-list--spaced">';
       
-      geojson.features.forEach(function(feature) {
+      geojson.features.forEach(function(feature, index) {
         const props = feature.properties;
         const id = feature.id || props.SHEET_ID || props.ID;
-        const name = props.DESCRIPTION || props.SHEET_ID || 'Parcel ' + id;
-        const area = props.AREA_HA ? props.AREA_HA.toFixed(4) + ' ha' : 'N/A';
+        var parcelName = props.PARCEL_NAME || props.DESCRIPTION;
+        if (!parcelName) {
+          parcelName = generateParcelName(index);
+        }
+        const sheetId = props.SHEET_ID || 'N/A';
+        const displayName = parcelName + ' (' + sheetId + ')';
+        const area = props.AREA_HA ? parseFloat(props.AREA_HA).toFixed(4) + ' ha' : 'N/A';
         
         html += '<li style="display: flex; justify-content: space-between;">';
-        html += '<a href="#" class="govuk-link" onclick="selectParcelFromList(\'' + id + '\'); return false;">' + name + '</a>';
+        html += '<a href="#" class="govuk-link" onclick="selectParcelFromList(\'' + id + '\'); return false;">' + displayName + '</a>';
         html += '<span>' + area + '</span>';
         html += '</li>';
       });
