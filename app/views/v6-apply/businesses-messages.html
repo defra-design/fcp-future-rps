@@ -1,0 +1,118 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+      <h1 class="govuk-heading-l">Your businesses and messages
+      <span class="govuk-caption-l">SARAH FARMER</span></h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+<!--<p class="govuk-body">IMPORTANT:<br>-->
+<!--  Check and update or confirm your email address under ‘Contact details’ in the Personal details screen. Check this <a href="#">Amend personal details</a> link, to go direct to that screen.</p>-->
+
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#not-selected">
+        Overview
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      <a class="govuk-tabs__tab" href="#selected">
+        All messages
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-tabs__panel" id="not-selected">
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Business</th>
+          <th scope="col" class="govuk-table__header">View or check</th>
+          <th scope="col" class="govuk-table__header">Messages</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><span class="govuk-!-font-weight-bold">Sarah Farmer</span><br>
+          SBI: 012345678</td>
+          <td class="govuk-table__cell"><a href="business-overview">View business</a></td>
+          <td class="govuk-table__cell"><a href="#">View messages</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="selected">
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Business</th>
+          <th scope="col" class="govuk-table__header">View or check</th>
+          <th scope="col" class="govuk-table__header">Messages</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><span class="govuk-!-font-weight-bold">Sarah Farmer</span><br>
+          SBI: 012345678</td>
+          <td class="govuk-table__cell"><a href="business-overview">View business</a></td>
+          <td class="govuk-table__cell"><a href="#">View messages</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+  <p class="govuk-body govuk-!-font-weight-bold" style="float:right">Page 1 of 1</p>
+    </div>
+
+        <div class="govuk-grid-column-one-third">
+          <hr class="section-break-large-blue"></hr>
+<ul class="govuk-list">
+   <li>
+  <p class="govuk-body">Account options</p>
+</p>
+  <li>
+    <a class="govuk-link" href="#">View and amend personal details</a>
+  </li>
+  <br>
+  <li>
+    <a class="govuk-link" href="#">Register a business</a>
+  </li>
+    <br>
+  <li>
+    <a class="govuk-link" href="#">Create or view a query</a>
+  </li>
+</ul>
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+</div>
+
+  </div>
+
+</main>
+</div>
+{% endblock %}

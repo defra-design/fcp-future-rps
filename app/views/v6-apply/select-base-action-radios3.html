@@ -1,0 +1,1469 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Select actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        Select an action
+      </h1>
+      <p class="govuk-body-l">You will be able to add more actions before submitting your application.</p>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <div id="search">
+        <label class="govuk-label govuk-!-margin-top-2" for="searchbox">
+          Search by action name or code
+        </label>
+        <div style="position: relative; display: inline-block;">
+          <input class="govuk-input text-input govuk-!-margin-bottom-3" style="width:250px; height:44px; margin-right: -4px; padding-right: 35px;" id="searchbox" type="text" value="" placeholder="">
+          <button id="clear-search" style="position: absolute; right: 5px; top: 40%; transform: translateY(-50%); background: none; border: none; cursor: pointer; display: none; padding: 5px; margin-bottom: 1rem;" aria-label="Clear search">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="9" fill="#505a5f" stroke="#505a5f" stroke-width="1"/>
+              <line x1="6" y1="6" x2="14" y2="14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="14" y1="6" x2="6" y2="14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button id="button_1" class="govuk-button blue-button" style="height: 42px" data-module="govuk-button">
+          <svg style="display: block; margin-left:0px" class="gem-c-search__icon" width="21" height="21" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+            <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
+          </svg>
+        </button>
+      </div>
+      <div id="contents-section">
+        <p class="govuk-body govuk-!-margin-bottom-1">
+          Contents
+        </p>
+        <ul class="govuk-list">
+          <li>- <a href="#agroforestry">Agroforestry</a></li>
+          <li>- <a href="#boundary">Boundary features</a></li>
+          <li>- <a href="#buffer">Buffer strips</a></li>
+          <li>- <a href="#farmland">Farmland wildlife (arable)</a></li>
+          <li>- <a href="#heritage">Heritage</a></li>
+          <li>- <a href="#integrated">Integrated pest management</a></li>
+          <li>- <a href="#moorland">Moorland</a></li>
+          <li>- <a href="#nutrient">Nutrient management</a></li>
+          <li>- <a href="#organic">Organic farming</a></li>
+          <li>- <a href="#precision">Precision farming</a></li>
+          <li>- <a href="#soil">Soil health</a></li>
+          <li>- <a href="#water">Waterbodies</a></li>
+          <li>- <a href="#wildlife">Wildlife (grassland)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- agroforestry -->
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="agroforestry">
+              Agroforestry
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- AGF2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-agf2" name="selectedAction" type="radio" value="AGF2">
+              <label class="govuk-label govuk-radios__label" for="action-agf2">
+                Maintain low density in-field agroforestry on less sensitive land: AGF2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£385 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AGF1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-agf1" name="selectedAction" type="radio" value="AGF1">
+              <label class="govuk-label govuk-radios__label" for="action-agf1">
+                Maintain very low density in-field agroforestry on less sensitive land: AGF1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£248 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- boundary features -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="boundary">
+              Boundary features
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+
+            <!-- CHRW1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-chrw1" name="selectedAction" type="radio" value="CHRW1">
+              <label class="govuk-label govuk-radios__label" for="action-chrw1">
+                Assess and record hedgerow condition: CHRW1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£5 per 100 metres</strong>
+              </div>
+            </div>
+
+            <!-- BND1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bnd1" name="selectedAction" type="radio" value="BND1">
+              <label class="govuk-label govuk-radios__label" for="action-bnd1">
+                Maintain dry stone walls: BND1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£27 per 100 metres</strong>
+              </div>
+            </div>
+
+            <!-- BND2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bnd2" name="selectedAction" type="radio" value="BND2">
+              <label class="govuk-label govuk-radios__label" for="action-bnd2">
+                Maintain earth banks or stone-faced hedgebanks: BND2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£11 per 100 metres</strong>
+              </div>
+            </div>
+
+            <!-- CHRW2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-chrw2" name="selectedAction" type="radio" value="CHRW2">
+              <label class="govuk-label govuk-radios__label" for="action-chrw2">
+                Manage hedgerows: CHRW2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£13 per 100 metres</strong>
+              </div>
+            </div>
+
+            <!-- CHRW3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-chrw3" name="selectedAction" type="radio" value="CHRW3">
+              <label class="govuk-label govuk-radios__label" for="action-chrw3">
+                Maintain or establish hedgerow trees: CHRW3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£10 per 100 metres</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- buffer strips -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="buffer">
+              Buffer strips
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+
+            <!-- CAHL4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cahl4" name="selectedAction" type="radio" value="CAHL4">
+              <label class="govuk-label govuk-radios__label" for="action-cahl4">
+                4m to 12m grass buffer strip on arable and horticultural land: CAHL4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£515 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CIGL3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cigl3" name="selectedAction" type="radio" value="CIGL3">
+              <label class="govuk-label govuk-radios__label" for="action-cigl3">
+                4m to 12m grass buffer strip on improved grassland: CIGL3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£235 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- BFS6 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bfs6" name="selectedAction" type="radio" value="BFS6">
+              <label class="govuk-label govuk-radios__label" for="action-bfs6">
+                6m to 12m habitat strip next to watercourses: BFS6
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£742 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- BFS1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bfs1" name="selectedAction" type="radio" value="BFS1">
+              <label class="govuk-label govuk-radios__label" for="action-bfs1">
+                12m to 24m watercourse buffer strip on cultivated land: BFS1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£707 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- BFS2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bfs2" name="selectedAction" type="radio" value="BFS2">
+              <label class="govuk-label govuk-radios__label" for="action-bfs2">
+                Buffer in-field ponds on arable land: BFS2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£681 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- BFS3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bfs3" name="selectedAction" type="radio" value="BFS3">
+              <label class="govuk-label govuk-radios__label" for="action-bfs3">
+                Buffer in-field ponds on improved grassland: BFS3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£311 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- BFS4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bfs4" name="selectedAction" type="radio" value="BFS4">
+              <label class="govuk-label govuk-radios__label" for="action-bfs4">
+                Protect in-field trees on arable land: BFS4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£553 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- BFS5 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-bfs5" name="selectedAction" type="radio" value="BFS5">
+              <label class="govuk-label govuk-radios__label" for="action-bfs5">
+                Protect in-field trees on intensive grassland: BFS5
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£295 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- farmmland -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="farmland">
+              Farmland wildlife (arable)
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- AHW6 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw6" name="selectedAction" type="radio" value="AHW6">
+              <label class="govuk-label govuk-radios__label" for="action-ahw6">
+                Basic overwinter stubble: AHW6
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£58 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw3" name="selectedAction" type="radio" value="AHW3">
+              <label class="govuk-label govuk-radios__label" for="action-ahw3">
+                Beetle banks: AHW3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£764 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw1" name="selectedAction" type="radio" value="AHW1">
+              <label class="govuk-label govuk-radios__label" for="action-ahw1">
+                Bumblebird mix: AHW1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£747 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW11 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw11" name="selectedAction" type="radio" value="AHW11">
+              <label class="govuk-label govuk-radios__label" for="action-ahw11">
+                Cultivated areas for arable plants: AHW11
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£660 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW7 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw7" name="selectedAction" type="radio" value="AHW7">
+              <label class="govuk-label govuk-radios__label" for="action-ahw7">
+                Enhanced overwinter stubble: AHW7
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£589 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CAHL3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cahl3" name="selectedAction" type="radio" value="CAHL3">
+              <label class="govuk-label govuk-radios__label" for="action-cahl3">
+                Grassy field corners or blocks: CAHL3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£590 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW10 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw10" name="selectedAction" type="radio" value="AHW10">
+              <label class="govuk-label govuk-radios__label" for="action-ahw10">
+                Low input harvested cereal crop: AHW10
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£354 per plot</strong>
+              </div>
+            </div>
+
+            <!-- AHW12 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw12" name="selectedAction" type="radio" value="AHW12">
+              <label class="govuk-label govuk-radios__label" for="action-ahw12">
+                Manage woodland edges on arable land: AHW12
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£428 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW5 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw5" name="selectedAction" type="radio" value="AHW5">
+              <label class="govuk-label govuk-radios__label" for="action-ahw5">
+                Nesting plots for lapwing: AHW5
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£765 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CAHL1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cahl1" name="selectedAction" type="radio" value="CAHL1">
+              <label class="govuk-label govuk-radios__label" for="action-cahl1">
+                Pollen and nectar flower mix: CAHL1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£739 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw4" name="selectedAction" type="radio" value="AHW4">
+              <label class="govuk-label govuk-radios__label" for="action-ahw4">
+                Skylark plots: AHW4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£11 per plot</strong>
+              </div>
+            </div>
+
+            <!-- AHW9 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw9" name="selectedAction" type="radio" value="AHW9">
+              <label class="govuk-label govuk-radios__label" for="action-ahw9">
+                Unharvested cereal headland: AHW9
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£1,072 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- AHW8 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ahw8" name="selectedAction" type="radio" value="AHW8">
+              <label class="govuk-label govuk-radios__label" for="action-ahw8">
+                Whole crop spring cereals and overwinter stubble: AHW8
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£596 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CAHL2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cahl2" name="selectedAction" type="radio" value="CAHL2">
+              <label class="govuk-label govuk-radios__label" for="action-cahl2">
+                Winter bird food on arable and horticultural land: CAHL2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£853 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- heritage -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="heritage">
+              Heritage
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- HEF5 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-hef5" name="selectedAction" type="radio" value="HEF5">
+              <label class="govuk-label govuk-radios__label" for="action-hef5">
+                Control scrub on historic and archaeological features: HEF5
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£215 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- HEF8 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-hef8" name="selectedAction" type="radio" value="HEF8">
+              <label class="govuk-label govuk-radios__label" for="action-hef8">
+                Maintain designed or engineered waterbodies: HEF8
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£2,512 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- HEF6 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-hef6" name="selectedAction" type="radio" value="HEF6">
+              <label class="govuk-label govuk-radios__label" for="action-hef6">
+                Manage historic and archaeological features on grassland: HEF6
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£55 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- HEF1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-hef1" name="selectedAction" type="radio" value="HEF1">
+              <label class="govuk-label govuk-radios__label" for="action-hef1">
+                Maintain weatherproof traditional farm or forestry buildings: HEF1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£5 per square metre</strong>
+              </div>
+            </div>
+
+            <!-- HEF2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-hef2" name="selectedAction" type="radio" value="HEF2">
+              <label class="govuk-label govuk-radios__label" for="action-hef2">
+                Maintain weatherproof traditional farm or forestry buildings in remote areas: HEF2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£8 per square metre</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- integrated -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="integrated">
+              Integrated pest management
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- CIPM1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cipm1" name="selectedAction" type="radio" value="CIPM1">
+              <label class="govuk-label govuk-radios__label" for="action-cipm1">
+                Assess integrated pest management and produce a plan: CIPM1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£1,129 per plan</strong>
+              </div>
+            </div>
+
+            <!-- CIPM3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cipm3" name="selectedAction" type="radio" value="CIPM3">
+              <label class="govuk-label govuk-radios__label" for="action-cipm3">
+                Companion crop on arable and horticultural land: CIPM3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£55 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CIPM2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cipm2" name="selectedAction" type="radio" value="CIPM2">
+              <label class="govuk-label govuk-radios__label" for="action-cipm2">
+                Flower-rich grass margins, blocks or in-field strips: CIPM2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£798 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CIPM4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cipm4" name="selectedAction" type="radio" value="CIPM4">
+              <label class="govuk-label govuk-radios__label" for="action-cipm4">
+                No use of insecticide on arable crops and permanent crops: CIPM4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£45 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- moorland -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="moorland">
+              Moorland
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- CMOR1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cmor1" name="selectedAction" type="radio" value="CMOR1">
+              <label class="govuk-label govuk-radios__label" for="action-cmor1">
+                Assess moorland and produce a written record: CMOR1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£10.60 per hectare</strong> and <strong>£272 per agreement</strong>
+              </div>
+            </div>
+
+            <!-- UPL3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-upl3" name="selectedAction" type="radio" value="UPL3">
+              <label class="govuk-label govuk-radios__label" for="action-upl3">
+                Limited livestock grazing on moorland: UPL3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£66 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- UPL2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-upl2" name="selectedAction" type="radio" value="UPL2">
+              <label class="govuk-label govuk-radios__label" for="action-upl2">
+                Low livestock grazing on moorland: UPL2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£53 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- UPL1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-upl1" name="selectedAction" type="radio" value="UPL1">
+              <label class="govuk-label govuk-radios__label" for="action-upl1">
+                Moderate livestock grazing on moorland: UPL1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£20 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- UPL7 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-upl7" name="selectedAction" type="radio" value="UPL7">
+              <label class="govuk-label govuk-radios__label" for="action-upl7">
+                Shepherding livestock on moorland (no required stock removal period): UPL7
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£33 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- UPL8 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-upl8" name="selectedAction" type="radio" value="UPL8">
+              <label class="govuk-label govuk-radios__label" for="action-upl8">
+                Shepherding livestock on moorland (remove stock for at least 4 months): UPL8
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£43 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- UPL9 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-upl9" name="selectedAction" type="radio" value="UPL9">
+              <label class="govuk-label govuk-radios__label" for="action-upl9">
+                Shepherding livestock on moorland (remove stock for at least 6 months): UPL9
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£45 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- UPL10 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-upl10" name="selectedAction" type="radio" value="UPL10">
+              <label class="govuk-label govuk-radios__label" for="action-upl10">
+                Shepherding livestock on moorland (remove stock for at least 8 months): UPL10
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£48 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+              
+      <!-- nutrient -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="nutrient">
+              Nutrient management
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- CNUM1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cnum1" name="selectedAction" type="radio" value="CNUM1">
+              <label class="govuk-label govuk-radios__label" for="action-cnum1">
+                Assess nutrient management and produce a review report: CNUM1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£652 per report</strong>
+              </div>
+            </div>
+
+            <!-- CNUM3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cnum3" name="selectedAction" type="radio" value="CNUM3">
+              <label class="govuk-label govuk-radios__label" for="action-cnum3">
+                Legume fallow: CNUM3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£593 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CNUM2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cnum2" name="selectedAction" type="radio" value="CNUM2">
+              <label class="govuk-label govuk-radios__label" for="action-cnum2">
+                Legumes on improved grassland: CNUM2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£102 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- organic farming -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="organic">
+              Organic farming
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- OFC4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofc4" name="selectedAction" type="radio" value="OFC4">
+              <label class="govuk-label govuk-radios__label" for="action-ofc4">
+                Organic conversion – horticultural land: OFC4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£874 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFC1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofc1" name="selectedAction" type="radio" value="OFC1">
+              <label class="govuk-label govuk-radios__label" for="action-ofc1">
+                Organic conversion – improved permanent grassland: OFC1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£187 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFC3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofc3" name="selectedAction" type="radio" value="OFC3">
+              <label class="govuk-label govuk-radios__label" for="action-ofc3">
+                Organic conversion – rotational land: OFC3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£298 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFC5 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofc5" name="selectedAction" type="radio" value="OFC5">
+              <label class="govuk-label govuk-radios__label" for="action-ofc5">
+                Organic conversion – top fruit: OFC5
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£1,920 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFC2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofc2" name="selectedAction" type="radio" value="OFC2">
+              <label class="govuk-label govuk-radios__label" for="action-ofc2">
+                Organic conversion – unimproved permanent grassland: OFC2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£96 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFM3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofm3" name="selectedAction" type="radio" value="OFM3">
+              <label class="govuk-label govuk-radios__label" for="action-ofm3">
+                Organic land management – enclosed rough grazing: OFM3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£97 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFM5 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofm5" name="selectedAction" type="radio" value="OFM5">
+              <label class="govuk-label govuk-radios__label" for="action-ofm5">
+                Organic land management – horticultural land: OFM5
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£707 per plot</strong>
+              </div>
+            </div>
+
+            <!-- OFM1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofm1" name="selectedAction" type="radio" value="OFM1">
+              <label class="govuk-label govuk-radios__label" for="action-ofm1">
+                Organic land management – improved permanent grassland: OFM1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£20 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFM4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofm4" name="selectedAction" type="radio" value="OFM4">
+              <label class="govuk-label govuk-radios__label" for="action-ofm4">
+                Organic land management – rotational land: OFM4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£132 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFM6 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofm6" name="selectedAction" type="radio" value="OFM6">
+              <label class="govuk-label govuk-radios__label" for="action-ofm6">
+                Organic land management – top fruit: OFM6
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£1,920 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFM2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofm2" name="selectedAction" type="radio" value="OFM2">
+              <label class="govuk-label govuk-radios__label" for="action-ofm2">
+                Organic land management – unimproved permanent grassland: OFM2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£41 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFA1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofa1" name="selectedAction" type="radio" value="OFA1">
+              <label class="govuk-label govuk-radios__label" for="action-ofa1">
+                Overwinter stubble (organic land): OFA1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£264 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- OFA6 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-ofa6" name="selectedAction" type="radio" value="OFA6">
+              <label class="govuk-label govuk-radios__label" for="action-ofa6">
+                Undersown cereal crop (organic land): OFA6
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£380 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- precision farming -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="precision">
+              Precision farming
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- PRF2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-prf2" name="selectedAction" type="radio" value="PRF2">
+              <label class="govuk-label govuk-radios__label" for="action-prf2">
+                Camera or remote sensor guided herbicide spraying: PRF2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£43 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- PRF4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-prf4" name="selectedAction" type="radio" value="PRF4">
+              <label class="govuk-label govuk-radios__label" for="action-prf4">
+                Mechanical robotic weeding: PRF4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£150 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- PRF3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-prf3" name="selectedAction" type="radio" value="PRF3">
+              <label class="govuk-label govuk-radios__label" for="action-prf3">
+                Non-mechanical robotic weeding: PRF3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£101 per plot</strong>
+              </div>
+            </div>
+
+            <!-- PRF1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-prf1" name="selectedAction" type="radio" value="PRF1">
+              <label class="govuk-label govuk-radios__label" for="action-prf1">
+                Variable rate application of nutrients: PRF1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£27 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- soil health -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="soil">
+              Soil health
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- CSAM1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-csma1" name="selectedAction" type="radio" value="CSMA1">
+              <label class="govuk-label govuk-radios__label" for="action-csma1">
+                Assess soil, produce a soil management plan and test soil organic matter: CSAM1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£6 per hectare</strong> and <strong>£97 per agreement</strong>
+              </div>
+            </div>
+
+            <!-- CSAM3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-csam3" name="selectedAction" type="radio" value="CSAM3">
+              <label class="govuk-label govuk-radios__label" for="action-csam3">
+                Herbal leys: CSAM3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£382 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- SOH2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-soh2" name="selectedAction" type="radio" value="SOH2">
+              <label class="govuk-label govuk-radios__label" for="action-soh2">
+                Multi-species spring-sown cover crop: SOH2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£163 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- SOH3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-soh3" name="selectedAction" type="radio" value="SOH3">
+              <label class="govuk-label govuk-radios__label" for="action-soh3">
+                Multi-species summer-sown cover crop: SOH3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£163 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CSAM2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-csam2" name="selectedAction" type="radio" value="CSAM2">
+              <label class="govuk-label govuk-radios__label" for="action-csam2">
+                Multi-species winter cover crop: CSAM2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£129 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- SOH1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-soh1" name="selectedAction" type="radio" value="SOH1">
+              <label class="govuk-label govuk-radios__label" for="action-soh1">
+                No-till farming: SOH1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£73 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- SOH4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-soh4" name="selectedAction" type="radio" value="SOH4">
+              <label class="govuk-label govuk-radios__label" for="action-soh4">
+                Winter cover following maize crops: SOH4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£203 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- waterbodies -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="water">
+              Waterbodies
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- WBD4 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd4" name="selectedAction" type="radio" value="WBD4">
+              <label class="govuk-label govuk-radios__label" for="action-wbd4">
+                Arable reversion to grassland with low fertiliser input: WBD4
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£489 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- WBD3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd3" name="selectedAction" type="radio" value="WBD3">
+              <label class="govuk-label govuk-radios__label" for="action-wbd3">
+                In-field grass strips: WBD3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£765 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- WBD2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd2" name="selectedAction" type="radio" value="WBD2">
+              <label class="govuk-label govuk-radios__label" for="action-wbd2">
+                Manage ditches: WBD2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£4 per 100 metres</strong>
+              </div>
+            </div>
+
+            <!-- WBD8 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd8" name="selectedAction" type="radio" value="WBD8">
+              <label class="govuk-label govuk-radios__label" for="action-wbd8">
+                Manage grassland to reduce nutrient levels in groundwater: WBD8
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£396 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- WBD5 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd5" name="selectedAction" type="radio" value="WBD5">
+              <label class="govuk-label govuk-radios__label" for="action-wbd5">
+                Manage intensive grassland adjacent to a watercourse: WBD5
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£311 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- WBD1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd1" name="selectedAction" type="radio" value="WBD1">
+              <label class="govuk-label govuk-radios__label" for="action-wbd1">
+                Manage ponds: WBD1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£257 per pond</strong>
+              </div>
+            </div>
+
+            <!-- WBD7 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd7" name="selectedAction" type="radio" value="WBD7">
+              <label class="govuk-label govuk-radios__label" for="action-wbd7">
+                Remove livestock from grassland during the autumn and winter (SDAs): WBD7
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£115 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- WBD6 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-wbd6" name="selectedAction" type="radio" value="WBD6">
+              <label class="govuk-label govuk-radios__label" for="action-wbd6">
+                Remove livestock from intensive grassland during the autumn and winter (outside SDAs): WBD6
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£115 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- wildlife -->
+      <div class="govuk-form-group govuk-!-margin-top-4">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h3 class="govuk-fieldset__heading" id="wildlife">
+              Wildlife (grassland)
+            </h3>
+          </legend>
+          <!-- <p>Total available area for this action: 8.3405 ha</p> -->
+          <div class="govuk-radios" data-module="govuk-radios">
+            <!-- SCR1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-scr1" name="selectedAction" type="radio" value="SCR1">
+              <label class="govuk-label govuk-radios__label" for="action-scr1">
+                Create scrub and open habitat mosaics: SCR1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£588 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CLIG3 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-clig3" name="selectedAction" type="radio" value="CLIG3">
+              <label class="govuk-label govuk-radios__label" for="action-clig3">
+                Manage grassland with very low nutrient inputs: CLIG3
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£235 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- GRH6 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-grh6" name="selectedAction" type="radio" value="GRH6">
+              <label class="govuk-label govuk-radios__label" for="action-grh6">
+                Manage priority habitat species-rich grassland (endorsed): GRH6
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£646 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- GRH1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-grh1" name="selectedAction" type="radio" value="GRH1">
+              <label class="govuk-label govuk-radios__label" for="action-grh1">
+                Manage rough grazing for birds: GRH1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£121 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- SCR2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-scr2" name="selectedAction" type="radio" value="SCR2">
+              <label class="govuk-label govuk-radios__label" for="action-scr2">
+                Manage scrub and open habitat mosaics: SCR2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£350 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CIGL1 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cigl1" name="selectedAction" type="radio" value="CIGL1">
+              <label class="govuk-label govuk-radios__label" for="action-cigl1">
+                Take grassland field corners or blocks out of management: CIGL1
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£333 per hectare</strong>
+              </div>
+            </div>
+
+            <!-- CIGL2 -->
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="action-cigl2" name="selectedAction" type="radio" value="CIGL2">
+              <label class="govuk-label govuk-radios__label" for="action-cigl2">
+                Winter bird food on improved grassland: CIGL2
+              </label>
+              <div class="govuk-hint govuk-radios__hint">
+                Payment rate per year: <strong>£515 per hectare</strong>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <form action="select-land3" method="post">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+
+      <p><a href="../_common/not-testing" class="govuk-link">Cancel application</a></p>
+    </div> <!-- 2/3 col -->
+  </div> <!-- grid-row -->
+
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchBox = document.getElementById('searchbox');
+    const searchButton = document.getElementById('button_1');
+    const clearButton = document.getElementById('clear-search');
+    const contentsSection = document.getElementById('contents-section');
+    
+    // More reliable way to get the results container - find the one with form groups
+    const allTwoThirdsColumns = document.querySelectorAll('.govuk-grid-column-two-thirds');
+    console.log('Total two-thirds columns found:', allTwoThirdsColumns.length);
+    
+    // Debug: check each column
+    let resultsContainer = null;
+    allTwoThirdsColumns.forEach((col, index) => {
+      const formGroups = col.querySelectorAll('.govuk-form-group');
+      console.log(`Column ${index}: ${formGroups.length} form groups`);
+      if (formGroups.length > 0 && !resultsContainer) {
+        resultsContainer = col;
+        console.log(`✓ Using column ${index} as results container`);
+      }
+    });
+    
+    if (!resultsContainer) {
+      console.error('Could not find results container!');
+      return;
+    }
+    
+    let originalState = null;
+    let isSearchActive = false;
+    
+    // Function to save state - will be called when we're sure content is loaded
+    function saveOriginalState() {
+      if (!originalState && resultsContainer) {
+        const formGroups = resultsContainer.querySelectorAll('.govuk-form-group');
+        console.log('Attempting to save state, form groups found:', formGroups.length);
+        
+        if (formGroups.length > 0) {
+          originalState = {
+            containerHTML: resultsContainer.innerHTML,
+            contentsSectionDisplay: contentsSection.style.display
+          };
+          console.log('✓ Original state saved successfully!');
+          console.log('  HTML length:', originalState.containerHTML.length);
+          console.log('  Form groups:', formGroups.length);
+        } else {
+          console.warn('⚠ No form groups found yet, will retry...');
+        }
+      }
+    }
+    
+    // Try to save state multiple times with increasing delays
+    setTimeout(saveOriginalState, 50);
+    setTimeout(saveOriginalState, 200);
+    setTimeout(saveOriginalState, 500);
+
+    // Show/hide clear button based on input
+    searchBox.addEventListener('input', function() {
+      clearButton.style.display = this.value.length > 0 ? 'block' : 'none';
+    });
+
+    // Calculate relevance score for a radio option
+    function calculateRelevance(labelText, searchTerm) {
+      const lowerLabel = labelText.toLowerCase();
+      const lowerSearch = searchTerm.toLowerCase();
+      
+      // Exact match
+      if (lowerLabel === lowerSearch) return 1000;
+      
+      // Starts with search term
+      if (lowerLabel.startsWith(lowerSearch)) return 900;
+      
+      // Contains search term as whole word
+      const regex = new RegExp('\\b' + lowerSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+      if (regex.test(lowerLabel)) return 800;
+      
+      // Contains search term
+      if (lowerLabel.includes(lowerSearch)) return 700;
+      
+      // Calculate word match score
+      const searchWords = lowerSearch.split(/\s+/);
+      const labelWords = lowerLabel.split(/\s+/);
+      let matchScore = 0;
+      
+      searchWords.forEach(searchWord => {
+        labelWords.forEach(labelWord => {
+          if (labelWord.startsWith(searchWord)) matchScore += 50;
+          else if (labelWord.includes(searchWord)) matchScore += 25;
+        });
+      });
+      
+      return matchScore;
+    }
+
+    // Perform search
+    function performSearch() {
+      const searchTerm = searchBox.value.trim();
+      
+      if (!searchTerm) {
+        return;
+      }
+      
+      // Ensure state is saved before searching
+      saveOriginalState();
+      
+      if (!originalState) {
+        console.error('Original state not available');
+        return;
+      }
+
+      isSearchActive = true;
+
+      // Hide contents section
+      contentsSection.style.display = 'none';
+
+      // Collect all radio items with their relevance scores from the original saved state
+      const radioItems = [];
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = originalState.containerHTML;
+      const allFieldsets = tempDiv.querySelectorAll('.govuk-form-group');
+      
+      console.log('Number of fieldsets found:', allFieldsets.length);
+      console.log('Searching for:', searchTerm);
+      
+      allFieldsets.forEach(fieldset => {
+        const radioInputs = fieldset.querySelectorAll('.govuk-radios__item');
+        radioInputs.forEach(radioItem => {
+          const label = radioItem.querySelector('.govuk-radios__label');
+          if (label) {
+            const labelText = label.textContent.trim();
+            const relevance = calculateRelevance(labelText, searchTerm);
+            
+            if (relevance > 0) {
+              radioItems.push({
+                element: radioItem.cloneNode(true),
+                relevance: relevance,
+                labelText: labelText
+              });
+            }
+          }
+        });
+      });
+      
+      console.log('Total matches found:', radioItems.length);
+
+      // Sort by relevance (highest first)
+      radioItems.sort((a, b) => b.relevance - a.relevance);
+
+      // Clear the results container
+      resultsContainer.innerHTML = '';
+
+      // Create search results section
+      if (radioItems.length > 0) {
+        const resultsFieldset = document.createElement('div');
+        resultsFieldset.className = 'govuk-form-group govuk-!-margin-top-4';
+        
+        const fieldsetElement = document.createElement('fieldset');
+        fieldsetElement.className = 'govuk-fieldset';
+        
+        const legend = document.createElement('legend');
+        legend.className = 'govuk-fieldset__legend govuk-fieldset__legend--m';
+        legend.innerHTML = `<h3 class="govuk-fieldset__heading">Search results (${radioItems.length})</h3>`;
+        
+        const radiosDiv = document.createElement('div');
+        radiosDiv.className = 'govuk-radios';
+        radiosDiv.setAttribute('data-module', 'govuk-radios');
+        
+        // Add sorted radio items
+        radioItems.forEach(item => {
+          radiosDiv.appendChild(item.element);
+        });
+        
+        fieldsetElement.appendChild(legend);
+        fieldsetElement.appendChild(radiosDiv);
+        resultsFieldset.appendChild(fieldsetElement);
+        resultsContainer.appendChild(resultsFieldset);
+      } else {
+        // No results found - show helpful message
+        const noResultsContainer = document.createElement('div');
+        noResultsContainer.className = 'govuk-!-margin-top-4';
+        noResultsContainer.innerHTML = `
+          <p class="govuk-body govuk-!-font-weight-bold">There are no matching results.</p>
+          <p class="govuk-body">Improve your search results by:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>removing filters</li>
+            <li>double-checking your spelling</li>
+            <li>using fewer keywords</li>
+            <li>searching for something less specific</li>
+          </ul>
+        `;
+        resultsContainer.appendChild(noResultsContainer);
+      }
+
+      // Add the form and cancel link back
+      const form = document.createElement('form');
+      form.action = 'select-land3';
+      form.method = 'post';
+      form.innerHTML = `
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Continue
+        </button>
+      `;
+      resultsContainer.appendChild(form);
+
+      const cancelLink = document.createElement('p');
+      cancelLink.innerHTML = '<a href="../_common/not-testing" class="govuk-link">Cancel application</a>';
+      resultsContainer.appendChild(cancelLink);
+    }
+
+    // Clear search and restore original state
+    function clearSearch() {
+      if (!originalState) {
+        console.error('Cannot clear - original state not available');
+        return;
+      }
+      
+      // Restore original container content
+      resultsContainer.innerHTML = originalState.containerHTML;
+      contentsSection.style.display = originalState.contentsSectionDisplay || '';
+      
+      searchBox.value = '';
+      clearButton.style.display = 'none';
+      isSearchActive = false;
+    }
+
+    // Event listeners
+    searchButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      performSearch();
+    });
+
+    searchBox.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        performSearch();
+      }
+    });
+
+    clearButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      clearSearch();
+    });
+  });
+</script>
+{% endblock %}

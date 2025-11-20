@@ -1,0 +1,1372 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Review selected actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-full">
+      <form class="form" action="/add-more-actions5" method="post">
+
+        <h1 class="govuk-heading-l">Review your application</h1>
+
+        <h2 class="govuk-heading-m">Summary</h2>
+
+        <dl class="govuk-summary-list" style="width:50% ; margin-bottom: 2em;">
+          <div class="govuk-summary-list__row no-bottom-border">
+            <dt class="govuk-summary-list__key" style="padding-bottom: 0;">
+              Actions
+            </dt>
+            <dd class="govuk-summary-list__value" style="padding-bottom: 0;">
+              2
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row no-bottom-border">
+            <dt class="govuk-summary-list__key" style="padding-bottom: 0;">
+              Parcels
+            </dt>
+            <dd class="govuk-summary-list__value" style="padding-bottom: 0;">
+              96
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" style="padding-bottom: 0;">
+              Area
+            </dt>
+            <dd class="govuk-summary-list__value">
+              4,917.8264 hectares
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row no-bottom-border">
+            <dt class="govuk-summary-list__key" style="padding-bottom: 0;">
+              Payment
+            </dt>
+            <dd class="govuk-summary-list__value" style="padding-bottom: 0;">
+              <strong>£2,180,411.57 per year</strong>
+            </dd>
+          </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Details</h2>
+
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">
+              Legume fallow: CNUM3
+            </h2>
+            <ul class="govuk-summary-card__actions">
+              <li class="govuk-summary-card__action">
+                <a class="govuk-link" href="confirm-delete-action2">Remove<span class="govuk-visually-hidden"> Legume fallow: CNUM3</span></a>
+              </li>
+            </ul>
+          </div>
+          <div class="govuk-summary-card__content" style="padding-bottom: 0">
+            <table class="govuk-table" style="margin-bottom: 0">
+              <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Land parcel</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Quantity (ha)</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Yearly payment</th>
+                <th scope="col" class="govuk-table__header"></th>
+              </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3159</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">22.4324</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£13,302.41</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3161</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">8.6532</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£5,131.35</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3162</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">10.6912</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£6,339.88</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3165</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">14.6729</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£8,701.03</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3166</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">6.6543</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,946</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3167</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">10.2192</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£6,059.99</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3172</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">36.7859</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£21,814.04</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3173</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">6.8274</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,048.65</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3181</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">22.7856</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£13,512.04</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3182</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">2.7834</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£1,650.56</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3184</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">16.3294</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£9,683.33</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3185</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">24.1189</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£14,302.51</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3186</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">7.9483</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,713.34</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3187</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">8.3402</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,945.74</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3188</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">12.9141</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,658.06</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3190</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">7.7290</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,583.30</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3191</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">2.3722</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£1,406.71</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3192</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">10.6768</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£6,331.34</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3193</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">18.3726</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£10,894.95</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3195</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">9.3116</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£5,521.78</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3196</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">7.7953</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,622.61</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3197</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">28.4733</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£16,884.67</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3198</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">12.5067</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,416.47</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3199</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">2.4843</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£1,473.19</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3200</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">29.2701</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£17,357.17</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3203</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">19.3398</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,468.50</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3204</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">16.1985</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£5,605.71</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3205</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">10.4705</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£6,209.01</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3208</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">0.3583</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£212.47</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3209</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">2.4843</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£1,473.19</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3210</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">16.5979</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£9,842.55</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3212</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">10.0279</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£5,946.54</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3213</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">26.2761</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£15,581.72</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3214</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">23.5670</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£13,975.23</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3215</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">12.8714</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,632.74</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3218</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">5.7907</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,433.89</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3219</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">3.5167</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£2,085.40</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3220</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">15.3559</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£9,106.05</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3222</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">27.6222</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£16,379.96</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3224</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">20.1180</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,929.97</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3226</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">19.2711</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,427.76</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3227</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">8.5113</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£5,047.20</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3228</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">20.5107</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,162.85</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3229</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">1.4230</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£843.84</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3341</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">6.9485</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,120.46</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3342</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">1.1002</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£652.42</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3343</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">11.7704</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£6,979.85</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3344</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">62.9374</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£37,321.88</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3347</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">13.4894</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,999.21</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3348</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">1.2904</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£765.21</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3349</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">27.4598</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£16,283.66</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3351</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">5.6287</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,337.82</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3352</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">38.9220</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£23,080.75</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3353</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">51.1997</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£30,361.42</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3354</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">75.4365</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£44,733.85</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3355</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">7.3976</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,368.76</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3356</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">6.2199</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,688.40</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3357</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">77.5101</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£45,963.49</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3358</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">6.9042</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,094.19</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3360</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">8.9933</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£5,333.03</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3361</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">62.2844</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£36,934.65</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3362</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">18.2215</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£10,805.35</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3363</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">19.5258</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,578.80</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3364</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">15.2402</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£9,037.44</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3366</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">66.9802</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£39,719.26</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3367</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">24.1211</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£14,303.81</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row no-bottom-border">
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+                <td colspan="2" class="govuk-table__cell">
+                  <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                    <li class="govuk-summary-list__actions-list-item">
+                      <a class="govuk-link" href="#">
+                        <span aria-hidden="true">Add another land parcel</span><span class="govuk-visually-hidden"> to this action</span></a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">
+              Manage grassland to reduce nutrient levels in groundwater: WBD8
+            </h2>
+            <ul class="govuk-summary-card__actions">
+              <li class="govuk-summary-card__action">
+                <a class="govuk-link" href="confirm-delete-action2">Remove<span class="govuk-visually-hidden"> Manage grassland to reduce nutrient levels in groundwater: WBD8</span></a>
+              </li>
+            </ul>
+          </div>
+          <div class="govuk-summary-card__content" style="padding-bottom: 0">
+            <table class="govuk-table" style="margin-bottom: 0">
+              <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Land parcel</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Quantity (ha)</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Yearly payment</th>
+                <th scope="col" class="govuk-table__header"></th>
+              </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3159</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">68.0502</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£26,947.88</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3160</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">10.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,976</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3162</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">13.9863</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£5,538.57</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3163</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">32.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,688</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3164</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">30.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,896</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3165</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">31.2414</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,371.59</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3169</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">50.2329</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£19,892.23</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3170</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">17.7841</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,042.50</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3174</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">76.8393</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£39,428.36</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3175</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">32.4494</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,849.96</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3176</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">42.7036</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£16,910.63</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3177</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">22.6576</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£8,972.41</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3182</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">4.1629</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£1,648.51</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3183</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">30.1362</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,933.94</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3184</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">79.3109</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£31,407.12</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3185</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">37.8826</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£15,002.51</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3186</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">66.2574</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£26,237.93</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3189</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">49.8847</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£19,754.34</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3190</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">98.1684</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£38,874.69</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3191</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">28.0650</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,113.74</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3192</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">10.7816</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,269.51</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3193</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">66.7474</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£26,431.97</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3194</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">2.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£808</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3195</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">9.9876</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,955.07</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3196</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">94.8071</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£37,543.61</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3197</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">71.6003</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£28,353.72</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3199</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">60.6745</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£24,027.10</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3200</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">92.0308</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£36,444.20</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3201</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">60.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£23,776</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3202</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">79.6853</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£31,555.38</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3203</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">65.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£25,756</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3204</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">80.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£31,696</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3205</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">38.9999</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£15,443.96</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3207</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">32.0000</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,672</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3209</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">3.6617</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£1,450.03</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3210</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">70.9361</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£28,090.70</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3211</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">22.0003</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£8,712.12</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3212</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">12.4433</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,927.55</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3214</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">32.0880</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,706.85</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3215</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">42.1111</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£16,676</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3216</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">62.5555</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£24,771.98</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3217</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">72.5544</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£28,731.54</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3218</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">62.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£24,568</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3219</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">87.9747</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£34,837.98</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3220</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">16.5915</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£6,570.23</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3221</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">19.8011</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,840.84</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3222</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">33.7646</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£13,370.78</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3223</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">12.0000</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£4,752</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3224</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">22.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£8,728</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3225</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">72.4454</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£28,688.38</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3226</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">61.6253</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£24,403.62</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3227</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">32.2434</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,768.39</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3228</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">72.6655</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£28,775.54</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3229</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">2.2424</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£888</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3340</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">52.6655</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£20,855.54</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3341</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">42.4324</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£16,803.23</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3342</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">59.7011</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£23,641.64</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3343</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">39.2424</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£15,540</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3344</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">83.0593</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£32,891.48</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3345</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">64.7420</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£25,637.83</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3346</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">70.5347</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£27,931.74</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3349</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">32.0402</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£12,687.92</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3350</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">69.3305</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£27,454.88</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3351</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">9.2011</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,643.64</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3352</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">48.6978</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£19,284.33</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3353</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">56.3456</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£22,312.86</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3354</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">85.4472</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£33,837.09</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3355</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">16.6742</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£6,602.98</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3356</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">9.2011</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,643.64</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3357</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">80.0404</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£31,696</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3358</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">18.4004</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,286.56</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3359</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">60.9876</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£24,151.09</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3361</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">76.9883</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£30,487.37</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3362</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">40.1414</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£15,895.99</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3363</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">25.9336</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£10,269.71</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3364</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">20.7755</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£8,227.10</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3365</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">29.5942</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£11,719.30</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3366</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">68.7252</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£27,215.18</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3367</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">36.7859</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£14,567.22</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3368</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">9.6748</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£3,831.22</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3369</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">55.2345</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£21,872.86</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3370</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">26.1565</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£10,357.97</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SO3757 3371</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">17.8368</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">£7,063.37</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                  <a class="govuk-link" href="../_common/not-testing">Change</a> | <a class="govuk-link" href="../_common/not-testing">Remove</a>
+                </td>
+              </tr>
+              <tr class="govuk-table__row no-bottom-border">
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+                <td colspan="2" class="govuk-table__cell">
+                  <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                    <li class="govuk-summary-list__actions-list-item">
+                      <a class="govuk-link" href="#">
+                        <span aria-hidden="true">Add another land parcel</span><span class="govuk-visually-hidden"> to this action</span></a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do you want to add another action?
+            </legend>
+            {# <div id="add-another-hint" class="govuk-hint">
+              You must tell us about all your directors.
+            </div> #}
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another" name="add-more-actions5" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="add-another">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions5" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="add-another-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+          <a class="govuk-link" href="confirm-delete-all-actions2">Remove all actions</a>
+        </div>
+
+        <p><a href="../_common/not-testing" class="govuk-link">Cancel application</a></p>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

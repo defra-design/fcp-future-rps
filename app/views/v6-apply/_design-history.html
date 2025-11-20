@@ -1,0 +1,336 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Design history" %}
+
+{%- block beforeContent -%}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="/index">Future RPS prototypes</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="index">Version 5 (application journey)</a>
+    </li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      Future Facing application journey - Version 5
+      <span class="govuk-caption-xl">Design history</span>
+    </h1>
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">
+
+    <h2 class="govuk-heading-m">Mapping exploration</h2>
+
+    <h3 class="govuk-heading-s">The problem</h3>
+    {# <p>The <a href="https://fcp-combined-offer-144beafe3ff7.herokuapp.com/sfi-private-beta/select-actions">current SFI process</a> (password: farming) for adding actions to parcels is complex, time consuming and doesn't match a farmer's mental model.<br>
+        This has resulted in: </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>farmers paying agents to help them apply</li>
+        <li>invalid applications being made</li>
+        <li>some farmers avoiding applying altogether as it is a barrier</li>
+      </ul>
+
+       <h3 class="govuk-heading-s">Product Owner hypotheses</h3>
+       <p>Our Product Owner hypothesised that it may be possible to reduce completion time for SFI applications which involved large numbers of actions and parcels by exploring:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>giving the user the choice of choosing either actions, or parcels first.</li>
+          <li>allowing multiple actions to be added to the same parcel at once, and vice versa.</li>
+          <li>enabling bulk actions such as 'select all' and quickly applying (for example) the whole available area to chosen land parcels for actions.</li>
+        </ul>
+
+        <h2 class="govuk-heading-m">Design approach</h2>
+
+        <h3 class="govuk-heading-s">Iteration 1 - ideation and formative evaluation with farmers</h3>
+
+        <p>All of the design research and ideation work can be found <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1755084655571/a617414b56f60e41185e36c150d4b06c293f2885?wid=0-1756368398081">on this Mural board.</a></p>
+
+        <h4 class="govuk-heading-s">Assumptions</h4>
+
+        <p>We approached the ideation work with the following assumptions:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Users have decided which actions to apply to which parcels in advance</li>
+          <li>Users plan by parcel first, then consider actions for that parcel</li>
+          <li>Users prefer to select parcels first and then apply actions second</li>
+          <li>Users would like to add one or more actions to one or more parcels</li>
+          <li>Users are visual workers and think in terms of fields</li>
+          <li>Actions with different ambition levels can be grouped together</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Research and data analysis</h4>
+
+        <p>We reviewed previous research findings and analysed land model data to understand how actions are classified by land use types, land types, and other aspects.</p>
+
+        <p>The land model data revealed the different actions within SFI and their relationship to land cover type, land cover class, and land use.</p>
+
+        <p>This analysis provided an indication of classifications for finding actions and the scale of certain categories users would encounter when searching for actions. 
+          As part of the design research, we discussed existing patterns from tools such as 'Find funding for land or farms', including search functionality, categorisations, filters, and jump tags for navigating large lists of items. We also explored different models for applying actions to parcels, including one action to many parcels, one parcel to many actions, and variations of these approaches.</p>
+
+        <h4 class="govuk-heading-s">"How might we" statements</h4>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>How might we make it quick and easy to apply one or more actions to one or more parcels?</li>
+          <li>How might we display large lists in a useable way?</li>
+          <li>How might we allow a farmer to choose their preferred action when more than one option is available?</li>
+          <li>How might we enable users to review the actions and parcels they have added?</li>
+          <li>How might we enable users to edit the actions and parcels they have added?</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">High-level user journeys</h4>
+
+        <p>We sketched high-level user journeys mapping user actions, such as viewing and selecting actions from a list, alongside the backend processes that would filter options based on existing land data, perform available area calculations, and automate tasks on behalf of the user.</p>
+
+        <p>Using swim lane diagrams, we documented the components that would be used on specific pages as users progress through the journey—from filtering and choosing actions to selecting parcels.</p>
+
+        <p>We developed four different user journey variations based on whether users select actions first or parcels first, including single actions to many parcels, many parcels to single actions, and other permutations.</p>
+
+        <p>These journeys were mapped at a high level, and the team evaluated the comparative merits and drawbacks of each approach.</p>
+
+        <h4 class="govuk-heading-s">Screen design exploration</h4>
+
+        <p>Building on the high-level user journeys, we sketched screen designs using GOV.UK components on Mural. We explored methods to optimise how users find actions from a long list:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Categorisation of actions using headings within a long list</li>
+          <li>Search functionality to improve findability when users know which action they require</li>
+          <li>Jump tags linked to action categories to enable rapid navigation</li>
+          <li>'Select all' functionality to enable users to quickly select all items on a page</li>
+          <li>Bulk selection capability allowing users to select all parcels from a long list without individual selection</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Data requirements exploration</h4>
+
+        <p>We examined the data items related to actions and parcels to determine what information would help users make informed decisions:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Payment rates for actions</li>
+          <li>Total size of the parcel</li>
+          <li>Total available area of the parcel</li>
+          <li>Whether SSSI features were present on the parcel</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Bulk actions and compliance considerations</h4>
+
+        <p>We explored the feasibility of allowing users to apply a particular area measurement to multiple selected parcels simultaneously, rather than entering the value individually for each parcel. For example, if users wished to apply the whole available area to all selected parcels, the system could enable bulk application of this value across all selections.</p>
+
+        <p>Research questions to be explored with farmers and RPA colleagues included:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Whether this functionality would be practical for farmers' working practices</li>
+          <li>Whether this capability is desirable for farmers when applying actions to multiple parcels</li>
+          <li>Whether this approach is permissible from a policy and compliance perspective</li>
+          <li>Whether RPA processors viewing bulk-applied figures might perceive insufficient due diligence in application completion</li>
+        </ul>
+
+         <h4 class="govuk-heading-s">Findings from user research</h4>
+
+         <p>We showed farmers <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1755084655571/a617414b56f60e41185e36c150d4b06c293f2885?wid=0-1757334455678">4 different scenarios</a>, using Mural for lightweight and cheap exploration of UI approaches for quickly applying when using lots of parcels. They were:</p>
+
+          <ul class="govuk-list govuk-list--bullet">
+            <li>A single action that uses all the available area across 40 parcels</li>
+            <li>A single action which uses part of the available area for 10 parcels</li>
+            <li>A single action that has multiple levels (high, medium, low) for 50 parcels</li>
+            <li>A single action that has a supplemental action(s) on 20 parcels</li>
+          </ul>
+
+          <h4 class="govuk-heading-s">Action information and guidance</h4>
+
+        <p>Users need comprehensive information about actions to make informed decisions and ensure compliance. Research revealed that including action 'product descriptions' is essential so users can quickly review and check what they need to do to comply with action requirements.</p>
+
+        <p>Key findings about action information:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Action code and name are both needed - users did not notice we had switched the order, putting name first</li>
+          <li>Search functionality tested well and was considered helpful for finding actions</li>
+          <li>Users are looking for action-level guidance to support decision-making, specifically: "What do I need to do for this action?"</li>
+          <li>Links to guidance should be provided alongside action listings</li>
+          <li>Payment rate information is crucial for confident decision-making</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Listing actions applied to parcels</h4>
+
+        <p>When displaying actions applied to parcels, especially when more than one action is applied per parcel, long lists proved acceptable to users despite using more screen space and containing some repetitive information.</p>
+
+        <p>Essential elements for the shopping basket include:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>A summary at the top of the basket</li>
+          <li>A detailed breakdown or itemised list of what's in the basket</li>
+          <li>Information about different types of actions (consent/SSSI/HEFER) and clarification that they will be delivered at different times</li>
+          <li>A running total of the monetary value of selected actions on land parcels - this feature tested well and supports confident decision-making</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Lists of parcels</h4>
+
+        <p>Research indicated that pagination is not necessary - long lists of parcels were not the issue we anticipated they might be.</p>
+
+        <p>Information needed for land parcels:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Total area</li>
+          <li>Total available area</li>
+        </ul>
+
+        <p>List functionality findings:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>De-select function is useful in appropriate lists (such as parcel lists)</li>
+          <li>'Select all' worked well for these highly digitally skilled and confident users</li>
+          <li>A 'none' option is not needed</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Search and filtering for actions</h4>
+
+        <p>Users found search functionality helpful for finding specific actions. Additional filtering options would further improve the user experience.</p>
+
+        <p>Effective filtering methods identified:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Land cover type</li>
+          <li>Themes organised by areas of interest (as per the Find funding for land or farms tool and previous testing)</li>
+          <li>Countryside Stewardship categories should be removed</li>
+          <li>Filters need to align with the SFI Reformed policy offer</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Entering parcel area measurements</h4>
+
+        <p>The research revealed important insights about how users prefer to enter area measurements for actions:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>There is no practical way of bulk-applying percentages or hectarage to large numbers of parcels. Farmers do not work in this way, and 
+            a bulk application of a percentage figure of the total available area across multiple parcels would fail RPA compliance checks.
+          </li>
+          <li>This task could be rationalised to a single screen where users can enter all or part of the available area</li>
+          <li>The additional screen asking users to choose between 'all' or 'part' should be removed</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Decision-making features</h4>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>A 'clear selection' function is needed on every page, allowing users to exit and start again</li>
+          <li>Users are comfortable using the remove function in the application journey</li>
+          <li>Seeing payment rates throughout the journey supports decision-making</li>
+          <li>Running totals and a breakdown of expected payments are important for confident decision-making</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Supplemental actions and quantity inputs</h4>
+
+        <p>Users need a clear way to choose supplemental actions for base actions and add them to land parcels. The research identified specific requirements for handling quantities:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>A single screen should handle quantity entry</li>
+          <li>When a quantity is mandatory, display it as a statement rather than an input field</li>
+          <li>When the quantity is not mandatory, provide an editable input field that is not pre-populated</li>
+        </ul>
+
+
+
+
+        <h3 class="govuk-heading-m">Iteration 2 - iteration of design, prototyping and usability testing with farmers</h3>
+
+        <p>Based on these findings, we <a href="https://fcp-future-rps-93c8d625018a.herokuapp.com/v4-apply/index">iterated the designs and prototyped them</a> (password: futurerps) so we could conduct a second round of usability testing with farmers.</p>
+
+        <p>The second round of testing focused on the following scenarios:</p>
+
+        <ol class="govuk-list govuk-list--number">
+          <li>Farmer/agent chooses Legume fallow: CNUM3, and applies it to 66 parcels. They want to apply this action to a specific amount of each parcel (this action can be applied to all, or part, of a parcel). (This will test whether the user understands how to add part of the available area to an action)</li>
+          <li>From review page, go to add another action: Choose 'Manage grassland to reduce nutrient levels in groundwater: WBD8' and apply it to 83 parcels (this will take user to the basket, so we can test their understanding of that flow)</li>
+          <li>From basket go to add another action: Choose 'Herbal leys: CSAM3' (a total or part area), apply it to 22 parcels, and ask to bulk add total available area to all eligible land parcels. Continue through to basket. (this will test ability to add many actions to many land parcels in bulk)</li>
+          <li>From review page, new task: they have made a mistake and instead they now want the only original action Legume fallow: CNUM3 - this time added to all the available area of the original 10 parcels. (this will test whether they can clear their basket, return to actions page and go through the flow of adding action to all available area of the parcels)</li>
+        </ol>
+
+        <h4 class="govuk-heading-s">Farmer's mental model</h4>
+
+        <p>One of the most significant findings from the second round of testing was that asking farmers to select actions before choosing a parcel does not align with their mental model of their farm and how they practically plan for SFI actions.</p>
+
+        <p class="govuk-body-l">One farmer described their planning process as <i>'standing in a field with a clipboard, looking around and planning the actions for that particular field, then walking to a neighbouring field and repeating the process'.</i></p>
+        <p>So presenting a large list of actions, followed by a large list of parcels, and then separate screens for entering areas was relatively disorienting for farmers and did not match their real-world workflow. For farmers, the parcel is the primary object of interest when planning their application.</p>
+
+        <h4 class="govuk-heading-s">Actions screen</h4>
+
+        <p>On the actions page, users were able to use the search function effectively. They could also use the jump tags in the content list to navigate to different categories of actions, although some farmers were uncertain about which actions belonged to each category.</p>
+
+        <p>Key observations:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Some farmers used Control+F to find actions on the page despite having a search function - this is legacy behaviour which they find reliable</li>
+          <li>Some farmers did not notice the search box</li>
+          <li>We have looked at patterns from other services like the Digital Marketplace on GOV.UK that use a wider search box spanning multiple columns, which we may trial in future iterations</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Parcels screen</h4>
+
+        <p>Farmers were able to use 'select all' to select all parcels on the page and did not have issues with long lists, although we recognise this may not be optimal when we combine screens and add mapping functionality later.</p>
+
+        <p>Helpful information displayed:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Total size of the parcel</li>
+          <li>Total available area of the parcel</li>
+          <li>Triple SI consent indicators</li>
+          <li>Hint text on the parcels</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Entering areas screen</h4>
+
+        <p>On the area screens, where users selected their parcels and then moved to a new screen to enter quantities for those individual parcels, there was a mixed response to the ability to select all parcels and use a button to bulk-apply the total available area to all of them.</p>
+
+        <p>Key findings:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Some farmers said they would not use this bulk functionality</li>
+          <li>Other farmers could see potential use cases for this feature</li>
+          <li>Many farmers struggled with the design requiring them to select checkboxes to the left of table rows before clicking the 'enter total available area' button</li>
+          <li>Some farmers clicked checkboxes before entering a quantity in the input box, believing this was necessary when it was not</li>
+          <li>Most farmers were able to use the 'reset form' link to clear all fields on the page</li>
+        </ul>
+
+        <p>Planned improvements:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Remove checkboxes from each table row and replace with a button that says 'enter total available area'</li>
+          <li>Iterate the language used - 'reset' may not be the most appropriate phrase</li>
+        </ul>
+
+        <h4 class="govuk-heading-s">Review screen</h4>
+
+        <p>On the review page, farmers were generally able to understand the information presented. However, they found it somewhat disorienting to have the action as the primary element with parcel information as the child element within the card. This structure conflicts with their mental model of how they use their farm.</p>
+
+        <h4 class="govuk-heading-s">Adding another action</h4>
+
+        <p>Users were able to choose the correct option to add another action to their parcels. However, some farmers did not notice in the second task that the action could only be applied to the whole available area of each parcel, meaning no areas needed to be manually entered by the user.</p>
+
+        <p>We will explore ways to ensure users understand the particular rules for each action.</p>
+
+        <h4 class="govuk-heading-s">Hypothesis testing conclusions</h4>
+
+        <p>The hypothesis that users could add an action to an application, apply it to multiple parcels, and add areas to all those parcels in a quick, bulk manner was partially validated:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Selecting multiple parcels at once was validated</li>
+          <li>Entering part or percentage areas for parcels in a bulk manner was not validated</li>
+          <li>Entering the total available area for parcels in a bulk manner is inconclusive. We will iterate the design to further assess whether this is an actual User Need.</li>
+        </ul>
+
+        <h2 class="govuk-heading-m">Next steps</h2>
+
+        <p>Overall, providing actions before parcels conflicts with users' mental model of how they plan and perceive their farm. As a result, we will be switching that order.</p>
+
+        <p class="govuk-body-l">We saw strong evidence for combining screens so users can select a parcel, see the actions available for that parcel based on the land data we hold, and enter amounts for those actions as much as possible within the same task flow on the same page. 
+          Users could then move to a nearby parcel (as in real life) to repeat the process.</p>
+
+        <p>This is a concept we will be exploring next as we integrate mapping visualisations into this work.</p> #}
+
+  </div>
+</div>
+
+{% endblock %}
