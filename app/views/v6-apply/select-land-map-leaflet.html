@@ -733,7 +733,7 @@
             <div class="govuk-accordion__section-header">
               <h3 class="govuk-accordion__section-heading">
                 <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-2">
-                  Parcels you've just added actions to
+                  Actions you've just added actions
                 </span>
               </h3>
             </div>
@@ -752,7 +752,7 @@
             <div class="govuk-accordion__section-header">
               <h3 class="govuk-accordion__section-heading">
                 <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-1">
-                  Parcels with actions from previous agreements
+                  Actions from previous agreements
                 </span>
               </h3>
             </div>
@@ -760,7 +760,7 @@
               {# <p class="govuk-body">These parcels have actions from previous agreements</p> #}
               
               <div id="oak-tree-existing-actions">
-              <h2 class="govuk-heading-m">Woods View</h2>
+              <h2 class="govuk-heading-s">Woods View</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -788,7 +788,7 @@
                 </div>
               </dl>
               
-              <h2 class="govuk-heading-m">Long Meadow</h2>
+              <h2 class="govuk-heading-s">Long Meadow</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -816,7 +816,7 @@
                 </div>
               </dl>
               
-              <h2 class="govuk-heading-m">Lower Paddock</h2>
+              <h2 class="govuk-heading-s">Lower Paddock</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -847,7 +847,7 @@
               </div>
               
               <div id="blackberry-existing-actions">
-              <h2 class="govuk-heading-m">Spring Pasture</h2>
+              <h2 class="govuk-heading-s">Spring Pasture</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -875,7 +875,7 @@
                 </div>
               </dl>
               
-              <h2 class="govuk-heading-m">Brook Field</h2>
+              <h2 class="govuk-heading-s">Brook Field</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -903,7 +903,7 @@
                 </div>
               </dl>
               
-              <h2 class="govuk-heading-m">Valley Bottom</h2>
+              <h2 class="govuk-heading-s">Valley Bottom</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -1536,7 +1536,28 @@
       }
 
       // Update UI
-      document.getElementById('page-heading').textContent = "Choose actions for '" + parcel.name + "'";
+      // Determine a user-friendly OS ref to show in the heading. Prefer any full ID included
+      // in the parcel list links (e.g. "North Field - BO4521 2843"); fall back to `parcel.osRef`.
+      var osRefDisplay = parcel.osRef || '';
+      try {
+        var links = document.getElementsByTagName('a');
+        for (var i = 0; i < links.length; i++) {
+          var onclickAttr = links[i].getAttribute('onclick');
+          if (onclickAttr && onclickAttr.indexOf("selectParcelById('" + parcelId + "')") !== -1) {
+            var txt = links[i].textContent.trim();
+            // Expect text like "Name - OSREF"; take the part after the last ' - '
+            var dashIndex = txt.lastIndexOf(' - ');
+            if (dashIndex !== -1) {
+              osRefDisplay = txt.substring(dashIndex + 3).trim();
+            }
+            break;
+          }
+        }
+      } catch (e) {
+        // ignore and fall back to parcel.osRef
+      }
+
+      document.getElementById('page-heading').textContent = 'Choose actions for ' + parcel.name + (osRefDisplay ? ' - ' + osRefDisplay : '');
       document.getElementById('select-parcel-text').style.display = 'none';
       document.getElementById('selected-parcel-text').style.display = 'block';
       document.getElementById('os-ref').textContent = parcel.osRef;
