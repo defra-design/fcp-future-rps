@@ -7,6 +7,20 @@ const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 const https = require('https')
 
+// Add custom Nunjucks filter for parsing JSON
+govukPrototypeKit.views.addFilter('fromJson', function(str) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return {};
+  }
+})
+
+// Add custom Nunjucks filter for formatting numbers to 2 decimal places
+govukPrototypeKit.views.addFilter('formatCurrency', function(num) {
+  return parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+})
+
 // Add your routes here
 
 // Mock RPA data for demo purposes (SBI: 999999999)

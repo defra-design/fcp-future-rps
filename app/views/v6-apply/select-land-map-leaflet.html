@@ -721,7 +721,8 @@
           Your actions have been saved. Add actions to another parcel or select continue to review your application. Use the parcels and actions summary below to view all the actions you've added.
         </div>
 
-        <form action="submit-application" method="post">
+        <form action="check-your-answers" method="post" id="continue-form">
+          <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
           <button type="submit" id="continue-button" disabled class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
             Continue
           </button>
@@ -1991,6 +1992,9 @@
       'PRF1': 27
     };
 
+    // Object to store all parcel selections
+    var parcelSelections = {};
+
     // Default style for parcels
     function defaultStyle(feature) {
       return {
@@ -2112,6 +2116,69 @@
       });
     });
 
+    // Function to restore parcel state from saved selections
+    function restoreParcelState(parcelId) {
+      console.log('Restoring parcel state for:', parcelId);
+      
+      // First, uncheck all checkboxes and clear all inputs
+      $('input[name="actions"]').prop('checked', false).attr('aria-expanded', 'false');
+      $('input[type="text"][id^="quantity-"]').val('');
+      
+      // Hide all conditional content
+      $('.govuk-checkboxes__conditional').addClass('govuk-checkboxes__conditional--hidden');
+      
+      // Get saved selections for this parcel
+      var savedSelections = parcelSelections[parcelId];
+      if (!savedSelections || !savedSelections.actions) {
+        console.log('No saved selections found');
+        return;
+      }
+      
+      console.log('Restoring actions:', savedSelections.actions);
+      
+      // Restore each saved action
+      savedSelections.actions.forEach(function(action) {
+        console.log('Restoring action:', action.code, 'quantity:', action.quantity);
+        
+        // Check the checkbox
+        var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
+        if ($checkbox.length > 0) {
+          $checkbox.prop('checked', true);
+          $checkbox.attr('aria-expanded', 'true');
+          
+          // Show the conditional content by removing the hidden class
+          var conditionalId = 'conditional-' + action.code.toLowerCase();
+          var $conditional = $('#' + conditionalId);
+          if ($conditional.length > 0) {
+            $conditional.removeClass('govuk-checkboxes__conditional--hidden');
+            console.log('Showed conditional for:', action.code);
+          }
+          
+          // Restore the quantity if it exists
+          if (action.quantity) {
+            var $quantityInput = $('#quantity-' + action.code.toLowerCase());
+            if ($quantityInput.length > 0) {
+              $quantityInput.val(action.quantity);
+              console.log('Set quantity for:', action.code, 'to:', action.quantity);
+            }
+          }
+        } else {
+          console.log('Checkbox not found for:', action.code);
+        }
+      });
+      
+      // Update available quantities to reflect the restored values
+      updateAvailableQuantities();
+      
+      // Scroll to the actions section
+      var $actionsSection = $('#actions-section');
+      if ($actionsSection.length > 0) {
+        $('html, body').animate({
+          scrollTop: $actionsSection.offset().top - 20
+        }, 500);
+      }
+    }
+
     // Function to select a parcel
     function selectParcel(parcelId) {
       var parcel = parcelData[parcelId];
@@ -2207,6 +2274,13 @@
 
       // Update actions list
       updateActionsList(parcel.actions);
+      
+      // Restore parcel state if it has saved actions
+      if (parcelSelections[parcelId] && parcelSelections[parcelId].actions && parcelSelections[parcelId].actions.length > 0) {
+        setTimeout(function() {
+          restoreParcelState(parcelId);
+        }, 200);
+      }
 
       // Pan map to parcel - maintain zoom if switching between parcels
       if (parcelPolygons[parcelId]) {
@@ -2264,8 +2338,41 @@
 
     // Search functionality
     $(document).ready(function(){
-      // Object to store all parcel selections
-      var parcelSelections = {};
+      // Initialize parcelSelections from session data if available
+      {% if data['parcelSelectionsData'] %}
+      try {
+        var sessionDataStr = '{{ data['parcelSelectionsData'] | safe }}';
+        var sessionData = JSON.parse(sessionDataStr);
+        if (sessionData && typeof sessionData === 'object') {
+          parcelSelections = sessionData;
+          // Update the summary display on page load
+          setTimeout(function() {
+            updateApplicationSummary();
+            // Show the accordion section
+            $('#parcels-actions-summary-section').show();
+          }, 100);
+        }
+      } catch(e) {
+        console.error('Error parsing session data:', e);
+      }
+      {% endif %}
+      
+      // Check if user came from check-your-answers with a specific parcel to edit
+      var selectedParcelId = sessionStorage.getItem('selectedParcelId');
+      if (selectedParcelId) {
+        // Clear the stored parcel ID
+        sessionStorage.removeItem('selectedParcelId');
+        
+        // Select the parcel after a short delay to ensure map is ready
+        setTimeout(function() {
+          selectParcel(selectedParcelId);
+          
+          // Zoom to the parcel
+          if (parcelPolygons[selectedParcelId]) {
+            map.fitBounds(parcelPolygons[selectedParcelId].getBounds(), {padding: [50, 50]});
+          }
+        }, 500);
+      }
       
       // Handle click on "view existing actions" link (including those in popups)
       $(document).on('click', '#view-existing-actions-link', function(e) {
@@ -2485,7 +2592,7 @@
           
           // Get quantity if entered
           var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
-          var quantity = $quantityInput.val() ? parseFloat($quantityInput.val()) : null;
+          var quantity = $quantityInput.val() ? $quantityInput.val() : null;
           
           actions.push({
             code: actionCode,
@@ -2499,6 +2606,7 @@
           parcelSelections[currentSelectedParcel] = {
             parcelId: currentSelectedParcel,
             parcelName: parcelData[currentSelectedParcel].name,
+            osRef: parcelData[currentSelectedParcel].osRef,
             actions: actions
           };
         } else {
@@ -2507,55 +2615,6 @@
         }
         
         updateApplicationSummary();
-      }
-      
-      // Function to restore parcel state from saved selections
-      function restoreParcelState(parcelId) {
-        // First, uncheck all checkboxes and clear all inputs
-        $('input[name="actions"]').prop('checked', false);
-        $('input[type="text"][id^="quantity-"]').val('');
-        
-        // Hide all conditional content
-        $('.govuk-checkboxes__conditional').addClass('govuk-checkboxes__conditional--hidden');
-        
-        // Get saved selections for this parcel
-        var savedSelections = parcelSelections[parcelId];
-        if (!savedSelections || !savedSelections.actions) return;
-        
-        // Restore each saved action
-        savedSelections.actions.forEach(function(action) {
-          // Check the checkbox
-          var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
-          if ($checkbox.length > 0) {
-            $checkbox.prop('checked', true);
-            
-            // Show the conditional content by removing the hidden class
-            var conditionalId = 'conditional-' + action.code.toLowerCase();
-            var $conditional = $('#' + conditionalId);
-            if ($conditional.length > 0) {
-              $conditional.removeClass('govuk-checkboxes__conditional--hidden');
-            }
-            
-            // Restore the quantity if it exists
-            if (action.quantity) {
-              var $quantityInput = $('#quantity-' + action.code.toLowerCase());
-              if ($quantityInput.length > 0) {
-                $quantityInput.val(action.quantity);
-              }
-            }
-          }
-        });
-        
-        // Update available quantities to reflect the restored values
-        updateAvailableQuantities();
-        
-        // Scroll to the actions section
-        var $actionsSection = $('#actions-section');
-        if ($actionsSection.length > 0) {
-          $('html, body').animate({
-            scrollTop: $actionsSection.offset().top - 20
-          }, 500);
-        }
       }
       
       function performSearch() {
@@ -2916,6 +2975,11 @@
           currentSelectedParcel = null;
           
           // Note: All user actions are preserved in parcelSelections object and accordion sections
+        });
+
+        // Store parcelSelections in hidden field before form submission
+        $('#continue-form').on('submit', function() {
+          $('#parcelSelectionsData').val(JSON.stringify(parcelSelections));
         });
       });
     });

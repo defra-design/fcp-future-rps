@@ -20,6 +20,12 @@
 
 {% block content %}
 
+<style>
+  .govuk-summary-list__key {
+    width: 50% !important;
+  }
+</style>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full-column">
       <button type="submit" class="topnav-right govuk-button govuk-button--primary" data-module="govuk-button">
@@ -33,148 +39,365 @@
 
     <h1 class="govuk-heading-l">Check your answers before sending your application</h1>
 
-          <table class="govuk-table">
-            <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header govuk-!-width-one-half">Business</th>
-                <td class="govuk-table__cell govuk-!-width-one-quarter">SARAH FARM LTD<br>
-                    2 Toomers Wharf<br>
-                    Canal Walk<br>
-                    Newbury<br>
-                    Berkshire<br>
-                    RG14 1DY</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"></td>
-              </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Single business identifier (SBI)</th>
-                <td class="govuk-table__cell">123456789</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"></td>
-              </tr>
-                <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header govuk-!-width-one-half">Indicative annual payment (excluding management payment)</th>
-                <td class="govuk-table__cell govuk-!-width-one-quarter">£18,547.839</td>
-                <td class="govuk-table__cell govuk-table__header--numeric"></td>
-              </tr>
-              <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Land details</th>
-                <td class="govuk-table__cell">Up to date</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="check-land-details">Change<span class="govuk-visually-hidden"> answer</span></a>
-          </td>
-              </tr>
-              <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Agreement name</th>
-                <td class="govuk-table__cell">Sarah's Farm Funding 2024</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="agreement-name">Change<span class="govuk-visually-hidden"> answer</span></a>
-          </td>
-              </tr>
-                <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header govuk-!-width-one-half">Management control of land</th>
-                <td class="govuk-table__cell govuk-!-width-one-quarter">Yes</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="management-control">Change<span class="govuk-visually-hidden"> answer</span></a>
-          </td>
-              </tr>
-                  <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Land with scheduled monuments or historic or archaeological features</th>
-                <td class="govuk-table__cell">Yes</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="hefer">Change<span class="govuk-visually-hidden"> answer</span></a>
-          </td>
-              </tr>
-                  <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Sites of special scientific interest (SSSIs)</th>
-                <td class="govuk-table__cell">Yes</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="sssi">Change<span class="govuk-visually-hidden"> answer</span></a>
-          </td>
-              </tr>
-                <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Inheritance tax exemptions</th>
-                <td class="govuk-table__cell">Yes</td>
-                  <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="ite">Change<span class="govuk-visually-hidden"> answer</span></a>
-          </td>
-              </tr>
-                      <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Total number of actions applied for</th>
-                <td class="govuk-table__cell">3</td>
-                <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="add-more-actions">Change<span class="govuk-visually-hidden"> answer</span></a>
-          </td>
-              </tr>
-                        <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Parcel Based actions</th>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell govuk-table__header--numeric"><a class="govuk-link" href="add-more-actions">Change<span class="govuk-visually-hidden"> answer</span></a></td>
-          </td>
-              </tr>
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">AB1: Nectar flower mix</td>
-                <td class="govuk-table__cell">8.3405 ha</td>
-                <td class="govuk-table__cell">£6,372.142</td>
-              </tr>
-                  <tr class="govuk-table__row">
-                <td class="govuk-table__cell">AB4: Skylark plots</td>
-                <td class="govuk-table__cell">8.3405 ha</td>
-                <td class="govuk-table__cell">£4,295.3575</td>
-              </tr>
-                      <tr class="govuk-table__row">
-                <td class="govuk-table__cell">AB2: Basic overwinter stubble</td>
-                <td class="govuk-table__cell">120.0394 m</td>
-                <td class="govuk-table__cell">£6.0197</td>
-              </tr>
-          <!--               <tr class="govuk-table__row">-->
-          <!--      <td class="govuk-table__cell">HRW2: Manage hedgerows</td>-->
-          <!--      <td class="govuk-table__cell">100.3332 m</td>-->
-          <!--      <td class="govuk-table__cell">£17.3316</td>-->
-          <!--    </tr>-->
-          <!--                   <tr class="govuk-table__row">-->
-          <!--      <td class="govuk-table__cell">IGL1: Take grassland field corners or blocks-->
-          <!--out of management</td>-->
-          <!--      <td class="govuk-table__cell">8.3231 ha</td>-->
-          <!--      <td class="govuk-table__cell">£2770.893</td>-->
-          <!--    </tr>-->
-          <!--                       <tr class="govuk-table__row">-->
-          <!--      <td class="govuk-table__cell">IPM3: Companion crop on arable and-->
-          <!--horticultural land</td>-->
-          <!--      <td class="govuk-table__cell">3.4502 ha</td>-->
-          <!--      <td class="govuk-table__cell">£189.761</td>-->
-          <!--      <td class="govuk-table__cell govuk-table__header&#45;&#45;numeric"></td>-->
-          <!--    </tr>-->
-          <!--                           <tr class="govuk-table__row">-->
-          <!--      <td class="govuk-table__cell">LIG1: Manage grassland with very low nutrient inputs (outside SDAs)</td>-->
-          <!--      <td class="govuk-table__cell">20.2938 ha</td>-->
-          <!--      <td class="govuk-table__cell">£3064.3638</td>-->
-          <!--    </tr>-->
-          <!--                            <tr class="govuk-table__row">-->
-          <!--      <td class="govuk-table__cell">SAM1 – Assess soil, test soil organic matter and produce a soil management plan</td>-->
-          <!--      <td class="govuk-table__cell">2.8284 ha</td>-->
-          <!--      <td class="govuk-table__cell">£113.9704</td>-->
-          <!--    </tr>-->
-          <!--                               <tr class="govuk-table__row">-->
-          <!--       <th scope="col" class="govuk-table__cell">Parcel Based actions total</td>-->
-          <!--      <td class="govuk-table__cell"></td>-->
-          <!--      <td class="govuk-table__cell">£16,829.839</td>-->
-          <!--    </tr>-->
-          <!--                              <tr class="govuk-table__row">-->
-          <!--       <th scope="col" class="govuk-table__cell">Agreement Level actions</td>-->
-          <!--      <td class="govuk-table__cell"></td>-->
-          <!--      <td class="govuk-table__cell govuk-table__header&#45;&#45;numeric"><a class="govuk-link" href="apply-agreement-level">Change<span class="govuk-visually-hidden"> answer</span></a></td>-->
-          <!--    </tr>-->
-          <!--        <tr class="govuk-table__row">-->
-          <!--      <td class="govuk-table__cell">IPM1 – Assess integrated pest management and produce a plan</td>-->
-          <!--      <td class="govuk-table__cell"></td>-->
-          <!--      <td class="govuk-table__cell">£1,129.00</td>-->
-          <!--    </tr>-->
-          <!--        <tr class="govuk-table__row">-->
-          <!--      <td class="govuk-table__cell">NUM1 – Assess nutrient management and produce a nutrient report</td>-->
-          <!--      <td class="govuk-table__cell"></td>-->
-          <!--      <td class="govuk-table__cell">£589.00</td>-->
-          <!--    </tr>-->
-              {# <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__cell">Agreement Level actions total</td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell">£1,718.00</td>
-              </tr> #}
-            </tbody>
-          </table>
+    <h2 class="govuk-heading-m">Business details</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Business
+        </dt>
+        <dd class="govuk-summary-list__value">
+          SARAH FARM LTD<br>
+          2 Toomers Wharf<br>
+          Canal Walk<br>
+          Newbury<br>
+          Berkshire<br>
+          RG14 1DY
+        </dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Single business identifier (SBI)
+        </dt>
+        <dd class="govuk-summary-list__value">
+          123456789
+        </dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Indicative annual payment (excluding management payment)
+        </dt>
+        <dd class="govuk-summary-list__value">
+          £18,547.839
+        </dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+    </dl>
+
+    <h2 class="govuk-heading-m">Agreement details</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Land details
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Up to date
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="check-land-details">Change<span class="govuk-visually-hidden"> land details</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Agreement name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Sarah's Farm Funding 2024
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="agreement-name">Change<span class="govuk-visually-hidden"> agreement name</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Management control of land
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Yes
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="management-control">Change<span class="govuk-visually-hidden"> management control of land</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Land with scheduled monuments or historic or archaeological features
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Yes
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="hefer">Change<span class="govuk-visually-hidden"> historic or archaeological features</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Sites of special scientific interest (SSSIs)
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Yes
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="sssi">Change<span class="govuk-visually-hidden"> SSSIs</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Inheritance tax exemptions
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Yes
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="ite">Change<span class="govuk-visually-hidden"> inheritance tax exemptions</span></a>
+        </dd>
+      </div>
+      
+      {% set parcelDataCheck = data['parcelSelectionsData'] | replace("'", '"') | safe %}
+      {% if parcelDataCheck %}
+        {% set parcelsCheck = parcelDataCheck | fromJson %}
+        {% set totalActionsCount = 0 %}
+        {% set totalParcelsCount = parcelsCheck | length %}
+        {% for parcelId, parcel in parcelsCheck %}
+          {% set totalActionsCount = totalActionsCount + (parcel.actions | length) %}
+        {% endfor %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Total number of actions applied for
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ totalActionsCount }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="select-land-map-leaflet">Change<span class="govuk-visually-hidden"> number of actions</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Total number of parcels applied for
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ totalParcelsCount }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="select-land-map-leaflet">Change<span class="govuk-visually-hidden"> number of parcels</span></a>
+        </dd>
+      </div>
+      {% else %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Total number of actions applied for
+        </dt>
+        <dd class="govuk-summary-list__value">
+          3
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="select-land-map-leaflet">Change<span class="govuk-visually-hidden"> number of actions</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Total number of parcels applied for
+        </dt>
+        <dd class="govuk-summary-list__value">
+          3
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="select-land-map-leaflet">Change<span class="govuk-visually-hidden"> number of parcels</span></a>
+        </dd>
+      </div>
+      {% endif %}
+    </dl>
+
+    <!-- Considered in design: Average of 6 actions per application during SFI 2024 -->
+
+    <h2 class="govuk-heading-m">Parcels and actions</h2>
+
+    {% set parcelData = data['parcelSelectionsData'] | replace("'", '"') | safe %}
+    {% if parcelData %}
+      {% set parcels = parcelData | fromJson %}
+      {% set actionDetails = {
+        'CNUM3': { name: 'Legume fallow', rate: 382 },
+        'CAHL1': { name: 'Pollen and nectar flower mix', rate: 614 },
+        'CAHL2': { name: 'Winter bird food on arable and horticultural land', rate: 640 },
+        'CSAM2': { name: 'Multi-species winter cover crop', rate: 114 },
+        'BFS1': { name: '12m to 24m watercourse buffer strip on cultivated land', rate: 732 },
+        'AHW7': { name: 'Enhanced overwinter stubble', rate: 451 },
+        'CIPM2': { name: 'Flower-rich grass margins, blocks or in-field strips', rate: 640 },
+        'CNUM2': { name: 'Legumes on improved grassland', rate: 102 },
+        'SOH1': { name: 'No till farming', rate: 43 },
+        'CIGL1': { name: 'Take grassland field corners or blocks out of management', rate: 235 },
+        'AHW3': { name: 'Autumn sown bumblebird mix', rate: 614 },
+        'CSAM3': { name: 'Herbal leys', rate: 382 },
+        'PRF1': { name: 'No insecticides on arable crops and permanent crops', rate: 45 }
+      } %}
+      
+      {% set totalPayment = 0 %}
+      
+      {% for parcelId, parcel in parcels %}
+        <!-- {{ parcel.parcelName }} -->
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <h3 class="govuk-heading-s" style="margin-bottom: 15px;">{{ parcel.parcelName }}{% if parcel.osRef %} - {{ parcel.osRef }}{% endif %}</h3>
+          <a class="govuk-link" href="select-land-map-leaflet" data-parcel-id="{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} actions</span></a>
+        </div>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          {% set parcelPayment = 0 %}
+          {% for action in parcel.actions %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                {{ actionDetails[action.code].name }}: {{ action.code }}
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ action.quantity }} ha
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              </dd>
+            </div>
+            {% set actionPayment = (action.quantity | float) * actionDetails[action.code].rate %}
+            {% set parcelPayment = parcelPayment + actionPayment %}
+          {% endfor %}
+          
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Yearly payment for this parcel
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £{{ parcelPayment | formatCurrency }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+        </dl>
+        {% set totalPayment = totalPayment + parcelPayment %}
+      {% endfor %}
+
+      <h2 class="govuk-heading-m">Payment summary</h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Total payments for all parcels
+          </dt>
+          <dd class="govuk-summary-list__value">
+            £{{ totalPayment | formatCurrency }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </dl>
+    {% else %}
+      <!-- Fallback to static content if no data -->
+      <!-- Upper Field -->
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Upper Field - SO3758 3159</h3>
+        <a class="govuk-link" href="select-land-map-leaflet" data-parcel-id="upper-field" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Upper Field actions</span></a>
+      </div>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Legume fallow: CNUM3
+          </dt>
+          <dd class="govuk-summary-list__value">
+            2.5 ha
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Pollen and nectar flower mix: CAHL1
+          </dt>
+          <dd class="govuk-summary-list__value">
+            1.8 ha
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Yearly payment for this parcel
+          </dt>
+          <dd class="govuk-summary-list__value">
+            £2,640.20
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </dl>
+
+      <!-- Long Meadow -->
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Long Meadow - SO3760 3161</h3>
+        <a class="govuk-link" href="select-land-map-leaflet" data-parcel-id="long-meadow" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Long Meadow actions</span></a>
+      </div>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Winter bird food on arable and horticultural land: CAHL2
+          </dt>
+          <dd class="govuk-summary-list__value">
+            3.2 ha
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Yearly payment for this parcel
+          </dt>
+          <dd class="govuk-summary-list__value">
+            £2,048.00
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </dl>
+
+      <!-- River Pasture -->
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <h3 class="govuk-heading-s" style="margin-bottom: 15px;">River Pasture - SO3761 3162</h3>
+        <a class="govuk-link" href="select-land-map-leaflet" data-parcel-id="river-pasture" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> River Pasture actions</span></a>
+      </div>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Multi-species winter cover crop: CSAM2
+          </dt>
+          <dd class="govuk-summary-list__value">
+            5.5 ha
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            12m to 24m watercourse buffer strip on cultivated land: BFS1
+          </dt>
+          <dd class="govuk-summary-list__value">
+            2.3 ha
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Yearly payment for this parcel
+          </dt>
+          <dd class="govuk-summary-list__value">
+            £2,311.60
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </dl>
+
+      <h2 class="govuk-heading-m">Payment summary</h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Total payments for all parcels
+          </dt>
+          <dd class="govuk-summary-list__value">
+            £6,999.80
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </dl>
+    {% endif %}
       
          <form class="form" action="submit-application" method="post">
 <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
@@ -191,4 +414,26 @@
 
   </main>
 </div>
+
+<script>
+  // Handle Change link clicks to store the target parcel ID
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get all Change links with data-parcel-id
+    var changeLinks = document.querySelectorAll('a.govuk-link[data-parcel-id]');
+    
+    changeLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var parcelId = this.getAttribute('data-parcel-id');
+        
+        // Store the parcel ID in session storage so select-land-map-leaflet can use it
+        if (parcelId) {
+          sessionStorage.setItem('selectedParcelId', parcelId);
+        }
+        
+        // Let the link navigate normally
+      });
+    });
+  });
+</script>
+
 {% endblock %}
