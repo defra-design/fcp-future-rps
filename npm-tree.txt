@@ -1,0 +1,816 @@
+fcp-future-rps@ /Users/richardpayne/Documents/GitHub/fcp-future-rps
+├─┬ @defra/defra-map@2.0.0 (git+ssh://git@github.com/DEFRA/defra-map.git#2975cacffbda9300e0df3f6745c5b24d6c6814db)
+│ ├─┬ @turf/area@7.2.0
+│ │ ├── @turf/helpers@7.2.0 deduped
+│ │ ├─┬ @turf/meta@7.2.0
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ └── @types/geojson@7946.0.16 deduped
+│ │ ├── @types/geojson@7946.0.16
+│ │ └── tslib@2.8.1
+│ ├─┬ @turf/boolean-valid@7.2.0
+│ │ ├─┬ @turf/bbox@7.2.0
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @turf/meta@7.2.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├─┬ @turf/boolean-crosses@7.2.0
+│ │ │ ├── @turf/boolean-point-in-polygon@7.2.0 deduped
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ ├── @turf/line-intersect@7.2.0 deduped
+│ │ │ ├─┬ @turf/polygon-to-line@7.2.0
+│ │ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ │ └── tslib@2.8.1 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├─┬ @turf/boolean-disjoint@7.2.0
+│ │ │ ├── @turf/boolean-point-in-polygon@7.2.0 deduped
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @turf/line-intersect@7.2.0 deduped
+│ │ │ ├── @turf/meta@7.2.0 deduped
+│ │ │ ├── @turf/polygon-to-line@7.2.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├─┬ @turf/boolean-overlap@7.2.0
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ ├── @turf/line-intersect@7.2.0 deduped
+│ │ │ ├─┬ @turf/line-overlap@7.2.0
+│ │ │ │ ├── @turf/boolean-point-on-line@7.2.0 deduped
+│ │ │ │ ├─┬ @turf/geojson-rbush@7.2.0
+│ │ │ │ │ ├── @turf/bbox@7.2.0 deduped
+│ │ │ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ │ │ ├── @turf/meta@7.2.0 deduped
+│ │ │ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ │ │ └─┬ rbush@3.0.1
+│ │ │ │ │   └── quickselect@2.0.0
+│ │ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ │ ├─┬ @turf/line-segment@7.2.0
+│ │ │ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ │ │ ├── @turf/meta@7.2.0 deduped
+│ │ │ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ │ │ └── tslib@2.8.1 deduped
+│ │ │ │ ├── @turf/meta@7.2.0 deduped
+│ │ │ │ ├─┬ @turf/nearest-point-on-line@7.2.0
+│ │ │ │ │ ├─┬ @turf/distance@7.2.0
+│ │ │ │ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ │ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ │ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ │ │ │ └── tslib@2.8.1 deduped
+│ │ │ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ │ │ ├── @turf/meta@7.2.0 deduped
+│ │ │ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ │ │ └── tslib@2.8.1 deduped
+│ │ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ │ ├── fast-deep-equal@3.1.3
+│ │ │ │ └── tslib@2.8.1 deduped
+│ │ │ ├── @turf/meta@7.2.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ ├─┬ geojson-equality-ts@1.0.2
+│ │ │ │ └── @types/geojson@7946.0.16 deduped
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├─┬ @turf/boolean-point-in-polygon@7.2.0
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ ├─┬ point-in-polygon-hao@1.2.4
+│ │ │ │ └── robust-predicates@3.0.2
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├─┬ @turf/boolean-point-on-line@7.2.0
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @turf/invariant@7.2.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├── @turf/helpers@7.2.0 deduped
+│ │ ├─┬ @turf/invariant@7.2.0
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├─┬ @turf/line-intersect@7.2.0
+│ │ │ ├── @turf/helpers@7.2.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ ├─┬ sweepline-intersections@1.5.0
+│ │ │ │ └── tinyqueue@2.0.3
+│ │ │ └── tslib@2.8.1 deduped
+│ │ ├── @types/geojson@7946.0.16 deduped
+│ │ ├─┬ geojson-polygon-self-intersections@1.2.1
+│ │ │ └─┬ rbush@2.0.2
+│ │ │   └── quickselect@1.1.1
+│ │ └── tslib@2.8.1 deduped
+│ ├─┬ @turf/helpers@7.2.0
+│ │ ├── @types/geojson@7946.0.16 deduped
+│ │ └── tslib@2.8.1 deduped
+│ ├── core-js@3.46.0
+│ ├─┬ lucide-react@0.534.0
+│ │ └── react@19.2.0
+│ ├─┬ maplibre-gl-legacy@npm:maplibre-gl@1.15.3
+│ │ ├─┬ @mapbox/geojson-rewind@0.5.2
+│ │ │ ├── get-stream@6.0.1
+│ │ │ └── minimist@1.2.8 deduped
+│ │ ├── @mapbox/geojson-types@1.0.2
+│ │ ├── @mapbox/jsonlint-lines-primitives@2.0.2
+│ │ ├─┬ @mapbox/mapbox-gl-supported@1.5.0
+│ │ │ └─┬ mapbox-gl@1.13.3
+│ │ │   ├── @mapbox/geojson-rewind@0.5.2 deduped
+│ │ │   ├── @mapbox/geojson-types@1.0.2 deduped
+│ │ │   ├── @mapbox/jsonlint-lines-primitives@2.0.2 deduped
+│ │ │   ├── @mapbox/mapbox-gl-supported@1.5.0 deduped
+│ │ │   ├── @mapbox/point-geometry@0.1.0
+│ │ │   ├── @mapbox/tiny-sdf@1.2.5
+│ │ │   ├── @mapbox/unitbezier@0.0.0
+│ │ │   ├─┬ @mapbox/vector-tile@1.3.1
+│ │ │   │ └── @mapbox/point-geometry@0.1.0 deduped
+│ │ │   ├── @mapbox/whoots-js@3.1.0 deduped
+│ │ │   ├── csscolorparser@1.0.3 deduped
+│ │ │   ├── earcut@2.2.4
+│ │ │   ├── geojson-vt@3.2.1
+│ │ │   ├── gl-matrix@3.4.4 deduped
+│ │ │   ├── grid-index@1.1.0 deduped
+│ │ │   ├── murmurhash-js@1.0.0 deduped
+│ │ │   ├─┬ pbf@3.3.0
+│ │ │   │ ├── ieee754@1.2.1 deduped
+│ │ │   │ └── resolve-protobuf-schema@2.1.0 deduped
+│ │ │   ├── potpack@1.0.2
+│ │ │   ├── quickselect@2.0.0
+│ │ │   ├── rw@1.3.3 deduped
+│ │ │   ├─┬ supercluster@7.1.5
+│ │ │   │ └── kdbush@3.0.0
+│ │ │   ├── tinyqueue@2.0.3
+│ │ │   └── vt-pbf@3.1.3 deduped
+│ │ ├── @mapbox/point-geometry@0.1.0
+│ │ ├── @mapbox/tiny-sdf@1.2.5
+│ │ ├── @mapbox/unitbezier@0.0.0
+│ │ ├─┬ @mapbox/vector-tile@1.3.1
+│ │ │ └── @mapbox/point-geometry@0.1.0 deduped
+│ │ ├── @mapbox/whoots-js@3.1.0
+│ │ ├── csscolorparser@1.0.3
+│ │ ├── earcut@2.2.4
+│ │ ├── geojson-vt@3.2.1
+│ │ ├── gl-matrix@3.4.4
+│ │ ├── grid-index@1.1.0
+│ │ ├── minimist@1.2.8
+│ │ ├── murmurhash-js@1.0.0
+│ │ ├─┬ pbf@3.3.0
+│ │ │ ├── ieee754@1.2.1
+│ │ │ └─┬ resolve-protobuf-schema@2.1.0
+│ │ │   └── protocol-buffers-schema@3.6.0
+│ │ ├── potpack@1.0.2
+│ │ ├── quickselect@2.0.0
+│ │ ├── rw@1.3.3
+│ │ ├─┬ supercluster@7.1.5
+│ │ │ └── kdbush@3.0.0
+│ │ ├── tinyqueue@2.0.3
+│ │ └─┬ vt-pbf@3.1.3
+│ │   ├── @mapbox/point-geometry@0.1.0
+│ │   ├─┬ @mapbox/vector-tile@1.3.1
+│ │   │ └── @mapbox/point-geometry@0.1.0 deduped
+│ │   └─┬ pbf@3.3.0
+│ │     ├── ieee754@1.2.1 deduped
+│ │     └── resolve-protobuf-schema@2.1.0 deduped
+│ ├─┬ maplibre-gl@5.12.0
+│ │ ├── @mapbox/geojson-rewind@0.5.2 deduped
+│ │ ├── @mapbox/jsonlint-lines-primitives@2.0.2 deduped
+│ │ ├── @mapbox/point-geometry@1.1.0
+│ │ ├── @mapbox/tiny-sdf@2.0.7
+│ │ ├── @mapbox/unitbezier@0.0.1
+│ │ ├─┬ @mapbox/vector-tile@2.0.4
+│ │ │ ├── @mapbox/point-geometry@1.1.0 deduped
+│ │ │ ├── @types/geojson@7946.0.16 deduped
+│ │ │ └── pbf@4.0.1 deduped
+│ │ ├── @mapbox/whoots-js@3.1.0 deduped
+│ │ ├─┬ @maplibre/maplibre-gl-style-spec@24.3.1
+│ │ │ ├── @mapbox/jsonlint-lines-primitives@2.0.2 deduped
+│ │ │ ├── @mapbox/unitbezier@0.0.1 deduped
+│ │ │ ├── json-stringify-pretty-compact@4.0.0
+│ │ │ ├── minimist@1.2.8 deduped
+│ │ │ ├── quickselect@3.0.0 deduped
+│ │ │ ├── rw@1.3.3 deduped
+│ │ │ └── tinyqueue@3.0.0 deduped
+│ │ ├─┬ @maplibre/mlt@1.1.0
+│ │ │ └── @mapbox/point-geometry@1.1.0 deduped
+│ │ ├─┬ @maplibre/vt-pbf@4.0.3
+│ │ │ ├── @mapbox/point-geometry@1.1.0 deduped
+│ │ │ ├── @mapbox/vector-tile@2.0.4 deduped
+│ │ │ ├── @types/geojson-vt@3.2.5 deduped
+│ │ │ ├── @types/supercluster@7.1.3 deduped
+│ │ │ ├── geojson-vt@4.0.2 deduped
+│ │ │ ├── pbf@4.0.1 deduped
+│ │ │ └── supercluster@8.0.1 deduped
+│ │ ├─┬ @types/geojson-vt@3.2.5
+│ │ │ └── @types/geojson@7946.0.16 deduped
+│ │ ├── @types/geojson@7946.0.16 deduped
+│ │ ├─┬ @types/supercluster@7.1.3
+│ │ │ └── @types/geojson@7946.0.16 deduped
+│ │ ├── earcut@3.0.2
+│ │ ├── geojson-vt@4.0.2
+│ │ ├── gl-matrix@3.4.4 deduped
+│ │ ├── kdbush@4.0.2
+│ │ ├── murmurhash-js@1.0.0 deduped
+│ │ ├─┬ pbf@4.0.1
+│ │ │ └── resolve-protobuf-schema@2.1.0 deduped
+│ │ ├── potpack@2.1.0
+│ │ ├── quickselect@3.0.0
+│ │ ├─┬ supercluster@8.0.1
+│ │ │ └── kdbush@4.0.2 deduped
+│ │ └── tinyqueue@3.0.0
+│ └── preact@10.27.2
+├── @dwp/dwp-frontend@3.3.0
+├── @govuk-prototype-kit/common-templates@2.0.1
+├── @govuk-prototype-kit/step-by-step@2.2.3
+├── @govuk-prototype-kit/task-list@2.0.0
+├─┬ @ministryofjustice/frontend@5.1.4
+│ ├── govuk-frontend@5.11.0 deduped
+│ └── moment@2.30.1
+├── govuk-frontend@5.11.0
+├─┬ govuk-prototype-kit@13.18.1
+│ ├─┬ @inquirer/confirm@5.1.15
+│ │ ├─┬ @inquirer/core@10.1.15
+│ │ │ ├── @inquirer/figures@1.0.13
+│ │ │ ├── @inquirer/type@3.0.8 deduped
+│ │ │ ├── @types/node@22.17.2 deduped
+│ │ │ ├─┬ ansi-escapes@4.3.2
+│ │ │ │ └── type-fest@0.21.3
+│ │ │ ├── cli-width@4.1.0
+│ │ │ ├── mute-stream@2.0.0
+│ │ │ ├── signal-exit@4.1.0
+│ │ │ ├─┬ wrap-ansi@6.2.0
+│ │ │ │ ├── ansi-styles@4.3.0 deduped
+│ │ │ │ ├── string-width@4.2.3 deduped
+│ │ │ │ └─┬ strip-ansi@6.0.1
+│ │ │ │   └── ansi-regex@5.0.1
+│ │ │ └── yoctocolors-cjs@2.1.3
+│ │ ├─┬ @inquirer/type@3.0.8
+│ │ │ └── @types/node@22.17.2 deduped
+│ │ └─┬ @types/node@22.17.2
+│ │   └── undici-types@6.21.0
+│ ├── ansi-colors@4.1.3
+│ ├─┬ body-parser@1.20.3
+│ │ ├── bytes@3.1.2
+│ │ ├── content-type@1.0.5
+│ │ ├─┬ debug@2.6.9
+│ │ │ └── ms@2.0.0
+│ │ ├── depd@2.0.0
+│ │ ├── destroy@1.2.0
+│ │ ├─┬ http-errors@2.0.0
+│ │ │ ├── depd@2.0.0
+│ │ │ ├── inherits@2.0.4
+│ │ │ ├── setprototypeof@1.2.0 deduped
+│ │ │ ├── statuses@2.0.1
+│ │ │ └── toidentifier@1.0.1
+│ │ ├─┬ iconv-lite@0.4.24
+│ │ │ └── safer-buffer@2.1.2
+│ │ ├─┬ on-finished@2.4.1
+│ │ │ └── ee-first@1.1.1
+│ │ ├─┬ qs@6.13.0
+│ │ │ └─┬ side-channel@1.1.0
+│ │ │   ├── es-errors@1.3.0
+│ │ │   ├── object-inspect@1.13.4
+│ │ │   ├─┬ side-channel-list@1.0.0
+│ │ │   │ ├── es-errors@1.3.0 deduped
+│ │ │   │ └── object-inspect@1.13.4 deduped
+│ │ │   ├─┬ side-channel-map@1.0.1
+│ │ │   │ ├─┬ call-bound@1.0.4
+│ │ │   │ │ ├─┬ call-bind-apply-helpers@1.0.2
+│ │ │   │ │ │ ├── es-errors@1.3.0 deduped
+│ │ │   │ │ │ └── function-bind@1.1.2 deduped
+│ │ │   │ │ └── get-intrinsic@1.3.0 deduped
+│ │ │   │ ├── es-errors@1.3.0 deduped
+│ │ │   │ ├─┬ get-intrinsic@1.3.0
+│ │ │   │ │ ├── call-bind-apply-helpers@1.0.2 deduped
+│ │ │   │ │ ├── es-define-property@1.0.1
+│ │ │   │ │ ├── es-errors@1.3.0 deduped
+│ │ │   │ │ ├─┬ es-object-atoms@1.1.1
+│ │ │   │ │ │ └── es-errors@1.3.0 deduped
+│ │ │   │ │ ├── function-bind@1.1.2 deduped
+│ │ │   │ │ ├─┬ get-proto@1.0.1
+│ │ │   │ │ │ ├─┬ dunder-proto@1.0.1
+│ │ │   │ │ │ │ ├── call-bind-apply-helpers@1.0.2 deduped
+│ │ │   │ │ │ │ ├── es-errors@1.3.0 deduped
+│ │ │   │ │ │ │ └── gopd@1.2.0 deduped
+│ │ │   │ │ │ └── es-object-atoms@1.1.1 deduped
+│ │ │   │ │ ├── gopd@1.2.0
+│ │ │   │ │ ├── has-symbols@1.1.0
+│ │ │   │ │ ├── hasown@2.0.2 deduped
+│ │ │   │ │ └── math-intrinsics@1.1.0
+│ │ │   │ └── object-inspect@1.13.4 deduped
+│ │ │   └─┬ side-channel-weakmap@1.0.2
+│ │ │     ├── call-bound@1.0.4 deduped
+│ │ │     ├── es-errors@1.3.0 deduped
+│ │ │     ├── get-intrinsic@1.3.0 deduped
+│ │ │     ├── object-inspect@1.13.4 deduped
+│ │ │     └── side-channel-map@1.0.1 deduped
+│ │ ├─┬ raw-body@2.5.2
+│ │ │ ├── bytes@3.1.2 deduped
+│ │ │ ├── http-errors@2.0.0 deduped
+│ │ │ ├── iconv-lite@0.4.24 deduped
+│ │ │ └── unpipe@1.0.0 deduped
+│ │ ├─┬ type-is@1.6.18
+│ │ │ ├── media-typer@0.3.0
+│ │ │ └─┬ mime-types@2.1.35
+│ │ │   └── mime-db@1.52.0
+│ │ └── unpipe@1.0.0
+│ ├─┬ browser-sync@3.0.4
+│ │ ├─┬ browser-sync-client@3.0.4
+│ │ │ ├── etag@1.8.1 deduped
+│ │ │ ├── fresh@0.5.2 deduped
+│ │ │ └── mitt@1.2.0
+│ │ ├─┬ browser-sync-ui@3.0.4
+│ │ │ ├── async-each-series@0.1.1
+│ │ │ ├── chalk@4.1.2 deduped
+│ │ │ ├── connect-history-api-fallback@1.6.0 deduped
+│ │ │ ├── immutable@3.8.2 deduped
+│ │ │ ├── server-destroy@1.0.1 deduped
+│ │ │ ├─┬ socket.io-client@4.8.1
+│ │ │ │ ├── @socket.io/component-emitter@3.1.0
+│ │ │ │ ├─┬ debug@4.3.7
+│ │ │ │ │ └── ms@2.1.3
+│ │ │ │ ├─┬ engine.io-client@6.6.3
+│ │ │ │ │ ├── @socket.io/component-emitter@3.1.0 deduped
+│ │ │ │ │ ├─┬ debug@4.3.7
+│ │ │ │ │ │ └── ms@2.1.3
+│ │ │ │ │ ├── engine.io-parser@5.2.3 deduped
+│ │ │ │ │ ├── ws@8.17.1 deduped
+│ │ │ │ │ └── xmlhttprequest-ssl@2.1.2
+│ │ │ │ └── socket.io-parser@4.2.4 deduped
+│ │ │ └─┬ stream-throttle@0.1.3
+│ │ │   ├── commander@2.20.3
+│ │ │   └── limiter@1.1.5
+│ │ ├── bs-recipes@1.3.4
+│ │ ├─┬ chalk@4.1.2
+│ │ │ ├─┬ ansi-styles@4.3.0
+│ │ │ │ └─┬ color-convert@2.0.1
+│ │ │ │   └── color-name@1.1.4
+│ │ │ └─┬ supports-color@7.2.0
+│ │ │   └── has-flag@4.0.0
+│ │ ├── chokidar@3.6.0 deduped
+│ │ ├── connect-history-api-fallback@1.6.0
+│ │ ├─┬ connect@3.6.6
+│ │ │ ├── debug@2.6.9 deduped
+│ │ │ ├─┬ finalhandler@1.1.0
+│ │ │ │ ├── debug@2.6.9 deduped
+│ │ │ │ ├── encodeurl@1.0.2
+│ │ │ │ ├── escape-html@1.0.3 deduped
+│ │ │ │ ├─┬ on-finished@2.3.0
+│ │ │ │ │ └── ee-first@1.1.1 deduped
+│ │ │ │ ├── parseurl@1.3.3 deduped
+│ │ │ │ ├── statuses@1.3.1
+│ │ │ │ └── unpipe@1.0.0 deduped
+│ │ │ ├── parseurl@1.3.3 deduped
+│ │ │ └── utils-merge@1.0.1 deduped
+│ │ ├── dev-ip@1.0.1
+│ │ ├─┬ easy-extender@2.3.4
+│ │ │ └── lodash@4.17.21 deduped
+│ │ ├─┬ eazy-logger@4.1.0
+│ │ │ └── chalk@4.1.2 deduped
+│ │ ├── etag@1.8.1
+│ │ ├── fresh@0.5.2
+│ │ ├─┬ fs-extra@3.0.1
+│ │ │ ├── graceful-fs@4.2.10 deduped
+│ │ │ ├─┬ jsonfile@3.0.1
+│ │ │ │ └── graceful-fs@4.2.10 deduped
+│ │ │ └── universalify@0.1.2
+│ │ ├─┬ http-proxy@1.18.1
+│ │ │ ├── eventemitter3@4.0.7
+│ │ │ ├── follow-redirects@1.15.9
+│ │ │ └── requires-port@1.0.0
+│ │ ├── immutable@3.8.2
+│ │ ├─┬ micromatch@4.0.8
+│ │ │ ├── braces@3.0.3 deduped
+│ │ │ └── picomatch@2.3.1
+│ │ ├─┬ opn@5.3.0
+│ │ │ └── is-wsl@1.1.0
+│ │ ├── portscanner@2.2.0 deduped
+│ │ ├── raw-body@2.5.2 deduped
+│ │ ├─┬ resp-modifier@6.0.2
+│ │ │ ├── debug@2.6.9 deduped
+│ │ │ └── minimatch@3.1.2 deduped
+│ │ ├── rx@4.1.0
+│ │ ├─┬ send@0.19.1
+│ │ │ ├── debug@2.6.9 deduped
+│ │ │ ├── depd@2.0.0
+│ │ │ ├── destroy@1.2.0 deduped
+│ │ │ ├── encodeurl@2.0.0
+│ │ │ ├── escape-html@1.0.3 deduped
+│ │ │ ├── etag@1.8.1 deduped
+│ │ │ ├── fresh@0.5.2 deduped
+│ │ │ ├── http-errors@2.0.0 deduped
+│ │ │ ├── mime@1.6.0
+│ │ │ ├── ms@2.1.3
+│ │ │ ├─┬ on-finished@2.4.1
+│ │ │ │ └── ee-first@1.1.1 deduped
+│ │ │ ├── range-parser@1.2.1 deduped
+│ │ │ └── statuses@2.0.1
+│ │ ├─┬ serve-index@1.9.1
+│ │ │ ├── accepts@1.3.8 deduped
+│ │ │ ├── batch@0.6.1
+│ │ │ ├── debug@2.6.9 deduped
+│ │ │ ├── escape-html@1.0.3 deduped
+│ │ │ ├─┬ http-errors@1.6.3
+│ │ │ │ ├── depd@1.1.2
+│ │ │ │ ├── inherits@2.0.3
+│ │ │ │ ├── setprototypeof@1.1.0
+│ │ │ │ └── statuses@1.5.0
+│ │ │ ├── mime-types@2.1.35 deduped
+│ │ │ └── parseurl@1.3.3 deduped
+│ │ ├─┬ serve-static@1.16.2
+│ │ │ ├── encodeurl@2.0.0
+│ │ │ ├── escape-html@1.0.3 deduped
+│ │ │ ├── parseurl@1.3.3 deduped
+│ │ │ └─┬ send@0.19.0
+│ │ │   ├── debug@2.6.9 deduped
+│ │ │   ├── depd@2.0.0
+│ │ │   ├── destroy@1.2.0 deduped
+│ │ │   ├── encodeurl@1.0.2
+│ │ │   ├── escape-html@1.0.3 deduped
+│ │ │   ├── etag@1.8.1 deduped
+│ │ │   ├── fresh@0.5.2 deduped
+│ │ │   ├── http-errors@2.0.0 deduped
+│ │ │   ├── mime@1.6.0 deduped
+│ │ │   ├── ms@2.1.3
+│ │ │   ├─┬ on-finished@2.4.1
+│ │ │   │ └── ee-first@1.1.1 deduped
+│ │ │   ├── range-parser@1.2.1 deduped
+│ │ │   └── statuses@2.0.1
+│ │ ├── server-destroy@1.0.1
+│ │ ├─┬ socket.io@4.8.1
+│ │ │ ├── accepts@1.3.8 deduped
+│ │ │ ├── base64id@2.0.0
+│ │ │ ├─┬ cors@2.8.5
+│ │ │ │ ├── object-assign@4.1.1
+│ │ │ │ └── vary@1.1.2 deduped
+│ │ │ ├─┬ debug@4.3.4
+│ │ │ │ └── ms@2.1.2
+│ │ │ ├─┬ engine.io@6.6.4
+│ │ │ │ ├─┬ @types/cors@2.8.19
+│ │ │ │ │ └── @types/node@22.17.2 deduped
+│ │ │ │ ├── @types/node@22.17.2 deduped
+│ │ │ │ ├── accepts@1.3.8 deduped
+│ │ │ │ ├── base64id@2.0.0 deduped
+│ │ │ │ ├── cookie@0.7.2 deduped
+│ │ │ │ ├── cors@2.8.5 deduped
+│ │ │ │ ├─┬ debug@4.3.7
+│ │ │ │ │ └── ms@2.1.3
+│ │ │ │ ├── engine.io-parser@5.2.3
+│ │ │ │ └─┬ ws@8.17.1
+│ │ │ │   ├── UNMET OPTIONAL DEPENDENCY bufferutil@^4.0.1
+│ │ │ │   └── UNMET OPTIONAL DEPENDENCY utf-8-validate@>=5.0.2
+│ │ │ ├─┬ socket.io-adapter@2.5.5
+│ │ │ │ ├─┬ debug@4.3.7
+│ │ │ │ │ └── ms@2.1.3
+│ │ │ │ └── ws@8.17.1 deduped
+│ │ │ └─┬ socket.io-parser@4.2.4
+│ │ │   ├── @socket.io/component-emitter@3.1.0 deduped
+│ │ │   └─┬ debug@4.3.4
+│ │ │     └── ms@2.1.2
+│ │ ├── ua-parser-js@1.0.35
+│ │ └─┬ yargs@17.4.0
+│ │   ├─┬ cliui@7.0.4
+│ │   │ ├── string-width@4.2.3 deduped
+│ │   │ ├── strip-ansi@6.0.1 deduped
+│ │   │ └─┬ wrap-ansi@7.0.0
+│ │   │   ├── ansi-styles@4.3.0 deduped
+│ │   │   ├── string-width@4.2.3 deduped
+│ │   │   └── strip-ansi@6.0.1 deduped
+│ │   ├── escalade@3.1.1
+│ │   ├── get-caller-file@2.0.5
+│ │   ├── require-directory@2.1.1
+│ │   ├─┬ string-width@4.2.3
+│ │   │ ├── emoji-regex@8.0.0
+│ │   │ ├── is-fullwidth-code-point@3.0.0
+│ │   │ └── strip-ansi@6.0.1 deduped
+│ │   ├── y18n@5.0.8
+│ │   └── yargs-parser@21.0.1
+│ ├─┬ chokidar@3.6.0
+│ │ ├─┬ anymatch@3.1.2
+│ │ │ ├── normalize-path@3.0.0 deduped
+│ │ │ └── picomatch@2.3.1 deduped
+│ │ ├─┬ braces@3.0.3
+│ │ │ └─┬ fill-range@7.1.1
+│ │ │   └─┬ to-regex-range@5.0.1
+│ │ │     └── is-number@7.0.0
+│ │ ├── fsevents@2.3.2
+│ │ ├─┬ glob-parent@5.1.2
+│ │ │ └── is-glob@4.0.3 deduped
+│ │ ├─┬ is-binary-path@2.1.0
+│ │ │ └── binary-extensions@2.2.0
+│ │ ├─┬ is-glob@4.0.3
+│ │ │ └── is-extglob@2.1.1
+│ │ ├── normalize-path@3.0.0
+│ │ └─┬ readdirp@3.6.0
+│ │   └── picomatch@2.3.1 deduped
+│ ├─┬ cookie-parser@1.4.7
+│ │ ├── cookie-signature@1.0.6
+│ │ └── cookie@0.7.2
+│ ├─┬ cross-spawn@7.0.6
+│ │ ├── path-key@3.1.1
+│ │ ├─┬ shebang-command@2.0.0
+│ │ │ └── shebang-regex@3.0.0
+│ │ └─┬ which@2.0.2
+│ │   └── isexe@2.0.0
+│ ├─┬ csrf-csrf@2.3.0
+│ │ └── http-errors@2.0.0 deduped
+│ ├─┬ del@6.1.1
+│ │ ├─┬ globby@11.1.0
+│ │ │ ├── array-union@2.1.0
+│ │ │ ├─┬ dir-glob@3.0.1
+│ │ │ │ └── path-type@4.0.0
+│ │ │ ├─┬ fast-glob@3.3.1
+│ │ │ │ ├── @nodelib/fs.stat@2.0.5
+│ │ │ │ ├─┬ @nodelib/fs.walk@1.2.8
+│ │ │ │ │ ├─┬ @nodelib/fs.scandir@2.1.5
+│ │ │ │ │ │ ├── @nodelib/fs.stat@2.0.5 deduped
+│ │ │ │ │ │ └─┬ run-parallel@1.2.0
+│ │ │ │ │ │   └── queue-microtask@1.2.3
+│ │ │ │ │ └─┬ fastq@1.13.0
+│ │ │ │ │   └── reusify@1.0.4
+│ │ │ │ ├── glob-parent@5.1.2 deduped
+│ │ │ │ ├── merge2@1.4.1 deduped
+│ │ │ │ └── micromatch@4.0.8 deduped
+│ │ │ ├── ignore@5.2.4
+│ │ │ ├── merge2@1.4.1
+│ │ │ └── slash@3.0.0 deduped
+│ │ ├── graceful-fs@4.2.10
+│ │ ├── is-glob@4.0.3 deduped
+│ │ ├── is-path-cwd@2.2.0
+│ │ ├── is-path-inside@3.0.3
+│ │ ├─┬ p-map@4.0.0
+│ │ │ └─┬ aggregate-error@3.1.0
+│ │ │   ├── clean-stack@2.2.0
+│ │ │   └── indent-string@4.0.0
+│ │ ├─┬ rimraf@3.0.2
+│ │ │ └─┬ glob@7.2.3
+│ │ │   ├── fs.realpath@1.0.0
+│ │ │   ├─┬ inflight@1.0.6
+│ │ │   │ ├── once@1.4.0 deduped
+│ │ │   │ └── wrappy@1.0.2
+│ │ │   ├── inherits@2.0.3 deduped
+│ │ │   ├── minimatch@3.1.2 deduped
+│ │ │   ├─┬ once@1.4.0
+│ │ │   │ └── wrappy@1.0.2 deduped
+│ │ │   └── path-is-absolute@1.0.1
+│ │ └── slash@3.0.0
+│ ├── dotenv@16.4.5
+│ ├─┬ express-session@1.18.2
+│ │ ├── cookie-signature@1.0.7
+│ │ ├── cookie@0.7.2 deduped
+│ │ ├── debug@2.6.9 deduped
+│ │ ├── depd@2.0.0
+│ │ ├── on-headers@1.1.0
+│ │ ├── parseurl@1.3.3
+│ │ ├── safe-buffer@5.2.1
+│ │ └─┬ uid-safe@2.1.5
+│ │   └── random-bytes@1.0.0
+│ ├─┬ express@4.21.2
+│ │ ├─┬ accepts@1.3.8
+│ │ │ ├── mime-types@2.1.35 deduped
+│ │ │ └── negotiator@0.6.3
+│ │ ├── array-flatten@1.1.1
+│ │ ├── body-parser@1.20.3 deduped
+│ │ ├─┬ content-disposition@0.5.4
+│ │ │ └── safe-buffer@5.2.1
+│ │ ├── content-type@1.0.5 deduped
+│ │ ├── cookie-signature@1.0.6 deduped
+│ │ ├── cookie@0.7.1
+│ │ ├── debug@2.6.9 deduped
+│ │ ├── depd@2.0.0
+│ │ ├── encodeurl@2.0.0
+│ │ ├── escape-html@1.0.3
+│ │ ├── etag@1.8.1 deduped
+│ │ ├─┬ finalhandler@1.3.1
+│ │ │ ├── debug@2.6.9 deduped
+│ │ │ ├── encodeurl@2.0.0 deduped
+│ │ │ ├── escape-html@1.0.3 deduped
+│ │ │ ├── on-finished@2.4.1 deduped
+│ │ │ ├── parseurl@1.3.3 deduped
+│ │ │ ├── statuses@2.0.1 deduped
+│ │ │ └── unpipe@1.0.0 deduped
+│ │ ├── fresh@0.5.2 deduped
+│ │ ├── http-errors@2.0.0 deduped
+│ │ ├── merge-descriptors@1.0.3
+│ │ ├── methods@1.1.2
+│ │ ├─┬ on-finished@2.4.1
+│ │ │ └── ee-first@1.1.1 deduped
+│ │ ├── parseurl@1.3.3 deduped
+│ │ ├── path-to-regexp@0.1.12
+│ │ ├─┬ proxy-addr@2.0.7
+│ │ │ ├── forwarded@0.2.0
+│ │ │ └── ipaddr.js@1.9.1
+│ │ ├── qs@6.13.0 deduped
+│ │ ├── range-parser@1.2.1
+│ │ ├── safe-buffer@5.2.1
+│ │ ├─┬ send@0.19.0
+│ │ │ ├── debug@2.6.9 deduped
+│ │ │ ├── depd@2.0.0 deduped
+│ │ │ ├── destroy@1.2.0 deduped
+│ │ │ ├── encodeurl@1.0.2
+│ │ │ ├── escape-html@1.0.3 deduped
+│ │ │ ├── etag@1.8.1 deduped
+│ │ │ ├── fresh@0.5.2 deduped
+│ │ │ ├── http-errors@2.0.0 deduped
+│ │ │ ├── mime@1.6.0 deduped
+│ │ │ ├── ms@2.1.3
+│ │ │ ├── on-finished@2.4.1 deduped
+│ │ │ ├── range-parser@1.2.1 deduped
+│ │ │ └── statuses@2.0.1 deduped
+│ │ ├── serve-static@1.16.2 deduped
+│ │ ├── setprototypeof@1.2.0
+│ │ ├── statuses@2.0.1
+│ │ ├── type-is@1.6.18 deduped
+│ │ ├── utils-merge@1.0.1
+│ │ └── vary@1.1.2
+│ ├─┬ fs-extra@11.2.0
+│ │ ├── graceful-fs@4.2.10 deduped
+│ │ ├─┬ jsonfile@6.1.0
+│ │ │ ├── graceful-fs@4.2.10 deduped
+│ │ │ └── universalify@2.0.0
+│ │ └── universalify@2.0.0
+│ ├── govuk-frontend@5.11.0
+│ ├── lodash@4.17.21
+│ ├── marked@4.3.0
+│ ├─┬ nodemon@3.0.3
+│ │ ├── chokidar@3.6.0 deduped
+│ │ ├─┬ debug@4.3.4
+│ │ │ └── ms@2.1.2
+│ │ ├── ignore-by-default@1.0.1
+│ │ ├─┬ minimatch@3.1.2
+│ │ │ └─┬ brace-expansion@1.1.12
+│ │ │   ├── balanced-match@1.0.2
+│ │ │   └── concat-map@0.0.1
+│ │ ├── pstree.remy@1.1.8
+│ │ ├── semver@7.7.2 deduped
+│ │ ├─┬ simple-update-notifier@2.0.0
+│ │ │ └── semver@7.7.2 deduped
+│ │ ├─┬ supports-color@5.5.0
+│ │ │ └── has-flag@3.0.0
+│ │ ├─┬ touch@3.1.0
+│ │ │ └─┬ nopt@1.0.10
+│ │ │   └── abbrev@1.1.1
+│ │ └── undefsafe@2.0.5
+│ ├─┬ nunjucks@3.2.4
+│ │ ├── a-sync-waterfall@1.0.1
+│ │ ├── asap@2.0.6
+│ │ ├── chokidar@3.6.0 deduped
+│ │ └── commander@5.1.0
+│ ├─┬ portscanner@2.2.0
+│ │ ├─┬ async@2.6.4
+│ │ │ └── lodash@4.17.21 deduped
+│ │ └─┬ is-number-like@1.0.8
+│ │   └── lodash.isfinite@3.3.2
+│ ├── require-dir@1.2.0
+│ ├─┬ sass@1.89.2
+│ │ ├─┬ @parcel/watcher@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-android-arm64@2.5.1
+│ │ │ ├── @parcel/watcher-darwin-arm64@2.5.1
+│ │ │ ├── @parcel/watcher-darwin-x64@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-freebsd-x64@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-linux-arm-glibc@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-linux-arm-musl@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-linux-arm64-glibc@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-linux-arm64-musl@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-linux-x64-glibc@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-linux-x64-musl@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-win32-arm64@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-win32-ia32@2.5.1
+│ │ │ ├── UNMET OPTIONAL DEPENDENCY @parcel/watcher-win32-x64@2.5.1
+│ │ │ ├── detect-libc@1.0.3
+│ │ │ ├── is-glob@4.0.3 deduped
+│ │ │ ├── micromatch@4.0.8 deduped
+│ │ │ └── node-addon-api@7.1.1
+│ │ ├─┬ chokidar@4.0.3
+│ │ │ └── readdirp@4.1.2
+│ │ ├── immutable@5.1.3
+│ │ └── source-map-js@1.0.2
+│ ├── semver@7.7.2
+│ ├─┬ sync-request@6.1.0
+│ │ ├─┬ http-response-object@3.0.2
+│ │ │ └── @types/node@10.17.60
+│ │ ├─┬ sync-rpc@1.3.6
+│ │ │ └── get-port@3.2.0
+│ │ └─┬ then-request@6.0.2
+│ │   ├─┬ @types/concat-stream@1.6.1
+│ │   │ └── @types/node@22.17.2 deduped
+│ │   ├─┬ @types/form-data@0.0.33
+│ │   │ └── @types/node@22.17.2 deduped
+│ │   ├── @types/node@8.10.66
+│ │   ├── @types/qs@6.9.7
+│ │   ├── caseless@0.12.0
+│ │   ├─┬ concat-stream@1.6.2
+│ │   │ ├── buffer-from@1.1.2
+│ │   │ ├── inherits@2.0.3 deduped
+│ │   │ ├─┬ readable-stream@2.3.7
+│ │   │ │ ├── core-util-is@1.0.3
+│ │   │ │ ├── inherits@2.0.3 deduped
+│ │   │ │ ├── isarray@1.0.0
+│ │   │ │ ├── process-nextick-args@2.0.1
+│ │   │ │ ├── safe-buffer@5.1.2
+│ │   │ │ ├─┬ string_decoder@1.1.1
+│ │   │ │ │ └── safe-buffer@5.1.2 deduped
+│ │   │ │ └── util-deprecate@1.0.2
+│ │   │ └── typedarray@0.0.6
+│ │   ├─┬ form-data@2.5.5
+│ │   │ ├── asynckit@0.4.0
+│ │   │ ├─┬ combined-stream@1.0.8
+│ │   │ │ └── delayed-stream@1.0.0
+│ │   │ ├─┬ es-set-tostringtag@2.1.0
+│ │   │ │ ├── es-errors@1.3.0 deduped
+│ │   │ │ ├── get-intrinsic@1.3.0 deduped
+│ │   │ │ ├─┬ has-tostringtag@1.0.2
+│ │   │ │ │ └── has-symbols@1.1.0 deduped
+│ │   │ │ └── hasown@2.0.2 deduped
+│ │   │ ├─┬ hasown@2.0.2
+│ │   │ │ └── function-bind@1.1.2
+│ │   │ ├── mime-types@2.1.35 deduped
+│ │   │ └── safe-buffer@5.2.1
+│ │   ├─┬ http-basic@8.1.3
+│ │   │ ├── caseless@0.12.0 deduped
+│ │   │ ├── concat-stream@1.6.2 deduped
+│ │   │ ├── http-response-object@3.0.2 deduped
+│ │   │ └── parse-cache-control@1.0.1
+│ │   ├── http-response-object@3.0.2 deduped
+│ │   ├─┬ promise@8.1.0
+│ │   │ └── asap@2.0.6 deduped
+│ │   └── qs@6.13.0 deduped
+│ ├─┬ tar-stream@3.1.7
+│ │ ├── b4a@1.6.4
+│ │ ├── fast-fifo@1.2.0
+│ │ └─┬ streamx@2.15.0
+│ │   ├── fast-fifo@1.2.0 deduped
+│ │   └── queue-tick@1.0.1
+│ ├─┬ universal-analytics@0.5.3
+│ │ ├─┬ debug@4.3.2
+│ │ │ └── ms@2.1.2
+│ │ └── uuid@8.3.2
+│ └── uuid@9.0.1
+├─┬ hmrc-frontend@6.72.0
+│ ├─┬ accessible-autocomplete@3.0.1
+│ │ └── preact@8.5.3
+│ └── govuk-frontend@5.11.0 deduped
+├── jquery@3.7.1
+├─┬ node-fetch@3.3.2
+│ ├── data-uri-to-buffer@4.0.1
+│ ├─┬ fetch-blob@3.2.0
+│ │ ├── node-domexception@1.0.0
+│ │ └── web-streams-polyfill@3.3.3
+│ └─┬ formdata-polyfill@4.0.10
+│   └── fetch-blob@3.2.0 deduped
+└─┬ notifications-node-client@8.2.1
+  ├─┬ axios@1.13.2
+  │ ├── follow-redirects@1.15.9
+  │ ├─┬ form-data@4.0.5
+  │ │ ├── asynckit@0.4.0
+  │ │ ├─┬ combined-stream@1.0.8
+  │ │ │ └── delayed-stream@1.0.0
+  │ │ ├─┬ es-set-tostringtag@2.1.0
+  │ │ │ ├── es-errors@1.3.0
+  │ │ │ ├─┬ get-intrinsic@1.3.0
+  │ │ │ │ ├─┬ call-bind-apply-helpers@1.0.2
+  │ │ │ │ │ ├── es-errors@1.3.0 deduped
+  │ │ │ │ │ └── function-bind@1.1.2 deduped
+  │ │ │ │ ├── es-define-property@1.0.1
+  │ │ │ │ ├── es-errors@1.3.0 deduped
+  │ │ │ │ ├─┬ es-object-atoms@1.1.1
+  │ │ │ │ │ └── es-errors@1.3.0 deduped
+  │ │ │ │ ├── function-bind@1.1.2 deduped
+  │ │ │ │ ├─┬ get-proto@1.0.1
+  │ │ │ │ │ ├─┬ dunder-proto@1.0.1
+  │ │ │ │ │ │ ├── call-bind-apply-helpers@1.0.2 deduped
+  │ │ │ │ │ │ ├── es-errors@1.3.0 deduped
+  │ │ │ │ │ │ └── gopd@1.2.0 deduped
+  │ │ │ │ │ └── es-object-atoms@1.1.1 deduped
+  │ │ │ │ ├── gopd@1.2.0
+  │ │ │ │ ├── has-symbols@1.1.0
+  │ │ │ │ ├── hasown@2.0.2 deduped
+  │ │ │ │ └── math-intrinsics@1.1.0
+  │ │ │ ├─┬ has-tostringtag@1.0.2
+  │ │ │ │ └── has-symbols@1.1.0 deduped
+  │ │ │ └── hasown@2.0.2 deduped
+  │ │ ├─┬ hasown@2.0.2
+  │ │ │ └── function-bind@1.1.2
+  │ │ └─┬ mime-types@2.1.35
+  │ │   └── mime-db@1.52.0
+  │ └── proxy-from-env@1.1.0
+  └─┬ jsonwebtoken@9.0.2
+    ├─┬ jws@3.2.2
+    │ ├─┬ jwa@1.4.2
+    │ │ ├── buffer-equal-constant-time@1.0.1
+    │ │ ├─┬ ecdsa-sig-formatter@1.0.11
+    │ │ │ └── safe-buffer@5.2.1 deduped
+    │ │ └── safe-buffer@5.2.1 deduped
+    │ └── safe-buffer@5.2.1
+    ├── lodash.includes@4.3.0
+    ├── lodash.isboolean@3.0.3
+    ├── lodash.isinteger@4.0.4
+    ├── lodash.isnumber@3.0.3
+    ├── lodash.isplainobject@4.0.6
+    ├── lodash.isstring@4.0.1
+    ├── lodash.once@4.1.1
+    ├── ms@2.1.3
+    └─┬ semver@7.5.4
+      └─┬ lru-cache@6.0.0
+        └── yallist@4.0.0
+

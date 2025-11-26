@@ -2167,9 +2167,6 @@
         }
       });
       
-      // Update available quantities to reflect the restored values
-      updateAvailableQuantities();
-      
       // Scroll to the actions section
       var $actionsSection = $('#actions-section');
       if ($actionsSection.length > 0) {
@@ -2393,6 +2390,26 @@
         }, 300);
       });
       
+      // Handle click on Change links in "Actions you've just added" section
+      $(document).on('click', '.summary-action-change', function(e) {
+        e.preventDefault();
+        console.log('Change link clicked');
+        var targetParcelId = $(this).attr('data-parcel-id');
+        console.log('Target parcel ID:', targetParcelId);
+        
+        if (targetParcelId) {
+          // Select the parcel
+          console.log('Calling selectParcel');
+          selectParcel(targetParcelId);
+          
+          // Wait for the UI to update, then restore the saved state
+          setTimeout(function() {
+            console.log('Calling restoreParcelState');
+            restoreParcelState(targetParcelId);
+          }, 250);
+        }
+      });
+      
       // Function to update the application summary
       function updateApplicationSummary() {
         var $summaryContainer = $('#application-summary-list');
@@ -2501,23 +2518,10 @@
               
               // Add Change link
               var $actionActions = $('<dd class="govuk-summary-list__actions"></dd>');
-              var $changeLink = $('<a class="govuk-link" href="#"></a>')
+              var $changeLink = $('<a class="govuk-link summary-action-change" href="#"></a>')
                 .text('Change')
                 .attr('data-parcel-id', parcelId)
-                .attr('data-action-code', action.code)
-                .on('click', function(e) {
-                  e.preventDefault();
-                  var targetParcelId = $(this).attr('data-parcel-id');
-                  var targetActionCode = $(this).attr('data-action-code');
-                  
-                  // Select the parcel
-                  selectParcel(targetParcelId);
-                  
-                  // Wait a moment for the UI to update, then restore the saved state
-                  setTimeout(function() {
-                    restoreParcelState(targetParcelId);
-                  }, 100);
-                });
+                .attr('data-action-code', action.code);
               
               $actionActions.append($changeLink);
               
