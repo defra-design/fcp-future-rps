@@ -315,6 +315,14 @@
         </tbody>
       </table>
       </div>
+
+        {# <form action="check-your-answers" method="post" id="continue-form">
+          <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
+          <button type="submit" id="continue-button" class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
+            Continue
+          </button>
+        </form> #}
+
         </div>
 
         <div id="actions-section" style="display: none;">
@@ -3154,12 +3162,6 @@
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
           // Show the parcels list section
           document.getElementById('parcels-list-section').style.display = 'block';
-          // Show action selection UI elements (in case they were hidden when returning to farm selection)
-          $('h2#actions-heading').show();
-          $('.govuk-form-group').has('#search-actions-map').show();
-          $('.govuk-checkboxes').parent('.govuk-form-group').show();
-          $('fieldset.govuk-fieldset').has('.govuk-checkboxes').show();
-          $('#save-actions-button').show();
           // Show Oak Tree Farm (Oxfordshire) parcels, hide Blackberry Farm parcels
           document.getElementById('oxfordshire-parcels').style.display = 'block';
           document.getElementById('buckinghamshire-parcels').style.display = 'none';
@@ -3182,12 +3184,6 @@
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
           // Show the parcels list section
           document.getElementById('parcels-list-section').style.display = 'block';
-          // Show action selection UI elements (in case they were hidden when returning to farm selection)
-          $('h2#actions-heading').show();
-          $('.govuk-form-group').has('#search-actions-map').show();
-          $('.govuk-checkboxes').parent('.govuk-form-group').show();
-          $('fieldset.govuk-fieldset').has('.govuk-checkboxes').show();
-          $('#save-actions-button').show();
           // Show Blackberry Farm (Buckinghamshire) parcels, hide Oak Tree Farm parcels
           document.getElementById('buckinghamshire-parcels').style.display = 'block';
           document.getElementById('oxfordshire-parcels').style.display = 'none';
@@ -3223,25 +3219,8 @@
           document.getElementById('select-parcel-text').style.display = 'block';
           document.getElementById('selected-parcel-text').style.display = 'none';
           
-          // Check if user has added at least one action to any parcel
-          var hasAddedActions = Object.keys(parcelSelections).length > 0;
-          
-          // Show actions section if actions have been added to keep Continue button visible
-          if (hasAddedActions) {
-            document.getElementById('actions-section').style.display = 'block';
-            document.getElementById('save-confirmation-message').style.display = 'none';
-            $('#continue-button').prop('disabled', false);
-            
-            // Hide the action selection UI elements
-            $('h2#actions-heading').hide();
-            $('.govuk-form-group').has('#search-actions-map').hide();
-            $('.govuk-checkboxes').parent('.govuk-form-group').hide();
-            $('fieldset.govuk-fieldset').has('.govuk-checkboxes').hide();
-            $('#no-results-message').hide();
-            $('#save-actions-button').hide();
-          } else {
-            document.getElementById('save-confirmation-message').style.display = 'none';
-          }
+          // Hide save confirmation message
+          document.getElementById('save-confirmation-message').style.display = 'none';
           
           // Reset selected parcel styling
           if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
