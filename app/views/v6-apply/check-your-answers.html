@@ -155,7 +155,7 @@
         {% for parcelId, parcel in parcelsCheck %}
           {% set totalActionsCount = totalActionsCount + (parcel.actions | length) %}
         {% endfor %}
-      <div class="govuk-summary-list__row">
+      {# <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           Total number of actions applied for
         </dt>
@@ -176,7 +176,7 @@
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href="select-land-map-leaflet">Change<span class="govuk-visually-hidden"> number of parcels</span></a>
         </dd>
-      </div>
+      </div> #}
       {% else %}
       {# <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
