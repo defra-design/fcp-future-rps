@@ -265,6 +265,7 @@
       <div class="govuk-grid-column-one-half">
 
         <div id="os-map-references">
+        <div id="oak-tree-farm-info">
         <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Oak Tree Farm (SO1)</a></p>
         <table class="govuk-table">
         <tbody class="govuk-table__body">
@@ -286,7 +287,9 @@
           </tr>
         </tbody>
       </table>
+      </div>
 
+      <div id="blackberry-farm-info">
       <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Blackberry Farm (BO9)</a></p>
       <table class="govuk-table">
         <tbody class="govuk-table__body">
@@ -308,6 +311,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
         </div>
 
         <div id="actions-section" style="display: none;">
@@ -2281,7 +2285,7 @@
         popupContent += ' - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a>';
       }
       
-      popupContent += '</p><p style="margin-top: 10px;"><em>Permanent grassland</em></p>';
+      popupContent += '</p><p style="margin-top: 10px;">Permanent grassland</p>';
       
       polygon.bindPopup(popupContent, {
         maxWidth: 180,
@@ -2771,7 +2775,7 @@
         if (hasSelections && grandTotalPayment > 0) {
           var $grandTotalList = $('<dl class="govuk-summary-list" style="margin-top: 30px;"></dl>');
           var $grandTotalRow = $('<div class="govuk-summary-list__row"></div>');
-          var $grandTotalKey = $('<dt class="govuk-summary-list__key"></dt>').text('Total payments for all parcels');
+          var $grandTotalKey = $('<dt class="govuk-summary-list__key"></dt>').text('Total yearly payment');
           var $grandTotalValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>£' + grandTotalPayment.toFixed(2) + '</strong>');
           $grandTotalRow.append($grandTotalKey).append($grandTotalValue);
           $grandTotalList.append($grandTotalRow);
@@ -3137,6 +3141,12 @@
           return $(this).text() === 'Oak Tree Farm (SO1)';
         }).on('click', function(e) {
           e.preventDefault();
+          // Show Oak Tree Farm information
+          document.getElementById('oak-tree-farm-info').style.display = 'block';
+          // Hide Blackberry Farm information
+          document.getElementById('blackberry-farm-info').style.display = 'none';
+          // Hide the select parcel text
+          document.getElementById('select-parcel-text').style.display = 'none';
           // Show the parcels and actions summary section
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
           // Show the parcels list section
@@ -3153,6 +3163,12 @@
           return $(this).text() === 'Blackberry Farm (BO9)';
         }).on('click', function(e) {
           e.preventDefault();
+          // Hide Oak Tree Farm information
+          document.getElementById('oak-tree-farm-info').style.display = 'none';
+          // Show Blackberry Farm information
+          document.getElementById('blackberry-farm-info').style.display = 'block';
+          // Hide the select parcel text
+          document.getElementById('select-parcel-text').style.display = 'none';
           // Show the parcels and actions summary section
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
           // Show the parcels list section
@@ -3173,6 +3189,10 @@
           
           // Show OS map references section
           document.getElementById('os-map-references').style.display = 'block';
+          
+          // Show both farm information sections again
+          document.getElementById('oak-tree-farm-info').style.display = 'block';
+          document.getElementById('blackberry-farm-info').style.display = 'block';
           
           // Hide parcel info container
           document.getElementById('parcel-info-container').style.display = 'none';
