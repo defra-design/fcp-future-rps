@@ -267,7 +267,7 @@
       <!-- Right column - Interactive Map (1/2) -->
       <div class="govuk-grid-column-one-half">
 
-        <div id="os-map-references">
+      <div id="os-map-references">
         <div id="oak-tree-farm-info">
         <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Oak Tree Farm (SO1)</a></p>
         <table class="govuk-table">
@@ -315,6 +315,19 @@
         </tbody>
       </table>
       </div>
+
+      <div id="action-instruction" style="display: none;">
+        <p class="govuk-body">To add actions to a land parcel, click on the map or land parcel link.</p>
+        <p class="govuk-body">You'll see your list of actions. You then need to:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>select the action and enter the amount that you want to add to the parcel</li>
+          <li>save your selection for that parcel before moving on to the next land parcel and repeat these steps.</li>
+        </ul>
+        <hr>
+      </div>
+
+   
+
 
         {# <form action="check-your-answers" method="post" id="continue-form">
           <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
@@ -3158,6 +3171,8 @@
           document.getElementById('blackberry-farm-info').style.display = 'none';
           // Hide the select parcel text
           document.getElementById('select-parcel-text').style.display = 'none';
+          // Show action instruction
+          document.getElementById('action-instruction').style.display = 'block';
           // Show the parcels and actions summary section
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
           // Show the parcels list section
@@ -3180,6 +3195,8 @@
           document.getElementById('blackberry-farm-info').style.display = 'block';
           // Hide the select parcel text
           document.getElementById('select-parcel-text').style.display = 'none';
+          // Show action instruction
+          document.getElementById('action-instruction').style.display = 'block';
           // Show the parcels and actions summary section
           document.getElementById('parcels-actions-summary-section').style.display = 'block';
           // Show the parcels list section
@@ -3204,6 +3221,9 @@
           // Show both farm information sections again
           document.getElementById('oak-tree-farm-info').style.display = 'block';
           document.getElementById('blackberry-farm-info').style.display = 'block';
+          
+          // Hide action instruction
+          document.getElementById('action-instruction').style.display = 'none';
           
           // Hide parcel info container
           document.getElementById('parcel-info-container').style.display = 'none';
