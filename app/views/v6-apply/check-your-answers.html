@@ -66,16 +66,16 @@
         <dd class="govuk-summary-list__actions">
         </dd>
       </div>
-      <div class="govuk-summary-list__row">
+      {# <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          Indicative annual payment (excluding management payment)
+          Indicative annual payment
         </dt>
         <dd class="govuk-summary-list__value">
           £18,547.839
         </dd>
         <dd class="govuk-summary-list__actions">
         </dd>
-      </div>
+      </div> #}
     </dl>
 
     <h2 class="govuk-heading-m">Agreement details</h2>
@@ -91,7 +91,7 @@
           <a class="govuk-link" href="check-land-details">Change<span class="govuk-visually-hidden"> land details</span></a>
         </dd>
       </div>
-      <div class="govuk-summary-list__row">
+      {# <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           Agreement name
         </dt>
@@ -101,7 +101,7 @@
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href="agreement-name">Change<span class="govuk-visually-hidden"> agreement name</span></a>
         </dd>
-      </div>
+      </div> #}
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           Management control of land
@@ -253,7 +253,7 @@
           
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Yearly payment for this parcel
+              Annual payment for this parcel
             </dt>
             <dd class="govuk-summary-list__value">
               £{{ parcelPayment | formatCurrency }}
@@ -269,7 +269,7 @@
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Total payments for all parcels
+            Annual payment for all parcels
           </dt>
           <dd class="govuk-summary-list__value">
             £{{ totalPayment | formatCurrency }}
@@ -336,7 +336,7 @@
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Yearly payment for this parcel
+            Annual payment for this parcel
           </dt>
           <dd class="govuk-summary-list__value">
             £2,048.00
