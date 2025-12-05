@@ -804,7 +804,7 @@
               {# <p class="govuk-body">These parcels have actions from previous agreements</p> #}
               
               <div id="oak-tree-existing-actions">
-              <h2 class="govuk-heading-s">Woods View</h2>
+              <h2 class="govuk-heading-s" id="existing-woods-view">Woods View</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -835,8 +835,8 @@
                   </dd>
                 </div>
               </dl>
-              
-              <h2 class="govuk-heading-s">Long Meadow</h2>
+
+              <h2 class="govuk-heading-s" id="existing-long-meadow">Long Meadow</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -867,8 +867,8 @@
                   </dd>
                 </div>
               </dl>
-              
-              <h2 class="govuk-heading-s">Willow Grove</h2>
+
+              <h2 class="govuk-heading-s" id="existing-willow-grove">Willow Grove</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -900,7 +900,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s">Valley Pasture</h2>
+              <h2 class="govuk-heading-s" id="existing-valley-pasture">Valley Pasture</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -932,7 +932,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s">Gate Pasture</h2>
+              <h2 class="govuk-heading-s" id="existing-gate-pasture">Gate Pasture</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -964,7 +964,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s">Chalk Field</h2>
+              <h2 class="govuk-heading-s" id="existing-chalk-field">Chalk Field</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -998,7 +998,7 @@
               </div>
               
               <div id="blackberry-existing-actions">
-              <h2 class="govuk-heading-s">Spring Pasture</h2>
+              <h2 class="govuk-heading-s" id="existing-spring-pasture">Spring Pasture</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -1029,8 +1029,8 @@
                   </dd>
                 </div>
               </dl>
-              
-              <h2 class="govuk-heading-s">Brook Field</h2>
+
+              <h2 class="govuk-heading-s" id="existing-brook-field">Brook Field</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -1061,8 +1061,8 @@
                   </dd>
                 </div>
               </dl>
-              
-              <h2 class="govuk-heading-s">Valley Bottom</h2>
+
+              <h2 class="govuk-heading-s" id="existing-valley-bottom">Valley Bottom</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -1095,7 +1095,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s">Upper Slope</h2>
+              <h2 class="govuk-heading-s" id="existing-upper-slope">Upper Slope</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -1127,7 +1127,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s">Lane Meadow</h2>
+              <h2 class="govuk-heading-s" id="existing-lane-meadow">Lane Meadow</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -1159,7 +1159,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s">Stone Bridge</h2>
+              <h2 class="govuk-heading-s" id="existing-stone-bridge">Stone Bridge</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
@@ -2306,7 +2306,7 @@
         '<p>Actions from previous agreements: ' + data.numActions;
       
       if (data.numActions > 0) {
-        popupContent += ' - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a>';
+        popupContent += ' - <a href="#existing-' + parcelId + '" class="govuk-link" id="view-existing-actions-link">view</a>';
       }
       
       popupContent += '</p><p style="margin-top: 10px;">Permanent grassland</p>';
@@ -2513,6 +2513,8 @@
       var viewLink = document.getElementById('view-existing-link');
       if (parcel.numActions > 0) {
         viewLink.style.display = 'inline';
+        // Update the href to point to this specific parcel's section
+        document.getElementById('view-existing-actions-link').setAttribute('href', '#existing-' + parcelId);
       } else {
         viewLink.style.display = 'none';
       }
@@ -2630,11 +2632,14 @@
           $existingSection.find('.govuk-accordion__section-button').click();
         }
         
-        // Scroll to the accordion content
+        // Get the target ID from the link's href
+        var targetId = $(this).attr('href');
+        
+        // Scroll to the specific parcel heading
         setTimeout(function() {
-          var contentElement = document.getElementById('application-summary-accordion-content-1');
-          if (contentElement) {
-            contentElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+          var targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
           }
         }, 300);
       });
