@@ -1,0 +1,1245 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Select land parcel
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+              Select land parcel for actions
+            </h1>
+          </legend>
+
+          <p class="govuk-body">The list shows available land parcels for Managing grassland to lower groundwater nutrients: WBD8.</p>
+          <p class="govuk-body">The service will enter the total available area of each selected land parcel to this action.</p>
+
+          <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="select-all" name="selectAll" type="checkbox" value="select-all">
+              <label class="govuk-label govuk-checkboxes__label" for="select-all">
+                Select all
+              </label>
+            </div>
+          </div>
+
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+          <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-2" name="selectedParcels" type="checkbox" value="SO3757-3159" aria-describedby="parcel-2-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-2">
+                SO3757 3159
+              </label>
+              <div id="parcel-2-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 68.0502 hectares<br>
+                Total available area: 68.0502 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-3" name="selectedParcels" type="checkbox" value="SO3757-3160" aria-describedby="parcel-3-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-3">
+                SO3757 3160
+              </label>
+              <div id="parcel-3-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 12.1451 hectares<br>
+                Total available area: 10.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-4" name="selectedParcels" type="checkbox" value="SO3757-3161" aria-describedby="parcel-4-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-4">
+                SO3757 3161
+              </label>
+              <div id="parcel-4-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 77.0108 hectares <br>
+                Total available area: 69.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-5" name="selectedParcels" type="checkbox" value="SO3757-3162" aria-describedby="parcel-5-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-5">
+                SO3757 3162
+              </label>
+              <div id="parcel-5-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 13.9863 hectares <br>
+                Total available area: 13.9863 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-6" name="selectedParcels" type="checkbox" value="SO3757-3163" aria-describedby="parcel-6-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-6">
+                SO3757 3163
+              </label>
+              <div id="parcel-6-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 33.6270 hectares <br>
+                Total available area: 32.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-7" name="selectedParcels" type="checkbox" value="SO3757-3164" aria-describedby="parcel-7-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-7">
+                SO3757 3164
+              </label>
+              <div id="parcel-7-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 68.7252 hectares <br>
+                Total available area: 30.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-8" name="selectedParcels" type="checkbox" value="SO3757-3165" aria-describedby="parcel-8-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-8">
+                SO3757 3165
+              </label>
+              <div id="parcel-8-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 36.9247 hectares <br>
+                Total available area: 31.2414 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-9" name="selectedParcels" type="checkbox" value="SO3757-3166" aria-describedby="parcel-9-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-9">
+                SO3757 3166
+              </label>
+              <div id="parcel-9-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 30.8011 hectares <br>
+                Total available area: 29.0404 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-10" name="selectedParcels" type="checkbox" value="SO3757-3167" aria-describedby="parcel-10-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-10">
+                SO3757 3167
+              </label>
+              <div id="parcel-10-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 14.5672 hectares <br>
+                Total available area: 12.7804 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-11" name="selectedParcels" type="checkbox" value="SO3757-3168" aria-describedby="parcel-11-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-11">
+                SO3757 3168
+              </label>
+              <div id="parcel-11-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 56.8783 hectares <br>
+                Total available area: 56.8783 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-12" name="selectedParcels" type="checkbox" value="SO3757-3169" aria-describedby="parcel-12-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-12">
+                SO3757 3169
+              </label>
+              <div id="parcel-12-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 50.2329 hectares <br>
+                Total available area: 50.2329 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-13" name="selectedParcels" type="checkbox" value="SO3757-3170" aria-describedby="parcel-13-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-13">
+                SO3757 3170
+              </label>
+              <div id="parcel-13-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 23.9245 hectares <br>
+                Total available area: 17.7841 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-14" name="selectedParcels" type="checkbox" value="SO3757-3171" aria-describedby="parcel-14-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-14">
+                SO3757 3171
+              </label>
+              <div id="parcel-14-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 72.8243 hectares <br>
+                Total available area: 62.8243 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-15" name="selectedParcels" type="checkbox" value="SO3757-3172" aria-describedby="parcel-15-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-15">
+                SO3757 3172
+              </label>
+              <div id="parcel-15-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 89.3783 hectares <br>
+                Total available area: 89.3783 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-16" name="selectedParcels" type="checkbox" value="SO3757-3173" aria-describedby="parcel-16-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-16">
+                SO3757 3173
+              </label>
+              <div id="parcel-16-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 23.0652 hectares <br>
+                Total available area: 23.0652 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-17" name="selectedParcels" type="checkbox" value="SO3757-3174" aria-describedby="parcel-17-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-17">
+                SO3757 3174
+              </label>
+              <div id="parcel-17-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 76.8393 hectares <br>
+                Total available area: 76.8393 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-18" name="selectedParcels" type="checkbox" value="SO3757-3175" aria-describedby="parcel-18-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-18">
+                SO3757 3175
+              </label>
+              <div id="parcel-18-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 52.0671 hectares <br>
+                Total available area: 32.4494 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-19" name="selectedParcels" type="checkbox" value="SO3757-3176" aria-describedby="parcel-19-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-19">
+                SO3757 3176
+              </label>
+              <div id="parcel-19-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 42.7036 hectares <br>
+                Total available area: 42.7036 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-20" name="selectedParcels" type="checkbox" value="SO3757-3177" aria-describedby="parcel-20-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-20">
+                SO3757 3177
+              </label>
+              <div id="parcel-20-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 29.5184 hectares <br>
+                Total available area: 22.6576 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-21" name="selectedParcels" type="checkbox" value="SO3757-3178" aria-describedby="parcel-21-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-21">
+                SO3757 3178
+              </label>
+              <div id="parcel-21-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 40.0000 hectares <br>
+                Total available area: 30.9404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-22" name="selectedParcels" type="checkbox" value="SO3757-3179" aria-describedby="parcel-22-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-22">
+                SO3757 3179
+              </label>
+              <div id="parcel-22-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 5.1191 hectares <br>
+                Total available area: 3.5421 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-23" name="selectedParcels" type="checkbox" value="SO3757-3180" aria-describedby="parcel-23-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-23">
+                SO3757 3180
+              </label>
+              <div id="parcel-23-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 27.7568 hectares <br>
+                Total available area: 15.9991 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-24" name="selectedParcels" type="checkbox" value="SO3757-3181" aria-describedby="parcel-24-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-24">
+                SO3757 3181
+              </label>
+              <div id="parcel-24-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 97.0442 hectares <br>
+                Total available area: 97.0442 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-25" name="selectedParcels" type="checkbox" value="SO3757-3182" aria-describedby="parcel-25-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-25">
+                SO3757 3182
+              </label>
+              <div id="parcel-25-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 4.1629 hectares <br>
+                Total available area: 4.1629 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-26" name="selectedParcels" type="checkbox" value="SO3757-3183" aria-describedby="parcel-26-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-26">
+                SO3757 3183
+              </label>
+              <div id="parcel-26-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 30.1362 hectares <br>
+                Total available area: 30.1362 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-27" name="selectedParcels" type="checkbox" value="SO3757-3184" aria-describedby="parcel-27-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-27">
+                SO3757 3184
+              </label>
+              <div id="parcel-27-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 79.3109 hectares <br>
+                Total available area: 79.3109 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-28" name="selectedParcels" type="checkbox" value="SO3757-3185" aria-describedby="parcel-28-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-28">
+                SO3757 3185
+              </label>
+              <div id="parcel-28-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 53.9186 hectares <br>
+                Total available area: 37.8826 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-29" name="selectedParcels" type="checkbox" value="SO3757-3186" aria-describedby="parcel-29-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-29">
+                SO3757 3186
+              </label>
+              <div id="parcel-29-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 96.2574 hectares <br>
+                Total available area: 66.2574 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-30" name="selectedParcels" type="checkbox" value="SO3757-3187" aria-describedby="parcel-30-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-30">
+                SO3757 3187
+              </label>
+              <div id="parcel-30-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 12.1308 hectares <br>
+                Total available area: 11.7716 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-31" name="selectedParcels" type="checkbox" value="SO3757-3188" aria-describedby="parcel-31-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-31">
+                SO3757 3188
+              </label>
+              <div id="parcel-31-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 89.9275 hectares <br>
+                Total available area: 89.9275 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-32" name="selectedParcels" type="checkbox" value="SO3757-3189" aria-describedby="parcel-32-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-32">
+                SO3757 3189
+              </label>
+              <div id="parcel-32-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 49.8847 hectares <br>
+                Total available area: 49.8847 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-33" name="selectedParcels" type="checkbox" value="SO3757-3190" aria-describedby="parcel-33-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-33">
+                SO3757 3190
+              </label>
+              <div id="parcel-33-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 98.1684 hectares <br>
+                Total available area: 98.1684 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-34" name="selectedParcels" type="checkbox" value="SO3757-3191" aria-describedby="parcel-34-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-34">
+                SO3757 3191
+              </label>
+              <div id="parcel-34-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 28.0650 hectares <br>
+                Total available area: 28.0650 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-35" name="selectedParcels" type="checkbox" value="SO3757-3192" aria-describedby="parcel-35-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-35">
+                SO3757 3192
+              </label>
+              <div id="parcel-35-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 12.1406 hectares <br>
+                Total available area: 10.7816 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-36" name="selectedParcels" type="checkbox" value="SO3757-3193" aria-describedby="parcel-36-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-36">
+                SO3757 3193
+              </label>
+              <div id="parcel-36-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 85.4472 hectares <br>
+                Total available area: 66.7474 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-37" name="selectedParcels" type="checkbox" value="SO3757-3194" aria-describedby="parcel-37-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-37">
+                SO3757 3194
+              </label>
+              <div id="parcel-37-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 9.2011 hectares <br>
+                Total available area: 2.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-38" name="selectedParcels" type="checkbox" value="SO3757-3195" aria-describedby="parcel-38-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-38">
+                SO3757 3195
+              </label>
+              <div id="parcel-38-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 19.4666 hectares <br>
+                Total available area: 9.9876 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-39" name="selectedParcels" type="checkbox" value="SO3757-3196" aria-describedby="parcel-39-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-39">
+                SO3757 3196
+              </label>
+              <div id="parcel-39-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 94.8071 hectares <br>
+                Total available area: 94.8071 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-40" name="selectedParcels" type="checkbox" value="SO3757-3197" aria-describedby="parcel-40-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-40">
+                SO3757 3197
+              </label>
+              <div id="parcel-40-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 71.6003 hectares <br>
+                Total available area: 71.6003 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-41" name="selectedParcels" type="checkbox" value="SO3757-3198" aria-describedby="parcel-41-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-41">
+                SO3757 3198
+              </label>
+              <div id="parcel-41-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 42.4324 hectares <br>
+                Total available area: 38.3308 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-42" name="selectedParcels" type="checkbox" value="SO3757-3199" aria-describedby="parcel-42-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-42">
+                SO3757 3199
+              </label>
+              <div id="parcel-42-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 69.3305 hectares <br>
+                Total available area: 60.6745 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-43" name="selectedParcels" type="checkbox" value="SO3757-3200" aria-describedby="parcel-43-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-43">
+                SO3757 3200
+              </label>
+              <div id="parcel-43-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 92.0308 hectares <br>
+                Total available area: 92.0308 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-44" name="selectedParcels" type="checkbox" value="SO3757-3201" aria-describedby="parcel-44-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-44">
+                SO3757 3201
+              </label>
+              <div id="parcel-44-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 64.7420 hectares <br>
+                Total available area: 60.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-45" name="selectedParcels" type="checkbox" value="SO3757-3202" aria-describedby="parcel-45-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-45">
+                SO3757 3202
+              </label>
+              <div id="parcel-45-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 79.6853 hectares <br>
+                Total available area: 79.6853 hectares <br>
+                HEFER needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-46" name="selectedParcels" type="checkbox" value="SO3757-3203" aria-describedby="parcel-46-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-46">
+                SO3757 3203
+              </label>
+              <div id="parcel-46-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 69.9315 hectares <br>
+                Total available area: 65.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-47" name="selectedParcels" type="checkbox" value="SO3757-3204" aria-describedby="parcel-47-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-47">
+                SO3757 3204
+              </label>
+              <div id="parcel-47-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 83.0593 hectares <br>
+                Total available area: 80.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-48" name="selectedParcels" type="checkbox" value="SO3757-3205" aria-describedby="parcel-48-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-48">
+                SO3757 3205
+              </label>
+              <div id="parcel-48-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 59.7011 hectares <br>
+                Total available area: 38.9999 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-49" name="selectedParcels" type="checkbox" value="SO3757-3206" aria-describedby="parcel-49-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-49">
+                SO3757 3206
+              </label>
+              <div id="parcel-49-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 61.6253 hectares <br>
+                Total available area: 57.0230 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-50" name="selectedParcels" type="checkbox" value="SO3757-3207" aria-describedby="parcel-50-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-50">
+                SO3757 3207
+              </label>
+              <div id="parcel-50-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 33.7646 hectares <br>
+                Total available area: 32.0000 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-51" name="selectedParcels" type="checkbox" value="SO3757-3208" aria-describedby="parcel-51-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-51">
+                SO3757 3208
+              </label>
+              <div id="parcel-51-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 1.4935 hectares <br>
+                Total available area: 0.4935 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-52" name="selectedParcels" type="checkbox" value="SO3757-3209" aria-describedby="parcel-52-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-52">
+                SO3757 3209
+              </label>
+              <div id="parcel-52-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 10.3492 hectares <br>
+                Total available area: 3.6617 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-53" name="selectedParcels" type="checkbox" value="SO3757-3210" aria-describedby="parcel-53-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-53">
+                SO3757 3210
+              </label>
+              <div id="parcel-53-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 70.9361 hectares <br>
+                Total available area: 70.9361 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-54" name="selectedParcels" type="checkbox" value="SO3757-3211" aria-describedby="parcel-54-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-54">
+                SO3757 3211
+              </label>
+              <div id="parcel-54-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 24.8011 hectares <br>
+                Total available area: 22.0003 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-55" name="selectedParcels" type="checkbox" value="SO3757-3212" aria-describedby="parcel-55-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-55">
+                SO3757 3212
+              </label>
+              <div id="parcel-55-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 16.5915 hectares <br>
+                Total available area: 12.4433 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-56" name="selectedParcels" type="checkbox" value="SO3757-3213" aria-describedby="parcel-56-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-56">
+                SO3757 3213
+              </label>
+              <div id="parcel-56-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 70.9361 hectares <br>
+                Total available area: 65.7766 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-57" name="selectedParcels" type="checkbox" value="SO3757-3214" aria-describedby="parcel-57-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-57">
+                SO3757 3214
+              </label>
+              <div id="parcel-57-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 33.4796 hectares <br>
+                Total available area: 32.0880 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-58" name="selectedParcels" type="checkbox" value="SO3757-3215" aria-describedby="parcel-58-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-58">
+                SO3757 3215
+              </label>
+              <div id="parcel-58-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 53.6220 hectares <br>
+                Total available area: 42.1111 hectares <br>
+                HEFER needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-59" name="selectedParcels" type="checkbox" value="SO3757-3216" aria-describedby="parcel-59-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-59">
+                SO3757 3216
+              </label>
+              <div id="parcel-59-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 85.6125 hectares <br>
+                Total available area: 62.5555 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-60" name="selectedParcels" type="checkbox" value="SO3757-3217" aria-describedby="parcel-60-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-60">
+                SO3757 3217
+              </label>
+              <div id="parcel-60-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 75.9828 hectares <br>
+                Total available area: 72.5544 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-61" name="selectedParcels" type="checkbox" value="SO3757-3218" aria-describedby="parcel-61-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-61">
+                SO3757 3218
+              </label>
+              <div id="parcel-61-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 71.6003 hectares <br>
+                Total available area: 62.0404 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-62" name="selectedParcels" type="checkbox" value="SO3757-3219" aria-describedby="parcel-62-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-62">
+                SO3757 3219
+              </label>
+              <div id="parcel-62-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 94.8071 hectares <br>
+                Total available area: 87.9747 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-63" name="selectedParcels" type="checkbox" value="SO3757-3220" aria-describedby="parcel-63-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-63">
+                SO3757 3220
+              </label>
+              <div id="parcel-63-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 16.5915 hectares <br>
+                Total available area: 16.5915 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-64" name="selectedParcels" type="checkbox" value="SO3757-3221" aria-describedby="parcel-64-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-64">
+                SO3757 3221
+              </label>
+              <div id="parcel-64-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 24.8011 hectares <br>
+                Total available area: 19.8011 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-65" name="selectedParcels" type="checkbox" value="SO3757-3222" aria-describedby="parcel-65-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-65">
+                SO3757 3222
+              </label>
+              <div id="parcel-65-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 33.7646 hectares <br>
+                Total available area: 33.7646 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-66" name="selectedParcels" type="checkbox" value="SO3757-3223" aria-describedby="parcel-66-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-66">
+                SO3757 3223
+              </label>
+              <div id="parcel-66-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 12.1406 hectares <br>
+                Total available area: 12.0000 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-67" name="selectedParcels" type="checkbox" value="SO3757-3224" aria-describedby="parcel-67-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-67">
+                SO3757 3224
+              </label>
+              <div id="parcel-67-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 28.0650 hectares <br>
+                Total available area: 22.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-68" name="selectedParcels" type="checkbox" value="SO3757-3225" aria-describedby="parcel-68-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-68">
+                SO3757 3225
+              </label>
+              <div id="parcel-68-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 98.1684 hectares <br>
+                Total available area: 72.4454 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-69" name="selectedParcels" type="checkbox" value="SO3757-3226" aria-describedby="parcel-69-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-69">
+                SO3757 3226
+              </label>
+              <div id="parcel-69-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 61.6253 hectares <br>
+                Total available area: 61.6253 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-70" name="selectedParcels" type="checkbox" value="SO3757-3227" aria-describedby="parcel-70-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-70">
+                SO3757 3227
+              </label>
+              <div id="parcel-70-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 49.8847 hectares <br>
+                Total available area: 32.2434 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-71" name="selectedParcels" type="checkbox" value="SO3757-3228" aria-describedby="parcel-71-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-71">
+                SO3757 3228
+              </label>
+              <div id="parcel-71-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 89.9275 hectares <br>
+                Total available area: 72.6655 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-72" name="selectedParcels" type="checkbox" value="SO3757-3229" aria-describedby="parcel-72-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-72">
+                SO3757 3229
+              </label>
+              <div id="parcel-72-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 12.1308 hectares <br>
+                Total available area: 2.2424 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-73" name="selectedParcels" type="checkbox" value="SO3757-3230" aria-describedby="parcel-73-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-73">
+                SO3757 3340
+              </label>
+              <div id="parcel-73-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 96.2574 hectares <br>
+                Total available area: 52.6655 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-74" name="selectedParcels" type="checkbox" value="SO3757-3231" aria-describedby="parcel-74-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-74">
+                SO3757 3341
+              </label>
+              <div id="parcel-74-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 53.9186 hectares <br>
+                Total available area: 42.4324 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-75" name="selectedParcels" type="checkbox" value="SO3757-3232" aria-describedby="parcel-75-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-75">
+                SO3757 3342
+              </label>
+              <div id="parcel-75-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 59.7011 hectares <br>
+                Total available area: 59.7011 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-76" name="selectedParcels" type="checkbox" value="SO3757-3233" aria-describedby="parcel-76-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-76">
+                SO3757 3343
+              </label>
+              <div id="parcel-76-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 79.3109 hectares <br>
+                Total available area: 39.2424 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-77" name="selectedParcels" type="checkbox" value="SO3757-3234" aria-describedby="parcel-77-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-77">
+                SO3757 3344
+              </label>
+              <div id="parcel-77-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 83.0593 hectares <br>
+                Total available area: 83.0593 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-78" name="selectedParcels" type="checkbox" value="SO3757-3235" aria-describedby="parcel-78-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-78">
+                SO3757 3345
+              </label>
+              <div id="parcel-78-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 69.9315 hectares <br>
+                Total available area: 64.7420 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-79" name="selectedParcels" type="checkbox" value="SO3757-3236" aria-describedby="parcel-79-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-79">
+                SO3757 3346
+              </label>
+              <div id="parcel-79-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 97.0442 hectares <br>
+                Total available area: 70.5347 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-80" name="selectedParcels" type="checkbox" value="SO3757-3237" aria-describedby="parcel-80-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-80">
+                SO3757 3347
+              </label>
+              <div id="parcel-80-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 27.7568 hectares <br>
+                Total available area: 20.5569 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-81" name="selectedParcels" type="checkbox" value="SO3757-3238" aria-describedby="parcel-81-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-81">
+                SO3757 3348
+              </label>
+              <div id="parcel-81-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 5.1191 hectares <br>
+                Total available area: 2.1111 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-82" name="selectedParcels" type="checkbox" value="SO3757-3239" aria-describedby="parcel-82-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-82">
+                SO3757 3349
+              </label>
+              <div id="parcel-82-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 40.0000 hectares <br>
+                Total available area: 32.0402 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-83" name="selectedParcels" type="checkbox" value="SO3757-3240" aria-describedby="parcel-83-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-83">
+                SO3757 3350
+              </label>
+              <div id="parcel-83-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 69.3305 hectares <br>
+                Total available area: 69.3305 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-84" name="selectedParcels" type="checkbox" value="SO3757-3241" aria-describedby="parcel-84-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-84">
+                SO3757 3351
+              </label>
+              <div id="parcel-84-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 19.4666 hectares <br>
+                Total available area: 9.2011 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-85" name="selectedParcels" type="checkbox" value="SO3757-3242" aria-describedby="parcel-85-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-85">
+                SO3757 3352
+              </label>
+              <div id="parcel-85-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 52.0671 hectares <br>
+                Total available area: 48.6978 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-86" name="selectedParcels" type="checkbox" value="SO3757-3243" aria-describedby="parcel-86-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-86">
+                SO3757 3353
+              </label>
+              <div id="parcel-86-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 76.8393 hectares <br>
+                Total available area: 56.3456 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-87" name="selectedParcels" type="checkbox" value="SO3757-3244" aria-describedby="parcel-87-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-87">
+                SO3757 3354
+              </label>
+              <div id="parcel-87-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 85.4472 hectares <br>
+                Total available area: 85.4472 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-88" name="selectedParcels" type="checkbox" value="SO3757-3245" aria-describedby="parcel-88-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-88">
+                SO3757 3355
+              </label>
+              <div id="parcel-88-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 65.0670 hectares <br>
+                Total available area: 16.6742 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-89" name="selectedParcels" type="checkbox" value="SO3757-3246" aria-describedby="parcel-89-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-89">
+                SO3757 3356
+              </label>
+              <div id="parcel-89-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 23.0652 hectares <br>
+                Total available area: 9.2011 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-90" name="selectedParcels" type="checkbox" value="SO3757-3247" aria-describedby="parcel-90-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-90">
+                SO3757 3357
+              </label>
+              <div id="parcel-90-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 89.3783 hectares <br>
+                Total available area: 80.0404 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-91" name="selectedParcels" type="checkbox" value="SO3757-3248" aria-describedby="parcel-91-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-91">
+                SO3757 3358
+              </label>
+              <div id="parcel-91-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 37.7959 hectares <br>
+                Total available area: 18.4004 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-92" name="selectedParcels" type="checkbox" value="SO3757-3249" aria-describedby="parcel-92-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-92">
+                SO3757 3359
+              </label>
+              <div id="parcel-92-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 72.8243 hectares <br>
+                Total available area: 60.9876 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-93" name="selectedParcels" type="checkbox" value="SO3757-3250" aria-describedby="parcel-93-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-93">
+                SO3757 3360
+              </label>
+              <div id="parcel-93-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 23.9245 hectares <br>
+                Total available area: 18.6748 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-94" name="selectedParcels" type="checkbox" value="SO3757-3251" aria-describedby="parcel-94-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-94">
+                SO3757 3361
+              </label>
+              <div id="parcel-94-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 79.3142 hectares <br>
+                Total available area: 76.9883 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-95" name="selectedParcels" type="checkbox" value="SO3757-3252" aria-describedby="parcel-95-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-95">
+                SO3757 3362
+              </label>
+              <div id="parcel-95-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 56.8783 hectares <br>
+                Total available area: 40.1414 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-96" name="selectedParcels" type="checkbox" value="SO3757-3253" aria-describedby="parcel-96-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-96">
+                SO3757 3363
+              </label>
+              <div id="parcel-96-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 33.2811 hectares <br>
+                Total available area: 25.9336 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-97" name="selectedParcels" type="checkbox" value="SO3757-3254" aria-describedby="parcel-97-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-97">
+                SO3757 3364
+              </label>
+              <div id="parcel-97-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 30.8011 hectares <br>
+                Total available area: 20.7755 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-98" name="selectedParcels" type="checkbox" value="SO3757-3255" aria-describedby="parcel-98-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-98">
+                SO3757 3365
+              </label>
+              <div id="parcel-98-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 36.9247 hectares <br>
+                Total available area: 29.5942 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-99" name="selectedParcels" type="checkbox" value="SO3757-3256" aria-describedby="parcel-99-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-99">
+                SO3757 3366
+              </label>
+              <div id="parcel-99-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 68.7252 hectares <br>
+                Total available area: 68.7252 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-100" name="selectedParcels" type="checkbox" value="SO3757-3257" aria-describedby="parcel-100-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-100">
+                SO3757 3367
+              </label>
+              <div id="parcel-100-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 36.7859 hectares <br>
+                Total available area: 36.7859 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-101" name="selectedParcels" type="checkbox" value="SO3757-3258" aria-describedby="parcel-101-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-101">
+                SO3757 3368
+              </label>
+              <div id="parcel-101-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 13.9863 hectares <br>
+                Total available area: 9.6748 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-102" name="selectedParcels" type="checkbox" value="SO3757-3259" aria-describedby="parcel-102-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-102">
+                SO3757 3369
+              </label>
+              <div id="parcel-102-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 77.0108 hectares <br>
+                Total available area: 55.2345 hectares <br>
+                SSSI needed
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-103" name="selectedParcels" type="checkbox" value="SO3757-3260" aria-describedby="parcel-103-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-103">
+                SO3757 3370
+              </label>
+              <div id="parcel-103-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 26.1565 hectares <br>
+                Total available area: 26.1565 hectares
+              </div>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="parcel-104" name="selectedParcels" type="checkbox" value="SO3757-3261" aria-describedby="parcel-104-item-hint">
+              <label class="govuk-label govuk-checkboxes__label" for="parcel-104">
+                SO3757 3371
+              </label>
+              <div id="parcel-104-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                Total size: 17.8368 hectares <br>
+                Total available area: 17.8368 hectares
+              </div>
+            </div>
+          </div> <!-- checkbox group -->
+        </fieldset>
+      </div> <!-- form group -->
+
+
+      <div class="govuk-button-group">
+        <form class="govuk-form" action="add-more-actions2" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+      </div> <!-- buttons -->
+
+      <p><a href="../_common/not-testing" class="govuk-link">Cancel application</a></p>
+
+        <!-- not for day 1
+        <form class="govuk-form" action="save-and-return" method="post">
+          <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+            Save and return later
+          </button>
+        </form> -->
+
+
+    </div> <!-- 2/3 col -->
+  </div> <!-- grid-row -->
+
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var selectAllCheckbox = document.getElementById('select-all');
+    var parcelCheckboxes = document.querySelectorAll('input[name="selectedParcels"]');
+    
+    // Handle select all checkbox
+    selectAllCheckbox.addEventListener('change', function() {
+      var isChecked = this.checked;
+      parcelCheckboxes.forEach(function(checkbox) {
+        checkbox.checked = isChecked;
+      });
+    });
+    
+    // Handle individual parcel checkboxes
+    parcelCheckboxes.forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+        // Check if all individual checkboxes are selected
+        var allSelected = Array.from(parcelCheckboxes).every(function(cb) {
+          return cb.checked;
+        });
+        
+        // Update select all checkbox state
+        selectAllCheckbox.checked = allSelected;
+        selectAllCheckbox.indeterminate = !allSelected && Array.from(parcelCheckboxes).some(function(cb) {
+          return cb.checked;
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,490 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Select land and actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">Choose actions for parcel 'Lower Field'</h1>
+    <p class="govuk-body">The list of compatible actions, based on your land data, is below.</p>
+    <br>
+
+    <!-- Three column layout -->
+    <div class="govuk-grid-row">
+      
+      <!-- Left column - Parcel info (1/4) -->
+      <div class="govuk-grid-column-one-half">
+        <h2 class="govuk-heading-m">Lower Field</h2>
+        <div class="govuk-!-margin-bottom-6">
+          <table class="govuk-table">
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">OS Map Sheet Reference</td>
+                <td class="govuk-table__cell">S03</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Number of available land parcels</td>
+                <td class="govuk-table__cell">20</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Total area (ha)</td>
+                <td class="govuk-table__cell">120.3451</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Number of land parcels used for actions</td>
+                <td class="govuk-table__cell">0</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Number of actions applied for</td>
+                <td class="govuk-table__cell">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Center column - Map (1/2) -->
+      <div class="govuk-grid-column-one-half">
+        <div style="border: 2px solid #b1b4b6; min-height: 400px; position: relative; overflow: hidden;">
+          <!-- Satellite imagery background with image map -->
+          <img src="/public/images/design-history-v2_1/satellite-map.jpg" alt="Satellite view of farm fields" usemap="#fieldmap" style="width: 100%; height: 400px; object-fit: cover; display: block;">
+          
+          <map name="fieldmap">
+            <area shape="rect" coords="230,112,350,200" href="select-land-parcel-1" alt="Lower Field">
+          </map>
+          
+          <!-- Selected field overlay - visual indicator -->
+          <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+            <rect x="230" y="112" width="120" height="88" fill="rgba(255, 221, 0, 0.1)" stroke="#00703c" stroke-width="3" />
+            <rect x="227" y="109" width="126" height="94" fill="none" stroke="#ffdd00" stroke-width="3" />
+          </svg>
+          
+          <p class="govuk-body-s" style="position: absolute; bottom: 10px; right: 10px; margin: 0; background: white; padding: 5px; border: 1px solid #b1b4b6;">© Crown copyright</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom section - Available actions -->
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+      
+      <!-- Other parcels column (1/2) -->
+      <div class="govuk-grid-column-one-half">
+        <h2 class="govuk-heading-m">Other parcels</h2>
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Upper field</a></td>
+              <td class="govuk-table__cell">Total area: 5.2341 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Woods view</a></td>
+              <td class="govuk-table__cell">Total area: 12.8765 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Long meadow</a></td>
+              <td class="govuk-table__cell">Total area: 8.4521 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">River pasture</a></td>
+              <td class="govuk-table__cell">Total area: 15.3267 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Top barn field</a></td>
+              <td class="govuk-table__cell">Total area: 6.7894 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Lower paddock</a></td>
+              <td class="govuk-table__cell">Total area: 3.9152 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Oak tree field</a></td>
+              <td class="govuk-table__cell">Total area: 11.2483 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">South slope</a></td>
+              <td class="govuk-table__cell">Total area: 9.6721 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Mill field</a></td>
+              <td class="govuk-table__cell">Total area: 7.1358 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Far corner</a></td>
+              <td class="govuk-table__cell">Total area: 4.5692 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Home meadow</a></td>
+              <td class="govuk-table__cell">Total area: 13.8214 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Church field</a></td>
+              <td class="govuk-table__cell">Total area: 6.3547 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Brook side</a></td>
+              <td class="govuk-table__cell">Total area: 10.7265 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Hill top</a></td>
+              <td class="govuk-table__cell">Total area: 8.9431 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Spring field</a></td>
+              <td class="govuk-table__cell">Total area: 5.6789 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Gate field</a></td>
+              <td class="govuk-table__cell">Total area: 14.2156 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Stone wall pasture</a></td>
+              <td class="govuk-table__cell">Total area: 7.8923 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Orchard field</a></td>
+              <td class="govuk-table__cell">Total area: 3.4671 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Back field</a></td>
+              <td class="govuk-table__cell">Total area: 11.5284 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Pond field</a></td>
+              <td class="govuk-table__cell">Total area: 9.1647 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">North meadow</a></td>
+              <td class="govuk-table__cell">Total area: 6.8935 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Willow field</a></td>
+              <td class="govuk-table__cell">Total area: 12.3458 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">High pasture</a></td>
+              <td class="govuk-table__cell">Total area: 4.7821 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Lane field</a></td>
+              <td class="govuk-table__cell">Total area: 8.2594 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Big meadow</a></td>
+              <td class="govuk-table__cell">Total area: 16.4372 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Little field</a></td>
+              <td class="govuk-table__cell">Total area: 2.8156 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Bottom field</a></td>
+              <td class="govuk-table__cell">Total area: 10.9283 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Valley field</a></td>
+              <td class="govuk-table__cell">Total area: 7.5641 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Boundary field</a></td>
+              <td class="govuk-table__cell">Total area: 5.1928 ha</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a href="#" class="govuk-link">Cottage field</a></td>
+              <td class="govuk-table__cell">Total area: 13.6475 ha</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Available actions column (3/4) -->
+      <div class="govuk-grid-column-one-half">
+        <h2 class="govuk-heading-m">Available actions on Lower Field</h2>
+        <p>You can search for an action or select from the list.</p>
+        
+        <!-- Search box -->
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="search-actions-map">
+            Search by name or code
+          </label>
+          <div style="display: flex; gap: 0;">
+            <input class="govuk-input" style="width:300px; height:44px;" id="search-actions-map" name="search" type="search" placeholder="Start typing to search...">
+            <button type="button" id="search-button-map" class="govuk-button" style="height: 44px; margin-bottom: 0; background-color: #1d70b8;" data-module="govuk-button">
+              <svg style="display: block; margin-left:0px" class="gem-c-search__icon" width="21" height="21" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+                <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action selection list -->
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+              
+              <!-- CNUM3 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cnum3" name="actions" type="checkbox" value="CNUM3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cnum3">
+                  <strong>CNUM3</strong> - Legume fallow
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £593 per ha</span>
+                </label>
+              </li>
+
+              <!-- CAHL1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cahl1" name="actions" type="checkbox" value="CAHL1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cahl1">
+                  <strong>CAHL1</strong> - Pollen and nectar flower mix
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £739 per ha</span>
+                </label>
+              </li>
+
+              <!-- CAHL2 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cahl2" name="actions" type="checkbox" value="CAHL2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cahl2">
+                  <strong>CAHL2</strong> - Winter bird food on arable and horticultural land
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £853 per ha</span>
+                </label>
+              </li>
+
+              <!-- CHRW2 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-chrw2" name="actions" type="checkbox" value="CHRW2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-chrw2">
+                  <strong>CHRW2</strong> - Manage hedgerows
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £13 per 100m</span>
+                </label>
+              </li>
+
+              <!-- CSAM2 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-csam2" name="actions" type="checkbox" value="CSAM2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-csam2">
+                  <strong>CSAM2</strong> - Multi-species winter cover crop
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £129 per ha</span>
+                </label>
+              </li>
+
+              <!-- BFS1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-bfs1" name="actions" type="checkbox" value="BFS1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-bfs1">
+                  <strong>BFS1</strong> - 12m to 24m watercourse buffer strip on cultivated land
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £707 per ha</span>
+                </label>
+              </li>
+
+              <!-- AHW7 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-ahw7" name="actions" type="checkbox" value="AHW7">
+                <label class="govuk-label govuk-checkboxes__label" for="action-ahw7">
+                  <strong>AHW7</strong> - Enhanced overwinter stubble
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £589 per ha</span>
+                </label>
+              </li>
+
+              <!-- CIPM2 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cipm2" name="actions" type="checkbox" value="CIPM2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cipm2">
+                  <strong>CIPM2</strong> - Flower-rich grass margins
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £798 per ha</span>
+                </label>
+              </li>
+
+              <!-- WBD1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-wbd1" name="actions" type="checkbox" value="WBD1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-wbd1">
+                  <strong>WBD1</strong> - Manage ponds
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £257 per pond</span>
+                </label>
+              </li>
+
+              <!-- CNUM2 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cnum2" name="actions" type="checkbox" value="CNUM2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cnum2">
+                  <strong>CNUM2</strong> - Legumes on improved grassland
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £102 per ha</span>
+                </label>
+              </li>
+
+              <!-- SOH1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-soh1" name="actions" type="checkbox" value="SOH1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-soh1">
+                  <strong>SOH1</strong> - No-till farming
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £73 per ha</span>
+                </label>
+              </li>
+
+              <!-- CIGL1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cigl1" name="actions" type="checkbox" value="CIGL1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cigl1">
+                  <strong>CIGL1</strong> - Take grassland field corners or blocks out of management
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £333 per ha</span>
+                </label>
+              </li>
+
+              <!-- BND1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-bnd1" name="actions" type="checkbox" value="BND1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-bnd1">
+                  <strong>BND1</strong> - Maintain dry stone walls
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £27 per 100m</span>
+                </label>
+              </li>
+
+              <!-- AHW3 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-ahw3" name="actions" type="checkbox" value="AHW3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-ahw3">
+                  <strong>AHW3</strong> - Beetle banks
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £764 per ha</span>
+                </label>
+              </li>
+
+              <!-- CSAM3 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-csam3" name="actions" type="checkbox" value="CSAM3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-csam3">
+                  <strong>CSAM3</strong> - Herbal leys
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £382 per ha</span>
+                </label>
+              </li>
+
+              <!-- PRF1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-prf1" name="actions" type="checkbox" value="PRF1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-prf1">
+                  <strong>PRF1</strong> - Variable rate application of nutrients
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £27 per ha</span>
+                </label>
+              </li>
+
+              {# <!-- CHRW3 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-chrw3" name="actions" type="checkbox" value="CHRW3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-chrw3">
+                  <strong>CHRW3</strong> - Maintain or establish hedgerow trees
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £10 per 100m</span>
+                </label>
+              </li>
+
+              <!-- WBD3 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-wbd3" name="actions" type="checkbox" value="WBD3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-wbd3">
+                  <strong>WBD3</strong> - In-field grass strips
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £765 per ha</span>
+                </label>
+              </li>
+
+              <!-- AHW5 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-ahw5" name="actions" type="checkbox" value="AHW5">
+                <label class="govuk-label govuk-checkboxes__label" for="action-ahw5">
+                  <strong>AHW5</strong> - Nesting plots for lapwing
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £765 per ha</span>
+                </label>
+              </li>
+
+              <!-- GRH1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-grh1" name="actions" type="checkbox" value="GRH1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-grh1">
+                  <strong>GRH1</strong> - Manage rough grazing for birds
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £121 per ha</span>
+                </label>
+              </li> #}
+
+            </div>
+          </fieldset>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Application summary section -->
+    <div class="govuk-grid-row ">
+      <div class="govuk-grid-column-full">
+
+       <!-- Continue button -->
+        <button type="submit" class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
+          Continue
+        </button>
+
+        <h2 class="govuk-heading-m">Your application so far</h2>
+        <div class="govuk-!-margin-bottom-6">
+          <p class="govuk-body">Selected actions and parcels</p>
+          <ul class="govuk-list">
+            <li>Action 1</li>
+            <li>Action 2</li>
+            <li>Selected parcels</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  // Search functionality for actions on map page
+  $(document).ready(function(){
+    $("#search-actions-map").keyup(function(){ 
+        var filter = $(this).val();
+        $(".govuk-form-group li").each(function(){
+            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                $(this).fadeOut();
+            } else {
+                $(this).show();
+            }
+        });
+    });
+  });
+</script>
+{% endblock %}
+
+

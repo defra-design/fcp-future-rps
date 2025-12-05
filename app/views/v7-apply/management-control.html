@@ -1,0 +1,64 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Management control
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Management control of land</h1>
+        <p class="govuk-body">You must have management control of the land in your agreement. This must last for the duration of your selected actions.</p>
+        <p class="govuk-body">If you occupy land under a tenancy that's due to expire before the duration of the actions you want to select, you can still apply. But only if you expect the tenancy to continue to cover the duration of these actions.</p>
+        <p class="govuk-body">Read the guidance on <a href="#">management control of land</a>.</p>
+
+        <form class="form" action="/management-answer3" method="post">
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h1 class="govuk-fieldset__heading">
+                  Will you have management control of the land in your application for the duration of the actions you want to select?
+                </h1>
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="managementAnswer-1" name="management-answer3" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="managementAnswer-1">
+                    Yes
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="managementAnswer-2" name="management-answer3" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="managementAnswer-2">
+                    No
+                  </label>
+                </div>
+            </fieldset>
+          </div>
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+          
+        </form>
+
+    </div>
+  </div>
+
+
+{% endblock %}

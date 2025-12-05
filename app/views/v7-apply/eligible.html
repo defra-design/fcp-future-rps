@@ -1,0 +1,37 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+    Eligible
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">You are eligible to apply</h1>
+
+      <form class="form" action="tasklist-3" method="post">
+    <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+  Continue
+</button>
+</form>
+
+    </div>
+  </div>
+
+{% endblock %}

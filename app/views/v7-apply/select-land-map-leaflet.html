@@ -1,0 +1,3265 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Select land and actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+  <style>
+    #map { 
+      height: 500px; 
+      width: 100%;
+      border: 2px solid #b1b4b6;
+      cursor: pointer;
+    }
+    .leaflet-container {
+      font-family: "GDS Transport", arial, sans-serif;
+    }
+    .parcel-label {
+      background: white;
+      border: 2px solid #0b0c0c;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: normal;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .leaflet-popup-content-wrapper {
+      font-family: "GDS Transport", arial, sans-serif;
+      max-width: 140px;
+      min-width: 100px;
+      font-size: 12px;
+      padding: 8px;
+    }
+    .leaflet-popup-content {
+      margin: 4px;
+      line-height: 1.3;
+    }
+    .leaflet-popup-content h3 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .leaflet-popup-content p {
+      margin: 4px 0;
+      font-size: 12px;
+    }
+    .leaflet-control-attribution {
+      display: none !important;
+    }
+    .govuk-accordion__section-heading-text-focus {
+      font-size: calc(1em + 0.2em);
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l" id="page-heading">Select land for your actions</h1>
+    <p id="select-parcel-text">Your available land is grouped by Ordnance Survey map sheet references. To view your land parcels, click on the OS map sheet reference links in the table, or the icons in the map.<br><br>
+        You'll then be able to add actions to parcels.</p>
+    <p id="selected-parcel-text" style="display: none;">This shows the available actions for the selected parcel based on the land data we hold for you.</p>
+
+    <!-- Two column layout -->
+    <div class="govuk-grid-row">
+      
+      <!-- Left column - Parcel info (1/2) -->
+      <div class="govuk-grid-column-one-half">
+
+        <div id="map"></div>
+        <p class="govuk-body-s govuk-!-margin-top-2">
+          {# Click on the field parcels to select and see details.
+        </p> #}
+
+        <div class="govuk-!-margin-bottom-6" id="parcel-info-container" style="display: none;">
+
+          <table class="govuk-table">
+            <tbody class="govuk-table__body" id="parcel-info">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">OS Map Sheet Reference</td>
+                <td class="govuk-table__cell" id="os-ref">-</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Total area (hectares)</td>
+                <td class="govuk-table__cell" id="total-area">-</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Available area (hectares)</td>
+                <td class="govuk-table__cell" id="available-area">-</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Actions from previous agreements</td>
+                <td class="govuk-table__cell">
+                  <span id="num-actions">-</span>
+                  <span id="view-existing-link" style="display: none;"> - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Nearby parcels list -->
+        <div id="parcels-list-section" style="display: none; font-size: 0.875rem;">
+        {# <h2 class="govuk-heading-s">Your parcels</h2> #}
+        <div id="oxfordshire-parcels">
+        <h2 class="govuk-heading-s">Oak Tree Farm parcels</h2>
+        <div>
+          <ul class="govuk-list govuk-list--spaced">
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('upper-field'); return false;" class="govuk-link">Upper Field - SO3758 3159</a>
+              <span>5.2341 ha available</span>
+            </li>
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('long-meadow'); return false;" class="govuk-link">Long Meadow - SO3760 3161</a>
+              <span>4.4521 ha available</span>
+            </li>
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('river-pasture'); return false;" class="govuk-link">River Pasture - SO3761 3162</a>
+              <span>15.3267 ha available</span>
+            </li>
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('woods-view'); return false;" class="govuk-link">Woods View - SO3759 3160</a>
+              <span>7.5000 ha available</span>
+            </li>
+          </ul>
+        </div>
+
+              <details class="govuk-details" style="font-size: 1.1rem;">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    Show more parcels
+                  </span>
+                </summary>
+                <div class="govuk-details__text">
+                  <ul class="govuk-list govuk-list--spaced">
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                      <a href="#" onclick="selectParcelById('south-slope'); return false;" class="govuk-link">South Slope - SO3765 3166</a>
+                      <span>9.6721 ha available</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                      <a href="#" onclick="selectParcelById('mill-field'); return false;" class="govuk-link">Mill Field - SO3766 3167</a>
+                      <span>7.1358 ha available</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                      <a href="#" onclick="selectParcelById('top-barn-field'); return false;" class="govuk-link">Top Barn Field - SO3762 3163</a>
+                      <span>6.7894 ha available</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                      <a href="#" onclick="selectParcelById('oak-tree-field'); return false;" class="govuk-link">Oak Tree Field - SO3764 3165</a>
+                      <span>11.2483 ha available</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('spring-field'); return false;" class="govuk-link">Spring Field - SO3768 3169</a><span>8.9234 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('hollow-meadow'); return false;" class="govuk-link">Hollow Meadow - SO3769 3170</a><span>14.5678 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('brook-pasture'); return false;" class="govuk-link">Brook Pasture - SO3770 3171</a><span>6.3421 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('willow-grove'); return false;" class="govuk-link">Willow Grove - SO3771 3172</a><span>11.7654 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('boundary-meadow'); return false;" class="govuk-link">Boundary Meadow - SO3772 3173</a><span>9.8765 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('valley-pasture'); return false;" class="govuk-link">Valley Pasture - SO3774 3175</a><span>13.2341 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('back-field'); return false;" class="govuk-link">Back Field - SO3775 3176</a><span>7.4521 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('lane-close'); return false;" class="govuk-link">Lane Close - SO3777 3178</a><span>4.8945 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('gate-pasture'); return false;" class="govuk-link">Gate Pasture - SO3778 3179</a><span>12.1098 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('orchard-field'); return false;" class="govuk-link">Orchard Field - SO3779 3180</a><span>6.7654 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('church-meadow'); return false;" class="govuk-link">Church Meadow - SO3780 3181</a><span>9.5432 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('new-pasture'); return false;" class="govuk-link">New Pasture - SO3781 3182</a><span>8.2341 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('chalk-field'); return false;" class="govuk-link">Chalk Field - SO3782 3183</a><span>11.4521 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('elm-grove'); return false;" class="govuk-link">Elm Grove - SO3783 3184</a><span>5.9876 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('pond-meadow'); return false;" class="govuk-link">Pond Meadow - SO3784 3185</a><span>7.6543 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('corner-close'); return false;" class="govuk-link">Corner Close - SO3786 3187</a><span>6.1234 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('far-pasture'); return false;" class="govuk-link">Far Pasture - SO3787 3188</a><span>9.3421 ha available</span></li>
+                  </ul>
+              </div>
+            </details>
+        </div>
+
+        <div id="buckinghamshire-parcels">
+        <h2 class="govuk-heading-s">Blackberry Farm parcels</h2>
+        <div>
+          <ul class="govuk-list govuk-list--spaced">
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('north-field-bucks'); return false;" class="govuk-link">North Field - BO4521 2843</a>
+              <span>95.4231 ha available</span>
+            </li>
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('eastern-meadow'); return false;" class="govuk-link">Eastern Meadow - BO4522 2844</a>
+              <span>78.5624 ha available</span>
+            </li>
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('spring-pasture'); return false;" class="govuk-link">Spring Pasture - BO4523 2845</a>
+              <span>64.3215 ha available</span>
+            </li>
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('brook-field'); return false;" class="govuk-link">Brook Field - BO4524 2846</a>
+              <span>52.7841 ha available</span>
+            </li>
+            <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+              <a href="#" onclick="selectParcelById('valley-bottom'); return false;" class="govuk-link">Valley Bottom - BO4525 2847</a>
+              <span>88.9423 ha available</span>
+            </li>
+          </ul>
+        </div>
+
+              <details class="govuk-details" style="font-size: 1.1rem;">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    Show more parcels
+                  </span>
+                </summary>
+                <div class="govuk-details__text">
+                  <ul class="govuk-list govuk-list--spaced">
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                      <a href="#" onclick="selectParcelById('corner-paddock'); return false;" class="govuk-link">Corner Paddock - BO4527 2849</a>
+                      <span>18.5673 ha available</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                      <a href="#" onclick="selectParcelById('chalk-slope'); return false;" class="govuk-link">Chalk Slope - BO4529 2851</a>
+                      <span>55.3287 ha available</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                      <a href="#" onclick="selectParcelById('woodland-edge'); return false;" class="govuk-link">Woodland Edge - BO4531 2853</a>
+                      <span>28.4516 ha available</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('river-meadow'); return false;" class="govuk-link">River Meadow - BO4532 2854</a><span>67.3421 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('barn-field'); return false;" class="govuk-link">Barn Field - BO4533 2855</a><span>45.2187 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('oak-grove'); return false;" class="govuk-link">Oak Grove - BO4534 2856</a><span>32.6543 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('lower-pasture'); return false;" class="govuk-link">Lower Pasture - BO4535 2857</a><span>71.8932 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('mill-meadow'); return false;" class="govuk-link">Mill Meadow - BO4536 2858</a><span>58.4521 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('church-field'); return false;" class="govuk-link">Church Field - BO4538 2860</a><span>36.9876 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('pond-close'); return false;" class="govuk-link">Pond Close - BO4539 2861</a><span>29.3214 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('upper-slope'); return false;" class="govuk-link">Upper Slope - BO4540 2862</a><span>54.6789 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('boundary-field'); return false;" class="govuk-link">Boundary Field - BO4541 2863</a><span>48.5432 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('lane-meadow'); return false;" class="govuk-link">Lane Meadow - BO4542 2864</a><span>62.1098 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('ash-copse'); return false;" class="govuk-link">Ash Copse - BO4543 2865</a><span>38.7654 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('home-paddock'); return false;" class="govuk-link">Home Paddock - BO4544 2866</a><span>33.4521 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('gate-field'); return false;" class="govuk-link">Gate Field - BO4545 2867</a><span>44.8765 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('stone-bridge'); return false;" class="govuk-link">Stone Bridge - BO4547 2869</a><span>51.2341 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('beech-wood'); return false;" class="govuk-link">Beech Wood - BO4548 2870</a><span>39.8765 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('orchard-plot'); return false;" class="govuk-link">Orchard Plot - BO4549 2871</a><span>35.4321 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('new-ground'); return false;" class="govuk-link">New Ground - BO4550 2872</a><span>49.7654 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('far-meadow'); return false;" class="govuk-link">Far Meadow - BO4551 2873</a><span>56.3210 ha available</span></li>
+                  </ul>
+              </div>
+            </details>
+        </div>
+
+        <p><a href="#" id="back-to-farm-selection-link" class="govuk-link">Back to all farms</a></p>
+  
+        
+        </div>
+        </div>
+
+
+      
+
+      <!-- Right column - Interactive Map (1/2) -->
+      <div class="govuk-grid-column-one-half">
+
+      <div id="os-map-references">
+        <div id="oak-tree-farm-info">
+        <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Oak Tree Farm (SO1)</a></p>
+        <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Number of available land parcels</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">35</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Total area (hectares)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">120.3451</td>
+          </tr>
+          <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Number of land parcels used for SFI actions</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+              <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Number of SFI actions applied for</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div id="blackberry-farm-info">
+      <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Blackberry Farm (BO9)</a></p>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Number of available land parcels</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">31</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Total area (hectares)</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">80.3160</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Number of land parcels used for SFI actions</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+              <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Number of SFI actions applied for</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div id="action-instruction" style="display: none;">
+        <p class="govuk-body">To add actions to a land parcel, click on the map or land parcel link.</p>
+        <p class="govuk-body">You'll see your list of actions. You then need to:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>select the action and enter the amount that you want to add to the parcel</li>
+          <li>save your selection for that parcel before moving on to the next land parcel and repeat these steps.</li>
+        </ul>
+        <hr>
+      </div>
+
+   
+
+
+        {# <form action="check-your-answers" method="post" id="continue-form">
+          <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
+          <button type="submit" id="continue-button" class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
+            Continue
+          </button>
+        </form> #}
+
+        </div>
+
+        <div id="actions-section" style="display: none;">
+          <h2 class="govuk-heading-m" id="actions-heading">Available actions</h2>
+        {# <p>You can search for an action or select from the list.</p> #}
+        
+        <!-- Search box -->
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="search-actions-map">
+            Search by action name or code
+          </label>
+          <div style="display: flex; gap: 0; max-width: 400px;">
+            <input class="govuk-input" style="width:300px; height:46px;" id="search-actions-map" name="search" type="search" placeholder="Start typing to search..." disabled>
+            <button type="button" id="search-button-map" class="govuk-button" style="height: 44px; margin-bottom: 0; background-color: #1d70b8;" data-module="govuk-button" disabled>
+              <svg style="display: block; margin-left:0px" class="gem-c-search__icon" width="21" height="21" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+                <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action selection list -->
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+              
+              <!-- CNUM3 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cnum3" name="actions" type="checkbox" value="CNUM3" data-aria-controls="conditional-cnum3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cnum3">
+                  Legume fallow: CNUM3 
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £382 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/cnum3-legume-fallow" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-cnum3">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-cnum3">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-cnum3" name="quantity-cnum3" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CAHL1 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cahl1" name="actions" type="checkbox" value="CAHL1" data-aria-controls="conditional-cahl1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cahl1">
+                  Pollen and nectar flower mix: CAHL1
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £614 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/cahl1-pollen-and-nectar-flower-mix" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-cahl1">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-cahl1">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-cahl1" name="quantity-cahl1" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CAHL2 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cahl2" name="actions" type="checkbox" value="CAHL2" data-aria-controls="conditional-cahl2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cahl2">
+                  Winter bird food on arable and horticultural land: CAHL2
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £640 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/cahl2-winter-bird-food-on-arable-and-horticultural-land" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-cahl2">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-cahl2">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-cahl2" name="quantity-cahl2" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CSAM2 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-csam2" name="actions" type="checkbox" value="CSAM2" data-aria-controls="conditional-csam2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-csam2">
+                  Multi-species winter cover crop: CSAM2
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £114 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/csam2-multi-species-winter-cover-crop" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-csam2">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-csam2">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-csam2" name="quantity-csam2" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- BFS1 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-bfs1" name="actions" type="checkbox" value="BFS1" data-aria-controls="conditional-bfs1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-bfs1">
+                  12m to 24m watercourse buffer strip on cultivated land: BFS1
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £732 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/bfs1-12m-to-24m-watercourse-buffer-strip-on-cultivated-land" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-bfs1">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-bfs1">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-bfs1" name="quantity-bfs1" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AHW7 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-ahw7" name="actions" type="checkbox" value="AHW7" data-aria-controls="conditional-ahw7">
+                <label class="govuk-label govuk-checkboxes__label" for="action-ahw7">
+                  Enhanced overwinter stubble: AHW7
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £451 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/ahw7-enhanced-overwinter-stubble" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-ahw7">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-ahw7">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-ahw7" name="quantity-ahw7" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CIPM2 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cipm2" name="actions" type="checkbox" value="CIPM2" data-aria-controls="conditional-cipm2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cipm2">
+                  Flower-rich grass margins: CIPM2
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £640 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/cipm2-flower-rich-grass-margins-blocks-or-in-field-strips" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-cipm2">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-cipm2">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-cipm2" name="quantity-cipm2" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CNUM2 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cnum2" name="actions" type="checkbox" value="CNUM2" data-aria-controls="conditional-cnum2">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cnum2">
+                  Legumes on improved grassland: CNUM2
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £102 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/cnum2-legumes-on-improved-grassland" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-cnum2">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-cnum2">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-cnum2" name="quantity-cnum2" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SOH1 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-soh1" name="actions" type="checkbox" value="SOH1" data-aria-controls="conditional-soh1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-soh1">
+                  No-till farming: SOH1
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £43 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/soh1-no-till-farming" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-soh1">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-soh1">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-soh1" name="quantity-soh1" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CIGL1 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-cigl1" name="actions" type="checkbox" value="CIGL1" data-aria-controls="conditional-cigl1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-cigl1">
+                  Take grassland field corners or blocks out of management: CIGL1
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £235 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/cigl1-take-grassland-field-corners-or-blocks-out-of-management" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-cigl1">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-cigl1">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-cigl1" name="quantity-cigl1" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AHW3 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-ahw3" name="actions" type="checkbox" value="AHW3" data-aria-controls="conditional-ahw3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-ahw3">
+                  Beetle banks: AHW3
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £376 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/ahw3-beetle-banks" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-ahw3">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-ahw3">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-ahw3" name="quantity-ahw3" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CSAM3 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-csam3" name="actions" type="checkbox" value="CSAM3" data-aria-controls="conditional-csam3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-csam3">
+                  Herbal leys: CSAM3
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £133 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/csam3-herbal-leys" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-csam3">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-csam3">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-csam3" name="quantity-csam3" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PRF1 -->
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-prf1" name="actions" type="checkbox" value="PRF1" data-aria-controls="conditional-prf1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-prf1">
+                  Variable rate application of nutrients: PRF1
+                </label>
+                <div class="govuk-hint govuk-checkboxes__hint">
+                  Payment rate: £27 per hectare - <a href="https://www.gov.uk/find-funding-for-land-or-farms/prf1-variable-rate-application-of-nutrients" target="_blank" class="govuk-link">view</a>
+                </div>
+              </div>
+              <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-prf1">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="quantity-prf1">
+                    Quantity
+                  </label>
+                  <div class="govuk-hint govuk-checkboxes__hint">
+                    120.3451 hectares available
+                  </div>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-prf1" name="quantity-prf1" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
+                </div>
+              </div>
+
+              {# <!-- CHRW3 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-chrw3" name="actions" type="checkbox" value="CHRW3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-chrw3">
+                  <strong>CHRW3</strong> - Maintain or establish hedgerow trees
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £10 per 100m</span>
+                </label>
+              </li>
+
+              <!-- WBD3 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-wbd3" name="actions" type="checkbox" value="WBD3">
+                <label class="govuk-label govuk-checkboxes__label" for="action-wbd3">
+                  <strong>WBD3</strong> - In-field grass strips
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £765 per hectare</span>
+                </label>
+              </li>
+
+              <!-- AHW5 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-ahw5" name="actions" type="checkbox" value="AHW5">
+                <label class="govuk-label govuk-checkboxes__label" for="action-ahw5">
+                  <strong>AHW5</strong> - Nesting plots for lapwing
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £765 per hectare</span>
+                </label>
+              </li>
+
+              <!-- GRH1 -->
+              <li class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="action-grh1" name="actions" type="checkbox" value="GRH1">
+                <label class="govuk-label govuk-checkboxes__label" for="action-grh1">
+                  <strong>GRH1</strong> - Manage rough grazing for birds
+                  <br>
+                  <span class="govuk-body-s">Payment rate: £121 per hectare</span>
+                </label>
+              </li> #}
+
+            </div>
+          </fieldset>
+
+          <!-- No results message (hidden by default) -->
+          <div id="no-results-message" style="display: none;">
+            <div class="govuk-!-margin-top-4">
+              <p class="govuk-body govuk-!-font-weight-bold">There are no matching results.</p>
+              <p class="govuk-body">Please check your spelling, or action code, and try again.</p>
+
+            </div>
+          </div>
+
+        <button type="button" id="save-actions-button" class="govuk-button govuk-button--secondary govuk-!-margin-top-6" data-module="govuk-button">
+          Save actions for this parcel
+        </button><br>
+
+        {# <p id="save-confirmation-message" style="display: none;">Your actions have been saved. Add actions to another parcel or continue to review your application.</p> #}
+        <div id="save-confirmation-message" class="govuk-inset-text" style="display: none;">
+          Your actions have been saved. Add actions to another parcel or select continue to review your application. Use the parcels and actions summary below to view all the actions you've added.
+        </div>
+
+        <form action="check-your-answers" method="post" id="continue-form">
+          <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
+          <button type="submit" id="continue-button" disabled class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+   {# <hr> #}
+    <div id="parcels-actions-summary-section" style="display: none;">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <div style="background-color: #f3f2f1; margin-top: 20px; padding: 20px;">
+        {# <h2 class="govuk-heading-s">Parcels and actions summary</h2> #}
+        <div class="govuk-accordion" data-module="govuk-accordion" id="application-summary-accordion">
+          
+
+          <!-- Selected parcels section -->
+          <div class="govuk-accordion__section govuk-accordion__section--expanded">
+            <div class="govuk-accordion__section-header">
+              <h3 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-2">
+                  Actions you've just added
+                </span>
+              </h3>
+            </div>
+            <div id="application-summary-accordion-content-2" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-2">
+              {# <p class="govuk-body" id="application-summary-intro" style="display: none;">You have selected actions for the following parcels</p> #}
+              <div id="application-summary-empty" style="display: block;">
+                <p class="govuk-body" style="color: #505a5f;">No actions selected yet. Select a parcel and add actions to begin.</p>
+              </div>
+              <div id="application-summary-list" style="display: none;">
+                <!-- Selected parcels and actions will be dynamically added here -->
+              </div>
+            </div>
+            </div>
+                      <!-- Existing parcels section -->
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h3 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-1">
+                  Actions from previous agreements
+                </span>
+              </h3>
+            </div>
+            <div id="application-summary-accordion-content-1" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-1">
+              {# <p class="govuk-body">These parcels have actions from previous agreements</p> #}
+              
+              <div id="oak-tree-existing-actions">
+              <h2 class="govuk-heading-s">Woods View</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">12.8765 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">7.5000 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">1 August 2027</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Multi-species winter cover crop: CSAM2</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-s">Long Meadow</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">8.4521 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">4.4521 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">15 September 2028</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Legumes on improved grassland: CNUM2</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-s">Willow Grove</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">11.7654 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">11.7654 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">30 June 2027</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Enhanced overwinter stubble: AHW7</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+
+              <h2 class="govuk-heading-s">Valley Pasture</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">13.2341 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">13.2341 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">1 October 2026</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Enhanced overwinter stubble: AHW7</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+
+              <h2 class="govuk-heading-s">Gate Pasture</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">12.1098 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">12.1098 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">15 December 2027</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>12m to 24m watercourse buffer strip on cultivated land: BFS1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+
+              <h2 class="govuk-heading-s">Chalk Field</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">11.4521 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">11.4521 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">28 February 2028</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Multi-species winter cover crop: CSAM2</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              </div>
+              
+              <div id="blackberry-existing-actions">
+              <h2 class="govuk-heading-s">Spring Pasture</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">64.3215 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">44.3215 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">1 November 2026</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Assess soil, produce soil management plan, test soil organic matter: SOH1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-s">Brook Field</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">52.7841 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">32.7841 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">28 February 2027</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Herbal leys: CSAM3</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              
+              <h2 class="govuk-heading-s">Valley Bottom</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">88.9423 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">60.9423 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">1 November 2026</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">2</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Take grassland field corners or blocks out of management: CIGL1</li>
+                      <li>Winter bird food on arable land: BFS1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+
+              <h2 class="govuk-heading-s">Upper Slope</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">54.6789 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">54.6789 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">15 March 2027</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Herbal leys: CSAM3</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+
+              <h2 class="govuk-heading-s">Lane Meadow</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">62.1098 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">62.1098 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">30 April 2028</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Beetle banks: AHW3</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+
+              <h2 class="govuk-heading-s">Stone Bridge</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">51.2341 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">51.2341 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">31 May 2027</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">1</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>12m to 24m watercourse buffer strip on cultivated land: BFS1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+              </div>
+            </div>
+          </div>
+
+          </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block pageScripts %}
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+  <!-- Pass server data to JavaScript -->
+  {% if data['parcelSelectionsData'] %}
+  <script id="session-data" type="application/json">{{ data['parcelSelectionsData'] | safe }}</script>
+  {% endif %}
+
+  <script>
+    // Initialize the map - centered between both locations
+    var map = L.map('map', {
+      center: [51.85, -1.0], // Adjusted to show both locations without overlap
+      zoom: 9,
+      zoomControl: true,
+      scrollWheelZoom: true
+    });
+
+    // Add OpenStreetMap satellite layer
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Store polygon references
+    var parcelPolygons = {};
+    var currentSelectedParcel = null;
+
+    // Parcel data with polygon coordinates matching actual field boundaries
+    var parcelData = {
+      'lower-field': {
+        name: 'Lower Field',
+        osRef: 'SP 476 432',
+        numParcels: 20,
+        totalArea: '120.3451',
+        availableArea: '120.3451',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7643, -1.2395],
+          [51.7643, -1.2365],
+          [51.7635, -1.2363],
+          [51.7630, -1.2367],
+          [51.7628, -1.2393],
+          [51.7633, -1.2396]
+        ],
+        actions: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2'],
+        color: '#8FBC8F'
+      },
+      'upper-field': {
+        name: 'Upper Field',
+        osRef: 'SP 478 434',
+        numParcels: 15,
+        totalArea: '5.2341',
+        availableArea: '5.2341',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7655, -1.2396],
+          [51.7655, -1.2375],
+          [51.7650, -1.2373],
+          [51.7643, -1.2365],
+          [51.7643, -1.2395],
+          [51.7648, -1.2397]
+        ],
+        actions: ['CNUM3', 'CAHL1', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1'],
+        color: '#DEB887'
+      },
+      'woods-view': {
+        name: 'Woods View',
+        osRef: 'SP 480 436',
+        numParcels: 8,
+        totalArea: '12.8765',
+        availableArea: '7.5000',
+        numActions: 1,
+        location: 'oxfordshire',
+        coords: [
+          [51.7667, -1.2397],
+          [51.7667, -1.2367],
+          [51.7662, -1.2365],
+          [51.7655, -1.2375],
+          [51.7655, -1.2396],
+          [51.7660, -1.2398]
+        ],
+        actions: ['CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'SOH1', 'CIGL1', 'AHW3', 'CNUM3'],
+        color: '#228B22'
+      },
+      'long-meadow': {
+        name: 'Long Meadow',
+        osRef: 'SP 474 430',
+        numParcels: 12,
+        totalArea: '8.4521',
+        availableArea: '4.4521',
+        numActions: 1,
+        location: 'oxfordshire',
+        coords: [
+          [51.7628, -1.2393],
+          [51.7630, -1.2367],
+          [51.7623, -1.2364],
+          [51.7616, -1.2368],
+          [51.7613, -1.2392],
+          [51.7620, -1.2395]
+        ],
+        actions: ['CNUM2', 'CIGL1', 'CSAM3', 'CAHL1', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'PRF1'],
+        color: '#90EE90'
+      },
+      'river-pasture': {
+        name: 'River Pasture',
+        osRef: 'SP 482 432',
+        numParcels: 18,
+        totalArea: '15.3267',
+        availableArea: '15.3267',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7643, -1.2365],
+          [51.7650, -1.2373],
+          [51.7650, -1.2340],
+          [51.7642, -1.2337],
+          [51.7635, -1.2340],
+          [51.7635, -1.2363]
+        ],
+        actions: ['BFS1', 'CAHL1', 'CAHL2', 'CIPM2', 'CNUM2', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1'],
+        color: '#87CEEB'
+      },
+      'top-barn-field': {
+        name: 'Top Barn Field',
+        osRef: 'SP 484 434',
+        numParcels: 10,
+        totalArea: '6.7894',
+        availableArea: '6.7894',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7655, -1.2375],
+          [51.7662, -1.2365],
+          [51.7662, -1.2340],
+          [51.7655, -1.2337],
+          [51.7650, -1.2340],
+          [51.7650, -1.2373]
+        ],
+        actions: ['CNUM3', 'SOH1', 'PRF1', 'CSAM2', 'CAHL2', 'BFS1', 'CIPM2', 'CIGL1', 'AHW3', 'CSAM3'],
+        color: '#F4A460'
+      },
+      'oak-tree-field': {
+        name: 'Oak Tree Field',
+        osRef: 'SP 486 436',
+        numParcels: 14,
+        totalArea: '11.2483',
+        availableArea: '11.2483',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7667, -1.2397],
+          [51.7673, -1.2395],
+          [51.7675, -1.2367],
+          [51.7669, -1.2365],
+          [51.7667, -1.2367]
+        ],
+        actions: ['CNUM3', 'CIPM2', 'AHW7', 'CAHL1', 'BFS1', 'SOH1', 'CIGL1', 'CNUM2', 'AHW3', 'CSAM3'],
+        color: '#6B8E23'
+      },
+      'south-slope': {
+        name: 'South Slope',
+        osRef: 'SP 472 428',
+        numParcels: 11,
+        totalArea: '9.6721',
+        availableArea: '9.6721',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7613, -1.2392],
+          [51.7616, -1.2368],
+          [51.7608, -1.2365],
+          [51.7601, -1.2369],
+          [51.7600, -1.2390],
+          [51.7605, -1.2393]
+        ],
+        actions: ['SOH1', 'PRF1', 'CNUM3', 'AHW3', 'CAHL2', 'CSAM2', 'BFS1', 'CIPM2'],
+        color: '#DAA520'
+      },
+      'mill-field': {
+        name: 'Mill Field',
+        osRef: 'SP 488 431',
+        numParcels: 9,
+        totalArea: '7.1358',
+        availableArea: '7.1358',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7642, -1.2337],
+          [51.7650, -1.2340],
+          [51.7655, -1.2337],
+          [51.7655, -1.2320],
+          [51.7645, -1.2318],
+          [51.7638, -1.2323]
+        ],
+        actions: ['CSAM2', 'CNUM2', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'CAHL1', 'CIGL1', 'CSAM3'],
+        color: '#BC8F8F'
+      },
+      'spring-field': {
+        name: 'Spring Field',
+        osRef: 'SP 475 438',
+        numParcels: 8,
+        totalArea: '8.9234',
+        availableArea: '8.9234',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7600, -1.2390],
+          [51.7600, -1.2369],
+          [51.7593, -1.2366],
+          [51.7586, -1.2370],
+          [51.7585, -1.2388],
+          [51.7592, -1.2391]
+        ],
+        actions: ['CNUM3', 'CAHL1', 'BFS1', 'CIPM2'],
+        color: '#98FB98'
+      },
+      'hollow-meadow': {
+        name: 'Hollow Meadow',
+        osRef: 'SP 473 436',
+        numParcels: 12,
+        totalArea: '14.5678',
+        availableArea: '14.5678',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7585, -1.2388],
+          [51.7586, -1.2370],
+          [51.7579, -1.2367],
+          [51.7572, -1.2371],
+          [51.7571, -1.2386],
+          [51.7578, -1.2389]
+        ],
+        actions: ['CSAM2', 'BFS1', 'AHW7', 'CAHL2', 'SOH1'],
+        color: '#90EE90'
+      },
+      'brook-pasture': {
+        name: 'Brook Pasture',
+        osRef: 'SP 479 440',
+        numParcels: 6,
+        totalArea: '6.3421',
+        availableArea: '6.3421',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7593, -1.2366],
+          [51.7600, -1.2369],
+          [51.7605, -1.2364],
+          [51.7605, -1.2347],
+          [51.7598, -1.2344],
+          [51.7591, -1.2348]
+        ],
+        actions: ['CNUM2', 'CIGL1', 'CAHL1', 'PRF1'],
+        color: '#87CEEB'
+      },
+      'willow-grove': {
+        name: 'Willow Grove',
+        osRef: 'SP 471 434',
+        numParcels: 10,
+        totalArea: '11.7654',
+        availableArea: '11.7654',
+        numActions: 1,
+        location: 'oxfordshire',
+        coords: [
+          [51.7571, -1.2386],
+          [51.7572, -1.2371],
+          [51.7565, -1.2368],
+          [51.7558, -1.2372],
+          [51.7557, -1.2384],
+          [51.7564, -1.2387]
+        ],
+        actions: ['AHW3', 'CAHL1', 'CSAM3', 'BFS1', 'CIPM2'],
+        color: '#DEB887'
+      },
+      'boundary-meadow': {
+        name: 'Boundary Meadow',
+        osRef: 'SP 485 442',
+        numParcels: 9,
+        totalArea: '9.8765',
+        availableArea: '9.8765',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7605, -1.2347],
+          [51.7605, -1.2364],
+          [51.7613, -1.2367],
+          [51.7618, -1.2362],
+          [51.7618, -1.2345],
+          [51.7611, -1.2342]
+        ],
+        actions: ['CNUM3', 'SOH1', 'CAHL2', 'CSAM2', 'BFS1'],
+        color: '#F4A460'
+      },
+      'valley-pasture': {
+        name: 'Valley Pasture',
+        osRef: 'SP 469 444',
+        numParcels: 11,
+        totalArea: '13.2341',
+        availableArea: '13.2341',
+        numActions: 1,
+        location: 'oxfordshire',
+        coords: [
+          [51.7618, -1.2345],
+          [51.7618, -1.2362],
+          [51.7625, -1.2365],
+          [51.7630, -1.2360],
+          [51.7630, -1.2343],
+          [51.7623, -1.2340]
+        ],
+        actions: ['BFS1', 'CAHL1', 'CIGL1', 'CSAM2', 'AHW7'],
+        color: '#228B22'
+      },
+      'back-field': {
+        name: 'Back Field',
+        osRef: 'SP 491 446',
+        numParcels: 7,
+        totalArea: '7.4521',
+        availableArea: '7.4521',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7557, -1.2384],
+          [51.7558, -1.2372],
+          [51.7551, -1.2369],
+          [51.7544, -1.2373],
+          [51.7543, -1.2382],
+          [51.7550, -1.2385]
+        ],
+        actions: ['CNUM3', 'CAHL2', 'BFS1', 'SOH1'],
+        color: '#DAA520'
+      },
+      'lane-close': {
+        name: 'Lane Close',
+        osRef: 'SP 467 432',
+        numParcels: 5,
+        totalArea: '4.8945',
+        availableArea: '4.8945',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7565, -1.2368],
+          [51.7572, -1.2371],
+          [51.7579, -1.2367],
+          [51.7579, -1.2352],
+          [51.7572, -1.2349],
+          [51.7565, -1.2353]
+        ],
+        actions: ['CAHL1', 'PRF1', 'CNUM3'],
+        color: '#F0E68C'
+      },
+      'gate-pasture': {
+        name: 'Gate Pasture',
+        osRef: 'SP 493 440',
+        numParcels: 10,
+        totalArea: '12.1098',
+        availableArea: '12.1098',
+        numActions: 1,
+        location: 'oxfordshire',
+        coords: [
+          [51.7598, -1.2344],
+          [51.7605, -1.2347],
+          [51.7611, -1.2342],
+          [51.7611, -1.2325],
+          [51.7604, -1.2322],
+          [51.7596, -1.2327]
+        ],
+        actions: ['BFS1', 'CSAM2', 'CAHL2', 'CIGL1', 'SOH1'],
+        color: '#B0C4DE'
+      },
+      'orchard-field': {
+        name: 'Orchard Field',
+        osRef: 'SP 465 430',
+        numParcels: 6,
+        totalArea: '6.7654',
+        availableArea: '6.7654',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7543, -1.2382],
+          [51.7544, -1.2373],
+          [51.7537, -1.2370],
+          [51.7530, -1.2374],
+          [51.7529, -1.2380],
+          [51.7536, -1.2383]
+        ],
+        actions: ['CNUM2', 'AHW3', 'CAHL1', 'CIPM2'],
+        color: '#DDA0DD'
+      },
+      'church-meadow': {
+        name: 'Church Meadow',
+        osRef: 'SP 495 438',
+        numParcels: 8,
+        totalArea: '9.5432',
+        availableArea: '9.5432',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7611, -1.2325],
+          [51.7611, -1.2342],
+          [51.7618, -1.2345],
+          [51.7623, -1.2340],
+          [51.7623, -1.2323],
+          [51.7616, -1.2320]
+        ],
+        actions: ['CAHL2', 'BFS1', 'SOH1', 'CSAM2'],
+        color: '#F08080'
+      },
+      'new-pasture': {
+        name: 'New Pasture',
+        osRef: 'SP 463 433',
+        numParcels: 7,
+        totalArea: '8.2341',
+        availableArea: '8.2341',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7551, -1.2369],
+          [51.7558, -1.2372],
+          [51.7565, -1.2368],
+          [51.7565, -1.2353],
+          [51.7558, -1.2350],
+          [51.7551, -1.2354]
+        ],
+        actions: ['CNUM3', 'CIPM2', 'CAHL1', 'AHW7'],
+        color: '#9ACD32'
+      },
+      'chalk-field': {
+        name: 'Chalk Field',
+        osRef: 'SP 497 436',
+        numParcels: 10,
+        totalArea: '11.4521',
+        availableArea: '11.4521',
+        numActions: 1,
+        location: 'oxfordshire',
+        coords: [
+          [51.7623, -1.2323],
+          [51.7623, -1.2340],
+          [51.7630, -1.2343],
+          [51.7635, -1.2338],
+          [51.7635, -1.2321],
+          [51.7628, -1.2318]
+        ],
+        actions: ['CSAM2', 'BFS1', 'CAHL1', 'CIGL1', 'CNUM2'],
+        color: '#FFE4B5'
+      },
+      'elm-grove': {
+        name: 'Elm Grove',
+        osRef: 'SP 461 431',
+        numParcels: 5,
+        totalArea: '5.9876',
+        availableArea: '5.9876',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7537, -1.2370],
+          [51.7544, -1.2373],
+          [51.7551, -1.2369],
+          [51.7551, -1.2354],
+          [51.7544, -1.2351],
+          [51.7537, -1.2355]
+        ],
+        actions: ['AHW3', 'CAHL1', 'PRF1'],
+        color: '#FFDAB9'
+      },
+      'pond-meadow': {
+        name: 'Pond Meadow',
+        osRef: 'SP 499 434',
+        numParcels: 7,
+        totalArea: '7.6543',
+        availableArea: '7.6543',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7604, -1.2322],
+          [51.7611, -1.2325],
+          [51.7616, -1.2320],
+          [51.7616, -1.2305],
+          [51.7609, -1.2302],
+          [51.7602, -1.2307]
+        ],
+        actions: ['BFS1', 'CIPM2', 'CAHL2', 'SOH1'],
+        color: '#E0FFFF'
+      },
+      'corner-close': {
+        name: 'Corner Close',
+        osRef: 'SP 459 429',
+        numParcels: 6,
+        totalArea: '6.1234',
+        availableArea: '6.1234',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7529, -1.2380],
+          [51.7530, -1.2374],
+          [51.7523, -1.2371],
+          [51.7516, -1.2375],
+          [51.7515, -1.2378],
+          [51.7522, -1.2381]
+        ],
+        actions: ['CIPM2', 'CAHL1', 'CNUM2'],
+        color: '#7FFFD4'
+      },
+      'far-pasture': {
+        name: 'Far Pasture',
+        osRef: 'SP 501 432',
+        numParcels: 8,
+        totalArea: '9.3421',
+        availableArea: '9.3421',
+        numActions: 0,
+        location: 'oxfordshire',
+        coords: [
+          [51.7616, -1.2305],
+          [51.7616, -1.2320],
+          [51.7623, -1.2323],
+          [51.7628, -1.2318],
+          [51.7628, -1.2303],
+          [51.7621, -1.2300]
+        ],
+        actions: ['BFS1', 'CAHL2', 'CSAM2', 'SOH1', 'CIGL1'],
+        color: '#BC8F8F'
+      },
+      // Blackberry Farm parcels (approximately 50 miles east)
+      'north-field-bucks': {
+        name: 'North Field',
+        osRef: 'SP 892 524',
+        numParcels: 18,
+        totalArea: '95.4231',
+        availableArea: '95.4231',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9520, -0.7577],
+          [51.9520, -0.7547],
+          [51.9512, -0.7545],
+          [51.9507, -0.7549],
+          [51.9505, -0.7575],
+          [51.9510, -0.7578]
+        ],
+        actions: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2'],
+        color: '#8FBC8F'
+      },
+      'eastern-meadow': {
+        name: 'Eastern Meadow',
+        osRef: 'SP 895 526',
+        numParcels: 12,
+        totalArea: '78.5624',
+        availableArea: '78.5624',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9532, -0.7578],
+          [51.9532, -0.7548],
+          [51.9527, -0.7546],
+          [51.9520, -0.7547],
+          [51.9520, -0.7577],
+          [51.9525, -0.7579]
+        ],
+        actions: ['CNUM3', 'CAHL1', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1'],
+        color: '#DEB887'
+      },
+      'spring-pasture': {
+        name: 'Spring Pasture',
+        osRef: 'SP 898 528',
+        numParcels: 10,
+        totalArea: '64.3215',
+        availableArea: '44.3215',
+        numActions: 1,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9544, -0.7579],
+          [51.9544, -0.7549],
+          [51.9539, -0.7547],
+          [51.9532, -0.7548],
+          [51.9532, -0.7578],
+          [51.9537, -0.7580]
+        ],
+        actions: ['CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'SOH1', 'CIGL1', 'AHW3', 'CNUM3'],
+        color: '#228B22'
+      },
+      'brook-field': {
+        name: 'Brook Field',
+        osRef: 'SP 890 519',
+        numParcels: 14,
+        totalArea: '52.7841',
+        availableArea: '32.7841',
+        numActions: 1,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9505, -0.7575],
+          [51.9507, -0.7549],
+          [51.9500, -0.7546],
+          [51.9493, -0.7550],
+          [51.9490, -0.7574],
+          [51.9497, -0.7577]
+        ],
+        actions: ['CNUM2', 'CIGL1', 'CSAM3', 'CAHL1', 'BFS1', 'AHW7', 'CIPM2', 'SOH1', 'PRF1'],
+        color: '#90EE90'
+      },
+      'valley-bottom': {
+        name: 'Valley Bottom',
+        osRef: 'SP 893 526',
+        numParcels: 16,
+        totalArea: '88.9423',
+        availableArea: '60.9423',
+        numActions: 2,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9520, -0.7547],
+          [51.9527, -0.7546],
+          [51.9527, -0.7513],
+          [51.9519, -0.7510],
+          [51.9512, -0.7513],
+          [51.9512, -0.7545]
+        ],
+        actions: ['BFS1', 'CAHL1', 'CAHL2', 'CIPM2', 'CNUM2', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1'],
+        color: '#87CEEB'
+      },
+      'corner-paddock': {
+        name: 'Corner Paddock',
+        osRef: 'SP 901 521',
+        numParcels: 4,
+        totalArea: '18.5673',
+        availableArea: '18.5673',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9500, -0.7546],
+          [51.9507, -0.7549],
+          [51.9512, -0.7545],
+          [51.9512, -0.7513],
+          [51.9505, -0.7510],
+          [51.9498, -0.7514]
+        ],
+        actions: ['CIGL1', 'CNUM2', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CSAM3', 'PRF1'],
+        color: '#98FB98'
+      },
+      'chalk-slope': {
+        name: 'Chalk Slope',
+        osRef: 'SP 887 518',
+        numParcels: 9,
+        totalArea: '55.3287',
+        availableArea: '55.3287',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9490, -0.7574],
+          [51.9493, -0.7550],
+          [51.9485, -0.7547],
+          [51.9478, -0.7551],
+          [51.9477, -0.7572],
+          [51.9482, -0.7575]
+        ],
+        actions: ['SOH1', 'PRF1', 'CNUM3', 'AHW3', 'CAHL2', 'CSAM2', 'BFS1', 'CIPM2'],
+        color: '#DAA520'
+      },
+      'woodland-edge': {
+        name: 'Woodland Edge',
+        osRef: 'SP 904 524',
+        numParcels: 5,
+        totalArea: '28.4516',
+        availableArea: '28.4516',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9498, -0.7514],
+          [51.9505, -0.7510],
+          [51.9512, -0.7513],
+          [51.9512, -0.7500],
+          [51.9505, -0.7497],
+          [51.9498, -0.7500]
+        ],
+        actions: ['CNUM3', 'CSAM3', 'PRF1', 'AHW3', 'CIPM2', 'BFS1', 'CAHL1'],
+        color: '#D2B48C'
+      },
+      'river-meadow': {
+        name: 'River Meadow',
+        osRef: 'SP 883 517',
+        numParcels: 11,
+        totalArea: '67.3421',
+        availableArea: '67.3421',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9477, -0.7572],
+          [51.9477, -0.7552],
+          [51.9470, -0.7549],
+          [51.9463, -0.7553],
+          [51.9461, -0.7570],
+          [51.9468, -0.7573]
+        ],
+        actions: ['CAHL1', 'BFS1', 'CIPM2', 'CNUM2', 'AHW7'],
+        color: '#98FB98'
+      },
+      'barn-field': {
+        name: 'Barn Field',
+        osRef: 'SP 888 523',
+        numParcels: 9,
+        totalArea: '45.2187',
+        availableArea: '45.2187',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9477, -0.7552],
+          [51.9485, -0.7548],
+          [51.9488, -0.7525],
+          [51.9481, -0.7522],
+          [51.9473, -0.7526],
+          [51.9470, -0.7549]
+        ],
+        actions: ['CNUM3', 'CAHL2', 'CSAM2', 'SOH1'],
+        color: '#F0E68C'
+      },
+      'oak-grove': {
+        name: 'Oak Grove',
+        osRef: 'SP 881 515',
+        numParcels: 6,
+        totalArea: '32.6543',
+        availableArea: '32.6543',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9461, -0.7570],
+          [51.9463, -0.7553],
+          [51.9456, -0.7550],
+          [51.9449, -0.7554],
+          [51.9447, -0.7568],
+          [51.9454, -0.7571]
+        ],
+        actions: ['AHW3', 'CIGL1', 'CAHL1', 'PRF1', 'BFS1'],
+        color: '#B0C4DE'
+      },
+      'lower-pasture': {
+        name: 'Lower Pasture',
+        osRef: 'SP 900 529',
+        numParcels: 13,
+        totalArea: '71.8932',
+        availableArea: '71.8932',
+        numActions: 1,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9544, -0.7549],
+          [51.9539, -0.7547],
+          [51.9532, -0.7548],
+          [51.9527, -0.7546],
+          [51.9527, -0.7513],
+          [51.9544, -0.7516]
+        ],
+        actions: ['BFS1', 'CNUM2', 'CIPM2', 'CSAM3', 'CAHL1', 'AHW7'],
+        color: '#9ACD32'
+      },
+      'mill-meadow': {
+        name: 'Mill Meadow',
+        osRef: 'SP 902 527',
+        numParcels: 10,
+        totalArea: '58.4521',
+        availableArea: '58.4521',
+        numActions: 2,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9544, -0.7516],
+          [51.9527, -0.7513],
+          [51.9519, -0.7510],
+          [51.9515, -0.7495],
+          [51.9522, -0.7490],
+          [51.9544, -0.7493]
+        ],
+        actions: ['CAHL2', 'CSAM2', 'BFS1', 'CIPM2', 'SOH1', 'CIGL1'],
+        color: '#FFE4B5'
+      },
+      'church-field': {
+        name: 'Church Field',
+        osRef: 'SP 879 520',
+        numParcels: 8,
+        totalArea: '36.9876',
+        availableArea: '36.9876',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9463, -0.7553],
+          [51.9470, -0.7549],
+          [51.9473, -0.7526],
+          [51.9466, -0.7523],
+          [51.9459, -0.7527],
+          [51.9456, -0.7550]
+        ],
+        actions: ['CSAM2', 'BFS1', 'CIPM2', 'SOH1', 'CAHL2'],
+        color: '#F08080'
+      },
+      'pond-close': {
+        name: 'Pond Close',
+        osRef: 'SP 897 532',
+        numParcels: 5,
+        totalArea: '29.3214',
+        availableArea: '29.3214',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9447, -0.7568],
+          [51.9449, -0.7554],
+          [51.9442, -0.7551],
+          [51.9435, -0.7555],
+          [51.9433, -0.7566],
+          [51.9440, -0.7569]
+        ],
+        actions: ['AHW3', 'CAHL1', 'PRF1', 'CNUM2'],
+        color: '#87CEEB'
+      },
+      'upper-slope': {
+        name: 'Upper Slope',
+        osRef: 'SP 899 533',
+        numParcels: 10,
+        totalArea: '54.6789',
+        availableArea: '54.6789',
+        numActions: 1,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9556, -0.7580],
+          [51.9556, -0.7550],
+          [51.9549, -0.7548],
+          [51.9544, -0.7549],
+          [51.9544, -0.7579],
+          [51.9551, -0.7581]
+        ],
+        actions: ['CNUM3', 'BFS1', 'CIPM2', 'CAHL1', 'CSAM3'],
+        color: '#FFDAB9'
+      },
+      'boundary-field': {
+        name: 'Boundary Field',
+        osRef: 'SP 895 530',
+        numParcels: 9,
+        totalArea: '48.5432',
+        availableArea: '48.5432',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9544, -0.7579],
+          [51.9544, -0.7549],
+          [51.9539, -0.7547],
+          [51.9532, -0.7548],
+          [51.9532, -0.7578],
+          [51.9537, -0.7580]
+        ],
+        actions: ['CAHL2', 'CSAM2', 'AHW7', 'SOH1', 'CIGL1'],
+        color: '#E0FFFF'
+      },
+      'lane-meadow': {
+        name: 'Lane Meadow',
+        osRef: 'SP 893 527',
+        numParcels: 11,
+        totalArea: '62.1098',
+        availableArea: '62.1098',
+        numActions: 1,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9532, -0.7578],
+          [51.9532, -0.7548],
+          [51.9527, -0.7546],
+          [51.9520, -0.7547],
+          [51.9520, -0.7577],
+          [51.9525, -0.7579]
+        ],
+        actions: ['CNUM2', 'BFS1', 'CIPM2', 'CAHL1', 'AHW3', 'PRF1'],
+        color: '#ADFF2F'
+      },
+      'ash-copse': {
+        name: 'Ash Copse',
+        osRef: 'SP 905 525',
+        numParcels: 7,
+        totalArea: '38.7654',
+        availableArea: '38.7654',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9544, -0.7493],
+          [51.9556, -0.7494],
+          [51.9558, -0.7475],
+          [51.9550, -0.7472],
+          [51.9544, -0.7475],
+          [51.9542, -0.7485]
+        ],
+        actions: ['CNUM3', 'CSAM3', 'AHW3', 'CAHL1'],
+        color: '#D2691E'
+      },
+      'home-paddock': {
+        name: 'Home Paddock',
+        osRef: 'SP 891 522',
+        numParcels: 6,
+        totalArea: '33.4521',
+        availableArea: '33.4521',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9498, -0.7500],
+          [51.9505, -0.7497],
+          [51.9512, -0.7500],
+          [51.9512, -0.7485],
+          [51.9505, -0.7482],
+          [51.9498, -0.7485]
+        ],
+        actions: ['CIPM2', 'BFS1', 'CAHL2', 'SOH1'],
+        color: '#FFC0CB'
+      },
+      'gate-field': {
+        name: 'Gate Field',
+        osRef: 'SP 901 528',
+        numParcels: 8,
+        totalArea: '44.8765',
+        availableArea: '44.8765',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9556, -0.7550],
+          [51.9549, -0.7548],
+          [51.9544, -0.7549],
+          [51.9544, -0.7516],
+          [51.9551, -0.7514],
+          [51.9556, -0.7517]
+        ],
+        actions: ['CNUM2', 'CSAM2', 'CAHL1', 'AHW7', 'CIGL1'],
+        color: '#CD853F'
+      },
+      'stone-bridge': {
+        name: 'Stone Bridge',
+        osRef: 'SP 877 521',
+        numParcels: 9,
+        totalArea: '51.2341',
+        availableArea: '51.2341',
+        numActions: 1,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9470, -0.7549],
+          [51.9473, -0.7526],
+          [51.9466, -0.7523],
+          [51.9459, -0.7527],
+          [51.9456, -0.7550],
+          [51.9463, -0.7553]
+        ],
+        actions: ['BFS1', 'CIPM2', 'CAHL2', 'CSAM2', 'SOH1'],
+        color: '#BC8F8F'
+      },
+      'beech-wood': {
+        name: 'Beech Wood',
+        osRef: 'SP 907 524',
+        numParcels: 7,
+        totalArea: '39.8765',
+        availableArea: '39.8765',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9558, -0.7475],
+          [51.9565, -0.7477],
+          [51.9567, -0.7460],
+          [51.9560, -0.7458],
+          [51.9553, -0.7460],
+          [51.9550, -0.7472]
+        ],
+        actions: ['CNUM3', 'AHW3', 'CAHL1', 'CSAM3'],
+        color: '#556B2F'
+      },
+      'orchard-plot': {
+        name: 'Orchard Plot',
+        osRef: 'SP 875 519',
+        numParcels: 6,
+        totalArea: '35.4321',
+        availableArea: '35.4321',
+        numActions: 0,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9449, -0.7554],
+          [51.9456, -0.7550],
+          [51.9459, -0.7527],
+          [51.9452, -0.7524],
+          [51.9445, -0.7528],
+          [51.9442, -0.7551]
+        ],
+        actions: ['CIPM2', 'CAHL1', 'SOH1', 'PRF1'],
+        color: '#FFB6C1'
+      },
+      'new-ground': {
+        name: 'New Ground',
+        osRef: 'SP 903 526',
+        numParcels: 9,
+        totalArea: '49.7654',
+        availableArea: '49.7654',
+        numActions: 1,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9556, -0.7517],
+          [51.9551, -0.7514],
+          [51.9544, -0.7516],
+          [51.9544, -0.7493],
+          [51.9551, -0.7491],
+          [51.9556, -0.7494]
+        ],
+        actions: ['CNUM2', 'BFS1', 'CSAM2', 'CIPM2', 'CAHL2'],
+        color: '#F5DEB3'
+      },
+      'far-meadow': {
+        name: 'Far Meadow',
+        osRef: 'SP 909 531',
+        numParcels: 10,
+        totalArea: '56.3210',
+        availableArea: '56.3210',
+        numActions: 2,
+        location: 'buckinghamshire',
+        coords: [
+          [51.9433, -0.7566],
+          [51.9435, -0.7555],
+          [51.9428, -0.7552],
+          [51.9421, -0.7556],
+          [51.9419, -0.7564],
+          [51.9426, -0.7567]
+        ],
+        actions: ['CAHL1', 'BFS1', 'AHW7', 'CIPM2', 'CSAM3', 'SOH1'],
+        color: '#DA70D6'
+      }
+    };
+
+    // Payment rates per hectare for each action
+    var paymentRates = {
+      'CNUM3': 382,
+      'CAHL1': 614,
+      'CAHL2': 640,
+      'CSAM2': 114,
+      'BFS1': 732,
+      'AHW7': 451,
+      'CIPM2': 640,
+      'CNUM2': 102,
+      'SOH1': 43,
+      'CIGL1': 235,
+      'AHW3': 376,
+      'CSAM3': 133,
+      'PRF1': 27
+    };
+
+    // Object to store all parcel selections
+    var parcelSelections = {};
+
+    // Default style for parcels
+    function defaultStyle(feature) {
+      return {
+        fillColor: feature.properties.color,
+        weight: 2,
+        opacity: 1,
+        color: '#0b0c0c',
+        fillOpacity: 0.5
+      };
+    }
+
+    // Highlight style
+    function highlightStyle(feature) {
+      return {
+        fillColor: feature.properties.color,
+        weight: 4,
+        opacity: 1,
+        color: '#ffdd00',
+        fillOpacity: 0.7
+      };
+    }
+
+    // Selected style
+    function selectedStyle(feature) {
+      return {
+        fillColor: feature.properties.color,
+        weight: 5,
+        opacity: 1,
+        color: '#00703c',
+        fillOpacity: 1
+      };
+    }
+
+    // Create polygons for each parcel
+    Object.keys(parcelData).forEach(function(parcelId) {
+      var data = parcelData[parcelId];
+      
+      var polygon = L.polygon(data.coords, {
+        color: '#0b0c0c',
+        fillColor: data.color,
+        fillOpacity: 0.5,
+        weight: 2
+      }).addTo(map);
+
+      // Store reference
+      parcelPolygons[parcelId] = polygon;
+
+      // Add parcel ID to properties
+      polygon.feature = {
+        type: 'Feature',
+        properties: {
+          parcelId: parcelId,
+          name: data.name,
+          color: data.color
+        }
+      };
+
+      // Bind popup with options to make it more compact
+      var popupContent = '<h3>' + data.name + '</h3>' +
+        '<p>Available area: ' + data.availableArea + ' ha</p>' +
+        '<p>Actions from previous agreements: ' + data.numActions;
+      
+      if (data.numActions > 0) {
+        popupContent += ' - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a>';
+      }
+      
+      popupContent += '</p><p style="margin-top: 10px;">Permanent grassland</p>';
+      
+      polygon.bindPopup(popupContent, {
+        maxWidth: 180,
+        minWidth: 150,
+        autoPan: false
+      });
+
+      // Mouseover event
+      polygon.on('mouseover', function(e) {
+        if (currentSelectedParcel !== parcelId) {
+          this.setStyle(highlightStyle(this.feature));
+        }
+      });
+
+      // Mouseout event
+      polygon.on('mouseout', function(e) {
+        if (currentSelectedParcel !== parcelId) {
+          this.setStyle(defaultStyle(this.feature));
+        }
+      });
+
+      // Click event
+      polygon.on('click', function(e) {
+        selectParcel(parcelId);
+        // Only zoom if no parcel is currently selected, otherwise just pan
+        if (currentSelectedParcel === null) {
+          map.setView(this.getBounds().getCenter(), 14);
+        } else {
+          map.panTo(this.getBounds().getCenter());
+        }
+      });
+
+      // Add label
+      var center = polygon.getBounds().getCenter();
+      var label = L.marker(center, {
+        icon: L.divIcon({
+          className: 'parcel-label',
+          html: data.name,
+          iconSize: null
+        })
+      }).addTo(map);
+      
+      // Make label clickable
+      label.on('click', function(e) {
+        selectParcel(parcelId);
+        // Only zoom if no parcel is currently selected, otherwise just pan
+        if (currentSelectedParcel === null) {
+          map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
+        } else {
+          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
+        }
+      });
+    });
+
+    // Function to restore parcel state from saved selections
+    function restoreParcelState(parcelId) {
+      console.log('Restoring parcel state for:', parcelId);
+      
+      // First, uncheck all checkboxes and clear all inputs
+      $('input[name="actions"]').prop('checked', false).attr('aria-expanded', 'false');
+      $('input[type="text"][id^="quantity-"]').val('');
+      
+      // Hide all conditional content
+      $('.govuk-checkboxes__conditional').addClass('govuk-checkboxes__conditional--hidden');
+      
+      // Get saved selections for this parcel
+      var savedSelections = parcelSelections[parcelId];
+      if (!savedSelections || !savedSelections.actions) {
+        console.log('No saved selections found');
+        return;
+      }
+      
+      console.log('Restoring actions:', savedSelections.actions);
+      
+      // Restore each saved action
+      savedSelections.actions.forEach(function(action) {
+        console.log('Restoring action:', action.code, 'quantity:', action.quantity);
+        
+        // Check the checkbox
+        var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
+        if ($checkbox.length > 0) {
+          $checkbox.prop('checked', true);
+          $checkbox.attr('aria-expanded', 'true');
+          
+          // Show the conditional content by removing the hidden class
+          var conditionalId = 'conditional-' + action.code.toLowerCase();
+          var $conditional = $('#' + conditionalId);
+          if ($conditional.length > 0) {
+            $conditional.removeClass('govuk-checkboxes__conditional--hidden');
+            console.log('Showed conditional for:', action.code);
+          }
+          
+          // Restore the quantity if it exists
+          if (action.quantity) {
+            var $quantityInput = $('#quantity-' + action.code.toLowerCase());
+            if ($quantityInput.length > 0) {
+              $quantityInput.val(action.quantity);
+              console.log('Set quantity for:', action.code, 'to:', action.quantity);
+            }
+          }
+        } else {
+          console.log('Checkbox not found for:', action.code);
+        }
+      });
+      
+      // Scroll to the actions section
+      var $actionsSection = $('#actions-section');
+      if ($actionsSection.length > 0) {
+        $('html, body').animate({
+          scrollTop: $actionsSection.offset().top - 20
+        }, 500);
+      }
+    }
+
+    // Function to select a parcel
+    function selectParcel(parcelId) {
+      var parcel = parcelData[parcelId];
+      if (!parcel) return;
+
+      // Track if this is the first selection
+      var isFirstSelection = (currentSelectedParcel === null);
+
+      // Reset previous selection
+      if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
+        parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+      }
+
+      // Set new selection
+      currentSelectedParcel = parcelId;
+      if (parcelPolygons[parcelId]) {
+        parcelPolygons[parcelId].setStyle(selectedStyle(parcelPolygons[parcelId].feature));
+      }
+
+      // Update UI
+      // Determine a user-friendly OS ref to show in the heading. Prefer any full ID included
+      // in the parcel list links (e.g. "North Field - BO4521 2843"); fall back to `parcel.osRef`.
+      var osRefDisplay = parcel.osRef || '';
+      try {
+        var links = document.getElementsByTagName('a');
+        for (var i = 0; i < links.length; i++) {
+          var onclickAttr = links[i].getAttribute('onclick');
+          if (onclickAttr && onclickAttr.indexOf("selectParcelById('" + parcelId + "')") !== -1) {
+            var txt = links[i].textContent.trim();
+            // Expect text like "Name - OSREF"; take the part after the last ' - '
+            var dashIndex = txt.lastIndexOf(' - ');
+            if (dashIndex !== -1) {
+              osRefDisplay = txt.substring(dashIndex + 3).trim();
+            }
+            break;
+          }
+        }
+      } catch (e) {
+        // ignore and fall back to parcel.osRef
+      }
+
+      document.getElementById('page-heading').textContent = 'Choose actions for ' + parcel.name + (osRefDisplay ? ' - ' + osRefDisplay : '');
+      document.getElementById('select-parcel-text').style.display = 'none';
+      document.getElementById('selected-parcel-text').style.display = 'block';
+      document.getElementById('os-ref').textContent = parcel.osRef;
+      document.getElementById('total-area').textContent = parcel.totalArea;
+      document.getElementById('available-area').textContent = parcel.availableArea;
+      document.getElementById('num-actions').textContent = parcel.numActions;
+      document.getElementById('actions-heading').textContent = 'Available actions on ' + parcel.name;
+
+      // Hide the OS Map References tables
+      document.getElementById('os-map-references').style.display = 'none';
+
+      // Hide the save confirmation message when switching parcels
+      document.getElementById('save-confirmation-message').style.display = 'none';
+
+      // Show the parcels and actions summary section
+      document.getElementById('parcels-actions-summary-section').style.display = 'block';
+
+      // Show the parcel info table
+      document.getElementById('parcel-info-container').style.display = 'block';
+
+      // Show the actions section
+      document.getElementById('actions-section').style.display = 'block';
+
+      // Show the parcels list section
+      document.getElementById('parcels-list-section').style.display = 'block';
+
+      // Show/hide parcel lists and existing actions based on location
+      if (parcel.location === 'oxfordshire') {
+        document.getElementById('oxfordshire-parcels').style.display = 'block';
+        document.getElementById('buckinghamshire-parcels').style.display = 'none';
+        document.getElementById('oak-tree-existing-actions').style.display = 'block';
+        document.getElementById('blackberry-existing-actions').style.display = 'none';
+      } else if (parcel.location === 'buckinghamshire') {
+        document.getElementById('oxfordshire-parcels').style.display = 'none';
+        document.getElementById('buckinghamshire-parcels').style.display = 'block';
+        document.getElementById('oak-tree-existing-actions').style.display = 'none';
+        document.getElementById('blackberry-existing-actions').style.display = 'block';
+      }
+
+      // Enable search box
+      document.getElementById('search-actions-map').disabled = false;
+      document.getElementById('search-button-map').disabled = false;
+
+      // Show/hide the "view" link based on number of existing actions
+      var viewLink = document.getElementById('view-existing-link');
+      if (parcel.numActions > 0) {
+        viewLink.style.display = 'inline';
+      } else {
+        viewLink.style.display = 'none';
+      }
+
+      // Update actions list
+      updateActionsList(parcel.actions);
+      
+      // Restore parcel state if it has saved actions
+      if (parcelSelections[parcelId] && parcelSelections[parcelId].actions && parcelSelections[parcelId].actions.length > 0) {
+        setTimeout(function() {
+          restoreParcelState(parcelId);
+        }, 200);
+      }
+
+      // Pan map to parcel - maintain zoom if switching between parcels
+      if (parcelPolygons[parcelId]) {
+        if (isFirstSelection) {
+          // First selection, fit bounds
+          map.fitBounds(parcelPolygons[parcelId].getBounds(), {padding: [50, 50]});
+        } else {
+          // Switching parcels, just pan to center maintaining zoom
+          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
+        }
+      }
+    }
+
+    // Function to select parcel from list
+    function selectParcelById(parcelId) {
+      selectParcel(parcelId);
+      // Only zoom if no parcel is currently selected, otherwise just pan
+      if (parcelPolygons[parcelId]) {
+        if (currentSelectedParcel === null) {
+          map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
+        } else {
+          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
+        }
+      }
+      // Scroll to map
+      document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+
+    // Function to update actions list
+    function updateActionsList(availableActions) {
+      var checkboxItems = document.querySelectorAll('.govuk-checkboxes__item');
+      
+      checkboxItems.forEach(function(item) {
+        var checkbox = item.querySelector('input[type="checkbox"]');
+        var actionCode = checkbox.value;
+        var conditional = item.nextElementSibling;
+        
+        if (availableActions.indexOf(actionCode) > -1) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+          // Also hide the conditional when the item is hidden
+          if (conditional && conditional.classList.contains('govuk-checkboxes__conditional')) {
+            conditional.classList.add('govuk-checkboxes__conditional--hidden');
+          }
+        }
+        
+        checkbox.checked = false;
+        // Hide all conditionals when unchecking
+        if (conditional && conditional.classList.contains('govuk-checkboxes__conditional')) {
+          conditional.classList.add('govuk-checkboxes__conditional--hidden');
+        }
+      });
+    }
+
+    // Search functionality
+    $(document).ready(function(){
+      // Initialize parcelSelections from session data if available
+      var sessionDataElement = document.getElementById('session-data');
+      if (sessionDataElement) {
+        try {
+          var sessionDataStr = sessionDataElement.textContent;
+          var sessionData = JSON.parse(sessionDataStr);
+          if (sessionData && typeof sessionData === 'object') {
+            parcelSelections = sessionData;
+            // Update the summary display on page load
+            setTimeout(function() {
+              updateApplicationSummary();
+              // Show the accordion section
+              $('#parcels-actions-summary-section').show();
+            }, 100);
+          }
+        } catch(e) {
+          console.error('Error parsing session data:', e);
+        }
+      }
+      
+      // Check if user came from check-your-answers with a specific parcel to edit
+      var selectedParcelId = sessionStorage.getItem('selectedParcelId');
+      if (selectedParcelId) {
+        // Clear the stored parcel ID
+        sessionStorage.removeItem('selectedParcelId');
+        
+        // Select the parcel after a short delay to ensure map is ready
+        setTimeout(function() {
+          selectParcel(selectedParcelId);
+          
+          // Zoom to the parcel
+          if (parcelPolygons[selectedParcelId]) {
+            map.fitBounds(parcelPolygons[selectedParcelId].getBounds(), {padding: [50, 50]});
+          }
+        }, 500);
+      }
+      
+      // Handle click on "view existing actions" link (including those in popups)
+      $(document).on('click', '#view-existing-actions-link', function(e) {
+        e.preventDefault();
+        
+        // Open the "Parcels with existing actions" accordion section first
+        var $existingSection = $('#application-summary-accordion .govuk-accordion__section').eq(1);
+        if (!$existingSection.hasClass('govuk-accordion__section--expanded')) {
+          $existingSection.find('.govuk-accordion__section-button').click();
+        }
+        
+        // Scroll to the accordion content
+        setTimeout(function() {
+          var contentElement = document.getElementById('application-summary-accordion-content-1');
+          if (contentElement) {
+            contentElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+          }
+        }, 300);
+      });
+      
+      // Handle click on Change links in "Actions you've just added" section
+      $(document).on('click', '.summary-action-change', function(e) {
+        e.preventDefault();
+        console.log('Change link clicked');
+        var targetParcelId = $(this).attr('data-parcel-id');
+        console.log('Target parcel ID:', targetParcelId);
+        
+        if (targetParcelId) {
+          // Select the parcel
+          console.log('Calling selectParcel');
+          selectParcel(targetParcelId);
+          
+          // Wait for the UI to update, then restore the saved state
+          setTimeout(function() {
+            console.log('Calling restoreParcelState');
+            restoreParcelState(targetParcelId);
+          }, 250);
+        }
+      });
+      
+      // Function to update the application summary
+      function updateApplicationSummary() {
+        var $summaryContainer = $('#application-summary-list');
+        var $emptyMessage = $('#application-summary-empty');
+        var $introText = $('#application-summary-intro');
+        
+        // Clear existing content
+        $summaryContainer.empty();
+        
+        // Check if there are any selections
+        var hasSelections = false;
+        var grandTotalPayment = 0;
+        
+        // Iterate through parcel selections
+        Object.keys(parcelSelections).forEach(function(parcelId) {
+          var parcelSelection = parcelSelections[parcelId];
+          
+          if (parcelSelection.actions && parcelSelection.actions.length > 0) {
+            hasSelections = true;
+            
+            var parcel = parcelData[parcelId];
+            var parcelName = parcel ? parcel.name : parcelId;
+            
+            // Create container for heading and remove link
+            var $headingContainer = $('<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;"></div>');
+            
+            // Create H2 heading for parcel name
+            var $parcelHeading = $('<h2 class="govuk-heading-s" style="margin: 0;"></h2>').text(parcelName);
+            
+            // Create remove link
+            var $removeLink = $('<a class="govuk-link" href="#" style="font-size: 19px; line-height: 1.31579;"></a>')
+              .text('Remove all actions')
+              .attr('data-parcel-id', parcelId)
+              .on('click', function(e) {
+                e.preventDefault();
+                var targetParcelId = $(this).attr('data-parcel-id');
+                
+                // Remove the parcel from parcelSelections
+                delete parcelSelections[targetParcelId];
+                
+                // Update the summary display
+                updateApplicationSummary();
+              });
+            
+            $headingContainer.append($parcelHeading).append($removeLink);
+            $summaryContainer.append($headingContainer);
+            
+            // Create summary list
+            var $summaryList = $('<dl class="govuk-summary-list govuk-!-margin-bottom-9"></dl>');
+            
+            // Add total area row
+            var $totalAreaRow = $('<div class="govuk-summary-list__row"></div>');
+            var $totalAreaKey = $('<dt class="govuk-summary-list__key"></dt>').text('Total area');
+            var $totalAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(parcel.totalArea + ' ha');
+            $totalAreaRow.append($totalAreaKey).append($totalAreaValue);
+            $summaryList.append($totalAreaRow);
+            
+            // Calculate total area used by actions
+            var totalUsedArea = 0;
+            parcelSelection.actions.forEach(function(action) {
+              if (action.quantity) {
+                totalUsedArea += parseFloat(action.quantity);
+              }
+            });
+            
+            // Add area used row
+            var $areaUsedRow = $('<div class="govuk-summary-list__row"></div>');
+            var $areaUsedKey = $('<dt class="govuk-summary-list__key"></dt>').text('Area used for actions');
+            var $areaUsedValue = $('<dd class="govuk-summary-list__value"></dd>').text(totalUsedArea.toFixed(4) + ' ha');
+            $areaUsedRow.append($areaUsedKey).append($areaUsedValue);
+            $summaryList.append($areaUsedRow);
+            
+            // Calculate available area left (available area minus area used)
+            var availableAreaLeft = parseFloat(parcel.availableArea) - totalUsedArea;
+            
+            // Add available area left row
+            var $availableAreaRow = $('<div class="govuk-summary-list__row"></div>');
+            var $availableAreaKey = $('<dt class="govuk-summary-list__key"></dt>').text('Available area left');
+            var $availableAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(availableAreaLeft.toFixed(4) + ' ha');
+            $availableAreaRow.append($availableAreaKey).append($availableAreaValue);
+            $summaryList.append($availableAreaRow);
+            
+            // Add individual rows for each action with Change link (GOV.UK pattern)
+            var totalPayment = 0;
+            
+            parcelSelection.actions.forEach(function(action) {
+              var $actionRow = $('<div class="govuk-summary-list__row"></div>');
+              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.name + ' (' + action.code + ')');
+              var $actionValue = $('<dd class="govuk-summary-list__value"></dd>');
+              
+              var payment = 0;
+              var valueText = '';
+              
+              if (action.quantity && paymentRates[action.code]) {
+                var quantity = parseFloat(action.quantity);
+                payment = quantity * paymentRates[action.code];
+                totalPayment += payment;
+                valueText = action.quantity + ' ha (£' + payment.toFixed(2) + ')';
+              } else if (action.quantity) {
+                valueText = action.quantity + ' ha';
+              } else {
+                valueText = 'No area entered';
+              }
+              
+              $actionValue.text(valueText);
+              
+              // Add Change link
+              var $actionActions = $('<dd class="govuk-summary-list__actions"></dd>');
+              var $changeLink = $('<a class="govuk-link summary-action-change" href="#"></a>')
+                .text('Change')
+                .attr('data-parcel-id', parcelId)
+                .attr('data-action-code', action.code);
+              
+              $actionActions.append($changeLink);
+              
+              $actionRow.append($actionKey).append($actionValue).append($actionActions);
+              $summaryList.append($actionRow);
+            });
+            
+            // Add total payment row if there are payments
+            if (totalPayment > 0) {
+              var $paymentRow = $('<div class="govuk-summary-list__row"></div>');
+              var $paymentKey = $('<dt class="govuk-summary-list__key"></dt>').text('Yearly payment for this parcel');
+              var $paymentValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>£' + totalPayment.toFixed(2) + '</strong>');
+              $paymentRow.append($paymentKey).append($paymentValue);
+              $summaryList.append($paymentRow);
+              
+              // Add to grand total
+              grandTotalPayment += totalPayment;
+            }
+            
+            // Append the summary list to the container
+            $summaryContainer.append($summaryList);
+          }
+        });
+        
+        // Add total payments for all parcels if there are any payments
+        if (hasSelections && grandTotalPayment > 0) {
+          var $grandTotalList = $('<dl class="govuk-summary-list" style="margin-top: 30px;"></dl>');
+          var $grandTotalRow = $('<div class="govuk-summary-list__row"></div>');
+          var $grandTotalKey = $('<dt class="govuk-summary-list__key"></dt>').text('Total yearly payment');
+          var $grandTotalValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>£' + grandTotalPayment.toFixed(2) + '</strong>');
+          $grandTotalRow.append($grandTotalKey).append($grandTotalValue);
+          $grandTotalList.append($grandTotalRow);
+          $summaryContainer.append($grandTotalList);
+        }
+        
+        // Show/hide appropriate elements
+        if (hasSelections) {
+          $introText.show();
+          $summaryContainer.show();
+          $emptyMessage.hide();
+        } else {
+          $introText.hide();
+          $summaryContainer.hide();
+          $emptyMessage.show();
+        }
+      }
+      
+      // Function to get action name from checkbox
+      function getActionName(actionCode) {
+        var $checkbox = $('input[value="' + actionCode + '"]');
+        var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
+        
+        // Extract just the action name (before the colon and code)
+        var parts = labelText.split(':');
+        if (parts.length > 1) {
+          return parts[0].trim();
+        }
+        return labelText;
+      }
+      
+      // Function to capture current parcel state
+      function captureCurrentParcelState() {
+        if (!currentSelectedParcel) return;
+        
+        var actions = [];
+        
+        // Get all checked actions for current parcel
+        $('input[name="actions"]:checked').each(function() {
+          var $checkbox = $(this);
+          var actionCode = $checkbox.val();
+          var actionName = getActionName(actionCode);
+          
+          // Get quantity if entered
+          var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
+          var quantity = $quantityInput.val() ? $quantityInput.val() : null;
+          
+          actions.push({
+            code: actionCode,
+            name: actionName,
+            quantity: quantity
+          });
+        });
+        
+        // Update or create parcel selection
+        if (actions.length > 0) {
+          parcelSelections[currentSelectedParcel] = {
+            parcelId: currentSelectedParcel,
+            parcelName: parcelData[currentSelectedParcel].name,
+            osRef: parcelData[currentSelectedParcel].osRef,
+            actions: actions
+          };
+        } else {
+          // Remove parcel if no actions selected
+          delete parcelSelections[currentSelectedParcel];
+        }
+        
+        updateApplicationSummary();
+      }
+      
+      function performSearch() {
+        var filter = $("#search-actions-map").val();
+        
+        if (filter === '') {
+          // If search is cleared, restore the original filtered list for the current parcel
+          var parcel = parcelData[currentSelectedParcel];
+          if (parcel) {
+            updateActionsList(parcel.actions);
+          }
+          // Hide no results message
+          $("#no-results-message").hide();
+          // Show save button when search is cleared
+          $("#save-actions-button").show();
+        } else {
+          // Search through items
+          var visibleCount = 0;
+          $('.govuk-checkboxes__item').each(function(){
+            var $item = $(this);
+            var checkbox = $item.find('input[type="checkbox"]');
+            var actionCode = checkbox.val();
+            var $conditional = $item.next('.govuk-checkboxes__conditional');
+            
+            // Check if this action is in the current parcel's available actions
+            var parcel = parcelData[currentSelectedParcel];
+            var isAvailableForParcel = parcel && parcel.actions.indexOf(actionCode) > -1;
+            
+            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+              // Hide the item
+              $(this).fadeOut();
+            } else {
+              // Only show if it matches search AND is available for current parcel
+              if (isAvailableForParcel) {
+                $(this).show();
+                visibleCount++;
+              }
+            }
+          });
+          
+          // Show/hide no results message and save button based on visible count
+          if (visibleCount === 0) {
+            $("#no-results-message").show();
+            $("#save-actions-button").hide();
+          } else {
+            $("#no-results-message").hide();
+            $("#save-actions-button").show();
+          }
+        }
+      }
+      
+      // Handle typing in search box
+      $("#search-actions-map").keyup(performSearch);
+      
+      // Handle clicking the X icon to clear search (works in browsers that support it)
+      $("#search-actions-map").on('search', performSearch);
+
+      // Don't select any parcel by default - let user choose from the map or list
+      // Update UI to show no selection
+      document.getElementById('actions-heading').textContent = 'Available actions';
+      
+      // Hide all action checkboxes initially
+      $('.govuk-checkboxes__item').hide();
+      
+      // Function to update available quantities based on what's been entered
+      function updateAvailableQuantities() {
+        if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) return;
+        
+        var parcel = parcelData[currentSelectedParcel];
+        var totalAreaHa = parseFloat(parcel.availableArea);
+        
+        // Calculate total used for hectares
+        var totalUsedHa = 0;
+        $('input[id^="quantity-"]').each(function() {
+          var inputId = $(this).attr('id');
+          var suffix = $(this).siblings('.govuk-input__suffix').text();
+          var value = parseFloat($(this).val()) || 0;
+          
+          // Only count hectare inputs
+          if (suffix === 'ha' && value > 0) {
+            totalUsedHa += value;
+          }
+        });
+        
+        var remainingHa = Math.max(0, totalAreaHa - totalUsedHa);
+        var isOverLimit = totalUsedHa > totalAreaHa;
+        
+        // Update all hectare hints
+        $('.govuk-checkboxes__conditional').each(function() {
+          var $conditional = $(this);
+          var $hint = $conditional.find('.govuk-hint.govuk-checkboxes__hint');
+          var $suffix = $conditional.find('.govuk-input__suffix');
+          
+          if ($suffix.text() === 'ha') {
+            $hint.text(remainingHa.toFixed(4) + ' hectares available');
+          }
+        });
+        
+        // Handle over-limit errors
+        if (isOverLimit) {
+          var excessHa = totalUsedHa - totalAreaHa;
+          
+          // Add error styling to inputs with values
+          $('input[id^="quantity-"]').each(function() {
+            var $input = $(this);
+            var suffix = $input.siblings('.govuk-input__suffix').text();
+            var value = parseFloat($input.val()) || 0;
+            
+            if (suffix === 'ha' && value > 0) {
+              var $formGroup = $input.closest('.govuk-form-group');
+              
+              // Add error class to input
+              $input.addClass('govuk-input--error');
+              
+              // Add error class to form group if not already present
+              if (!$formGroup.hasClass('govuk-form-group--error')) {
+                $formGroup.addClass('govuk-form-group--error');
+              }
+              
+              // Add error message if not already present
+              if (!$formGroup.find('.govuk-error-message').length) {
+                var errorHtml = '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Total area exceeds ' + totalAreaHa + ' available on this parcel</p>';
+                $formGroup.find('label').after(errorHtml);
+              }
+            }
+          });
+        } else {
+          // Remove error styling when within limit
+          $('input[id^="quantity-"]').each(function() {
+            var $input = $(this);
+            var $formGroup = $input.closest('.govuk-form-group');
+            
+            $input.removeClass('govuk-input--error');
+            $formGroup.removeClass('govuk-form-group--error');
+            $formGroup.find('.govuk-error-message').remove();
+          });
+        }
+        
+        // Check if all available area is used (but not exceeded)
+        if (remainingHa === 0 && !isOverLimit) {
+          // Disable all unchecked, compatible (non-disabled) checkboxes
+          $('input[name="actions"]').each(function() {
+            var $cb = $(this);
+            var $item = $cb.closest('.govuk-checkboxes__item');
+            
+            // Only disable if: not checked, visible, and not already disabled due to compatibility
+            if (!$cb.is(':checked') && $item.css('display') !== 'none' && !$cb.prop('disabled')) {
+              $cb.prop('disabled', true);
+              $cb.attr('data-disabled-reason', 'area-full');
+              $item.css('opacity', '0.5');
+              
+              var $label = $cb.siblings('.govuk-checkboxes__label');
+              if (!$label.find('.area-full-hint').length) {
+                $label.append('<span class="area-full-hint" style="display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;">All available area on land parcel used</span>');
+              }
+            }
+          });
+        } else {
+          // Re-enable checkboxes that were disabled due to area being full
+          $('input[name="actions"]').each(function() {
+            var $cb = $(this);
+            if ($cb.attr('data-disabled-reason') === 'area-full') {
+              $cb.prop('disabled', false);
+              $cb.removeAttr('data-disabled-reason');
+              
+              var $item = $cb.closest('.govuk-checkboxes__item');
+              $item.css('opacity', '1');
+              $cb.siblings('.govuk-checkboxes__label').find('.area-full-hint').remove();
+            }
+          });
+        }
+      }
+      
+      // Attach input event listeners to all quantity inputs
+      $(document).on('input', 'input[id^="quantity-"]', function() {
+        updateAvailableQuantities();
+      });
+      
+      // Update quantities when parcel changes
+      var originalSelectParcel = selectParcel;
+      selectParcel = function(parcelId) {
+        originalSelectParcel(parcelId);
+        
+        // Clear all quantity inputs
+        $('input[id^="quantity-"]').val('');
+        
+        // Re-enable all checkboxes and clear all hints when changing parcels
+        $('input[name="actions"]').each(function() {
+          $(this).prop('disabled', false);
+          $(this).removeAttr('data-disabled-reason');
+          $(this).closest('.govuk-checkboxes__item').css('opacity', '1');
+          $(this).siblings('.govuk-checkboxes__label').find('.compatibility-hint, .area-full-hint').remove();
+        });
+        
+        // Reset hints to show total available
+        if (parcelData[parcelId]) {
+          var parcel = parcelData[parcelId];
+          $('.govuk-checkboxes__conditional').each(function() {
+            var $conditional = $(this);
+            var $hint = $conditional.find('.govuk-hint.govuk-checkboxes__hint');
+            var $suffix = $conditional.find('.govuk-input__suffix');
+            
+            if ($suffix.text() === 'ha') {
+              $hint.text(parcel.availableArea + ' hectares available');
+            } else if ($suffix.text() === '100m') {
+              // Keep original values for 100m
+              if ($hint.text().indexOf('500') > -1) {
+                $hint.text('500 100m available');
+              } else if ($hint.text().indexOf('250') > -1) {
+                $hint.text('250 100m available');
+              }
+            } else if ($suffix.text() === 'pond') {
+              $hint.text('3 ponds available');
+            }
+          });
+        }
+      };
+      
+      // Show confirmation message and enable Continue button when Save actions button is clicked
+      $('#save-actions-button').click(function() {
+        // Capture the current parcel state when saving
+        captureCurrentParcelState();
+        
+        $('#save-confirmation-message').show();
+        $('#continue-button').prop('disabled', false);
+        
+        // Open the "Parcels you've just added actions to" accordion section
+        setTimeout(function() {
+          var $addedSection = $('#application-summary-accordion .govuk-accordion__section').first();
+          if (!$addedSection.hasClass('govuk-accordion__section--expanded')) {
+            $addedSection.find('.govuk-accordion__section-button').click();
+          }
+        }, 300);
+      });
+      
+      // Handle action checkbox changes to simulate SFI compatibility rules
+      $(document).on('change', 'input[name="actions"]', function() {
+        var $checkbox = $(this);
+        var isChecked = $checkbox.is(':checked');
+        
+        if (isChecked) {
+          // Get all visible checkboxes that are not currently checked
+          var $allCheckboxes = $('input[name="actions"]').filter(function() {
+            var $item = $(this).closest('.govuk-checkboxes__item');
+            return $item.css('display') !== 'none' && !$(this).is(':checked');
+          });
+          
+          // Randomly disable 50% of the unchecked checkboxes
+          var totalToDisable = Math.floor($allCheckboxes.length * 0.5);
+          
+          // Shuffle the array of checkboxes
+          var shuffled = $allCheckboxes.toArray().sort(function() { return 0.5 - Math.random(); });
+          
+          // Disable the first 50%
+          for (var i = 0; i < totalToDisable; i++) {
+            var $itemToDisable = $(shuffled[i]);
+            $itemToDisable.prop('disabled', true);
+            
+            // Add visual styling to show it's disabled
+            $itemToDisable.closest('.govuk-checkboxes__item').css('opacity', '0.5');
+            
+            // Add hint to explain why it's disabled
+            var $label = $itemToDisable.siblings('.govuk-checkboxes__label');
+            if (!$label.find('.compatibility-hint').length) {
+              $label.append('<span class="compatibility-hint" style="display: block; color: #505a5f; font-weight: bold; margin-top: 5px;">Not compatible with selected actions</span>');
+            }
+          }
+        } else {
+          // When unchecking, check if we should re-enable checkboxes
+          // Only re-enable if no other checkboxes are checked
+          var $checkedBoxes = $('input[name="actions"]:checked');
+          
+          if ($checkedBoxes.length === 0) {
+            // Re-enable all checkboxes that were disabled due to compatibility
+            $('input[name="actions"]').each(function() {
+              var $cb = $(this);
+              // Only re-enable if it was disabled due to compatibility, not area-full
+              if ($cb.attr('data-disabled-reason') !== 'area-full') {
+                $cb.prop('disabled', false);
+                $cb.closest('.govuk-checkboxes__item').css('opacity', '1');
+                $cb.siblings('.govuk-checkboxes__label').find('.compatibility-hint').remove();
+              }
+            });
+          }
+        }
+        
+        // Don't update application summary in real-time
+        // Summary will be updated when user clicks "Save actions for this parcel"
+      });
+      
+      // Handle clicks on OS Map Sheet Reference links
+      $(document).ready(function() {
+        // Click handler for Oak Tree Farm link (SO1)
+        $('a.govuk-link').filter(function() {
+          return $(this).text() === 'Oak Tree Farm (SO1)';
+        }).on('click', function(e) {
+          e.preventDefault();
+          // Show Oak Tree Farm information
+          document.getElementById('oak-tree-farm-info').style.display = 'block';
+          // Hide Blackberry Farm information
+          document.getElementById('blackberry-farm-info').style.display = 'none';
+          // Hide the select parcel text
+          document.getElementById('select-parcel-text').style.display = 'none';
+          // Show action instruction
+          document.getElementById('action-instruction').style.display = 'block';
+          // Show the parcels and actions summary section
+          document.getElementById('parcels-actions-summary-section').style.display = 'block';
+          // Show the parcels list section
+          document.getElementById('parcels-list-section').style.display = 'block';
+          // Show Oak Tree Farm (Oxfordshire) parcels, hide Blackberry Farm parcels
+          document.getElementById('oxfordshire-parcels').style.display = 'block';
+          document.getElementById('buckinghamshire-parcels').style.display = 'none';
+          // Zoom to Oak Tree Farm location - shifted east to center parcels in visible area
+          map.setView([51.7650, -1.2375], 15);
+        });
+        
+        // Click handler for Blackberry Farm link (BO9)
+        $('a.govuk-link').filter(function() {
+          return $(this).text() === 'Blackberry Farm (BO9)';
+        }).on('click', function(e) {
+          e.preventDefault();
+          // Hide Oak Tree Farm information
+          document.getElementById('oak-tree-farm-info').style.display = 'none';
+          // Show Blackberry Farm information
+          document.getElementById('blackberry-farm-info').style.display = 'block';
+          // Hide the select parcel text
+          document.getElementById('select-parcel-text').style.display = 'none';
+          // Show action instruction
+          document.getElementById('action-instruction').style.display = 'block';
+          // Show the parcels and actions summary section
+          document.getElementById('parcels-actions-summary-section').style.display = 'block';
+          // Show the parcels list section
+          document.getElementById('parcels-list-section').style.display = 'block';
+          // Show Blackberry Farm (Buckinghamshire) parcels, hide Oak Tree Farm parcels
+          document.getElementById('buckinghamshire-parcels').style.display = 'block';
+          document.getElementById('oxfordshire-parcels').style.display = 'none';
+          // Zoom to Blackberry Farm location - shifted east to center parcels in visible area
+          map.setView([51.9525, -0.7520], 15);
+        });
+        
+        // Click handler for "Back to OS map reference farm selection" link
+        $('#back-to-farm-selection-link').on('click', function(e) {
+          e.preventDefault();
+          
+          // Reset map to initial view showing both farm locations
+          map.setView([51.85, -1.0], 9);
+          
+          // Show OS map references section
+          document.getElementById('os-map-references').style.display = 'block';
+          
+          // Show both farm information sections again
+          document.getElementById('oak-tree-farm-info').style.display = 'block';
+          document.getElementById('blackberry-farm-info').style.display = 'block';
+          
+          // Hide action instruction
+          document.getElementById('action-instruction').style.display = 'none';
+          
+          // Hide parcel info container
+          document.getElementById('parcel-info-container').style.display = 'none';
+          
+          // Hide actions section
+          document.getElementById('actions-section').style.display = 'none';
+          
+          // Hide parcels list section
+          document.getElementById('parcels-list-section').style.display = 'none';
+          
+          // Reset page heading
+          document.getElementById('page-heading').textContent = "Select land";
+          document.getElementById('select-parcel-text').style.display = 'block';
+          document.getElementById('selected-parcel-text').style.display = 'none';
+          
+          // Hide save confirmation message
+          document.getElementById('save-confirmation-message').style.display = 'none';
+          
+          // Reset selected parcel styling
+          if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
+            parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+          }
+          
+          // Clear current selection (but keep data in parcelSelections)
+          currentSelectedParcel = null;
+          
+          // Note: All user actions are preserved in parcelSelections object and accordion sections
+        });
+
+        // Store parcelSelections in hidden field before form submission
+        $('#continue-form').on('submit', function() {
+          $('#parcelSelectionsData').val(JSON.stringify(parcelSelections));
+        });
+      });
+    });
+  </script>
+{% endblock %}
+
+
