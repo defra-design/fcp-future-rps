@@ -1190,6 +1190,39 @@
                   </dd>
                 </div>
               </dl>
+
+              <h2 class="govuk-heading-s" id="existing-far-meadow">Far Meadow</h2>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">56.3210 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Available area</dt>
+                  <dd class="govuk-summary-list__value">56.3210 hectares</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Scheme</dt>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">End date</dt>
+                  <dd class="govuk-summary-list__value">30 September 2027</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Number of actions</dt>
+                  <dd class="govuk-summary-list__value">2</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Actions</dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                      <li>Low input grassland: CAHL1</li>
+                      <li>12m to 24m watercourse buffer strip on cultivated land: BFS1</li>
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
               </div>
             </div>
           </div>
@@ -2551,6 +2584,8 @@
         } else {
           map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
         }
+        // Open the popup for the selected parcel
+        parcelPolygons[parcelId].openPopup();
       }
       // Scroll to map
       document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
