@@ -3158,6 +3158,7 @@
       // Show confirmation message and enable Continue button when Save actions button is clicked
       $('#save-actions-button').click(function() {
         // Capture the current parcel state when saving
+        var savedParcelId = currentSelectedParcel;
         captureCurrentParcelState();
         
         $('#save-confirmation-message').show();
@@ -3169,6 +3170,21 @@
           if (!$addedSection.hasClass('govuk-accordion__section--expanded')) {
             $addedSection.find('.govuk-accordion__section-button').click();
           }
+          
+          // After accordion opens, scroll to the parcel heading
+          setTimeout(function() {
+            // Find the h2 heading for the saved parcel
+            var parcelName = parcelData[savedParcelId] ? parcelData[savedParcelId].name : '';
+            if (parcelName) {
+              var $parcelHeading = $('#application-summary-list h2.govuk-heading-s').filter(function() {
+                return $(this).text().trim() === parcelName;
+              });
+              
+              if ($parcelHeading.length > 0) {
+                $parcelHeading[0].scrollIntoView({behavior: 'smooth', block: 'start'});
+              }
+            }
+          }, 400);
         }, 300);
       });
       
