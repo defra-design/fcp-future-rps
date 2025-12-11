@@ -790,8 +790,16 @@
                 <!-- Selected parcels and actions will be dynamically added here -->
               </div>
             </div>
+            <div class="back-to-top">
+              <a class="govuk-link" href="#page-heading">
+                <svg role="presentation" focusable="false" class="back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                  <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                </svg>Back to top
+              </a>
             </div>
-                      <!-- Existing parcels section -->
+          </div>
+      
+            <!-- Existing parcels section -->
           <div class="govuk-accordion__section">
             <div class="govuk-accordion__section-header">
               <h3 class="govuk-accordion__section-heading">
@@ -1226,6 +1234,14 @@
               </div>
             </div>
           </div>
+
+            <div class="back-to-top">
+              <a class="govuk-link" href="#page-heading">
+                <svg role="presentation" focusable="false" class="back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                  <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                </svg>Back to top
+              </a>
+            </div>
 
           </div>
         </div>
@@ -2677,6 +2693,19 @@
             targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
           }
         }, 300);
+      });
+
+      // Handle click on back-to-top link for smooth scrolling because some farmers, especially older ones, 
+      // thought they were on a different page when they got to the accordion section, 
+      // so we want them to see the link to return to the top to orient them.
+      // We also want them to see themselves being taken back to the top, not just 'appear' there suddenly.
+      $(document).on('click', '.back-to-top a', function(e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
       });
       
       // Handle click on Change links in "Actions you've just added" section

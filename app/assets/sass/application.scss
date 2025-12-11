@@ -5,6 +5,15 @@
 
 // Add extra styles here
 
+// leaflet map pages styles
+.back-to-top {
+  margin-bottom: 1em;
+}
+
+.back-to-top__icon {
+  margin-right: 0.6em;
+}
+
 // Import SFI mapping component styles
 @import "sfi-mapping-component";
 
