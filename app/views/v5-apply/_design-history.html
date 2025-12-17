@@ -54,36 +54,39 @@
           <li>When applying for funding, it would be easier to select actions on a parcel-by-parcel basis (currently, the user is presented with the action selection screen before seeing theit land parcels)</li>
         </ul>
 
-
-        <h2 class="govuk-heading-m">Design approach</h2>
-
-        <p class="govuk-body-l">When researching Version 4 of the application journey ('many parcels, many actons'), we saw strong evidence for combining screens so users can select a parcel, see the actions available for that parcel based on the land data we hold, and enter amounts for those actions as much as possible within the same task flow on the same page. 
+          <p class="govuk-body">Also, when researching Version 4 of our application journey ('many parcels, many actons'), we saw strong evidence for combining screens so users can select a parcel, see the actions available for that parcel based on the land data we hold, and enter amounts for those actions as much as possible within the same task flow on the same page. 
           Users could then move to a nearby parcel (as in real life) to repeat the process.</p>
 
           <p>Indeed, one farmer described their planning process as <i>'standing in a field with a clipboard, looking around and planning the actions for that particular field, then walking to a neighbouring field and repeating the process'.</i></p>
 
+        <h2 class="govuk-heading-m">Design approach</h2>
+
         <h3 class="govuk-heading-s">Iteration 1</h3>
 
-        <h4 class="govuk-heading-s">Things we considered</h4>
+        <h4 class="govuk-heading-s">'How might we...' statements for maps</h4>
 
-          <ul class="govuk-list govuk-list--bullet">
-            <li>How do I know which piece of land I have selected?</li>
-            <li>How do I know what has previously happened on that land? (includes previous actions from all schemes)</li>
-            <li>How can I see all the parcels in my SBI – even where those are in other counties across England?</li>
-            <li>How to present the actions so not just a long list - ordering, groupings, how they relate, ease of doing actions?</li>
-            <li>How does a user know what this action means?</li>
-            <li>What is the action asking of me?</li>
-            <li>What will it pay me?</li>
-            <li>What other actions does it work well with?</li>
-            <li>How easy / hard is it to do?</li>
-          </ul>
-
-
-        <h4 class="govuk-heading-s">"How might we" statements</h4>
+        <p>Drawing from the above pain points and findings mentioned above, we created the following statements for early mapping design exploration. These speak to both page layout and spefific components (and how these components might interact with each other).</p>
 
         <ul class="govuk-list govuk-list--bullet">
-          <li>test</li>
+          <li>How might we help farmers quickly move from parcel to parcel, and farm to farm (if appropriate) while easily understanding their orientation within their holding(s)?</li>
+          <li>How might we help farmers easily dentify their parcels on a map (including just by parcel shape and location on the holding), and confirm they have selected the correct parcel?</li>
+          <li>How might we help farmers understand what actions from existing agreements are present on each and every parcel of their farm(s) so that they're confident the map (and therefore their application) is accurrate and they understand why certain actions may not be available?</li>
+          <li>How might we help farmers understand that available actions for a given parcel are now automatically presented to them on parcel selection based on their land data (hence speeding up their application by removing the 'actions selection' screen before the map on the current SFI service)?</li>
+          <li>How might we speed up applications by changing the trigger for, and language of, error messaging when a farmer is entering hectarage on a selected action?</li>
         </ul>
+
+        <h4 class="govuk-heading-s">'How might we...' statements for SFI actions</h4>
+
+          <p>Also drawing from the pain points and findings mentioned above, we created the following statements for SFI actions within the context of interating with a map to apply for funding.</p>
+
+          <ul class="govuk-list govuk-list--bullet">
+            <li>How might we help farmers quickly find an action once available actions have been presented, especially from a long list?</li>
+            <li>How might we help farmers understand what that action is asking of them without cognitive overload within the page or replicating content away from a single source of truth (eg gov.uk guidance)?</li>
+            <li>How might we help farmers understand what that action will pay them per hectare and in total (if used on a parcel)</li>
+            <li>How might we help farmers understand which actions are compatibility within a parcel, and which are not?</li>
+            <li>How might we help farmers avoid 'compatibility errors' for actions (ie choosing actions which cannot be combined within a parcel of land)?</li>
+          </ul>
+
 
         <h4 class="govuk-heading-s">V1 map prototype</h4>
 
