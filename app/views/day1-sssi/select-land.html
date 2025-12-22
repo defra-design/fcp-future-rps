@@ -17,6 +17,7 @@
 {% block content %}
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
+        <form class="form" action="/select-land" method="post">
 
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset">
@@ -32,31 +33,31 @@
 
           <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="signIn" name="signIn" type="radio" value="government-gateway" aria-describedby="signIn-item-hint">
-              <label class="govuk-label govuk-radios__label" for="signIn">
+              <input class="govuk-radios__input" id="sssi" name="select-land" type="radio" value="needed" aria-describedby="sssi-item-hint">
+              <label class="govuk-label govuk-radios__label" for="sssi">
                 SO3757 3158
               </label>
-              <div id="signIn-item-hint" class="govuk-hint govuk-radios__hint">
-                Total size: 32.0404 hectares
+              <div id="sssi-item-hint" class="govuk-hint govuk-radios__hint">
+                Total size: 32.0404 hectares, SSSI consent needed
               </div>
             </div>
 
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="signIn-2" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
-              <label class="govuk-label govuk-radios__label" for="signIn-2">
+              <input class="govuk-radios__input" id="sssi-2" name="select-land" type="radio" value="no-sssi1" aria-describedby="sssi-2-item-hint">
+              <label class="govuk-label govuk-radios__label" for="sssi-2">
                 SO3757 3159
               </label>
-              <div id="signIn-2-item-hint" class="govuk-hint govuk-radios__hint">
+              <div id="sssi-2-item-hint" class="govuk-hint govuk-radios__hint">
                 Total size: 8.3405 hectares
               </div>
             </div>
 
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="signIn-3" name="signIn" type="radio" value="govuk-one-login" aria-describedby="signIn-2-item-hint">
-              <label class="govuk-label govuk-radios__label" for="signIn-3">
+              <input class="govuk-radios__input" id="sssi-3" name="select-land" type="radio" value="no-sssi2" aria-describedby="sssi-2-item-hint">
+              <label class="govuk-label govuk-radios__label" for="sssi-3">
                 SO3757 3160
               </label>
-              <div id="signIn-3-item-hint" class="govuk-hint govuk-radios__hint">
+              <div id="sssi-3-item-hint" class="govuk-hint govuk-radios__hint">
                 Total size: 1.4935 hectares
               </div>
             </div>
@@ -68,10 +69,10 @@
       </p>
 
       <div class="govuk-button-group">
-        <form class="govuk-form" action="select-base-action" method="post">
-          <button type="submit" class="govuk-button" data-module="govuk-button">
+            <button type="submit" class="govuk-button" data-module="govuk-button">
             Continue
-          </button>       
+          </button>  
+       
         
 
         <!-- not for day 1
@@ -97,6 +98,8 @@
             <p>The RPA responds to email queries within 10 working days.</p>
           </div>
         </details>
+
+         </form> 
 
     </div> <!-- 2/3 col -->
   </div> <!-- grid-row -->

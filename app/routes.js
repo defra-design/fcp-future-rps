@@ -23,6 +23,7 @@ govukPrototypeKit.views.addFilter('formatCurrency', function(num) {
 
 // Add your routes here
 
+
 // Mock RPA data for demo purposes (SBI: 999999999)
 function getMockRPAData() {
   return {
@@ -490,6 +491,30 @@ router.post('/public-body-answer3', function (req, res) {
   }
 
 })
+
+
+// Post-day 1 SSSI POC routes //
+
+router.post('/select-land', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var sssiNeededAnswer = req.session.data['select-land']
+
+  // Check whether the variable matches a condition
+  if (sssiNeededAnswer == "needed"){
+    // Send user to next page
+    res.redirect('/day1-sssi/select-base-action-sssi')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/day1-sssi/select-base-action')
+  }
+
+})
+
+// END Post-day 1 SSSI POC routes //
+
+
 
 router.post('/add-more-actions', function (req, res) {
 
