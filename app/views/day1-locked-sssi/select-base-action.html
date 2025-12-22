@@ -1,0 +1,140 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+Select actions
+{% endblock %}
+
+{% block beforeContent %}
+{% include "_common/sub-header-beta.html" %}
+
+{{ govukBackLink({
+text: "Back",
+href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-grid-row" role="main">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">
+      Select actions for land parcel SO3757 3159
+    </h1>
+
+    <p>The list shows actions you can do on this parcel that are compatible with:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>the land details registered with the Rural Payments service</li>
+      <li>actions you are already doing on this parcel</li>
+    </ul>
+
+    <p>The service has automatically calculated the total available area in each land parcel that is eligible for the action.</p>
+
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            If you need to make an update
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p>Contact the Rural Payments Agency (RPA) if you think:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>the land details registered on the Rural Payments service need updating</li>
+          <li>the information about existing actions or options on this parcel is incorrect</li>
+        </ul>
+        <p>Telephone: 020 8026 2395<br>
+          Monday to Friday, 8:30am to 5pm (except bank holidays)</p>
+        <p><a href="">Find out about call charges (opens in new tab)</a></p>
+        Email: <a href="">farmpayments@rpa.gov.uk</a></p>
+        <p>The RPA responds to email queries within 10 working days.</p>
+      </div>
+    </details>
+
+
+    <div class="govuk-form-group govuk-!-margin-top-4">
+      <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+          <h3 class="govuk-fieldset__heading">
+            Assess moorland
+          </h3>
+        </legend>
+
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <!-- CMOR1 -->
+          <p>Total available area: 4.5123 hectares</p>
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="cmor1" name="cmor1" type="checkbox" value="cmor1" aria-describedby="CMOR1-hint">
+            <label class="govuk-label govuk-checkboxes__label" for="cmor1">
+              Assess moorland and produce a written record: CMOR1
+            </label>
+            <div id="CMOR1-hint" class="govuk-hint govuk-radios__hint">
+               Payment rate per year: <strong>£10.60 per hectare</strong> and <strong>£272 per agreement</strong>
+            </div>
+          </div>
+        
+        </div>
+      </fieldset>
+    </div>
+
+    {# <hr> #}
+
+    <div class="govuk-form-group govuk-!-margin-top-4">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+          <h3 class="govuk-fieldset__heading">
+            Livestock grazing on moorland
+          </h3>
+        </legend>
+
+        <p>Total available area: 3.5125 hectares</p>
+
+        <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="england" aria-describedby="UPL1-hint">
+            <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+              Moderate livestock grazing on moorland: UPL1
+            </label>
+            <div id="UPL1-hint" class="govuk-hint govuk-radios__hint">
+              Payment rate per year: <strong>£20 per hectare</strong>
+            </div>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="whereDoYouLive-2" name="whereDoYouLive" type="radio" value="scotland" aria-describedby="UPL2-hint">
+            <label class="govuk-label govuk-radios__label" for="whereDoYouLive-2">
+              Low livestock grazing on moorland: UPL2
+            </label>
+            <div id="UPL2-hint" class="govuk-hint govuk-radios__hint">
+              Payment rate per year: <strong>£53 per hectare</strong>
+            </div>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="whereDoYouLive-3" name="whereDoYouLive" type="radio" value="wales"  aria-describedby="UPL3-hint">
+            <label class="govuk-label govuk-radios__label" for="whereDoYouLive-3">
+              Limited livestock grazing on moorland: UPL3
+            </label>
+            <div id="UPL3-hint" class="govuk-hint govuk-radios__hint">
+              Payment rate per year: <strong>£66 per hectare</strong>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+      <form action="add-more-actions" method="post">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Continue
+        </button>
+
+
+      </form>
+
+{# <p>
+  See <a href="https://www.gov.uk/find-funding-for-land-or-farms">Find funding for land or farms (opens in new tab)</a>
+  for the full list of actions including the eligibility criteria for each.
+</p> #}
+
+{# <p><a href="">Go back and choose another parcel</a></p> #}
+</div> <!-- 2/3 col -->
+</div> <!-- grid-row -->
+
+{% endblock %}
