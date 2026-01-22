@@ -601,6 +601,24 @@ router.post('/add-more-actions5', function (req, res) {
 
 })
 
+router.post('/add-more-actions-sssi', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var addMoreActionsAnswer = req.session.data['add-more-actions-sssi']
+
+  // Check whether the variable matches a condition
+  if (addMoreActionsAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/day1-sssi/select-land2')
+
+  } else {
+    // Send user to SSSI interuption card page
+    res.redirect('/day1-sssi/sssi-new')
+  }
+
+})
+
+
 router.post('/confirm-delete-all-actions', function (req, res) {
 
   // Make a variable and give it the value from 'how-many-balls'

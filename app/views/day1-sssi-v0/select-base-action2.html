@@ -19,7 +19,7 @@ href: "javascript:window.history.back()"
   <div class="govuk-grid-column-two-thirds">
 
     <h1 class="govuk-heading-l">
-      Select actions for land parcel SO3757 3158
+      Select actions for land parcel SO3757 3159
     </h1>
 
     <p>The list shows actions you can do on this parcel that are compatible with:</p>
@@ -28,7 +28,7 @@ href: "javascript:window.history.back()"
       <li>actions you are already doing on this parcel</li>
     </ul>
 
-    <p>The service has automatically calculated the total available area in each land parcel that is eligible for the action.</p>
+        <p>The service has automatically calculated the total available area in each land parcel that is eligible for the action.</p>
 
     <details class="govuk-details">
       <summary class="govuk-details__summary">
@@ -37,43 +37,51 @@ href: "javascript:window.history.back()"
         </span>
       </summary>
       <div class="govuk-details__text">
+        {# <p>The total available area you can enter for each action is based on:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>land cover registered on your digital maps</li>
+          <li>land use code declared in the Rural Payments service</li>
+        </ul> #}
+        {# <p>You must check the land type is eligible for each action you select.</p> #}
+
         <p>Contact the Rural Payments Agency (RPA) if you think:</p>
         <ul class="govuk-list govuk-list--bullet">
           <li>the land details registered on the Rural Payments service need updating</li>
           <li>the information about existing actions or options on this parcel is incorrect</li>
         </ul>
         <p>Telephone: 020 8026 2395<br>
-          Monday to Friday, 8:30am to 5pm (except bank holidays)
-        </p>
+          Monday to Friday, 8:30am to 5pm (except bank holidays)</p>
         <p><a href="">Find out about call charges (opens in new tab)</a></p>
-        <p>Email: <a href="mailto:farmpayments@rpa.gov.uk">farmpayments@rpa.gov.uk</a></p>
+        Email: <a href="">farmpayments@rpa.gov.uk</a></p>
         <p>The RPA responds to email queries within 10 working days.</p>
       </div>
     </details>
 
-    <div class="govuk-form-group govuk-!-margin-top-4">
-      <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-          <h3 class="govuk-fieldset__heading">
-            Assess moorland
-          </h3>
-        </legend>
+    {# <hr> #}
 
-        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-          <!-- CMOR1 -->
-          <p>Total available area: 4.5123 hectares</p>
-          <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="cmor1" name="cmor1" type="checkbox" value="cmor1" aria-describedby="CMOR1-hint">
-            <label class="govuk-label govuk-checkboxes__label" for="cmor1">
-              Assess moorland and produce a written record: CMOR1
-            </label>
-            <div id="UPL1-hint" class="govuk-hint govuk-radios__hint">
-               Payment rate per year: <strong>£10.60 per hectare</strong> and <strong>£272 per agreement</strong>
-            </div>
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">
+          Actions already added to land parcel SO3757 3159
+        </h2>
+        {# <ul class="govuk-summary-card__actions">
+          <li class="govuk-summary-card__action">
+            <a class="govuk-link" href="select-land">Change<span class="govuk-visually-hidden"> chosen parcel</span></a>
+          </li>
+        </ul> #}
+      </div>
+      <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            {# <dt class="govuk-summary-list__key">
+              Total size
+            </dt> #}
+            <dd class="govuk-summary-list__value">
+                Assess moorland and produce a written record: CMOR1
+            </dd>
           </div>
-        
-        </div>
-      </fieldset>
+        </dl>
+      </div>
     </div>
 
     <div class="govuk-form-group govuk-!-margin-top-4">
@@ -83,22 +91,6 @@ href: "javascript:window.history.back()"
             Livestock grazing on moorland
           </h3>
         </legend>
-
-        {# <p>All these actions require you to get <a href="https://www.gov.uk/guidance/protected-areas-sites-of-special-scientific-interest" target="_blank" rel="noopener noreferrer">SSSI consent</a> for the land parcel you have chosen.</p> #}
-
-        {# <p>All these actions <strong>require you to get SSSI consent</strong> for the land parcel you have chosen.</p> #}
-
-        {# <div class="govuk-warning-text">
-          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-          <strong class="govuk-warning-text__text">
-            <span class="govuk-visually-hidden">Warning</span>
-             All these actions require you to get SSSI consent for the land parcel you have chosen
-          </strong>
-        </div> #}
-
-       <div class="govuk-inset-text govuk-!-margin-top-1 govuk-!-margin-bottom-4">
-          You must have <a href="https://grants-ui.dev.cdp-int.defra.cloud/farm-payments/fptt-information#sec-10-get-all-necessary-regulatory-consents-permissions-and-licences-in-place" target="_blank" rel="noopener noreferrer">SSSI consent (opens in new tab)</a> to do these actions on this land parcel.
-      </div>  
 
         <p>Total available area: 3.5125 hectares</p>
 
@@ -134,7 +126,7 @@ href: "javascript:window.history.back()"
       </fieldset>
     </div>
 
-    <form action="add-more-actions-sssi" method="post">
+    <form action="add-more-actions2" method="post">
       <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
         Continue
       </button>

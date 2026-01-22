@@ -16,13 +16,33 @@
 
 {% block content %}
   <div class="govuk-grid-row" role="main">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
+
+      <!-- error summary box -->
+      <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div role="alert">
+          <h2 class="govuk-error-summary__title">
+            There is a problem
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+              <li>
+                <a href="#error">Select if you want to add an action to another land parcel</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div> <!-- end error summary box -->
+
       <h1 class="govuk-heading-l">Review the actions you have selected</h1>
       <p class="govuk-body-l">The annual payment is <strong>&pound;319.83</strong>.</p>
+    </div>
+  </div>
 
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-full">
 
-    <!-- Start parcel actions card -->
-
+      <!-- Start parcel actions card -->
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">
@@ -155,29 +175,33 @@
       <br> #}
 
       <form class="form" action="/add-more-actions3" method="post">
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
-              Do you want to add actions to another land parcel?
-            </legend>
-            {# <div id="add-another-hint" class="govuk-hint">
-              You must tell us about all your directors.
-            </div> #}
-            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="add-another" name="add-more-actions3" type="radio" value="yes">
-                <label class="govuk-label govuk-radios__label" for="add-another">
-                  Yes
-                </label>
+        <div class="govuk-form-group govuk-form-group--error">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
+                Do you want to add actions to another land parcel?
+              </legend>
+
+              <p id="error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> Select if you want to add an action to another land parcel
+              </p>
+
+              <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="add-another" name="add-more-actions3" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="add-another">
+                    Yes
+                  </label>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="add-another-2" name="add-more-actions3" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="add-another-2">
+                    No
+                  </label>
+                </div>
               </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions3" type="radio" value="no">
-                <label class="govuk-label govuk-radios__label" for="add-another-2">
-                  No
-                </label>
-              </div>
-            </div>
-          </fieldset>
+            </fieldset>
+          </div>
         </div>
 
         <button type="submit" class="govuk-button" data-module="govuk-button">
