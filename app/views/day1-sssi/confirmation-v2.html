@@ -1,0 +1,60 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Application complete
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Application complete
+        </h1>
+        <div class="govuk-panel__body">
+          Your application number<br><strong>HDJ1234D</strong>
+        </div>
+      </div>
+
+      <p>It may be useful to write down your application number, so you have it ready if you need to contact us.</p>
+      
+      <h2 class="govuk-heading-m">
+        What happens next
+      </h2>
+      <p class="govuk-body">
+        The Rural Payments Agency (RPA) will email you when your agreement offer is available to review.
+      </p>
+
+      <h3 class="govuk-heading-m">
+        Get SSSI consent
+      </h3>
+      <p class="govuk-body">
+        You've applied for actions or items on land that's a site of special scientific interest. 
+        Once you've received and accepted your agreement offer, you must get SSSI consent from Natural England before you start your selected actions or items on this land.
+        Read the guidance on <a href="https://grants-ui.dev.cdp-int.defra.cloud/farm-payments/fptt-information#sec-10-get-all-necessary-regulatory-consents-permissions-and-licences-in-place" class="govuk-link" rel="noreferrer noopener" >SSSI consent and how to get it</a>.
+      </p>
+        
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            If you have a question
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          Contact the Rural Payments Agency (RPA) if you have a query.<br><br>
+          Telephone: 020 8026 2395<br>
+          Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+          <p><a href="">Find out about call charges (opens in new tab)</a><br><br>
+            Email: <a href="">farmpayments@rpa.gov.uk</a></p>
+          <p>The RPA responds to email queries within 10 working days.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+{% endblock %}
