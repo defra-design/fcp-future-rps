@@ -1,0 +1,697 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Problem saving application
+{% endblock %}
+
+{% block beforeContent %}
+{% include "_common/sub-header-beta.html" %}
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <form class="form" action="check-your-answers" method="post">
+
+      <div class="govuk-form-group">
+        <h1 class="govuk-heading-l">
+         Map
+        </h1>
+        
+        <p class="govuk-body-l">
+          Use the interactive map below to select land parcels and assign Sustainable Farming Incentive (SFI) actions. 
+          Click on parcels to select them, then choose which SFI actions to apply.
+        </p>
+      </div>
+
+      <!-- SFI Mapping Component Container -->
+      <div id="sfi-farm-map" style="border: 1px solid #b1b4b6; margin: 20px 0;">
+        <!-- Interactive SVG Map -->
+        <div style="background: #f3f2f1; padding: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 class="govuk-heading-m" style="margin: 0;">Farm Parcel Map</h2>
+            <div>
+              <button type="button" id="zoom-in-btn" class="govuk-button govuk-button--secondary" style="margin-right: 5px;">+</button>
+              <button type="button" id="zoom-out-btn" class="govuk-button govuk-button--secondary" style="margin-right: 5px;">−</button>
+              <button type="button" id="reset-view-btn" class="govuk-button govuk-button--secondary">Reset</button>
+            </div>
+          </div>
+          
+          <div id="map-container" style="border: 2px solid #505a5f; background: white; overflow: hidden; position: relative; height: 400px;">
+            <svg id="farm-map-svg" width="100%" height="100%" viewBox="0 0 800 600" style="cursor: pointer;">
+              <!-- Farm parcels will be rendered here -->
+              <g id="parcels-group"></g>
+              
+              <!-- Legend -->
+              <g id="legend" transform="translate(10, 10)">
+                <rect x="0" y="0" width="180" height="120" fill="white" stroke="#b1b4b6" stroke-width="1" rx="5"/>
+                <text x="10" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold">Legend</text>
+                
+                <circle cx="20" cy="40" r="8" fill="#005ea5" stroke="#003078" stroke-width="2"/>
+                <text x="35" y="45" font-family="Arial, sans-serif" font-size="12">Available</text>
+                
+                <circle cx="20" cy="60" r="8" fill="#00703c" stroke="#005a30" stroke-width="2"/>
+                <text x="35" y="65" font-family="Arial, sans-serif" font-size="12">Selected</text>
+                
+                <circle cx="20" cy="80" r="8" fill="#f47738" stroke="#d73502" stroke-width="2"/>
+                <text x="35" y="85" font-family="Arial, sans-serif" font-size="12">Has actions</text>
+                
+                <circle cx="20" cy="100" r="8" fill="#b1b4b6" stroke="#6f777b" stroke-width="2"/>
+                <text x="35" y="105" font-family="Arial, sans-serif" font-size="12">Not eligible</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; background: white;">
+          <div id="parcel-selection">
+            <h3 class="govuk-heading-s">Select Parcels</h3>
+            <div id="parcel-list"></div>
+          </div>
+          
+          <div id="action-assignment">
+            <h3 class="govuk-heading-s">Assign SFI Actions</h3>
+            <div id="action-list"></div>
+          </div>
+        </div>
+        
+        <div style="padding: 20px; background: #f8f8f8; border-top: 1px solid #b1b4b6;">
+          <h3 class="govuk-heading-s">Payment Summary</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <strong>Total annual payment:</strong> <span id="total-payment">£0</span>
+            </div>
+            <div>
+              <strong>Total area with actions:</strong> <span id="total-area">0 hectares</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden form inputs to capture the mapping selections -->
+      <input type="hidden" id="sfiSelectedParcelsInput" name="sfiSelectedParcels" value="">
+      <input type="hidden" id="sfiParcelActionsInput" name="sfiParcelActions" value="">
+      <input type="hidden" id="sfiTotalPaymentInput" name="sfiTotalPayment" value="0">
+
+      <!-- Application Summary Section -->
+      <div class="govuk-form-group" style="margin-top: 40px;">
+        
+        <div id="sfi-no-selection-message" class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            You must select at least one parcel and assign SFI actions before continuing.
+          </strong>
+        </div>
+
+        <div id="sfi-application-summary" style="display: none;">
+          <h2 class="govuk-heading-m">Application summary</h2>
+          <!-- Summary content will be populated by JavaScript -->
+        </div>
+
+      </div>
+
+      <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button" id="continue-button" disabled>
+          Continue
+        </button>
+        
+        <a class="govuk-link" href="dashboard">
+          Cancel and return to dashboard
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+// Simple SFI Mapping Component - Traditional JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  
+  // Sample farm parcels with coordinates for SVG rendering
+  var farmParcels = [
+    { 
+      id: 'SFI001', name: 'Home Field', size: '15.7', landUse: 'Arable', eligible: true,
+      coordinates: [[120, 100], [280, 95], [285, 180], [125, 185]]
+    },
+    { 
+      id: 'SFI002', name: 'Long Meadow', size: '8.3', landUse: 'Grassland', eligible: true,
+      coordinates: [[300, 90], [450, 85], [455, 165], [305, 170]]
+    },
+    { 
+      id: 'SFI003', name: 'Top Field', size: '22.1', landUse: 'Arable', eligible: true,
+      coordinates: [[110, 40], [290, 35], [295, 90], [115, 95]]
+    },
+    { 
+      id: 'SFI004', name: 'Woodland Block', size: '6.2', landUse: 'Woodland', eligible: false,
+      coordinates: [[460, 80], [580, 75], [585, 140], [465, 145]]
+    },
+    { 
+      id: 'SFI005', name: 'River Field', size: '12.4', landUse: 'Grassland', eligible: true,
+      coordinates: [[100, 200], [290, 195], [295, 280], [105, 285]]
+    },
+    { 
+      id: 'SFI006', name: 'Hill Pasture', size: '18.9', landUse: 'Pasture', eligible: true,
+      coordinates: [[310, 175], [460, 170], [470, 290], [315, 295]]
+    },
+    { 
+      id: 'SFI007', name: 'Lower Field', size: '9.6', landUse: 'Arable', eligible: true,
+      coordinates: [[480, 175], [620, 170], [625, 250], [485, 255]]
+    },
+    { 
+      id: 'SFI008', name: 'Orchard', size: '3.1', landUse: 'Orchard', eligible: false,
+      coordinates: [[630, 80], [720, 75], [725, 140], [635, 145]]
+    }
+  ];
+
+  // SFI actions with 2024 payment rates
+  var sfiActions = [
+    {
+      id: 'NUM3', code: 'NUM3', name: 'Herbal leys', payment: 382,
+      unit: 'per hectare per year', eligibleLandUse: ['Arable', 'Grassland'],
+      minArea: 0.25, maxArea: null
+    },
+    {
+      id: 'AHL2', code: 'AHL2', name: 'Flower-rich grass margins, blocks or in-field strips', payment: 798,
+      unit: 'per hectare per year', eligibleLandUse: ['Arable', 'Grassland'],
+      minArea: 0.25, maxArea: 50
+    },
+    {
+      id: 'IPM2', code: 'IPM2', name: 'No use of insecticides on arable crops and permanent crops', payment: 45,
+      unit: 'per hectare per year', eligibleLandUse: ['Arable'],
+      minArea: 1, maxArea: null
+    },
+    {
+      id: 'SAM2', code: 'SAM2', name: 'Assess soil, produce a soil management plan and test soil organic matter', payment: 58,
+      unit: 'per hectare per year', eligibleLandUse: ['Arable', 'Grassland', 'Pasture'],
+      minArea: 5, maxArea: null
+    },
+    {
+      id: 'LIG1', code: 'LIG1', name: 'Take grassland field corners or blocks out of management', payment: 590,
+      unit: 'per hectare per year', eligibleLandUse: ['Grassland', 'Pasture'],
+      minArea: 0.25, maxArea: 10
+    },
+    {
+      id: 'LIG2', code: 'LIG2', name: 'Winter bird food on arable land', payment: 853,
+      unit: 'per hectare per year', eligibleLandUse: ['Arable'],
+      minArea: 0.25, maxArea: 25
+    }
+  ];
+
+  // Application state
+  var selectedParcels = [];
+  var parcelActions = {}; // parcelId -> [actions]
+  var currentZoom = 1;
+  var maxZoom = 2;
+  var minZoom = 0.5;
+
+  // DOM elements
+  var parcelListDiv = document.getElementById('parcel-list');
+  var actionListDiv = document.getElementById('action-list');
+  var totalPaymentSpan = document.getElementById('total-payment');
+  var totalAreaSpan = document.getElementById('total-area');
+  var continueButton = document.getElementById('continue-button');
+  var selectedParcelsInput = document.getElementById('sfiSelectedParcelsInput');
+  var parcelActionsInput = document.getElementById('sfiParcelActionsInput');
+  var totalPaymentInput = document.getElementById('sfiTotalPaymentInput');
+  var applicationSummary = document.getElementById('sfi-application-summary');
+  var noSelectionMessage = document.getElementById('sfi-no-selection-message');
+  var parcelsGroup = document.getElementById('parcels-group');
+  var farmMapSvg = document.getElementById('farm-map-svg');
+  var zoomInBtn = document.getElementById('zoom-in-btn');
+  var zoomOutBtn = document.getElementById('zoom-out-btn');
+  var resetViewBtn = document.getElementById('reset-view-btn');
+
+  // Initialize the interface
+  function init() {
+    renderMap();
+    renderParcelList();
+    renderActionList();
+    updatePaymentSummary();
+    updateFormState();
+    bindMapEvents();
+  }
+
+  // Render the interactive SVG map
+  function renderMap() {
+    if (!parcelsGroup) return;
+    
+    // Clear existing parcels
+    parcelsGroup.innerHTML = '';
+    
+    // Render each parcel as a polygon
+    for (var i = 0; i < farmParcels.length; i++) {
+      var parcel = farmParcels[i];
+      
+      // Create polygon element
+      var polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      var points = '';
+      for (var j = 0; j < parcel.coordinates.length; j++) {
+        points += parcel.coordinates[j][0] + ',' + parcel.coordinates[j][1] + ' ';
+      }
+      polygon.setAttribute('points', points.trim());
+      polygon.setAttribute('data-parcel-id', parcel.id);
+      polygon.setAttribute('stroke', '#000');
+      polygon.setAttribute('stroke-width', '2');
+      polygon.style.cursor = parcel.eligible ? 'pointer' : 'not-allowed';
+      
+      updateParcelAppearance(polygon, parcel);
+      
+      // Add click handler for eligible parcels
+      if (parcel.eligible) {
+        polygon.addEventListener('click', function(e) {
+          var parcelId = e.target.getAttribute('data-parcel-id');
+          toggleParcelSelectionFromMap(parcelId);
+        });
+        
+        polygon.addEventListener('mouseover', function(e) {
+          e.target.setAttribute('stroke-width', '3');
+        });
+        
+        polygon.addEventListener('mouseout', function(e) {
+          e.target.setAttribute('stroke-width', '2');
+        });
+      }
+      
+      parcelsGroup.appendChild(polygon);
+      
+      // Add label
+      var centerX = 0;
+      var centerY = 0;
+      for (var j = 0; j < parcel.coordinates.length; j++) {
+        centerX += parcel.coordinates[j][0];
+        centerY += parcel.coordinates[j][1];
+      }
+      centerX = centerX / parcel.coordinates.length;
+      centerY = centerY / parcel.coordinates.length;
+      
+      var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', centerX);
+      text.setAttribute('y', centerY);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('dominant-baseline', 'middle');
+      text.setAttribute('font-family', 'Arial, sans-serif');
+      text.setAttribute('font-size', '12');
+      text.setAttribute('font-weight', 'bold');
+      text.setAttribute('fill', '#000');
+      text.style.pointerEvents = 'none';
+      text.textContent = parcel.id;
+      
+      parcelsGroup.appendChild(text);
+    }
+  }
+
+  // Update parcel visual appearance based on state
+  function updateParcelAppearance(polygon, parcel) {
+    var parcelId = parcel.id;
+    var isSelected = selectedParcels.indexOf(parcelId) !== -1;
+    var hasActions = parcelActions[parcelId] && parcelActions[parcelId].length > 0;
+    
+    if (!parcel.eligible) {
+      polygon.setAttribute('fill', '#b1b4b6');
+      polygon.setAttribute('opacity', '0.7');
+    } else if (hasActions) {
+      polygon.setAttribute('fill', '#f47738');
+      polygon.setAttribute('opacity', '0.8');
+    } else if (isSelected) {
+      polygon.setAttribute('fill', '#00703c');
+      polygon.setAttribute('opacity', '0.8');
+    } else {
+      polygon.setAttribute('fill', '#005ea5');
+      polygon.setAttribute('opacity', '0.6');
+    }
+  }
+
+  // Update all parcel appearances on the map
+  function updateMapParcels() {
+    for (var i = 0; i < farmParcels.length; i++) {
+      var parcel = farmParcels[i];
+      var polygon = document.querySelector('[data-parcel-id="' + parcel.id + '"]');
+      if (polygon) {
+        updateParcelAppearance(polygon, parcel);
+      }
+    }
+  }
+
+  // Handle parcel selection from map click
+  function toggleParcelSelectionFromMap(parcelId) {
+    var index = selectedParcels.indexOf(parcelId);
+    if (index !== -1) {
+      selectedParcels.splice(index, 1);
+      delete parcelActions[parcelId];
+    } else {
+      selectedParcels.push(parcelId);
+    }
+    
+    updateMapParcels();
+    renderParcelList();
+    renderActionList();
+    updatePaymentSummary();
+    updateFormState();
+  }
+
+  // Bind map control events
+  function bindMapEvents() {
+    if (zoomInBtn) {
+      zoomInBtn.addEventListener('click', function() {
+        if (currentZoom < maxZoom) {
+          currentZoom *= 1.25;
+          updateZoom();
+        }
+      });
+    }
+    
+    if (zoomOutBtn) {
+      zoomOutBtn.addEventListener('click', function() {
+        if (currentZoom > minZoom) {
+          currentZoom /= 1.25;
+          updateZoom();
+        }
+      });
+    }
+    
+    if (resetViewBtn) {
+      resetViewBtn.addEventListener('click', function() {
+        currentZoom = 1;
+        updateZoom();
+      });
+    }
+  }
+
+  // Update map zoom
+  function updateZoom() {
+    if (parcelsGroup) {
+      parcelsGroup.setAttribute('transform', 'scale(' + currentZoom + ')');
+    }
+    
+    if (zoomInBtn) zoomInBtn.disabled = currentZoom >= maxZoom;
+    if (zoomOutBtn) zoomOutBtn.disabled = currentZoom <= minZoom;
+  }
+
+  // Render the list of parcels
+  function renderParcelList() {
+    var html = '<div class="govuk-checkboxes">';
+    
+    for (var i = 0; i < farmParcels.length; i++) {
+      var parcel = farmParcels[i];
+      var isSelected = selectedParcels.indexOf(parcel.id) !== -1;
+      var isDisabled = !parcel.eligible;
+      
+      html += '<div class="govuk-checkboxes__item">';
+      html += '<input class="govuk-checkboxes__input" id="parcel-' + parcel.id + '" ';
+      html += 'name="parcels" type="checkbox" value="' + parcel.id + '"';
+      if (isSelected) html += ' checked';
+      if (isDisabled) html += ' disabled';
+      html += ' onchange="toggleParcelSelection(\'' + parcel.id + '\')">';
+      html += '<label class="govuk-label govuk-checkboxes__label" for="parcel-' + parcel.id + '">';
+      html += '<strong>' + parcel.name + '</strong> (' + parcel.id + ')<br>';
+      html += '<span class="govuk-hint">' + parcel.size + ' hectares, ' + parcel.landUse;
+      if (!parcel.eligible) html += ' - Not eligible';
+      html += '</span>';
+      html += '</label>';
+      html += '</div>';
+    }
+    
+    html += '</div>';
+    parcelListDiv.innerHTML = html;
+  }
+
+  // Render available actions for selected parcels
+  function renderActionList() {
+    if (selectedParcels.length === 0) {
+      actionListDiv.innerHTML = '<p class="govuk-hint">Select parcels to see available SFI actions</p>';
+      return;
+    }
+
+    // Find actions compatible with all selected parcels
+    var compatibleActions = [];
+    for (var i = 0; i < sfiActions.length; i++) {
+      var action = sfiActions[i];
+      var isCompatible = true;
+      
+      for (var j = 0; j < selectedParcels.length; j++) {
+        var parcelId = selectedParcels[j];
+        var parcel = findParcelById(parcelId);
+        
+        if (!parcel || 
+            action.eligibleLandUse.indexOf(parcel.landUse) === -1 ||
+            parseFloat(parcel.size) < action.minArea ||
+            (action.maxArea && parseFloat(parcel.size) > action.maxArea)) {
+          isCompatible = false;
+          break;
+        }
+      }
+      
+      if (isCompatible) {
+        compatibleActions.push(action);
+      }
+    }
+
+    if (compatibleActions.length === 0) {
+      actionListDiv.innerHTML = '<p class="govuk-body">No SFI actions are compatible with all selected parcels.</p>';
+      return;
+    }
+
+    var html = '<div class="govuk-checkboxes">';
+    
+    for (var i = 0; i < compatibleActions.length; i++) {
+      var action = compatibleActions[i];
+      
+      html += '<div class="govuk-checkboxes__item">';
+      html += '<input class="govuk-checkboxes__input" id="action-' + action.id + '" ';
+      html += 'name="actions" type="checkbox" value="' + action.id + '"';
+      html += ' onchange="toggleActionAssignment(\'' + action.id + '\')">';
+      html += '<label class="govuk-label govuk-checkboxes__label" for="action-' + action.id + '">';
+      html += '<strong>' + action.code + '</strong> - ' + action.name + '<br>';
+      html += '<span class="govuk-hint">£' + action.payment + ' ' + action.unit + '</span>';
+      html += '</label>';
+      html += '</div>';
+    }
+    
+    html += '</div>';
+    html += '<div style="margin-top: 20px;">';
+    html += '<button type="button" class="govuk-button govuk-button--secondary" onclick="clearAllActions()">Clear all actions</button>';
+    html += '</div>';
+    
+    actionListDiv.innerHTML = html;
+  }
+
+  // Toggle parcel selection
+  function toggleParcelSelection(parcelId) {
+    var index = selectedParcels.indexOf(parcelId);
+    if (index !== -1) {
+      selectedParcels.splice(index, 1);
+      // Remove actions for this parcel
+      delete parcelActions[parcelId];
+    } else {
+      selectedParcels.push(parcelId);
+    }
+    
+    updateMapParcels();
+    renderParcelList();
+    renderActionList();
+    updatePaymentSummary();
+    updateFormState();
+  }
+
+  // Toggle action assignment to all selected parcels
+  function toggleActionAssignment(actionId) {
+    var action = findActionById(actionId);
+    if (!action) return;
+    
+    var checkbox = document.getElementById('action-' + actionId);
+    var isChecked = checkbox.checked;
+    
+    for (var i = 0; i < selectedParcels.length; i++) {
+      var parcelId = selectedParcels[i];
+      
+      if (!parcelActions[parcelId]) {
+        parcelActions[parcelId] = [];
+      }
+      
+      var actionIndex = -1;
+      for (var j = 0; j < parcelActions[parcelId].length; j++) {
+        if (parcelActions[parcelId][j].id === actionId) {
+          actionIndex = j;
+          break;
+        }
+      }
+      
+      if (isChecked && actionIndex === -1) {
+        parcelActions[parcelId].push(action);
+      } else if (!isChecked && actionIndex !== -1) {
+        parcelActions[parcelId].splice(actionIndex, 1);
+      }
+    }
+    
+    updateMapParcels();
+    updatePaymentSummary();
+    updateFormState();
+  }
+
+  // Clear all actions
+  function clearAllActions() {
+    parcelActions = {};
+    var checkboxes = document.querySelectorAll('input[name="actions"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = false;
+    }
+    updateMapParcels();
+    updatePaymentSummary();
+    updateFormState();
+  }
+
+  // Update payment summary
+  function updatePaymentSummary() {
+    var totalPayment = 0;
+    var totalAreaWithActions = 0;
+    
+    for (var parcelId in parcelActions) {
+      if (parcelActions.hasOwnProperty(parcelId) && parcelActions[parcelId].length > 0) {
+        var parcel = findParcelById(parcelId);
+        if (parcel) {
+          var parcelSize = parseFloat(parcel.size);
+          totalAreaWithActions += parcelSize;
+          
+          for (var i = 0; i < parcelActions[parcelId].length; i++) {
+            totalPayment += parcelActions[parcelId][i].payment * parcelSize;
+          }
+        }
+      }
+    }
+    
+    totalPaymentSpan.textContent = '£' + totalPayment.toLocaleString();
+    totalAreaSpan.textContent = totalAreaWithActions.toFixed(1) + ' hectares';
+  }
+
+  // Update form state and continue button
+  function updateFormState() {
+    var parcelsWithActions = [];
+    for (var parcelId in parcelActions) {
+      if (parcelActions.hasOwnProperty(parcelId) && parcelActions[parcelId].length > 0) {
+        parcelsWithActions.push(parcelId);
+      }
+    }
+    
+    // Update hidden inputs
+    selectedParcelsInput.value = JSON.stringify(selectedParcels);
+    parcelActionsInput.value = JSON.stringify(parcelActions);
+    
+    var totalPayment = 0;
+    for (var parcelId in parcelActions) {
+      if (parcelActions.hasOwnProperty(parcelId)) {
+        var parcel = findParcelById(parcelId);
+        if (parcel) {
+          var parcelSize = parseFloat(parcel.size);
+          for (var i = 0; i < parcelActions[parcelId].length; i++) {
+            totalPayment += parcelActions[parcelId][i].payment * parcelSize;
+          }
+        }
+      }
+    }
+    totalPaymentInput.value = totalPayment.toString();
+    
+    // Enable/disable continue button
+    continueButton.disabled = parcelsWithActions.length === 0;
+    
+    // Show/hide messages and summary
+    if (parcelsWithActions.length > 0) {
+      noSelectionMessage.style.display = 'none';
+      applicationSummary.style.display = 'block';
+      updateApplicationSummary(parcelsWithActions, totalPayment);
+    } else {
+      noSelectionMessage.style.display = 'block';
+      applicationSummary.style.display = 'none';
+    }
+  }
+
+  // Update application summary
+  function updateApplicationSummary(parcelsWithActions, totalPayment) {
+    var totalArea = 0;
+    var uniqueActions = {};
+    
+    for (var i = 0; i < parcelsWithActions.length; i++) {
+      var parcel = findParcelById(parcelsWithActions[i]);
+      if (parcel) {
+        totalArea += parseFloat(parcel.size);
+        
+        var actions = parcelActions[parcelsWithActions[i]];
+        for (var j = 0; j < actions.length; j++) {
+          uniqueActions[actions[j].code] = true;
+        }
+      }
+    }
+    
+    var actionCodes = Object.keys(uniqueActions);
+    var actionsHtml = '';
+    for (var i = 0; i < actionCodes.length; i++) {
+      actionsHtml += '<span class="govuk-tag govuk-tag--grey">' + actionCodes[i] + '</span> ';
+    }
+
+    applicationSummary.innerHTML = 
+      '<div class="govuk-summary-list">' +
+        '<div class="govuk-summary-list__row">' +
+          '<dt class="govuk-summary-list__key">Parcels with SFI actions</dt>' +
+          '<dd class="govuk-summary-list__value">' + parcelsWithActions.length + '</dd>' +
+        '</div>' +
+        '<div class="govuk-summary-list__row">' +
+          '<dt class="govuk-summary-list__key">Total area in application</dt>' +
+          '<dd class="govuk-summary-list__value">' + totalArea.toFixed(1) + ' hectares</dd>' +
+        '</div>' +
+        '<div class="govuk-summary-list__row">' +
+          '<dt class="govuk-summary-list__key">SFI actions selected</dt>' +
+          '<dd class="govuk-summary-list__value">' + actionsHtml + '</dd>' +
+        '</div>' +
+        '<div class="govuk-summary-list__row">' +
+          '<dt class="govuk-summary-list__key">Annual payment</dt>' +
+          '<dd class="govuk-summary-list__value">' +
+            '<strong class="govuk-tag govuk-tag--green">£' + totalPayment.toLocaleString() + '</strong>' +
+          '</dd>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // Helper functions
+  function findParcelById(id) {
+    for (var i = 0; i < farmParcels.length; i++) {
+      if (farmParcels[i].id === id) {
+        return farmParcels[i];
+      }
+    }
+    return null;
+  }
+
+  function findActionById(id) {
+    for (var i = 0; i < sfiActions.length; i++) {
+      if (sfiActions[i].id === id) {
+        return sfiActions[i];
+      }
+    }
+    return null;
+  }
+
+  // Make functions global so they can be called from onclick handlers
+  window.toggleParcelSelection = toggleParcelSelection;
+  window.toggleActionAssignment = toggleActionAssignment;
+  window.clearAllActions = clearAllActions;
+
+  // Handle form submission
+  document.querySelector('form').addEventListener('submit', function(e) {
+    if (continueButton.disabled) {
+      e.preventDefault();
+      alert('Please select at least one parcel and assign SFI actions before continuing.');
+    }
+  });
+
+  // Initialize
+  init();
+});
+</script>
+
+{% endblock %}
