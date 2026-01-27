@@ -515,6 +515,28 @@ router.post('/select-land', function (req, res) {
 // END Post-day 1 SSSI POC routes //
 
 
+// Post-day 1 HEFER POC routes //
+
+router.post('/select-land-hefer', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var heferNeededAnswer = req.session.data['select-land-hefer']
+
+  // Check whether the variable matches a condition
+  if (heferNeededAnswer == "needed"){
+    // Send user to next page
+    res.redirect('/day1-hefer/select-base-action-hefer')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/day1-hefer/select-base-action')
+  }
+
+})
+
+// END Post-day 1 HEFER POC routes //
+
+
 
 router.post('/add-more-actions', function (req, res) {
 
@@ -614,6 +636,24 @@ router.post('/add-more-actions-sssi', function (req, res) {
   } else {
     // Send user to SSSI interuption card page
     res.redirect('/day1-sssi/sssi-new')
+  }
+
+})
+
+
+
+router.post('/add-more-actions-hefer', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var addMoreActionsAnswer = req.session.data['add-more-actions-hefer']
+
+  // Check whether the variable matches a condition
+  if (addMoreActionsAnswer == "yes"){
+    // Send user to next page
+    res.redirect('/day1-hefer/select-land2')
+  } else {
+    // Send user to HEFER interuption card page
+    res.redirect('/day1-hefer/hefer-new')
   }
 
 })

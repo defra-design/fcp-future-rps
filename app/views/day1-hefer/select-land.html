@@ -17,7 +17,7 @@
 {% block content %}
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
-        <form class="form" action="/select-land" method="post">
+        <form class="form" action="/select-land-hefer" method="post">
 
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset">
@@ -32,35 +32,37 @@
           </div>
 
           <div class="govuk-radios" data-module="govuk-radios">
+            
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="sssi" name="select-land" type="radio" value="needed" aria-describedby="sssi-item-hint">
-              <label class="govuk-label govuk-radios__label" for="sssi">
+              <input class="govuk-radios__input" id="hefer1" name="select-land-hefer" type="radio" value="needed" aria-describedby="hefer-item-hint">
+              <label class="govuk-label govuk-radios__label" for="hefer1">
                 SO3757 3158
               </label>
-              <div id="sssi-item-hint" class="govuk-hint govuk-radios__hint">
-                Total size: 32.0404 hectares
+              <div id="hefer1-item-hint" class="govuk-hint govuk-radios__hint">
+                Total size: 32.0404 hectares, HEFER needed
               </div>
             </div>
 
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="sssi-2" name="select-land" type="radio" value="no-sssi1" aria-describedby="sssi-2-item-hint">
-              <label class="govuk-label govuk-radios__label" for="sssi-2">
+              <input class="govuk-radios__input" id="hefer-2" name="select-land-hefer" type="radio" value="no-hefer1" aria-describedby="hefer-2-item-hint">
+              <label class="govuk-label govuk-radios__label" for="hefer-2">
                 SO3757 3159
               </label>
-              <div id="sssi-2-item-hint" class="govuk-hint govuk-radios__hint">
+              <div id="hefer-2-item-hint" class="govuk-hint govuk-radios__hint">
                 Total size: 8.3405 hectares
               </div>
             </div>
 
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="sssi-3" name="select-land" type="radio" value="no-sssi2" aria-describedby="sssi-2-item-hint">
-              <label class="govuk-label govuk-radios__label" for="sssi-3">
+              <input class="govuk-radios__input" id="hefer-3" name="select-land-hefer" type="radio" value="no-hefer2" aria-describedby="hefer-3-item-hint">
+              <label class="govuk-label govuk-radios__label" for="hefer-3">
                 SO3757 3160
               </label>
-              <div id="sssi-3-item-hint" class="govuk-hint govuk-radios__hint">
+              <div id="hefer-3-item-hint" class="govuk-hint govuk-radios__hint">
                 Total size: 1.4935 hectares
               </div>
             </div>
+
           </div> <!-- radio group -->
         </fieldset>
       </div> <!-- form group -->
