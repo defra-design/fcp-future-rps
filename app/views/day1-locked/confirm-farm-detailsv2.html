@@ -1,0 +1,94 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Confirm details
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+
+      <h1 class="govuk-heading-l">
+        Confirm your details
+      </h1>
+
+        <p class="govuk-body">Check your details are correct.<br>
+           If they are incorrect, you will not be able to submit your application.</p>
+        <p>To update your details, phone the Rural Payments Agency (RPA) on 020 8026 2395.</p>
+          
+
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Alfred Waldron
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Business name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Agile Farm
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Address
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Agile Farm<br>10 Skirbeck Way<br>Maidstone<br>SK22 1DL
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            SBI number
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">123456789</p>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Contact details
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">07700 900457</p>
+            <p class="govuk-body">alfred.waldrons@example.com</p>
+          </dd>
+        </div>
+      </dl>
+
+      <form class="form" action="confirm-eligibility-details" method="post">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+             If you need to make an update
+          </span>
+      </summary>
+      <div class="govuk-details__text">
+        Contact the Rural Payments Agency (RPA) to update your details.<br><br>
+        Telephone: 020 8026 2395<br>
+        Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+        <p><a href="">Find out about call charges (opens in new tab)</a><br><br>
+          Email: <a href="">farmpayments@rpa.gov.uk</a></p>
+        <p>The RPA responds to email queries within 10 working days.</p>
+      </div>
+    </details>
+
+    </div>
+  </div>
+{% endblock %}
