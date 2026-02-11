@@ -1,0 +1,43 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Select land and actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+       <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
+
+          <h1 class="govuk-heading-l">You must get an SFI Historic Environment Farm Environment Record (SFI HEFER) from Historic England</h1>
+            {# <p class="govuk-body">You are applying for actions on land that's a site of special scientific interest (SSSI). You must get SSSI consent from Natural England.</p> #}
+             <p class="govuk-body">This is because you are applying for actions on land with historic or archaeological features:</p>
+              <p>Parcel ID: SO3757 3158</p>
+             <p class="govuk-body">You must do this before you start your selected SFI actions on this land.</p>
+             <p class="govuk-body">Read the guidance on <a href="" rel="noreferrer nofollow" target="_blank">land with historic or archaeological features</a> to find out what a HEFER is and how to request one.</p> 
+
+        </div>
+        <br>
+        <!-- end panel -->
+
+        <form action="submit-application" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+    </div>
+  </div>
+
+{% endblock %}
