@@ -1,0 +1,49 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+    Agreement name
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--l" for="event-name">
+            Enter your agreement name
+          </label>
+        </h1>
+        <div id="event-name-hint" class="govuk-hint">
+          This will appear on your agreement documents, it is for your own use. For example 'Joe's Farm Funding 2025'
+        </div>
+        <input class="govuk-input govuk-input--width-30" id="event-name" name="eventName" type="text" aria-describedby="event-name-hint">
+      </div>
+
+        <form class="form" action="tasklist-4" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+        
+    </div>
+  </div>
+
+</main>
+</div>
+{% endblock %}

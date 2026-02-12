@@ -1,0 +1,211 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Business overview
+<span class="govuk-caption-xl">SARAH FARM LTD</span></h1>
+<p class="govuk-body">Confirmed</p>
+<p class="govuk-caption-m">Manage different areas of your business here.</p>
+<p class="govuk-body">Contents</p>
+<ul class="govuk-list">
+    <li>
+    <a class="govuk-link" href="#">– Give people permission to act for this business</a>
+  </li>
+  <br>
+  <li>
+    <a class="govuk-link" href="#">– Business summary</a>
+  </li>
+    <br>
+  <li>
+    <a class="govuk-link" href="#">– Land</a>
+  </li>
+      <br>
+    <li>
+    <a class="govuk-link" href="#anchor">– Sustainable Farming Incentive</a>
+  </li>
+<!--      <br>-->
+<!--      <li>-->
+<!--    <a class="govuk-link" href="#">– Apply for funding</a>-->
+<!--  </li>-->
+      <br>
+    <li>
+    <a class="govuk-link" href="#">– Countryside Stewardship</a>
+  </li>
+</ul>
+</div>
+
+<div class="govuk-grid-column-one-third">
+<h1 class="govuk-heading-m">Business details</h1>
+<p class="govuk-body">SARAH FARM LTD
+<br>Sarah Farmer<br>
+  2 Toomers Wharf<br>
+  Canal Walk<br>
+  Newbury<br>
+  Berkshire<br>
+  RG14 1DY</td>
+<p class="govuk-body">Email: sarahfarmer@gmail.com
+<br>Landline: 0123456789
+<br>Mobile: 0712345689</p>
+<p class="govuk-body"><a href="#" class="govuk-link">View and amend your business details</a></p>
+</div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-one-third">
+<p class="govuk-body govuk-!-font-weight-bold">Permission to act for this business</p>
+</div>
+<div class="govuk-grid-column-two-thirds">
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">Full name</th>
+      <th scope="col" class="govuk-table__header">Relationship</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Sarah Farmer</td>
+      <td class="govuk-table__cell">Sole trader</td>
+    </tr>
+<!--    <tr class="govuk-table__row">-->
+<!--      <td class="govuk-table__cell">Bartholomew Brown</td>-->
+<!--      <td class="govuk-table__cell">Agent</td>-->
+<!--    </tr>-->
+  </tbody>
+</table>
+<ul class="govuk-list">
+    <li>
+    <a class="govuk-link" href="#">Add people</a>
+  </li>
+  <br>
+  <li>
+    <a class="govuk-link" href="#">Add people from a firm of agents</a>
+  </li>
+    <br>
+  <li>
+    <a class="govuk-link" href="#">Remove people</a>
+  </li>
+</ul>
+</div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-one-third">
+<p class="govuk-body govuk-!-font-weight-bold">Business summary</p>
+</div>
+<div class="govuk-grid-column-two-thirds">
+<p class="govuk-body">Check and print the details we have for your business. These include business details, land and land use details and any common land rights you have.</p>
+<p class="govuk-body"><a href="#" class="govuk-link">Business summary</a></p>
+</div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-one-third">
+<p class="govuk-body govuk-!-font-weight-bold">Land</p>
+</div>
+<div class="govuk-grid-column-two-thirds">
+<p class="govuk-body">View maps of your land, tell us about changes to your land, transfer land to another business or make changes to your land use.</p>
+<ul class="govuk-list">
+    <li>
+    <a class="govuk-link" href="#">View and update land</a>
+  </li>
+  <br>
+  <li>
+    <a class="govuk-link" href="#">Transfer land</a>
+  </li>
+    <br>
+  <li>
+    <a class="govuk-link" href="#">Update land use</a>
+  </li>
+</ul>
+</div>
+</div>
+
+<!--<hr class="govuk-section-break govuk-section-break&#45;&#45;l govuk-section-break&#45;&#45;visible">-->
+
+<!--<div class="govuk-grid-row">-->
+<!--<div class="govuk-grid-column-one-third">-->
+<!--<p class="govuk-body govuk-!-font-weight-bold">Commons</p>-->
+<!--</div>-->
+<!--<div class="govuk-grid-column-two-thirds">-->
+<!--<p class="govuk-body">Check and update any grazing rights you hold for common land.</p>-->
+<!--<p class="govuk-body"><a href="#" class="govuk-link">Update commons</a></p>-->
+<!--</div>-->
+<!--</div>-->
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-one-third">
+<p class="govuk-body govuk-!-font-weight-bold">Sustainable Farming Incentive</p>
+</div>
+<div class="govuk-grid-column-two-thirds">
+<p class="govuk-body"><a id="anchor" href="dashboard" class="govuk-link">Sustainable Farming Incentive</a></p>
+</div>
+</div>
+
+<!--<hr class="govuk-section-break govuk-section-break&#45;&#45;l govuk-section-break&#45;&#45;visible">-->
+
+<!--<div class="govuk-grid-row">-->
+<!--<div class="govuk-grid-column-one-third">-->
+<!--<p class="govuk-body govuk-!-font-weight-bold">Apply for funding</p>-->
+<!--</div>-->
+<!--<div class="govuk-grid-column-two-thirds">-->
+<!--<p class="govuk-body"><a href="dashboard" class="govuk-link">Apply for funding</a></p>-->
+<!--</div>-->
+<!--</div>-->
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-one-third">
+<p class="govuk-body govuk-!-font-weight-bold">Countryside Stewardship</p>
+</div>
+<div class="govuk-grid-column-two-thirds">
+  <p class="govuk-body">View and download your existing agreement documents and submit your claims.</p>
+<ul class="govuk-list">
+    <li>
+    <a class="govuk-link" href="#">Countryside Stewardship Agreements</a>
+  </li>
+  <br>
+  <li>
+    <a class="govuk-link" href="#">Countryside Stewardship Claims</a>
+  </li>
+</ul>
+</div>
+</div>
+
+</main>
+</div>
+{% endblock %}

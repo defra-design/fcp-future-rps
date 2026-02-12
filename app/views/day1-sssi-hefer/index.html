@@ -1,0 +1,56 @@
+{% extends "layouts/main-thread.html" %}
+
+{% set pageName="Manage land based actions" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/index">SFI Reform prototypes</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">
+      Day 1 plus SSSI and HEFER prototype
+      <span class="govuk-caption-l">Application journey</span>
+    </h1>
+
+    <!-- outline the scenario and purpose of the prototype -->
+    <p>Early exploration of marking actions with both SSSI and HEFER status and showing the farmer appropriate signposting if they choose it.</p>
+    <p>Choose parcel<strong> SO3757 3158</strong> to see the both flagged on the UPL actions. You will then also see the interruption card later in the journey. <br>
+      The other two parcels do not have these designations.</p>
+    
+
+    <br>
+    <a class="govuk-button" href="sign-in">Start prototype</a>
+
+    <h3 class="govuk-heading-s">
+      Key screens
+    </h3>
+
+    <p> 
+      <a href="select-land">Select land parcel - SO3757 3158 for SSSI and HEFER journey</a><br>
+      <a href="hefer-new">Interruption card - v1 without parcel ID</a><br>
+    </p>
+
+<!--
+    <h2 class="govuk-heading-m">
+      Design history
+    </h2>
+    <p><a href="_design-history" class="govuk-link">View the design history</a> which includes:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>goals</li>
+      <li>'How might we' statements</li>
+      <li>hypotheses</li>
+      <li>outcomes and decisions</li>
+    </ul>
+-->
+   
+{% endblock %}

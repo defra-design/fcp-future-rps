@@ -1,0 +1,42 @@
+{% extends "layouts/beta-header.html" %}
+
+{% block pageTitle %}
+  Select land and actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+       <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
+
+          <h1 class="govuk-heading-l">You must have SSSI consent</h1>
+            <p class="govuk-body">You are applying for actions on land that’s a site of special scientific interest (SSSI). You must get SSSI consent from Natural England.</p>
+            {# <p class="govuk-body">You must have this consent before you do your actions on SSSI land.</p> #}
+            <p class="govuk-body">Read the <a href="https://grants-ui.dev.cdp-int.defra.cloud/farm-payments/fptt-information" rel="noreferrer nofollow" target="_blank">guidance on SSSI consent (opens in new tab)</a>.</p>
+
+
+        </div>
+        <br>
+        <!-- end panel -->
+
+        <form action="submit-application" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+    </div>
+  </div>
+
+{% endblock %}

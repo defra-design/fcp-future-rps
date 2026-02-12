@@ -1,0 +1,82 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Select land parcel for actions
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+
+<div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">
+      Your applications and agreements
+    </h1>
+
+    {# <span class="govuk-caption-l govuk-!-margin-bottom-4">Agreement number: AHWR-2847-2847 </span> #}
+    
+    <form action="#" method="post">
+      <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
+        Add a new action
+      </button>
+    </form>
+
+    {# <p>You have claimed for a review. You can now claim for a follow-up.</p> #}
+    
+    <h2 class="govuk-heading-m govuk-!-margin-top-5">Your applications</h2>
+    <!-- <hr class="govuk-!-margin-bottom-6"> -->
+    <ul class="app-task-list__items app-task-list__items_custom govuk-!-margin-bottom-5">
+      <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+           <a href="tasklist-4-return">Cattle field actions</a>
+        </span>
+          <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="contact-details-status">In progress</strong>
+      </li>
+    </ul>
+
+    <h2 class="govuk-heading-m">Your agreements</h2>
+      <ul class="app-task-list__items app-task-list__items_custom govuk-!-margin-bottom-7">
+      <li class="app-task-list__item">
+        <span class="app-task-list__task-name">
+           <a href="/front-door/v2-1/agreements-live-actions-added">Winter 2024 agreement</a>
+        </span>
+          <strong class="govuk-tag govuk-tag--red app-task-list__tag" id="contact-details-status">Action needed</strong>
+      </li>
+    </ul>
+
+{# 
+    <h2 class="govuk-heading-m">Messages</h2>
+
+    <p><a href="/to-be/v4/messages/message-history" class="govuk-link govuk-link--no-visited-state">View messages</a></p>
+
+
+    <h2 class="govuk-heading-m">More information</h2>
+
+    <p><a href="ts-cs" class="govuk-link govuk-link--no-visited-state">Terms and conditions</a></p>
+
+    <p><a href="https://apply-for-an-annual-health-and-welfare-review.defra.gov.uk/apply" class="govuk-link govuk-link--no-visited-state">Guidance for funding to improve animal health and welfare</a></p>
+
+    <p><a href="agreement-summary" class="govuk-link govuk-link--no-visited-state">Agreement summary</a></p> #}
+
+    
+  </div>
+
+
+  </div>
+
+{% endblock %}
