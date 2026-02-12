@@ -537,6 +537,28 @@ router.post('/select-land-hefer', function (req, res) {
 // END Post-day 1 HEFER POC routes //
 
 
+// Post-day 1 HEFER and SSSI routes //
+
+router.post('/select-land-sssi-hefer', function (req, res) {
+
+  // Make a variable and give it the value from 'how-many-balls'
+  var hefersssiNeededAnswer = req.session.data['select-land-sssi-hefer']
+
+  // Check whether the variable matches a condition
+  if (hefersssiNeededAnswer == "needed"){
+    // Send user to next page
+    res.redirect('/day1-sssi-hefer/select-base-action-sssi-hefer')
+
+  } else {
+    // Send user to ineligible page
+    res.redirect('/day1-sssi-hefer/select-base-action')
+  }
+
+})
+
+// END Post-day 1 HEFER POC routes //
+
+
 
 router.post('/add-more-actions', function (req, res) {
 
