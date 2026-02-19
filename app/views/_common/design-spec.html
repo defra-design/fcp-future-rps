@@ -1,0 +1,222 @@
+{% if _designSpecData %}
+
+<div class="status-outer">
+  <div class="statusbox">
+    <h1 class="govuk-heading-m">Design spec</h1>
+
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Status
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          {{ _designSpecData.status or "In development" }}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Service name
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          <span id="service-name">{{ serviceName or "Farm payments" }}</span>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Page ID
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          <strong>{{ _designSpecData.id }}</strong>. {{ _designSpecData.name }}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Release
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          {{ _designSpecData.release }}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          &#60;title&#62; tag
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          {% if _designSpecData.pagetitle %}
+            <p class="govuk-body-s">{{ _designSpecData.pagetitle }} - <span id="service-name">{{ serviceName or "Farm payments" }}</span> - GOV.UK</p>
+          {% else %}
+            <p class="govuk-body-s" style="color: #d4351c">TO DO</p>
+          {% endif %}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Meta "description"
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          {% if _designSpecData.pagedesc %}
+            <p class="govuk-body-s">{{ _designSpecData.pagedesc }}</p>
+          {% else %}
+            <p class="govuk-body-s" style="color: #d4351c">TO DO</p>
+          {% endif %}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          URL slug
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          {% if _designSpecData.pageurl %}
+            <p class="govuk-body-s">/{{ _designSpecData.pageurl }}</p>
+          {% else %}
+            <p class="govuk-body-s" style="color: #d4351c">TO DO</p>
+          {% endif %}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Prototype version
+        </dt>
+        <dd class="govuk-summary-list__value govuk-body-s">
+          {{ myData.version or data.version or "day1-hefer" }}
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Links
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {% if _designSpecData.url %}
+            <p class="govuk-body-s"><a href="{{ _designSpecData.url }}" class="govuk-link govuk-link--no-visited-state">{{ _designSpecData.url }}</a></p>
+          {% endif %}
+
+          {% if _designSpecData.variants and _designSpecData.variants|length > 0 %}
+          <details class="govuk-details govuk-!-margin-top-4" open>
+            <summary class="govuk-details__summary govuk-body-s">
+              <span class="govuk-details__summary-text">
+                Variations
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                {% for item in _designSpecData.variants %}
+                <li>{{ item.name }}: <br><a href="{{ item.url }}" class="govuk-link govuk-link--no-visited-state">{{ item.url }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </details>
+          {% endif %}
+        </dd>
+      </div>
+
+      {% if _designSpecData.notes and _designSpecData.notes|length > 0 %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key govuk-body-s">
+          Notes
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <ul class="govuk-list govuk-list--bullet govuk-body-s">
+            {% for item in _designSpecData.notes %}
+            <li>{{ item | safe }}</li>
+            {% endfor %}
+          </ul>
+        </dd>
+      </div>
+      {% endif %}
+    </dl>
+  </div>
+
+  <button class="spec-close" type="button" aria-label="Close design spec panel">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="8.48529" transform="rotate(-45 12 12)" fill="#B3B1B1"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M8.81801 8.11091L8.11091 8.81802L11.2929 12L8.11091 15.182L8.81801 15.8891L12 12.7071L15.182 15.8891L15.8891 15.182L12.7071 12L15.8891 8.81802L15.182 8.11091L12 11.2929L8.81801 8.11091Z" fill="white"/>
+    </svg>
+  </button>
+</div>
+
+<style>
+.status-outer {
+  position: fixed;
+  width: 100%;
+  max-width: 580px;
+  height: 100%;
+  top: 0;
+  right: -580px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  z-index: 100;
+  resize: horizontal;
+  overflow: auto;
+  transition: right .3s;
+}
+
+.status-outer * {
+  box-sizing: border-box;
+}
+
+.statusbox {
+  width: 100%;
+  padding: 1rem;
+}
+
+.spec-close {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: .5rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: block;
+  transition: opacity .3s;
+}
+
+.spec-close:hover {
+  opacity: .7;
+}
+
+.status-outer.draweropen {
+  right: 0;
+}
+</style>
+
+<script>
+  function toggleDrawer() {
+    var statusOuter = document.querySelector('.status-outer')
+    if (!statusOuter) {
+      return
+    }
+
+    if (statusOuter.classList.contains('draweropen')) {
+      statusOuter.classList.remove('draweropen')
+    } else {
+      statusOuter.classList.add('draweropen')
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var closeButton = document.querySelector('.spec-close')
+    if (closeButton) {
+      closeButton.addEventListener('click', toggleDrawer)
+    }
+  })
+
+  document.addEventListener('keydown', function (event) {
+    if (event.ctrlKey && event.shiftKey && event.key === 'S') {
+      toggleDrawer()
+    }
+  })
+</script>
+
+{% endif %}

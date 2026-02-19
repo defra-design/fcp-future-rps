@@ -8,6 +8,10 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
 {% extends "govuk-prototype-kit/layouts/govuk-branded.njk" %}
 
 {% block header %}
+  {% if _showDesignSpec %}
+    {% include "_common/design-spec.html" %}
+  {% endif %}
+
   <header class="govuk-header" data-module="govuk-header">
     <div class="govuk-header__container">
       <div class="govuk-header__logo govuk-width-container">
@@ -44,4 +48,30 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
     serviceName: "Farm payments",
     serviceUrl: "../bd1-common-v1/home"
       }) }}
+{% endblock %}
+
+{% block footer %}
+  {% if _showDesignSpec %}
+    {% set _customFooterContent %}
+      <ul class="govuk-footer__inline-list govuk-!-margin-top-4">
+        {% if _designSpecData.id %}
+        <li class="govuk-footer__inline-list-item">
+          {{ _designSpecData.id }}
+        </li>
+        {% endif %}
+        <li class="govuk-footer__inline-list-item">
+          <a class="govuk-footer__link" href="javascript:toggleDrawer()" id="speclink">Design spec</a>
+        </li>
+      </ul>
+    {% endset %}
+
+    {{ govukFooter({
+      meta: {
+        html: [_customFooterContent],
+        visuallyHiddenTitle: "Footer links"
+      }
+    }) }}
+  {% else %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}

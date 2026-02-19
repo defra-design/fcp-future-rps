@@ -1,5 +1,32 @@
 {% extends "layouts/day1-header.html" %}
 
+{% set _showDesignSpec = true %}
+{% set serviceName = "Farm payments" %}
+{% set _designSpecData = {
+  "status": "In development",
+  "name": "Review selected actions",
+  "id": "ID tbc",
+  "url": "/day1-hefer/add-more-actions",
+  "release": "Day 1 hefer",
+  "pagetitle": "Review selected actions",
+  "pagedesc": "Review the actions you have selected and decide whether to add actions to another land parcel.",
+  "pageurl": "day1-hefer/add-more-actions",
+  "variants": [
+      {
+      "name": "Dummy variant",
+      "url": "#"
+    },
+    {
+      "name": "Dummy variant2",
+      "url": "#"
+    }
+  ],
+  "notes": [
+    "This page uses the design spec drawer opened from the footer link.",
+    "Use Ctrl + Shift + S to toggle the drawer from the keyboard."
+  ]
+} %}
+
 {% block pageTitle %}
   Review selected actions
 {% endblock %}
