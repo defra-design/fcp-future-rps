@@ -1,0 +1,79 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Offer accepted
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Agreement offer accepted
+        </h1>
+        <div class="govuk-panel__body">
+          The start date for this agreement is  <br>  1 November 2025
+        </div>
+      </div>
+
+      <p>
+        Your agreement number is HDJ1234D.
+      </p>
+      <p>
+        You can view:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          your <a href="agreement">agreement document</a>
+        </li>
+        <li>
+          the <a href="../_common/not-testing" target="_blank">Farm payments technical test terms and conditions (opens in a new tab)</a>
+        </li>
+      </ul>
+
+      <p>
+        To check what you must do to get paid for your selected actions, read:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          the <a href="../_common/not-testing" target="_blank">Farm payments technical test information (opens in a new tab)</a>
+        </li>
+        <li>
+          the <a href="../_common/not-testing" target="_blank">Farm payments technical test actions (opens in a new tab)</a>
+        </li>
+      </ul>
+
+      <p>
+        You will receive your first payment for these actions in March 2026.
+      </p>
+
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          If you need help
+        </span>
+        </summary>
+
+        <div class="govuk-details__text">
+          <p>Contact the Rural Payments Agency (RPA) by phone or email for help and support.</p>
+          <ul class="govuk-list">
+            <li>Telephone: 020 8026 2395</li>
+            <li>Monday to Friday, 8:30am to 5pm (except bank holidays)</li>
+          </ul>
+          <p><a href="">Find out about call charges (opens in new tab)</a></p>
+          <p>Email: <a href="#">farmpayments@rpa.gov.uk</a></p>
+          <p>The RPA responds to email queries within 10 working days.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+{% endblock %}
+

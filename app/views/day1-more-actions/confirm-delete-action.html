@@ -1,0 +1,73 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+Remove action
+{% endblock %}
+
+{% block beforeContent %}
+{% include "_common/sub-header-beta.html" %}
+
+{{ govukBackLink({
+text: "Back",
+href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row" role="main">
+  <div class="govuk-grid-column-two-thirds">
+    <form class="form" action="add-more-actions2" method="post">
+    
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                  Do you want to remove Low livestock grazing on moorland: UPL2 from land parcel SO3757 3159?
+                </h1>
+              </legend> 
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="interviewNeeds" name="interviewNeeds" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="interviewNeeds">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="interviewNeeds-2" name="interviewNeeds" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="interviewNeeds-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                If you have a question
+              </span>
+          </summary>
+          <div class="govuk-details__text">
+            Contact the Rural Payments Agency (RPA) if you have a query.<br><br>
+            Telephone: 020 8026 2395<br>
+            Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+            <p><a href="">Find out about call charges (opens in new tab)</a><br><br>
+              Email: <a href="">farmpayments@rpa.gov.uk</a></p>
+            <p>The RPA responds to email queries within 10 working days.</p>
+          </div>
+        </details>
+
+
+      </form>
+
+  </div>
+</div>
+
+{% endblock %}

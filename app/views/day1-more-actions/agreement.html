@@ -1,0 +1,284 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Agile Farm agreement
+{% endblock %}
+
+{% block beforeContent %}
+{% include "_common/sub-header-beta.html" %}
+<!--
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="home">Home</a>
+    </li>
+  </ol>
+</nav> -->
+{% endblock %}
+
+
+{% block content %}
+<!-- row for page heading and summary box -->
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      Farm payments technical test agreement document
+    </h1>
+
+    <dl class="govuk-body dataset-info">
+      <dd>Agreement holder:</dd>
+      <dt>J&S Hartley</dt>
+      <dd>SBI:</dd>
+      <dt>106284736</dt>
+      <dd>Address:</dd>
+      <dt>Mason House Farm Clitheroe Rd, Bashall Eaves, Bartindale Road, Clitheroe, BB7 3DD</dt>
+      <dd>Agreement name:</dd>
+      <dt>J&S Hartley FPTT 2025</dt>
+      <dd>Agreement number:</dd>
+      <dt>SFI987654321</dt>
+      <dd>Agreement start date:</dd>
+      <dt>1 August 2025</dt>
+      <dd>Agreement end date:</dd>
+      <dt>31 July 2026</dt>
+    </dl>
+  </div>
+</div>
+
+<!-- division line for legibility -->
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<!-- row for contents and all the content -->
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-quarter">
+    <nav role="navigation" aria-labelledby="subsection-title">
+      <div id="contents">
+        <p class="govuk-body-s">Contents</p>
+        <ul class="govuk-list toc">
+          <li><a href="#intro">1. Introduction and overview</a></li>
+          <li><a href="#parties">2. Parties to the agreement</a></li>
+          <li><a href="#land">3. Land covered by the agreement</a></li>
+          <li><a href="#actions">4. Summary of actions</a></li>
+          <li><a href="#payment">5. Payments</a></li>
+          <li><a href="#duration">6. Agreement duration</a></li>
+          <li><a href="#sign">7. Electronic signature</a></li>
+          <li><a href="#data">8. Data protection</a></li>
+        </ul>
+      </div>
+
+      <!-- print this page button -->
+      <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-bottom-6">
+        <button class="govuk-link govuk-body-s gem-c-print-link__button" data-module="print-link" data-print-link-module-started="true">Print this page</button>
+      </div>
+    </nav>
+  </div> <!-- 1/4 column -->
+
+
+  <div class="govuk-grid-column-three-quarters">
+    <h2 id="intro" class="govuk-heading-l">
+      1. Introduction and overview
+    </h2>
+    <p>
+      This is the Farm payments technical test (FPTT) agreement document, which describes the sum to be paid (the "Grant")
+      to the agreement holder ("you") for delivering the FPTT action(s) you have chosen.
+    </p>
+    <p>
+      The FPTT "Agreement" comprises:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>this FPTT agreement document (“Agreement Document”)</li>
+      <li>the FPTT terms and conditions ("Terms and Conditions"), which are applicable to the payment of the Grant</li>
+      <li>the FPTT actions you have chosen (“Actions”)</li>
+    </ul>
+    <p>
+      When you enter the Agreement, you are agreeing to the terms applicable to the payment of the Grant. You should review
+      the mandatory requirements of your Agreement to make sure you understand the full extent of your obligations under the Agreement.
+    </p>
+
+
+    <h2 id="parties" class="govuk-heading-l">
+      2. Parties to the agreement
+    </h2>
+    <p>
+      This Agreement is between:
+    </p>
+    <p>
+      You, J&S Hartley, of Mason House Farm Clitheroe Rd, Bashall Eaves, Bartindale Road, Clitheroe, BB7 3DD and the Rural
+      Payments Agency (acting as a delivery body on behalf of the Department for Environment, Food and Rural Affairs),
+      PO Box 324, Worksop, S95 1DF ("us", "we", "our").
+    </p>
+
+    <h2 id="land" class="govuk-heading-l">
+      3. Land covered by the agreement
+    </h2>
+    <p>
+      The "Agreement Land" comprises the following land parcels.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Parcel</th>
+      <!--  <th scope="col" class="govuk-table__header">Parcel name</th> -->
+        <th scope="col" class="govuk-table__header">Total parcel area (ha)</th>
+      </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+      <!--  <td class="govuk-table__cell"></td> -->
+        <td class="govuk-table__cell">8.3405</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p>
+      The Terms and Conditions contain separate obligations in relation to the "Agreement Land".
+    </p>
+
+    <h2 id="actions" class="govuk-heading-l">
+      4. Summary of actions
+    </h2>
+    <p>
+      The following table sets out a summary of the Actions you have chosen and agree to complete under the Agreement.
+      The Terms and Conditions and the Actions set out the accompanying obligations for the chosen Actions.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header" style="width:115px">Parcel</th>
+        <th scope="col" class="govuk-table__header">Code</th>
+        <th scope="col" class="govuk-table__header">Action</th>
+        <th scope="col" class="govuk-table__header">Total parcel area (ha)</th>
+        <!--  <th scope="col" class="govuk-table__header">Area (hectare) / Length (meter) / Unit</th> -->
+        <th scope="col" class="govuk-table__header">Start date</th>
+        <th scope="col" class="govuk-table__header">End date</th>
+      </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell">CMOR1</td>
+        <td class="govuk-table__cell">Assess moorland and produce a written record</td>
+        <td class="govuk-table__cell">4.5123</td>
+        <!--  <td class="govuk-table__cell">95</td> -->
+        <td class="govuk-table__cell">01/08/2025</td>
+        <td class="govuk-table__cell">31/07/2026</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">SO3757 3159</td>
+        <td class="govuk-table__cell">UPL2</td>
+        <td class="govuk-table__cell">Low livestock grazing on moorland</td>
+        <td class="govuk-table__cell">3.5125</td>
+        <!--  <td class="govuk-table__cell">207</td> -->
+        <td class="govuk-table__cell">01/08/2025</td>
+        <td class="govuk-table__cell">31/07/2026</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <h2 id="payment" class="govuk-heading-l">
+      5. Payments
+    </h2>
+    <p>
+      Subject to you complying with your Agreement, the following table sets out a summary of:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>the total payments for the Actions you have chosen and agree to complete under the Agreement</li>
+      <li>total payments for the duration of your agreement</li>
+      <li>the relevant additional payments</li>
+    </ul>
+    <p>
+      Under the Agreement, your annual payment value is paid in quarterly instalments. Your first payment may be a
+      different amount due to the Rural Payments Agency rounding it up.
+    </p>
+    <p>
+      You’ll usually receive your first payment in the fourth month after your agreement’s start date.
+    </p>
+    <p>
+      These figures are correct at the Agreement start date and may vary as a result of the processes set out in the Terms and Conditions.
+    </p>
+    <p>
+      There is a payment of £272 per agreement for action 'Assess moorland and produce a written record: CMOR1’.
+    </p>
+    <p>
+      You’ll receive this payment if you are not already doing this action on another land parcel.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Code</th>
+        <th scope="col" class="govuk-table__header">Action</th>
+        <th scope="col" class="govuk-table__header">Annual payment rate</th>
+        <th scope="col" class="govuk-table__header" style="text-align: right">First payment</th>
+        <th scope="col" class="govuk-table__header" style="text-align: right">Subsequent payments</th>
+        <th scope="col" class="govuk-table__header" style="text-align: right">Annual payment value</th>
+      </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">CMOR1</td>
+        <td class="govuk-table__cell">Assess moorland and produce a written record</td>
+        <td class="govuk-table__cell">£10.60 per ha</td>
+        <td class="govuk-table__cell" style="text-align: right">£12.02</td>
+        <td class="govuk-table__cell" style="text-align: right">£12.02</td>
+        <td class="govuk-table__cell" style="text-align: right">£48.08</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">CMOR1</td>
+        <td class="govuk-table__cell">Assess moorland and produce a written record</td>
+        <td class="govuk-table__cell">£272 per agreement</td>
+        <td class="govuk-table__cell" style="text-align: right">£68</td>
+        <td class="govuk-table__cell" style="text-align: right">£68</td>
+        <td class="govuk-table__cell" style="text-align: right">£272</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">UPL2</td>
+        <td class="govuk-table__cell">Low livestock grazing on moorland</td>
+        <td class="govuk-table__cell">£53 per ha</td>
+        <td class="govuk-table__cell" style="text-align: right">£186.16</td>
+        <td class="govuk-table__cell" style="text-align: right">£186.16</td>
+        <td class="govuk-table__cell" style="text-align: right">£558.48</td>
+      </tr>
+      </tbody>
+    </table>
+
+
+    <h2 id="duration" class="govuk-heading-l">
+      6. Agreement duration
+    </h2>
+    <p>
+      The Agreement will start on the Agreement start date and end on the Agreement end date, subject to the provisions
+      for early termination set out in the Terms and Conditions.
+    </p>
+    <dl class="govuk-body dataset-info">
+      <dd>Agreement start date:</dd>
+      <dt style="font-weight: normal;">1 August 2025</dt>
+      <dd>Agreement end date:</dd>
+      <dt style="font-weight: normal;">31 July 2026</dt>
+    </dl>
+
+
+    <h2 id="sign" class="govuk-heading-l">
+      7. Electronic signature
+    </h2>
+    <p>
+      The Agreement comprising this Agreement Document, the Terms and Conditions and the Actions has been accepted by
+      [Name of individual] – [Name of business] on [Date of acceptance]
+    </p>
+
+    <h2 id="data" class="govuk-heading-l">
+      8. Data protection
+    </h2>
+    <p>
+      The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give
+      to Rural Payments Agency (RPA). For information on how we handle personal data go to Condition 16 of the Terms and Conditions .
+    </p>
+
+
+  </div> <!-- 3/4 column -->
+</div> <!-- grid row -->
+
+{% endblock %}
+
