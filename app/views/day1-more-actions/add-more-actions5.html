@@ -18,7 +18,7 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Review the actions you have selected</h1>
-      <p class="govuk-body-l">The annual payment is <strong>&pound;319.83</strong>.</p>
+      <p class="govuk-body-l">The annual payment is <strong>&pound;505.99</strong>.</p>
 
 
     <!-- Start parcel actions card -->
@@ -62,8 +62,64 @@
                 </ul>
               </td>
             </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Low livestock grazing on moorland: UPL2</td>
+              <td class="govuk-table__cell">3.5125</td>
+              <td class="govuk-table__cell" style="text-align: right">£186.16</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action-change-upl2"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row no-bottom-border">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td colspan="2" class="govuk-table__cell">
+                 {# <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action2"><span aria-hidden="true">Add another action</span><span class="govuk-visually-hidden"> to this parcel</span></a></li>
+                </ul> #}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-             {% if data['shepherding'] == "upl8" %}
+    <!-- End parcel actions card -->
+
+
+    <!-- Start parcel actions card -->
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Land parcel SO3757 3158
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            {# <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Add another action<span class="govuk-visually-hidden"> to parcel SO3757 3159</span></a>
+            </li> #}
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="confirm-delete-parcel">Remove<span class="govuk-visually-hidden"> land parcel SO3757 3159</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content" style="padding-bottom: 0">
+          <table class="govuk-table" style="margin-bottom: 0">
+          <caption class="govuk-table__caption govuk-visually-hidden">
+            Review the actions you have selected
+          </caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Action</th>
+              <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+              <th scope="col" class="govuk-table__header" style="width:140px; text-align: right;">Annual payment</th>
+              <th scope="col" class="govuk-table__header" style="width:170px"></th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 4 months): UPL8</td>
               <td class="govuk-table__cell">3.5125</td>
@@ -74,30 +130,14 @@
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
                 </ul>
               </td>
-            </tr>              
-            {% elseif data['shepherding'] == "upl10" %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 8 months): UPL10</td>
-              <td class="govuk-table__cell">3.5125</td>
-              <td class="govuk-table__cell" style="text-align: right">£168.60</td>
-              <td class="govuk-table__cell">
-                <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
-                </ul>
-              </td>
-            </tr>       
-            {% else %}
-              &nbsp;
-            {% endif %}
-
+            </tr>
             <tr class="govuk-table__row no-bottom-border">
               <td class="govuk-table__cell"></td>
               <td class="govuk-table__cell"></td>
               <td colspan="2" class="govuk-table__cell">
-                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                 {# <ul class="govuk-summary-list__actions-list" style="text-align: right">
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action2"><span aria-hidden="true">Add another action</span><span class="govuk-visually-hidden"> to this parcel</span></a></li>
-                </ul>
+                </ul> #}
               </td>
             </tr>
           </tbody>
@@ -129,7 +169,7 @@
             </tr>
           </thead>
 
-          <tbody class="govuk-table__body">
+            <tbody class="govuk-table__body">
             <tr class="govuk-table__row govuk-table__row no-bottom-border">
               <td colspan="2" class="govuk-table__cell">Additional payment per agreement per year for Assess moorland and produce a written record: CMOR1</td>
               {# <td class="govuk-table__cell">&nbsp;</td> #}
@@ -157,7 +197,7 @@
 
 
       {# <div class="actions-total">
-        <p class="govuk-body-l"><strong>Total: £665.19</strong></p>
+        <p class="govuk-body-l"><strong>Total: &pound;505.99</strong></p>
       </div> #}
 
     </div>
@@ -172,7 +212,7 @@
       <p>You will receive this payment if you are not already doing this action on another land parcel.</p>
       <br> #}
 
-      <form class="form" action="/add-more-actions6" method="post">
+      <form class="form" action="/add-more-actions3" method="post">
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -183,13 +223,13 @@
             </div> #}
             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="add-another" name="add-more-actions6" type="radio" value="yes">
+                <input class="govuk-radios__input" id="add-another" name="add-more-actions3" type="radio" value="yes">
                 <label class="govuk-label govuk-radios__label" for="add-another">
                   Yes
                 </label>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions6" type="radio" value="no">
+                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions3" type="radio" value="no">
                 <label class="govuk-label govuk-radios__label" for="add-another-2">
                   No
                 </label>
