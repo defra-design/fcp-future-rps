@@ -51,6 +51,7 @@
             </tr>
           </thead>
           <tbody class="govuk-table__body">
+            {% if data['cmor1'] == "cmor1" %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Assess moorland and produce a written record: CMOR1</td>
               <td class="govuk-table__cell">4.5123</td>
@@ -62,8 +63,47 @@
                 </ul>
               </td>
             </tr>
-
-             {% if data['livestockGrazing'] == "upl8" %}
+            {% endif %}
+            {% if data['livestockGrazing'] == "upl1" %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Moderate livestock grazing on moorland: UPL1</td>
+              <td class="govuk-table__cell">3.5125</td>
+              <td class="govuk-table__cell" style="text-align: right">£312.57</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span>
+                  </a></li>
+                </ul>
+              </td>
+            </tr>
+             {% elseif data['livestockGrazing'] == "upl2" %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Low livestock grazing on moorland: UPL2</td>
+              <td class="govuk-table__cell">3.5125</td>
+              <td class="govuk-table__cell" style="text-align: right">£401.63</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span>
+                  </a></li>
+                </ul>
+              </td>
+            </tr>
+             {% elseif data['livestockGrazing'] == "upl3" %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Limited livestock grazing on moorland: UPL3</td>
+              <td class="govuk-table__cell">3.5125</td>
+              <td class="govuk-table__cell" style="text-align: right">£389.83</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span>
+                  </a></li>
+                </ul>
+              </td>
+            </tr>
+             {% elseif data['livestockGrazing'] == "upl8" %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 4 months): UPL8</td>
               <td class="govuk-table__cell">3.5125</td>
