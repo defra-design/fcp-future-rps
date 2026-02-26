@@ -103,7 +103,8 @@
                 </ul>
               </td>
             </tr>
-             {% elseif data['livestockGrazing'] == "upl8" %}
+             {% endif %}
+             {% if data['shepherding'] == "upl8" %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 4 months): UPL8</td>
               <td class="govuk-table__cell">3.5125</td>
@@ -115,7 +116,7 @@
                 </ul>
               </td>
             </tr>              
-            {% elseif data['livestockGrazing'] == "upl10" %}
+            {% elseif data['shepherding'] == "upl10" %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 8 months): UPL10</td>
               <td class="govuk-table__cell">3.5125</td>
