@@ -1,0 +1,57 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/index">SFI Reform prototypes</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">
+      Amend an application (Feb 2026)
+    </h1>
+
+    <!-- outline the scenario and purpose of the prototype -->
+    <p>
+      One of the initiatives (<a href="https://eaflood.atlassian.net/browse/FDG-74">FDG-74</a>) was to allow a user to
+      re-access a previously submitted application in order to make amendments.
+    </p>
+    <p>
+      The scenario used for usability testing is that a user has previously submitted an application, consisting of four
+      parcels with some actions. One of the parcels requires a SSSI consent. After submiting the application the user looks
+      into obtaining a consent, and decided that it would take too long and so wants to remove that parcel from their application.
+    </p>
+    <p>
+      The application has not yet been picked up by RPA caseworkers.
+    </p>
+    <p>
+      The flow starts with the user logging in to the service and landing on the confirmation screen for submitting an application,
+      as this is the latest point in the journey they reached.
+    </p>
+
+    <p><em>When we know, add what we want to get out the usability testing.</em></p>
+
+    <a class="govuk-button" href="/amend-application/initial-sign-in">Start prototype</a>
+
+<!--
+    <h2 class="govuk-heading-m">
+      Design history
+    </h2>
+    <p><a href="_design-history" class="govuk-link">View the design history</a> which includes:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>goals</li>
+      <li>'How might we' statements</li>
+      <li>hypotheses</li>
+      <li>outcomes and decisions</li>
+    </ul>
+-->
+   
+{% endblock %}
