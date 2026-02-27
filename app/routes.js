@@ -22,7 +22,14 @@ govukPrototypeKit.views.addFilter('formatCurrency', function(num) {
 })
 
 // Add your routes here
-
+router.post('/remove-3169', function (req, res) {
+  var removeParcel = req.session.data['removeParcel']
+  if (removeParcel == "yes"){
+    res.redirect('/amend-application/application-amend-2')
+  } else {
+    res.redirect('/amend-application/application-amend-1')
+  }
+})
 
 // Mock RPA data for demo purposes (SBI: 999999999)
 function getMockRPAData() {

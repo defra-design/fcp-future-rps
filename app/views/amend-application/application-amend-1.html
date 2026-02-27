@@ -1,0 +1,423 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Farm payments technical test application
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "/amend-application/business-banner.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        Farm payments technical test application
+        <span class="govuk-caption-l">Application number: 100300</span>
+      </h1>
+
+      <h2 class="govuk-heading-m">
+        Details
+      </h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Sarah Watson
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Business name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Berkshire Estate Limited
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Address
+          </dt>
+          <dd class="govuk-summary-list__value">
+            10 Skirbeck Way<br>
+            Maidstone<br>
+            SK22 1DL<br>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            SBI number
+          </dt>
+          <dd class="govuk-summary-list__value">
+            112849012
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Contact details
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">07700 900457</p>
+            <p class="govuk-body">sarahfarmer@gmail.com</p>
+          </dd>
+        </div>
+      </dl>
+
+
+      <h2 class="govuk-heading-m">
+        Parcel based actions
+      </h2>
+      <p>The annual payment is <strong>&pound;856.61</strong>.</p>
+    </div>
+  </div>
+
+  <!-- full width for the summary cards -->
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-full">
+
+      <!-- Start parcel actions card -->
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Land parcel SO3757 3159
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="">Remove<span class="govuk-visually-hidden"> land parcel SO3757 3159</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content" style="padding-bottom: 0">
+          <table class="govuk-table" style="margin-bottom: 0">
+            <caption class="govuk-table__caption govuk-visually-hidden">
+              Review the actions you have selected
+            </caption>
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Action</th>
+                <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+                <th scope="col" class="govuk-table__header" style="width:140px; text-align: right;">Annual payment</th>
+                <th scope="col" class="govuk-table__header" style="width:170px"></th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Assess moorland and produce a written record: CMOR1</td>
+                <td class="govuk-table__cell">34.8274</td>
+                <td class="govuk-table__cell" style="text-align: right">£47.83</td>
+                <td class="govuk-table__cell">
+                  <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                      <span aria-hidden="true">Remove</span>
+                      <span class="govuk-visually-hidden">Remove Assess moorland and produce a written record: CMOR1 from the parcel</span></a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr class="govuk-table__row no-bottom-border">
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+                <td colspan="2" class="govuk-table__cell">
+                  <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                      <span aria-hidden="true">Add another action</span>
+                      <span class="govuk-visually-hidden"> to this parcel</span></a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Land parcel SO3757 3160
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="">Remove<span class="govuk-visually-hidden"> land parcel SO3757 3160</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content" style="padding-bottom: 0">
+          <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-visually-hidden">
+              Review the actions you have selected
+            </caption>
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Action</th>
+                <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+                <th scope="col" class="govuk-table__header" style="width:140px; text-align: right;">Annual payment</th>
+                <th scope="col" class="govuk-table__header" style="width:170px"></th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Assess moorland and produce a written record: CMOR1</td>
+                <td class="govuk-table__cell">12.2338</td>
+                <td class="govuk-table__cell" style="text-align: right">£129.68</td>
+                <td class="govuk-table__cell">
+                  <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                      <span aria-hidden="true">Remove</span>
+                      <span class="govuk-visually-hidden">Remove Assess moorland and produce a written record: CMOR1 from the parcel</span></a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Low livestock grazing on moorland: UPL2</td>
+                <td class="govuk-table__cell">12.2338</td>
+                <td class="govuk-table__cell" style="text-align: right">£186.16</td>
+                <td class="govuk-table__cell">
+                  <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                      <span aria-hidden="true">Change</span>
+                      <span class="govuk-visually-hidden">Change Low livestock grazing on moorland: UPL2</span></a>
+                    </li>
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                      <span aria-hidden="true">Remove</span>
+                      <span class="govuk-visually-hidden">Remove Change Low livestock grazing on moorland: UPL2 from the parcel</span></a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Land parcel SO3757 3164
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="">Remove<span class="govuk-visually-hidden"> land parcel SO3757 3164</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content" style="padding-bottom: 0">
+          <table class="govuk-table" style="margin-bottom: 0">
+            <caption class="govuk-table__caption govuk-visually-hidden">
+              Review the actions you have selected
+            </caption>
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Action</th>
+              <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+              <th scope="col" class="govuk-table__header" style="width:140px; text-align: right;">Annual payment</th>
+              <th scope="col" class="govuk-table__header" style="width:170px"></th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Moderate livestock grazing on moorland: UPL1</td>
+              <td class="govuk-table__cell">3.5125</td>
+              <td class="govuk-table__cell" style="text-align: right">£70.25</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                    <span aria-hidden="true">Change</span>
+                    <span class="govuk-visually-hidden">Change Moderate livestock grazing on moorland: UPL1</span></a>
+                  </li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                    <span aria-hidden="true">Remove</span>
+                    <span class="govuk-visually-hidden">Remove Moderate livestock grazing on moorland: UPL1 from the parcel</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row no-bottom-border">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td colspan="2" class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                    <span aria-hidden="true">Add another action</span>
+                    <span class="govuk-visually-hidden"> to this parcel</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Land parcel SO3757 3169
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="confirm-delete-parcel">Remove<span class="govuk-visually-hidden"> land parcel SO3757 3169</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content" style="padding-bottom: 0">
+          <!-- inset information -->
+          <div class="govuk-inset-text">
+            <h3 class="govuk-heading-s">
+              You must have SSSI consent
+            </h3>
+            <p>
+              You are applying for an action on land that’s a site of special scientific interest (SSSI). You must get
+              SSSI consent from Natural England.
+            </p>
+            <p>
+              Read the <a href="">guidance on SSSI consent (opens in new tab)</a>.
+            </p>
+          </div>
+
+          <table class="govuk-table" style="margin-bottom: 0">
+            <caption class="govuk-table__caption govuk-visually-hidden">
+              Review the actions you have selected
+            </caption>
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Action</th>
+              <th scope="col" class="govuk-table__header" style="width:120px">Quantity (ha)</th>
+              <th scope="col" class="govuk-table__header" style="width:140px; text-align: right;">Annual payment</th>
+              <th scope="col" class="govuk-table__header" style="width:170px"></th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Moderate livestock grazing on moorland: UPL1</td>
+              <td class="govuk-table__cell">7.5341</td>
+              <td class="govuk-table__cell" style="text-align: right">£150.68</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                    <span aria-hidden="true">Change</span>
+                    <span class="govuk-visually-hidden">Change Moderate livestock grazing on moorland: UPL1</span></a>
+                  </li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                    <span aria-hidden="true">Remove</span>
+                    <span class="govuk-visually-hidden">Remove Moderate livestock grazing on moorland: UPL1 from the parcel</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row no-bottom-border">
+              <td class="govuk-table__cell"></td>
+              <td class="govuk-table__cell"></td>
+              <td colspan="2" class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="">
+                    <span aria-hidden="true">Add another action</span>
+                    <span class="govuk-visually-hidden"> to this parcel</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End parcel actions card -->
+
+      <!-- Start additional yearly payments card -->
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Additional annual payments
+          </h2>
+        </div>
+        <div class="govuk-summary-card__content" style="padding-bottom: 0">
+          <table class="govuk-table" style="margin-bottom: 0">
+            <caption class="govuk-table__caption govuk-visually-hidden">
+              Review the additional annual payments
+            </caption>
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Action</th>
+                <th scope="col" class="govuk-table__header" style="width:120px">&nbsp;</th>
+                <th scope="col" class="govuk-table__header" style="width:140px; text-align: right">Annual payment</th>
+                <th scope="col" class="govuk-table__header" style="width:170px"></th>
+              </tr>
+            </thead>
+
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row govuk-table__row no-bottom-border">
+                <td colspan="2" class="govuk-table__cell">Additional payment per agreement per year for Assess moorland and produce a written record: CMOR1</td>
+                <td class="govuk-table__cell" style="text-align: right">£272</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End additional yearly payments card -->
+    </div> <!-- end full col width -->
+  </div> <!-- end row -->
+
+  <!-- row at 2/3 column width for extra information -->
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" action="submit-application" method="post">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do you want to add actions to another land parcel?
+            </legend>
+
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another" name="add-more-actions3" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="add-another">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="add-another-2" name="add-more-actions3" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="add-another-2">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            If you have a question
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <p>Contact the Rural Payments Agency (RPA) to update your offer.</p>
+          <ul class="govuk-list">
+            <li>Telephone: 020 8026 2395</li>
+            <li>Monday to Friday, 8:30am to 5pm (except bank holidays)</li>
+          </ul>
+          <p><a href="">Find out about call charges (opens in new tab)</a></p>
+          <p>Email: <a href="#">farmpayments@rpa.gov.uk</a></p>
+          <p>The RPA responds to email queries within 10 working days.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+{% endblock %}
