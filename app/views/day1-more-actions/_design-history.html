@@ -9,7 +9,7 @@
       <a class="govuk-breadcrumbs__link" href="/index">Future RPS prototypes</a>
     </li>
     <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" href="index">Version 1</a>
+      <a class="govuk-breadcrumbs__link" href="index">Post Day 1 actions</a>
     </li>
   </ol>
 </nav>
@@ -21,29 +21,32 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-xl">
-      Day 1 - Private beta - 5 pre-approved users
+      Adding UPLs 8 and 10 to the application journey
       <span class="govuk-caption-xl">Design history</span>
     </h1>
   </div>
 
   <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m">Why we are adding UPL8 and UPL10</h2>
+    <p class="govuk-body">The team chose SFI actions UPL8 and UPL10 to add next to the private beta (in addition to the original 4 actions: UPL 1 to 3, and CMOR1). UPL8 and UPL10 are both actions which cover shepherding livestock on moorland.</p>
+    <p class="govuk-body">The reason for adding more actions is because we need to scale up the private beta. The service will ultimately need to include many more actions, so this is only the first step.</p>
+    <p class="govuk-body">The reason for selecting UPL8 and 10 specifically was because these are considered to be operationally and technically straightforward actions which will not add any complexity to the 4 existing actions. UPL8 and 10 are also expected to continue being available under SFI26 (unlike some other UPL actions).</p>
 
-    <h2 class="govuk-heading-m">What changed</h2>
+    <h3 class="govuk-heading-s">Scope</h3>
+    <p class="govuk-body">Adding UPL8 and UPL10 does not affect the case working journey and has almost no operational or technical impact in terms of our private beta service. The team assumed there are no specific user needs or pain points for UPL8 and 10 that could affect design.</p>
+    <p class="govuk-body">The only operational changes which adding UPL8 and 10 will need are to the private beta guidance documents which users agree to.</p>
 
-    <h3 class="govuk-heading-s">Actions review screen - Design and Accessibility improvements</h3>
+    <h3 class="govuk-heading-s">Design</h3>
+    <p class="govuk-body">We added radio buttons and content for the 2 new actions to the screen where the user selects their actions for a land parcel.</p>
+    <p class="govuk-body">The compatibility rules for these actions, as provided by the Rural Payments Agency (<a href="https://eaflood.atlassian.net/wiki/spaces/FRPS/pages/6458016007/BA+Analysis+on+adding+new+actions" target="_blank" rel="noreferrer nofollow">see sheet 2 of this spreadsheet</a>), is that a farmer can do any one of UPL1 to UPL3, plus either UPL8 or UPL10, on the same parcel of land. We reflected this rule on the actions selection page of the prototype.</p>
+    <p class="govuk-body">We also updated the loop to add another action, the basket page, and the review agreement offer page to add UPL8 and UPL10.</p>
+    <p class="govuk-body">We used the latest known payment rates for SFI26 and also updated the payment rates for the existing actions in line with SFI26, as these will be uplifted for our private beta users.</p>
+    <p class="govuk-body">CMOR1 will be removed from SFI26 but will remain in our private beta so we did not need to remove it.</p>
+    <p class="govuk-body">We decided not to add pagination where there are many actions or parcels to display based on past UR which told us that farmers would prefer a long page to separate pages.</p>
 
-    <p>We changed the design of the actions review screen because:</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-      <li>the <a href="add-more-actions-table-design.html">previous tabular design</a> was more difficult for readibility once multiple parcels and actions were added</li>
-      <li>we anticipated that users with screenreaders would struggle to associate which parcels were associated with which actions on the old tabular design</li>
-      <li>using a summary card component solves the above problem by clearly announcing to screenreaders which parcels are associated with which actions when a new card is focused upon. Each card is also listed on the contextual screenreader menu for efficient navigation for these users.</li>
-      <li><a href="add-more-actions2.html">the new design</a> also helps users with both cognitive disabilities and visual impairements (eg zoom text users) by presenting information in a clearer and more structured way</li>
-      <li>the summary card component brings visual separation and consistency across both action and agreement level payment information, allowing users to more clearly understand how their total payment figure has been reached</li>
-      <li>the new design removes redundant vertical whitespace below the parcel name. This is a more efficient use of the screen's real estate. Also, users using zoomtext or mobile devices gain tighter grouping of parcel name, action name and the link to optionally remove the parcel.</li>
-    </ul>
-
-      
+    <h3 class="govuk-heading-s">What is still to do</h3>
+    <p class="govuk-body">We were not able to amend the documents linked on the submit page as this is currently still in hand with policy and legal. These documents (with the possible exception of the terms and conditions), and the underlying policy definition document, all need to be updated for UPL8 and UPL10, and indeed any other actions which we add. This is because these documents were simplified and limited to only covering the first 4 actions of private beta and explicitly do not apply to any other actions.</p>
+    <p class="govuk-body">Content design will be needed to help update these documents and links and the version with UPL8 and UPL10 cannot legally be used with real private beta users until this is completed.</p>
   </div>
 
   <!-- right third of page to link to relevant mural boards and UR findings -->
