@@ -43,6 +43,11 @@
 
   {% set totalAnnualPayment = cmor1Payment + livestockPayment + shepherdingPayment + additionalAnnualPayment %}
 
+  {% set hasCmor1 = data['cmor1'] == "cmor1" %}
+  {% set hasLivestockAction = data['livestockGrazing'] == "upl1" or data['livestockGrazing'] == "upl2" or data['livestockGrazing'] == "upl3" %}
+  {% set hasShepherdingAction = data['shepherding'] == "upl8" or data['shepherding'] == "upl10" %}
+  {% set hideAddAnotherActionLink = hasCmor1 and hasLivestockAction and hasShepherdingAction %}
+
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Review the actions you have selected</h1>
@@ -160,15 +165,17 @@
               &nbsp;
             {% endif %}
 
-            <tr class="govuk-table__row no-bottom-border">
-              <td class="govuk-table__cell"></td>
-              <td class="govuk-table__cell"></td>
-              <td colspan="2" class="govuk-table__cell">
-                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action2"><span aria-hidden="true">Add another action</span><span class="govuk-visually-hidden"> to this parcel</span></a></li>
-                </ul>
-              </td>
-            </tr>
+            {% if not hideAddAnotherActionLink %}
+              <tr class="govuk-table__row no-bottom-border">
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+                <td colspan="2" class="govuk-table__cell">
+                  <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action2"><span aria-hidden="true">Add another action</span><span class="govuk-visually-hidden"> to this parcel</span></a></li>
+                  </ul>
+                </td>
+              </tr>
+            {% endif %}
           </tbody>
         </table>
       </div>
