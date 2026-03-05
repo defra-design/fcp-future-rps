@@ -566,6 +566,28 @@ router.post('/select-land-sssi-hefer', function (req, res) {
 // END Post-day 1 HEFER POC routes //
 
 
+router.post('/day1-more-actions2/select-base-action', function (req, res) {
+  var hasClig3 = req.body.wildlife === 'clig3'
+  var hasUplAction = Object.values(req.body).some(function (value) {
+    if (Array.isArray(value)) {
+      return value.some(function (item) {
+        return typeof item === 'string' && /^upl/i.test(item)
+      })
+    }
+
+    return typeof value === 'string' && /^upl/i.test(value)
+  })
+
+  if (hasClig3 && hasUplAction) {
+    return res.status(400).render('day1-more-actions2/select-base-action', {
+      mutualExclusionError: true
+    })
+  }
+
+  res.redirect('/day1-more-actions2/add-more-actions')
+})
+
+
 
 router.post('/add-more-actions', function (req, res) {
 

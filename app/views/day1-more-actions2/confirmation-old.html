@@ -1,0 +1,57 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{# 
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %} #}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Application complete
+      </h1>
+
+{#      <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">
+            Application complete
+          </h1>
+          <div class="govuk-panel__body">
+            Your reference number<br><strong>HDJ1234D</strong>
+          </div>
+        </div>
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <p class="govuk-body">
+          We have sent you a confirmation email.
+        </p>
+        <p class="govuk-body">
+          We’ll email you again when your agreement offer is available in the Rural Payments service for you to check. Your agreement will only begin once you accept and sign this document.
+        </p> #}
+        <form class="form" action="#" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Close
+          </button>
+        </form>
+        
+      </div>
+    </div>
+
+{% endblock %}
