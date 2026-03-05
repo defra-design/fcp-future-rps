@@ -83,7 +83,7 @@ href: "javascript:window.history.back()"
           <!-- CMOR1 -->
           <p>Total available area: 4.5123 hectares</p>
           <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="cmor1" name="cmor1" type="checkbox" value="cmor1" aria-describedby="CMOR1-hint">
+            <input class="govuk-checkboxes__input" id="cmor1" name="cmor1" type="checkbox" value="cmor1" aria-describedby="CMOR1-hint" {% if data['cmor1'] == "cmor1" %}checked{% endif %}>
             <label class="govuk-label govuk-checkboxes__label" for="cmor1">
               Assess moorland and produce a written record: CMOR1
             </label>
@@ -116,7 +116,7 @@ href: "javascript:window.history.back()"
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl1" name="livestockGrazing" type="radio" value="upl1" aria-describedby="UPL1-hint">
+            <input class="govuk-radios__input" id="upl1" name="livestockGrazing" type="radio" value="upl1" aria-describedby="UPL1-hint" {% if data['livestockGrazing'] == "upl1" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl1">
               Moderate livestock grazing on moorland: UPL1
             </label>
@@ -125,7 +125,7 @@ href: "javascript:window.history.back()"
             </div>
           </div>
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl2" name="livestockGrazing" type="radio" value="upl2" aria-describedby="UPL2-hint">
+            <input class="govuk-radios__input" id="upl2" name="livestockGrazing" type="radio" value="upl2" aria-describedby="UPL2-hint" {% if data['livestockGrazing'] == "upl2" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl2">
               Low livestock grazing on moorland: UPL2
             </label>
@@ -134,7 +134,7 @@ href: "javascript:window.history.back()"
             </div>
           </div>
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl3" name="livestockGrazing" type="radio" value="upl3"  aria-describedby="UPL3-hint">
+            <input class="govuk-radios__input" id="upl3" name="livestockGrazing" type="radio" value="upl3"  aria-describedby="UPL3-hint" {% if data['livestockGrazing'] == "upl3" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl3">
               Limited livestock grazing on moorland: UPL3
             </label>
@@ -163,7 +163,7 @@ href: "javascript:window.history.back()"
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl8" name="shepherding" type="radio" value="upl8"  aria-describedby="UPL8-hint">
+            <input class="govuk-radios__input" id="upl8" name="shepherding" type="radio" value="upl8"  aria-describedby="UPL8-hint" {% if data['shepherding'] == "upl8" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl8">
               Shepherding livestock on moorland (remove stock for at least 4 months): UPL8
             </label>
@@ -181,7 +181,7 @@ href: "javascript:window.history.back()"
             </div>
           </div> #}
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl10" name="shepherding" type="radio" value="upl10"  aria-describedby="UPL10-hint">
+            <input class="govuk-radios__input" id="upl10" name="shepherding" type="radio" value="upl10"  aria-describedby="UPL10-hint" {% if data['shepherding'] == "upl10" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl10">
               Shepherding livestock on moorland (remove stock for at least 8 months): UPL10
             </label>
@@ -211,7 +211,7 @@ href: "javascript:window.history.back()"
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="clig3" name="wildlife" type="radio" value="clig3"  aria-describedby="clig3-hint">
+            <input class="govuk-radios__input" id="clig3" name="wildlife" type="radio" value="clig3"  aria-describedby="clig3-hint" {% if data['wildlife'] == "clig3" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="clig3">
               Manage grassland with very low nutrient inputs: CLIG3
             </label>
