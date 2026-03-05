@@ -1,0 +1,117 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Accept offer
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+
+{% block content %}
+<!-- main page heading included in it's own row so that the 2/3 and 1/3 columns align for related links -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Accept your agreement offer
+      </h1>
+
+      <p>Your agreement will consist of the:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>agreement document</li>
+        <li><a href="">Farm payments technical test terms and conditions (opens in new tab)</a></li>
+        <li>actions you have selected</li>
+      </ul>
+
+      <p>
+        By accepting this offer, you confirm on your own behalf or, where applicable, on behalf of the agreement holder, that:
+      </p>
+      <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+        <li>
+          you will comply with the obligations under your agreement
+        </li>
+        <li>
+          the information you gave and the declarations you made in your application remain true and accurate to the
+          best of your knowledge and belief
+        </li>
+        <li>
+          you have full capacity and authority to enter into the agreement
+        </li>
+        <li>
+          you are not aware of any circumstances which would render you ineligible or otherwise prevent you from
+          complying with your obligation under the agreement
+        </li>
+        <li>
+          your obligations under the agreement do not and will not duplicate or conflict in whole or in part with
+          any other legal or contractual obligations you are subject to
+        </li>
+        <li>
+          you will at all times comply with all relevant law (as defined in the Farm payments technical test terms and
+          conditions) in the performance of your obligations under the agreement
+        </li>
+      </ul>
+
+      <p class="govuk-body">
+        Check the Farm payments technical test terms and conditions to understand what can happen if you deliberately give wrong or incomplete
+        information, or do not report changes as soon as possible.
+      </p>
+      <p class="govuk-body">
+        In addition to the confirmations above, if you are accepting this offer on behalf of the agreement holder,
+        you confirm you are duly authorised and have the capacity to:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>accept this agreement on the agreement holder’s behalf</li>
+        <li>enter into the agreement on the agreement holder’s behalf</li>
+      </ul>
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+          <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="waste" name="waste" type="checkbox" value="carcasses" onchange="document.getElementById('accept').disabled = !this.checked;">
+              <label class="govuk-label govuk-checkboxes__label" for="waste">
+                I confirm I have read the information in this section and accept this agreement offer. I accept it either
+                on my own or my organisation’s behalf, or as someone duly authorised to act on behalf of the agreement holder.
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <form action="offer-accepted" method="post">
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button" name="accept" id="accept" disabled>
+            Accept offer
+          </button>
+        </div>
+      </form>
+
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          If you need to make an update
+        </span>
+        </summary>
+
+        <div class="govuk-details__text">
+          <p>Contact the Rural Payments Agency (RPA) by phone or email for help and support.</p>
+          <ul class="govuk-list">
+            <li>Telephone: 020 8026 2395</li>
+            <li>Monday to Friday, 8:30am to 5pm (except bank holidays)</li>
+          </ul>
+          <p><a href="#">Find out about call charges (opens in new tab)</a></p>
+          <p>Email: <a href="#">farmpayments@rpa.gov.uk</a></p>
+          <p>The RPA responds to email queries within 10 working days.</p>
+        </div>
+      </details>
+    </div> <!-- two-thirds col -->
+  </div> <!-- row -->
+
+{% endblock %}
+

@@ -1,0 +1,60 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+    SSSI consent
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">SSSI consent</h1>
+<p class="govuk-body">If you apply for SFI actions on land that's a site of special scientific interest (SSSI), you must get SSSI consent from Natural England.</p>
+<p class="govuk-body">You need to get this consent before you do your selected SFI actions on SSSI land. Some actions can be done without SSSI consent - this is set out in each action in the <a href="https://www.gov.uk/find-funding-for-land-or-farms">'find funding for land or farms' tool</a>.</p>
+<p class="govuk-body">Read the guidance on <a href="https://www.gov.uk/guidance/protected-areas-sites-of-special-scientific-interest#:~:text=Check%20if%20you%20need%20consent,-There%20are%20certain&text=Each%20SSSI%20has%20a%20list,additional%20permissions%20from%20other%20authorities" class="govuk-link">SSSI consent</a>.</p>
+<p class="govuk-body">If you are not applying for actions on SSSI land, or the actions can be done without SSSI consent, answer ‘yes' to continue your application.</p>
+
+<form class="form" action="/sssi-answer3" method="post">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h1 class="govuk-fieldset__heading">
+Will you get SSSI consent if you need to?</h1>
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="sssiAnswer-1" name="sssi-answer3" type="radio" value="yes">
+                  <label class="govuk-label govuk-radios__label" for="sssiAnswer-1">
+                    Yes
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="sssiAnswer-2" name="sssi-answer3" type="radio" value="no">
+                  <label class="govuk-label govuk-radios__label" for="sssiAnswer-2">
+                    No
+                  </label>
+                </div>
+            </fieldset>
+          </div>
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+    </div>
+  </div>
+
+{% endblock %}

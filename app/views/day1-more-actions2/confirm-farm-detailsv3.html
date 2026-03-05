@@ -1,0 +1,163 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Confirm details
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Confirm your details
+      </h1>
+
+        {# <p class="govuk-body">Check your details are correct.<br>
+           If they are incorrect, you will not be able to submit your application.</p>
+        <p>To update your details, phone the Rural Payments Agency (RPA) on 020 8026 2395.</p> #}
+
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-visually-hidden">Warning</span>
+              You have some missing details. The missing information must be complete before you can continue. To update your details, phone the Rural Payments Agency (RPA) on 020 8026 2395.
+          </strong>
+        </div>
+          
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-6">
+        Your details
+      </h2>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Title
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Mr
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            First name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Alfred
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Last name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Waldron
+          </dd>
+        </div>
+      </dl>
+
+        <h3 class="govuk-heading-m govuk-!-margin-top-6">
+            Business details
+          </h3>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Business name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Agile Farm
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Address 1
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Agile Farm
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Address 2
+          </dt>
+          <dd class="govuk-summary-list__value">
+              <span class="govuk-visually-hidden">This information is missing</span>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+          City
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Maidstone
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Postcode
+          </dt>
+          <dd class="govuk-summary-list__value">
+            SK22 1DL
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            SBI number
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">123456789</p>
+          </dd>
+        </div>
+      </dl>
+
+        <h3 class="govuk-heading-m govuk-!-margin-top-6">
+            Contact details
+          </h3>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Mobile number
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">07700 900457</p>
+          </dd> 
+        </div>
+            <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Email address
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">alfred.waldrons@example.com</p>
+          </dd> 
+        </div>
+      </dl>
+
+      <form class="form" action="confirm-eligibility-details" method="post">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button" disabled>
+          Continue
+        </button>
+      </form>
+
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+             If you need to make an update
+          </span>
+      </summary>
+      <div class="govuk-details__text">
+        Contact the Rural Payments Agency (RPA) to update your details.<br><br>
+        Telephone: 020 8026 2395<br>
+        Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+        <p><a href="">Find out about call charges (opens in new tab)</a><br><br>
+          Email: <a href="">farmpayments@rpa.gov.uk</a></p>
+        <p>The RPA responds to email queries within 10 working days.</p>
+      </div>
+    </details>
+
+    </div>
+  </div>
+{% endblock %}
