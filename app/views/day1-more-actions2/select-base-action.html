@@ -27,7 +27,7 @@ href: "javascript:window.history.back()"
           <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
               <li>
-                <a href="#upl-clig3-error-livestock">You cannot select any UPL action with CLIG3 as they are incompatible</a>
+                <a href="#upl-clig3-error-livestock">You cannot select any UPL action with CLIG3 or CSAM3 as they are incompatible</a>
               </li>
             </ul>
           </div>
@@ -108,7 +108,7 @@ href: "javascript:window.history.back()"
 
         {% if mutualExclusionError %}
           <p id="upl-clig3-error-livestock" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> You cannot select any UPL action with CLIG3
+            <span class="govuk-visually-hidden">Error:</span> You cannot select any UPL action with CLIG3 or CSAM3
           </p>
         {% endif %}
 
@@ -155,7 +155,7 @@ href: "javascript:window.history.back()"
 
         {% if mutualExclusionError %}
           <p id="upl-clig3-error-shepherding" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> You cannot select any UPL action with CLIG3
+            <span class="govuk-visually-hidden">Error:</span> You cannot select any UPL action with CLIG3 or CSAM3
           </p>
         {% endif %}
 
@@ -203,7 +203,7 @@ href: "javascript:window.history.back()"
 
         {% if mutualExclusionError %}
           <p id="upl-clig3-error-wildlife" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> You cannot select CLIG3 with any UPL action
+            <span class="govuk-visually-hidden">Error:</span> You cannot select CLIG3 or CSAM3 with any UPL action
           </p>
         {% endif %}
 
@@ -217,6 +217,30 @@ href: "javascript:window.history.back()"
             </label>
             <div id="clig3-hint" class="govuk-hint govuk-radios__hint">
               Payment rate per year: <strong>&pound;151 per hectare</strong>
+            </div>
+          </div>
+          <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="csam3" name="wildlife" type="radio" value="csam3" data-aria-controls="conditional-csam3">
+            <label class="govuk-label govuk-radios__label" for="csam3">
+              Herbal leys: CSAM3 
+            </label>
+             <div id="csam3-hint" class="govuk-hint govuk-radios__hint">
+              Payment rate per year: <strong>&pound;382 per hectare</strong>
+            </div>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-csam3">
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="quantity-csam3">
+                Quantity
+              </label>
+                <div class="govuk-hint">
+                    3.5125 hectares available
+                </div>
+             <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="quantity-csam3" name="quantity-csam3" type="text" spellcheck="false">
+                    <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                  </div>
             </div>
           </div>
           {# <div class="govuk-radios__item">
@@ -261,27 +285,34 @@ href: "javascript:window.history.back()"
 
 <script>
   (function () {
-    var clig3 = document.getElementById('clig3')
+    var incompatibleWildlifeActions = [
+      document.getElementById('clig3'),
+      document.getElementById('csam3')
+    ].filter(Boolean)
     var uplActions = document.querySelectorAll('input.govuk-radios__input[id^="upl"]')
 
-    if (!clig3 || !uplActions.length) {
+    if (!incompatibleWildlifeActions.length || !uplActions.length) {
       return
     }
 
-    clig3.addEventListener('change', function () {
-      if (!clig3.checked) {
-        return
-      }
+    incompatibleWildlifeActions.forEach(function (wildlifeAction) {
+      wildlifeAction.addEventListener('change', function () {
+        if (!wildlifeAction.checked) {
+          return
+        }
 
-      uplActions.forEach(function (upl) {
-        upl.checked = false
+        uplActions.forEach(function (upl) {
+          upl.checked = false
+        })
       })
     })
 
     uplActions.forEach(function (upl) {
       upl.addEventListener('change', function () {
         if (upl.checked) {
-          clig3.checked = false
+          incompatibleWildlifeActions.forEach(function (wildlifeAction) {
+            wildlifeAction.checked = false
+          })
         }
       })
     })

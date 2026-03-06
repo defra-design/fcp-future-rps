@@ -566,8 +566,10 @@ router.post('/select-land-sssi-hefer', function (req, res) {
 // END Post-day 1 HEFER POC routes //
 
 
+// Start Post-day 1 more actions mutual exclusivity logic //
+
 router.post('/day1-more-actions2/select-base-action', function (req, res) {
-  var hasClig3 = req.body.wildlife === 'clig3'
+  var hasIncompatibleWildlifeAction = req.body.wildlife === 'clig3' || req.body.wildlife === 'csam3'
   var hasUplAction = Object.values(req.body).some(function (value) {
     if (Array.isArray(value)) {
       return value.some(function (item) {
@@ -578,7 +580,7 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
     return typeof value === 'string' && /^upl/i.test(value)
   })
 
-  if (hasClig3 && hasUplAction) {
+  if (hasIncompatibleWildlifeAction && hasUplAction) {
     return res.status(400).render('day1-more-actions2/select-base-action', {
       mutualExclusionError: true
     })
@@ -588,13 +590,15 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
     req.session.data.wildlife = ''
   }
 
-  if (hasClig3) {
+  if (hasIncompatibleWildlifeAction) {
     req.session.data.livestockGrazing = ''
     req.session.data.shepherding = ''
   }
 
   res.redirect('/day1-more-actions2/add-more-actions')
 })
+
+// End Post-day 1 more actions mutual exclusivity logic //
 
 
 

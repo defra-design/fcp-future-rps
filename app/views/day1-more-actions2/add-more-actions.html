@@ -36,17 +36,26 @@
     {% set shepherdingPayment = 168.60 %}
   {% endif %}
 
+  {% set csam3Quantity = (data['quantity-csam3'] or '0') | replace(',', '') | float %}
+
+  {% set wildlifePayment = 0 %}
+  {% if data['wildlife'] == "clig3" %}
+    {% set wildlifePayment = 530.31 %}
+  {% elseif data['wildlife'] == "csam3" %}
+    {% set wildlifePayment = csam3Quantity * 382 %}
+  {% endif %}
+
   {% set additionalAnnualPayment = 0 %}
   {% if data['cmor1'] == "cmor1" %}
     {% set additionalAnnualPayment = 272 %}
   {% endif %}
 
-  {% set totalAnnualPayment = cmor1Payment + livestockPayment + shepherdingPayment + additionalAnnualPayment %}
+  {% set totalAnnualPayment = cmor1Payment + livestockPayment + shepherdingPayment + wildlifePayment + additionalAnnualPayment %}
 
   {% set hasCmor1 = data['cmor1'] == "cmor1" %}
   {% set hasAnyUplAction = data['livestockGrazing'] == "upl1" or data['livestockGrazing'] == "upl2" or data['livestockGrazing'] == "upl3" or data['shepherding'] == "upl8" or data['shepherding'] == "upl10" %}
-  {% set hasClig3 = data['wildlife'] == "clig3" %}
-  {% set hideAddAnotherActionLink = hasCmor1 and (hasAnyUplAction or hasClig3) %}
+  {% set hasIncompatibleWildlifeAction = data['wildlife'] == "clig3" or data['wildlife'] == "csam3" %}
+  {% set hideAddAnotherActionLink = hasCmor1 and (hasAnyUplAction or hasIncompatibleWildlifeAction) %}
 
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
@@ -173,7 +182,20 @@
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
                 </ul>
               </td>
-            </tr>       
+            </tr>      
+            {% elseif data['wildlife'] == "csam3" %}
+            <tr class="govuk-table__row" id="action-csam3" data-action-code="csam3">
+              <td class="govuk-table__cell">Herbal leys: CSAM3</td>
+              <td class="govuk-table__cell">{{ csam3Quantity.toFixed(4) }}</td>
+              <td class="govuk-table__cell" style="text-align: right">&pound;{{ wildlifePayment.toFixed(2) }}</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>   
+           
             {% else %}
               &nbsp;
             {% endif %}
@@ -324,8 +346,8 @@
 
       var hasCmor1 = !!document.getElementById('action-cmor1')
       var hasAnyUplAction = !!document.querySelector('[data-action-code^="upl"]')
-      var hasClig3 = !!document.getElementById('action-clig3')
-      var shouldHideAddAnotherAction = hasCmor1 && (hasAnyUplAction || hasClig3)
+      var hasIncompatibleWildlifeAction = !!document.getElementById('action-clig3') || !!document.getElementById('action-csam3')
+      var shouldHideAddAnotherAction = hasCmor1 && (hasAnyUplAction || hasIncompatibleWildlifeAction)
 
       if (shouldHideAddAnotherAction) {
         addAnotherActionRow.style.display = 'none'
