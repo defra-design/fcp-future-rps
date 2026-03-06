@@ -44,9 +44,9 @@
   {% set totalAnnualPayment = cmor1Payment + livestockPayment + shepherdingPayment + additionalAnnualPayment %}
 
   {% set hasCmor1 = data['cmor1'] == "cmor1" %}
-  {% set hasLivestockAction = data['livestockGrazing'] == "upl1" or data['livestockGrazing'] == "upl2" or data['livestockGrazing'] == "upl3" %}
-  {% set hasShepherdingAction = data['shepherding'] == "upl8" or data['shepherding'] == "upl10" %}
-  {% set hideAddAnotherActionLink = hasCmor1 and hasLivestockAction and hasShepherdingAction %}
+  {% set hasAnyUplAction = data['livestockGrazing'] == "upl1" or data['livestockGrazing'] == "upl2" or data['livestockGrazing'] == "upl3" or data['shepherding'] == "upl8" or data['shepherding'] == "upl10" %}
+  {% set hasClig3 = data['wildlife'] == "clig3" %}
+  {% set hideAddAnotherActionLink = hasCmor1 and (hasAnyUplAction or hasClig3) %}
 
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
@@ -85,7 +85,7 @@
           </thead>
           <tbody class="govuk-table__body">
             {% if data['cmor1'] == "cmor1" %}
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" id="action-cmor1" data-action-code="cmor1">
               <td class="govuk-table__cell">Assess moorland and produce a written record: CMOR1</td>
               <td class="govuk-table__cell">4.5123</td>
               <td class="govuk-table__cell" style="text-align: right">&pound;47.83</td>
@@ -98,39 +98,39 @@
             </tr>
             {% endif %}
             {% if data['livestockGrazing'] == "upl1" %}
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" data-action-code="upl1">
               <td class="govuk-table__cell">Moderate livestock grazing on moorland: UPL1</td>
               <td class="govuk-table__cell">3.5125</td>
               <td class="govuk-table__cell" style="text-align: right">&pound;312.57</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span>
                   </a></li>
                 </ul>
               </td>
             </tr>
              {% elseif data['livestockGrazing'] == "upl2" %}
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" data-action-code="upl2">
               <td class="govuk-table__cell">Low livestock grazing on moorland: UPL2</td>
               <td class="govuk-table__cell">3.5125</td>
               <td class="govuk-table__cell" style="text-align: right">&pound;312.61</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span>
                   </a></li>
                 </ul>
               </td>
             </tr>
              {% elseif data['livestockGrazing'] == "upl3" %}
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" data-action-code="upl3">
               <td class="govuk-table__cell">Limited livestock grazing on moorland: UPL3</td>
               <td class="govuk-table__cell">3.5125</td>
               <td class="govuk-table__cell" style="text-align: right">&pound;389.83</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span>
                   </a></li>
                 </ul>
@@ -138,25 +138,38 @@
             </tr>
              {% endif %}
              {% if data['shepherding'] == "upl8" %}
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" data-action-code="upl8">
               <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 4 months): UPL8</td>
               <td class="govuk-table__cell">3.5125</td>
               <td class="govuk-table__cell" style="text-align: right">&pound;259.93</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
                 </ul>
               </td>
             </tr>              
             {% elseif data['shepherding'] == "upl10" %}
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" data-action-code="upl10">
               <td class="govuk-table__cell">Shepherding livestock on moorland (remove stock for at least 8 months): UPL10</td>
               <td class="govuk-table__cell">3.5125</td>
               <td class="govuk-table__cell" style="text-align: right">&pound;168.60</td>
               <td class="govuk-table__cell">
                 <ul class="govuk-summary-list__actions-list" style="text-align: right">
-                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
+                </ul>
+              </td>
+            </tr>   
+              {% endif %}  
+              {% if data['wildlife'] == "clig3" %}
+            <tr class="govuk-table__row" id="action-clig3" data-action-code="clig3">
+              <td class="govuk-table__cell">Manage grassland with very low nutrient inputs: CLIG3</td>
+              <td class="govuk-table__cell">3.5125</td>
+              <td class="govuk-table__cell" style="text-align: right">&pound;530.31</td>
+              <td class="govuk-table__cell">
+                <ul class="govuk-summary-list__actions-list" style="text-align: right">
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="select-base-action"><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">Change Sydney Russell</span></a></li>
                   <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="confirm-delete-action"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">Remove Sydney Russell from the list</span></a></li>
                 </ul>
               </td>
@@ -166,7 +179,7 @@
             {% endif %}
 
             {% if not hideAddAnotherActionLink %}
-              <tr class="govuk-table__row no-bottom-border">
+              <tr class="govuk-table__row no-bottom-border" id="add-another-action-row">
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
                 <td colspan="2" class="govuk-table__cell">
@@ -300,5 +313,24 @@
       </form>
     </div>
   </div>
+
+  <script>
+    (function () {
+      var addAnotherActionRow = document.getElementById('add-another-action-row')
+
+      if (!addAnotherActionRow) {
+        return
+      }
+
+      var hasCmor1 = !!document.getElementById('action-cmor1')
+      var hasAnyUplAction = !!document.querySelector('[data-action-code^="upl"]')
+      var hasClig3 = !!document.getElementById('action-clig3')
+      var shouldHideAddAnotherAction = hasCmor1 && (hasAnyUplAction || hasClig3)
+
+      if (shouldHideAddAnotherAction) {
+        addAnotherActionRow.style.display = 'none'
+      }
+    })()
+  </script>
 
 {% endblock %}

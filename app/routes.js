@@ -584,6 +584,15 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
     })
   }
 
+  if (hasUplAction) {
+    req.session.data.wildlife = ''
+  }
+
+  if (hasClig3) {
+    req.session.data.livestockGrazing = ''
+    req.session.data.shepherding = ''
+  }
+
   res.redirect('/day1-more-actions2/add-more-actions')
 })
 
