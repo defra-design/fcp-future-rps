@@ -4,6 +4,8 @@
 //
 
 // Load SFI mapping component
+document.documentElement.classList.add('js-enabled')
+
 document.addEventListener('DOMContentLoaded', function() {
   // Load the SFI mapping component script
   const script = document.createElement('script');

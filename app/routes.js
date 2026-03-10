@@ -570,6 +570,8 @@ router.post('/select-land-sssi-hefer', function (req, res) {
 
 router.post('/day1-more-actions2/select-base-action', function (req, res) {
   var hasIncompatibleWildlifeAction = req.body.wildlife === 'clig3' || req.body.wildlife === 'csam3'
+  var hasLivestockUplAction = typeof req.body.livestockGrazing === 'string' && /^upl/i.test(req.body.livestockGrazing)
+  var hasShepherdingUplAction = typeof req.body.shepherding === 'string' && /^upl/i.test(req.body.shepherding)
   var hasUplAction = Object.values(req.body).some(function (value) {
     if (Array.isArray(value)) {
       return value.some(function (item) {
@@ -581,8 +583,58 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
   })
 
   if (hasIncompatibleWildlifeAction && hasUplAction) {
+    req.session.data.wildlife = ''
+    req.session.data.livestockGrazing = ''
+    req.session.data.shepherding = ''
+    req.body.wildlife = ''
+    req.body.livestockGrazing = ''
+    req.body.shepherding = ''
+
     return res.status(400).render('day1-more-actions2/select-base-action', {
-      mutualExclusionError: true
+      mutualExclusionError: true,
+      livestockFieldsetError: hasIncompatibleWildlifeAction && hasLivestockUplAction,
+      shepherdingFieldsetError: hasIncompatibleWildlifeAction && hasShepherdingUplAction,
+      wildlifeFieldsetError: hasIncompatibleWildlifeAction && hasUplAction,
+      data: Object.assign({}, req.session.data, {
+        wildlife: '',
+        livestockGrazing: '',
+        shepherding: ''
+      })
+    })
+  }
+
+  if (hasUplAction) {
+    req.session.data.wildlife = ''
+  }
+
+  if (hasIncompatibleWildlifeAction) {
+    req.session.data.livestockGrazing = ''
+    req.session.data.shepherding = ''
+  }
+
+  res.redirect('/day1-more-actions2/add-more-actions')
+})
+
+router.post('/day1-more-actions2/select-base-action-none-option', function (req, res) {
+  var hasIncompatibleWildlifeAction = req.body.wildlife === 'clig3' || req.body.wildlife === 'csam3'
+  var hasLivestockUplAction = typeof req.body.livestockGrazing === 'string' && /^upl/i.test(req.body.livestockGrazing)
+  var hasShepherdingUplAction = typeof req.body.shepherding === 'string' && /^upl/i.test(req.body.shepherding)
+  var hasUplAction = Object.values(req.body).some(function (value) {
+    if (Array.isArray(value)) {
+      return value.some(function (item) {
+        return typeof item === 'string' && /^upl/i.test(item)
+      })
+    }
+
+    return typeof value === 'string' && /^upl/i.test(value)
+  })
+
+  if (hasIncompatibleWildlifeAction && hasUplAction) {
+    return res.status(400).render('day1-more-actions2/select-base-action-none-option', {
+      mutualExclusionError: true,
+      livestockFieldsetError: hasIncompatibleWildlifeAction && hasLivestockUplAction,
+      shepherdingFieldsetError: hasIncompatibleWildlifeAction && hasShepherdingUplAction,
+      wildlifeFieldsetError: hasIncompatibleWildlifeAction && hasUplAction
     })
   }
 

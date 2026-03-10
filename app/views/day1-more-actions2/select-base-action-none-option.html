@@ -1,28 +1,5 @@
 {% extends "layouts/day1-header.html" %}
 
-{% set _showDesignSpec = true %}
-{% set serviceName = "Farm payments" %}
-{% set _designSpecData = {
-  "status": "In development",
-  "name": "Select actions",
-  "id": "ID tbc",
-  "url": "/day1-more-actions2/select-base-action",
-  "release": "Day 1 more actions 2",
-  "pagetitle": "Select actions",
-  "pagedesc": "Select actions for this parcel and avoid incompatible combinations.",
-  "pageurl": "day1-more-actions2/select-base-action",
-  "variants": [
-    {
-      "name": "Default",
-      "url": "/day1-more-actions2/select-base-action"
-    },
-    {
-      "name": "None option variant",
-      "url": "/day1-more-actions2/select-base-action-none-option"
-    }
-  ]
-} %}
-
 {% block pageTitle %}
 Select actions
 {% endblock %}
@@ -70,7 +47,7 @@ href: "javascript:window.history.back()"
       </div>
     {% endif %}
 
-    <form class="sfi-compatibility-form" action="select-base-action" method="post">
+    <form class="sfi-compatibility-form" action="select-base-action-none-option" method="post">
 
     <h1 class="govuk-heading-l">
       Select actions for land parcel SO3757 3159
@@ -179,6 +156,14 @@ href: "javascript:window.history.back()"
               Payment rate per year: <strong>£111 per hectare</strong>
             </div>
           </div>
+          {% if livestockFieldsetError %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="livestock-none" name="livestockGrazing" type="radio" value="none-livestock" {% if data['livestockGrazing'] == "none-livestock" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="livestock-none">
+                None of the above
+              </label>
+            </div>
+          {% endif %}
         </fieldset>
       </div>
 
@@ -228,6 +213,14 @@ href: "javascript:window.history.back()"
               Payment rate per year: <strong>£102 per hectare</strong>
             </div>
           </div>
+          {% if shepherdingFieldsetError %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="shepherding-none" name="shepherding" type="radio" value="none-shepherding" {% if data['shepherding'] == "none-shepherding" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="shepherding-none">
+                None of the above
+              </label>
+            </div>
+          {% endif %}
         </div>
       </fieldset>
     </div>
@@ -284,6 +277,14 @@ href: "javascript:window.history.back()"
                   </div>
             </div>
           </div>
+          {% if wildlifeFieldsetError %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="wildlife-none" name="wildlife" type="radio" value="none-wildlife" {% if data['wildlife'] == "none-wildlife" %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="wildlife-none">
+                None of the above
+              </label>
+            </div>
+          {% endif %}
           {# <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="upl9" name="wildlife" type="radio" value="upl9"  aria-describedby="UPL9-hint">
             <label class="govuk-label govuk-radios__label" for="upl9">
