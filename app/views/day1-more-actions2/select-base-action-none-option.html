@@ -1,5 +1,28 @@
 {% extends "layouts/day1-header.html" %}
 
+{% set _showDesignSpec = true %}
+{% set serviceName = "Farm payments" %}
+{% set _designSpecData = {
+  "status": "In development",
+  "name": "Select actions",
+  "id": "ID tbc",
+  "url": "/day1-more-actions2/select-base-action-none-option",
+  "release": "Day 1 more actions 2",
+  "pagetitle": "Select actions",
+  "pagedesc": "Select actions for this parcel and resolve incompatible combinations.",
+  "pageurl": "day1-more-actions2/select-base-action-none-option",
+  "variants": [
+    {
+      "name": "Default",
+      "url": "/day1-more-actions2/select-base-action"
+    },
+    {
+      "name": "None option variant",
+      "url": "/day1-more-actions2/select-base-action-none-option"
+    }
+  ]
+} %}
+
 {% block pageTitle %}
 Select actions
 {% endblock %}
