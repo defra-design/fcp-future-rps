@@ -140,6 +140,20 @@ tr .govuk-error-message {
 
  // End Actions page styles //
 
+.sfi-compatibility-hint {
+	display: none;
+}
+
+@supports selector(form:has(input:checked)) {
+	.sfi-compatibility-form:has(.sfi-compatibility-option--wildlife:checked) .sfi-compatibility-hint--upl {
+		display: block;
+	}
+
+	.sfi-compatibility-form:has(.sfi-compatibility-option--upl:checked) .sfi-compatibility-hint--wildlife {
+		display: block;
+	}
+}
+
 
 
  // Navigation styles //
