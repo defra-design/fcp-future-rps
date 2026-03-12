@@ -51,17 +51,17 @@ href: "javascript:window.history.back()"
             <ul class="govuk-list govuk-error-summary__list">
               {% if livestockFieldsetError %}
                 <li>
-                  <a href="#upl-clig3-error-livestock">You cannot select any UPL action with CLIG3 or CSAM3 as they are incompatible</a>
+                  <a href="#upl-clig3-error-livestock">{{ livestockErrorMessage }}</a>
                 </li>
               {% endif %}
               {% if shepherdingFieldsetError %}
                 <li>
-                  <a href="#upl-clig3-error-shepherding">You cannot select any UPL action with CLIG3 or CSAM3 as they are incompatible</a>
+                  <a href="#upl-clig3-error-shepherding">{{ shepherdingErrorMessage }}</a>
                 </li>
               {% endif %}
               {% if wildlifeFieldsetError %}
                 <li>
-                  <a href="#upl-clig3-error-wildlife">You cannot select CLIG3 or CSAM3 with any UPL action</a>
+                  <a href="#upl-clig3-error-wildlife">{{ wildlifeErrorMessage }}</a>
                 </li>
               {% endif %}
             </ul>
@@ -143,7 +143,7 @@ href: "javascript:window.history.back()"
 
         {% if livestockFieldsetError %}
           <p id="upl-clig3-error-livestock" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> You cannot select any UPL action with CLIG3 or CSAM3
+            <span class="govuk-visually-hidden">Error:</span> {{ livestockErrorMessage }}
           </p>
         {% endif %}
 
@@ -200,7 +200,7 @@ href: "javascript:window.history.back()"
 
         {% if shepherdingFieldsetError %}
           <p id="upl-clig3-error-shepherding" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> You cannot select any UPL action with CLIG3 or CSAM3
+            <span class="govuk-visually-hidden">Error:</span> {{ shepherdingErrorMessage }}
           </p>
         {% endif %}
 
@@ -258,7 +258,7 @@ href: "javascript:window.history.back()"
 
         {% if wildlifeFieldsetError %}
           <p id="upl-clig3-error-wildlife" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> You cannot select CLIG3 or CSAM3 with any UPL action
+            <span class="govuk-visually-hidden">Error:</span> {{ wildlifeErrorMessage }}
           </p>
         {% endif %}
 

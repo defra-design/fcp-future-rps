@@ -6,6 +6,21 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 const https = require('https')
+const actionCodeNames = require('./data/sfi24-codes-names.json')
+const {
+  areActionsCompatible,
+  findIncompatibilities,
+  normaliseActionCode,
+  resolveYear
+} = require('./compatibility-matrix')
+
+const actionNameByCode = actionCodeNames.reduce(function (lookup, entry) {
+  var code = normaliseActionCode(entry.code)
+  if (code) {
+    lookup[code] = entry.name
+  }
+  return lookup
+}, {})
 
 // Add custom Nunjucks filter for parsing JSON
 govukPrototypeKit.views.addFilter('fromJson', function(str) {
@@ -568,21 +583,246 @@ router.post('/select-land-sssi-hefer', function (req, res) {
 
 // Start Post-day 1 more actions mutual exclusivity logic //
 
-router.post('/day1-more-actions2/select-base-action', function (req, res) {
-  var hasIncompatibleWildlifeAction = req.body.wildlife === 'clig3' || req.body.wildlife === 'csam3'
-  var hasLivestockUplAction = typeof req.body.livestockGrazing === 'string' && /^upl/i.test(req.body.livestockGrazing)
-  var hasShepherdingUplAction = typeof req.body.shepherding === 'string' && /^upl/i.test(req.body.shepherding)
-  var hasUplAction = Object.values(req.body).some(function (value) {
-    if (Array.isArray(value)) {
-      return value.some(function (item) {
-        return typeof item === 'string' && /^upl/i.test(item)
-      })
-    }
+function getSelectedActionsForCompatibility(body) {
+  return {
+    livestockGrazing: normaliseActionCode(body.livestockGrazing),
+    shepherding: normaliseActionCode(body.shepherding),
+    wildlife: normaliseActionCode(body.wildlife),
+    cmor1: normaliseActionCode(body.cmor1)
+  }
+}
 
-    return typeof value === 'string' && /^upl/i.test(value)
+const MATRIX_PAGE_ACTION_CODES = [
+  'CMOR1',
+  'UPL1',
+  'UPL2',
+  'UPL3',
+  'UPL8',
+  'UPL10',
+  'CLIG3',
+  'CSAM3'
+]
+
+const ALL_ACTIONS_HINT_GROUP_CODES = [
+  'UPL1',
+  'UPL2',
+  'UPL3',
+  'UPL7',
+  'UPL8',
+  'UPL9',
+  'UPL10',
+  'CLIG3',
+  'CSAM3'
+]
+
+const ALL_KNOWN_ACTION_CODES = Object.keys(actionNameByCode)
+
+function getCompatibilityYearFromSession(sessionData) {
+  return resolveYear(Number(sessionData.compatibilityYear))
+}
+
+function buildMatrixClientConfig(actionCodes, year) {
+  var uniqueCodes = Array.from(new Set((actionCodes || []).map(normaliseActionCode).filter(Boolean)))
+  var incompatibleByCode = {}
+  var displayNameByCode = {}
+
+  uniqueCodes.forEach(function (code) {
+    incompatibleByCode[code] = []
+    displayNameByCode[code] = getActionDisplayName(code)
   })
 
-  if (hasIncompatibleWildlifeAction && hasUplAction) {
+  for (var i = 0; i < uniqueCodes.length; i++) {
+    for (var j = i + 1; j < uniqueCodes.length; j++) {
+      var leftCode = uniqueCodes[i]
+      var rightCode = uniqueCodes[j]
+
+      if (!areActionsCompatible(leftCode, rightCode, year)) {
+        incompatibleByCode[leftCode].push(rightCode)
+        incompatibleByCode[rightCode].push(leftCode)
+      }
+    }
+  }
+
+  return {
+    incompatibleByCode: incompatibleByCode,
+    displayNameByCode: displayNameByCode
+  }
+}
+
+function getMatrixPageViewData(req, extraData) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var matrixClientConfig = buildMatrixClientConfig(MATRIX_PAGE_ACTION_CODES, compatibilityYear)
+
+  return Object.assign({
+    compatibilityYear: compatibilityYear,
+    compatibilityClientConfig: JSON.stringify(matrixClientConfig),
+    data: Object.assign({}, req.session.data)
+  }, extraData || {})
+}
+
+function isUplAction(actionCode) {
+  return /^UPL\d+$/i.test(normaliseActionCode(actionCode))
+}
+
+function isWildlifeCompatibilityAction(actionCode) {
+  var code = normaliseActionCode(actionCode)
+  return code === 'CLIG3' || code === 'CSAM3'
+}
+
+function getExistingAllActionsCompatibilityCodes(sessionData) {
+  var sessionCodes = []
+
+  if (Array.isArray(sessionData.existingParcelActionCodes)) {
+    sessionCodes = sessionData.existingParcelActionCodes
+  }
+
+  var knownCodes = [
+    sessionData.cmor1,
+    sessionData.livestockGrazing,
+    sessionData.shepherding,
+    sessionData.wildlife
+  ]
+
+  return Array.from(new Set(sessionCodes.concat(knownCodes).map(normaliseActionCode).filter(Boolean)))
+}
+
+function getSelectedAllActionsByGroup(body) {
+  return Object.keys(body || {})
+    .filter(function (key) {
+      return key.indexOf('selectedAction_') === 0
+    })
+    .reduce(function (selectedByGroup, key) {
+      var groupName = key.replace('selectedAction_', '')
+      var actionCode = normaliseActionCode(body[key])
+
+      if (groupName && actionCode) {
+        selectedByGroup[groupName] = actionCode
+      }
+
+      return selectedByGroup
+    }, {})
+}
+
+function buildAllActionsCompatibilityHints(selectedActionsByGroup, conflicts) {
+  var hintsByGroup = {}
+  if (!conflicts || !conflicts.length) {
+    return hintsByGroup
+  }
+
+  Object.keys(selectedActionsByGroup || {}).forEach(function (groupName) {
+    var focalCode = selectedActionsByGroup[groupName]
+    if (!focalCode) {
+      return
+    }
+
+    var firstConflict = conflicts.find(function (conflict) {
+      return conflict.actionCodeA === focalCode || conflict.actionCodeB === focalCode
+    })
+
+    if (!firstConflict) {
+      return
+    }
+
+    var otherCode = firstConflict.actionCodeA === focalCode
+      ? firstConflict.actionCodeB
+      : firstConflict.actionCodeA
+
+    hintsByGroup[groupName] = 'Selected action ' + getActionDisplayName(otherCode) + ' is incompatible with ' + getActionDisplayName(focalCode) + ' on this parcel.'
+  })
+
+  return hintsByGroup
+}
+
+function getActionAnchorId(actionCode) {
+  var code = normaliseActionCode(actionCode)
+  if (!code) {
+    return 'action-agf2'
+  }
+
+  return 'action-' + code.toLowerCase()
+}
+
+function getSelectedAllActionsFromBody(body) {
+  return Object.values(getSelectedAllActionsByGroup(body)).filter(Boolean)
+}
+
+function getAllActionsPageViewData(req, extraData) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var matrixClientConfig = buildMatrixClientConfig(ALL_KNOWN_ACTION_CODES, compatibilityYear)
+
+  return Object.assign({
+    compatibilityClientConfig: JSON.stringify(matrixClientConfig),
+    data: Object.assign({}, req.session.data),
+    compatibilityHintsByGroup: {}
+  }, extraData || {})
+}
+
+function hasFieldConflict(conflicts, actionCode) {
+  if (!actionCode) {
+    return false
+  }
+
+  return conflicts.some(function (conflict) {
+    return conflict.actionCodeA === actionCode || conflict.actionCodeB === actionCode
+  })
+}
+
+function getActionDisplayName(actionCode) {
+  var code = normaliseActionCode(actionCode)
+  if (!code) {
+    return ''
+  }
+
+  var actionName = actionNameByCode[code]
+  return actionName ? actionName + ': ' + code : code
+}
+
+function getConflictForAction(conflicts, actionCode) {
+  if (!actionCode) {
+    return null
+  }
+
+  return conflicts.find(function (conflict) {
+    return conflict.actionCodeA === actionCode || conflict.actionCodeB === actionCode
+  }) || null
+}
+
+function buildFieldErrorMessage(conflict, focalActionCode) {
+  if (!conflict || !focalActionCode) {
+    return 'You cannot select incompatible actions on this parcel'
+  }
+
+  var otherActionCode = conflict.actionCodeA === focalActionCode
+    ? conflict.actionCodeB
+    : conflict.actionCodeA
+
+  return 'You cannot select ' + getActionDisplayName(focalActionCode) + ' with ' + getActionDisplayName(otherActionCode) + ' as they are incompatible'
+}
+
+function getConflictFields(selectedActions, conflicts) {
+  var livestockConflict = getConflictForAction(conflicts, selectedActions.livestockGrazing)
+  var shepherdingConflict = getConflictForAction(conflicts, selectedActions.shepherding)
+  var wildlifeConflict = getConflictForAction(conflicts, selectedActions.wildlife)
+
+  return {
+    livestockFieldsetError: hasFieldConflict(conflicts, selectedActions.livestockGrazing),
+    shepherdingFieldsetError: hasFieldConflict(conflicts, selectedActions.shepherding),
+    wildlifeFieldsetError: hasFieldConflict(conflicts, selectedActions.wildlife),
+    livestockErrorMessage: buildFieldErrorMessage(livestockConflict, selectedActions.livestockGrazing),
+    shepherdingErrorMessage: buildFieldErrorMessage(shepherdingConflict, selectedActions.shepherding),
+    wildlifeErrorMessage: buildFieldErrorMessage(wildlifeConflict, selectedActions.wildlife)
+  }
+}
+
+router.post('/day1-more-actions2/select-base-action', function (req, res) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var selectedActions = getSelectedActionsForCompatibility(req.body)
+  var selectedCodes = Object.values(selectedActions).filter(Boolean)
+  var conflicts = findIncompatibilities(selectedCodes, compatibilityYear)
+
+  if (conflicts.length > 0) {
+    var fieldErrors = getConflictFields(selectedActions, conflicts)
+
     req.session.data.wildlife = ''
     req.session.data.livestockGrazing = ''
     req.session.data.shepherding = ''
@@ -592,9 +832,12 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
 
     return res.status(400).render('day1-more-actions2/select-base-action', {
       mutualExclusionError: true,
-      livestockFieldsetError: hasIncompatibleWildlifeAction && hasLivestockUplAction,
-      shepherdingFieldsetError: hasIncompatibleWildlifeAction && hasShepherdingUplAction,
-      wildlifeFieldsetError: hasIncompatibleWildlifeAction && hasUplAction,
+      livestockFieldsetError: fieldErrors.livestockFieldsetError,
+      shepherdingFieldsetError: fieldErrors.shepherdingFieldsetError,
+      wildlifeFieldsetError: fieldErrors.wildlifeFieldsetError,
+      livestockErrorMessage: fieldErrors.livestockErrorMessage,
+      shepherdingErrorMessage: fieldErrors.shepherdingErrorMessage,
+      wildlifeErrorMessage: fieldErrors.wildlifeErrorMessage,
       data: Object.assign({}, req.session.data, {
         wildlife: '',
         livestockGrazing: '',
@@ -603,51 +846,110 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
     })
   }
 
-  if (hasUplAction) {
-    req.session.data.wildlife = ''
-  }
+  res.redirect('/day1-more-actions2/add-more-actions')
+})
 
-  if (hasIncompatibleWildlifeAction) {
-    req.session.data.livestockGrazing = ''
-    req.session.data.shepherding = ''
+router.post('/day1-more-actions2/select-base-action-none-option', function (req, res) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var selectedActions = getSelectedActionsForCompatibility(req.body)
+  var selectedCodes = Object.values(selectedActions).filter(Boolean)
+  var conflicts = findIncompatibilities(selectedCodes, compatibilityYear)
+
+  if (conflicts.length > 0) {
+    var fieldErrors = getConflictFields(selectedActions, conflicts)
+
+    return res.status(400).render('day1-more-actions2/select-base-action-none-option', {
+      mutualExclusionError: true,
+      livestockFieldsetError: fieldErrors.livestockFieldsetError,
+      shepherdingFieldsetError: fieldErrors.shepherdingFieldsetError,
+      wildlifeFieldsetError: fieldErrors.wildlifeFieldsetError,
+      livestockErrorMessage: fieldErrors.livestockErrorMessage,
+      shepherdingErrorMessage: fieldErrors.shepherdingErrorMessage,
+      wildlifeErrorMessage: fieldErrors.wildlifeErrorMessage
+    })
   }
 
   res.redirect('/day1-more-actions2/add-more-actions')
 })
 
-router.post('/day1-more-actions2/select-base-action-none-option', function (req, res) {
-  var hasIncompatibleWildlifeAction = req.body.wildlife === 'clig3' || req.body.wildlife === 'csam3'
-  var hasLivestockUplAction = typeof req.body.livestockGrazing === 'string' && /^upl/i.test(req.body.livestockGrazing)
-  var hasShepherdingUplAction = typeof req.body.shepherding === 'string' && /^upl/i.test(req.body.shepherding)
-  var hasUplAction = Object.values(req.body).some(function (value) {
-    if (Array.isArray(value)) {
-      return value.some(function (item) {
-        return typeof item === 'string' && /^upl/i.test(item)
-      })
-    }
+router.get('/day1-more-actions2/select-base-action-matrix', function (req, res) {
+  res.render('day1-more-actions2/select-base-action-matrix', getMatrixPageViewData(req))
+})
 
-    return typeof value === 'string' && /^upl/i.test(value)
+router.post('/day1-more-actions2/select-base-action-matrix', function (req, res) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var selectedActions = getSelectedActionsForCompatibility(req.body)
+  var selectedCodes = Object.values(selectedActions).filter(Boolean)
+  var conflicts = findIncompatibilities(selectedCodes, compatibilityYear)
+
+  if (conflicts.length > 0) {
+    var fieldErrors = getConflictFields(selectedActions, conflicts)
+
+    return res.status(400).render(
+      'day1-more-actions2/select-base-action-matrix',
+      getMatrixPageViewData(req, {
+        mutualExclusionError: true,
+        livestockFieldsetError: fieldErrors.livestockFieldsetError,
+        shepherdingFieldsetError: fieldErrors.shepherdingFieldsetError,
+        wildlifeFieldsetError: fieldErrors.wildlifeFieldsetError,
+        livestockErrorMessage: fieldErrors.livestockErrorMessage,
+        shepherdingErrorMessage: fieldErrors.shepherdingErrorMessage,
+        wildlifeErrorMessage: fieldErrors.wildlifeErrorMessage,
+        data: Object.assign({}, req.session.data, req.body)
+      })
+    )
+  }
+
+  req.session.data = Object.assign(req.session.data, req.body)
+  res.redirect('/day1-more-actions2/add-more-actions')
+})
+
+router.get('/day1-more-actions2/select-base-all-actions', function (req, res) {
+  res.render('day1-more-actions2/select-base-all-actions', getAllActionsPageViewData(req))
+})
+
+router.post('/day1-more-actions2/select-base-all-actions', function (req, res) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var selectedActionsByGroup = getSelectedAllActionsByGroup(req.body)
+  var selectedActionCodes = Object.values(selectedActionsByGroup)
+  var existingCodes = getExistingAllActionsCompatibilityCodes(req.session.data)
+
+  if (!selectedActionCodes.length) {
+    return res.status(400).render(
+      'day1-more-actions2/select-base-all-actions',
+      getAllActionsPageViewData(req, {
+        mutualExclusionError: true,
+        incompatibilityErrorMessage: 'Select at least one action'
+      })
+    )
+  }
+
+  var selectedCodeLookup = new Set(selectedActionCodes)
+  var conflicts = findIncompatibilities(existingCodes.concat(selectedActionCodes), compatibilityYear).filter(function (conflict) {
+    return selectedCodeLookup.has(conflict.actionCodeA) || selectedCodeLookup.has(conflict.actionCodeB)
   })
 
-  if (hasIncompatibleWildlifeAction && hasUplAction) {
-    return res.status(400).render('day1-more-actions2/select-base-action-none-option', {
-      mutualExclusionError: true,
-      livestockFieldsetError: hasIncompatibleWildlifeAction && hasLivestockUplAction,
-      shepherdingFieldsetError: hasIncompatibleWildlifeAction && hasShepherdingUplAction,
-      wildlifeFieldsetError: hasIncompatibleWildlifeAction && hasUplAction
-    })
+  if (conflicts.length > 0) {
+    var compatibilityHintsByGroup = buildAllActionsCompatibilityHints(selectedActionsByGroup, conflicts)
+    var focalActionCode = selectedCodeLookup.has(conflicts[0].actionCodeA)
+      ? conflicts[0].actionCodeA
+      : conflicts[0].actionCodeB
+
+    return res.status(400).render(
+      'day1-more-actions2/select-base-all-actions',
+      getAllActionsPageViewData(req, {
+        mutualExclusionError: true,
+        incompatibilityErrorMessage: buildFieldErrorMessage(conflicts[0], focalActionCode),
+        incompatibilityErrorAnchor: getActionAnchorId(focalActionCode),
+        compatibilityHintsByGroup: compatibilityHintsByGroup,
+        data: Object.assign({}, req.session.data, req.body)
+      })
+    )
   }
 
-  if (hasUplAction) {
-    req.session.data.wildlife = ''
-  }
-
-  if (hasIncompatibleWildlifeAction) {
-    req.session.data.livestockGrazing = ''
-    req.session.data.shepherding = ''
-  }
-
-  res.redirect('/day1-more-actions2/add-more-actions')
+  req.session.data.selectedActions = selectedActionCodes
+  req.session.data = Object.assign(req.session.data, req.body)
+  res.redirect('/day1-more-actions2/select-land')
 })
 
 // End Post-day 1 more actions mutual exclusivity logic //

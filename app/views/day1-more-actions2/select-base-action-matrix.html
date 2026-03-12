@@ -6,15 +6,15 @@
   "status": "In development",
   "name": "Select actions",
   "id": "ID tbc",
-  "url": "/day1-more-actions2/select-base-action",
+  "url": "/day1-more-actions2/select-base-action-matrix",
   "release": "Day 1 more actions 2",
   "pagetitle": "Select actions",
   "pagedesc": "Select actions for this parcel and avoid incompatible combinations.",
-  "pageurl": "day1-more-actions2/select-base-action",
+  "pageurl": "day1-more-actions2/select-base-action-matrix",
   "variants": [
     {
       "name": "Default",
-      "url": "/day1-more-actions2/select-base-action"
+      "url": "/day1-more-actions2/select-base-action-matrix"
     },
     {
       "name": "None option variant",
@@ -70,7 +70,7 @@ href: "javascript:window.history.back()"
       </div>
     {% endif %}
 
-    <form class="sfi-compatibility-form" action="select-base-action" method="post">
+    <form class="sfi-compatibility-form" action="select-base-action-matrix" method="post">
 
     <h1 class="govuk-heading-l">
       Select actions for land parcel SO3757 3159
@@ -84,6 +84,15 @@ href: "javascript:window.history.back()"
 
     <p>The service has automatically calculated the total available area in each land parcel that is eligible for the action.</p>
     <p>Some actions are incompatible within the same land parcel and cannot be added to your application together.</p>
+
+    {# <div id="compatibility-change-message" class="govuk-notification-banner govuk-notification-banner--success" role="status" aria-live="polite" hidden>
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title">Action selection updated</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p id="compatibility-change-message-text" class="govuk-body"></p>
+      </div>
+    </div> #}
 
     <details class="govuk-details">
       <summary class="govuk-details__summary">
@@ -118,7 +127,7 @@ href: "javascript:window.history.back()"
           <!-- CMOR1 -->
           <p>Total available area: 4.5123 hectares</p>
           <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="cmor1" name="cmor1" type="checkbox" value="cmor1" aria-describedby="CMOR1-hint" {% if data['cmor1'] == "cmor1" %}checked{% endif %}>
+            <input class="govuk-checkboxes__input" id="cmor1" name="cmor1" type="checkbox" value="cmor1" data-action-code="CMOR1" data-field-group="cmor1" aria-describedby="CMOR1-hint" {% if data['cmor1'] == "cmor1" %}checked{% endif %}>
             <label class="govuk-label govuk-checkboxes__label" for="cmor1">
               Assess moorland and produce a written record: CMOR1
             </label>
@@ -147,13 +156,13 @@ href: "javascript:window.history.back()"
           </p>
         {% endif %}
 
-        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--upl">Selected wildlife actions are incompatible with UPL actions. Choose either UPL actions or CLIG3/CSAM3 on this parcel.</p>
+        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--upl" data-compatibility-hint-for="livestockGrazing" hidden></p>
 
         <p>Total available area: 3.5125 hectares</p>
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl1" name="livestockGrazing" type="radio" value="upl1" aria-describedby="UPL1-hint" {% if data['livestockGrazing'] == "upl1" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl1" name="livestockGrazing" type="radio" value="upl1" data-action-code="UPL1" data-field-group="livestockGrazing" aria-describedby="UPL1-hint" {% if data['livestockGrazing'] == "upl1" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl1">
               Moderate livestock grazing on moorland: UPL1
             </label>
@@ -162,7 +171,7 @@ href: "javascript:window.history.back()"
             </div>
           </div>
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl2" name="livestockGrazing" type="radio" value="upl2" aria-describedby="UPL2-hint" {% if data['livestockGrazing'] == "upl2" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl2" name="livestockGrazing" type="radio" value="upl2" data-action-code="UPL2" data-field-group="livestockGrazing" aria-describedby="UPL2-hint" {% if data['livestockGrazing'] == "upl2" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl2">
               Low livestock grazing on moorland: UPL2
             </label>
@@ -171,7 +180,7 @@ href: "javascript:window.history.back()"
             </div>
           </div>
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl3" name="livestockGrazing" type="radio" value="upl3"  aria-describedby="UPL3-hint" {% if data['livestockGrazing'] == "upl3" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl3" name="livestockGrazing" type="radio" value="upl3" data-action-code="UPL3" data-field-group="livestockGrazing" aria-describedby="UPL3-hint" {% if data['livestockGrazing'] == "upl3" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl3">
               Limited livestock grazing on moorland: UPL3
             </label>
@@ -196,13 +205,13 @@ href: "javascript:window.history.back()"
           </p>
         {% endif %}
 
-        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--upl">Selected wildlife actions are incompatible with UPL actions. Choose either UPL actions or CLIG3/CSAM3 on this parcel.</p>
+        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--upl" data-compatibility-hint-for="shepherding" hidden></p>
 
         <p>Total available area: 3.5125 hectares</p>
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl8" name="shepherding" type="radio" value="upl8"  aria-describedby="UPL8-hint" {% if data['shepherding'] == "upl8" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl8" name="shepherding" type="radio" value="upl8" data-action-code="UPL8" data-field-group="shepherding" aria-describedby="UPL8-hint" {% if data['shepherding'] == "upl8" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl8">
               Shepherding livestock on moorland (remove stock for at least 4 months): UPL8
             </label>
@@ -220,7 +229,7 @@ href: "javascript:window.history.back()"
             </div>
           </div> #}
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl10" name="shepherding" type="radio" value="upl10"  aria-describedby="UPL10-hint" {% if data['shepherding'] == "upl10" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl10" name="shepherding" type="radio" value="upl10" data-action-code="UPL10" data-field-group="shepherding" aria-describedby="UPL10-hint" {% if data['shepherding'] == "upl10" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl10">
               Shepherding livestock on moorland (remove stock for at least 8 months): UPL10
             </label>
@@ -246,13 +255,13 @@ href: "javascript:window.history.back()"
           </p>
         {% endif %}
 
-        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--wildlife">Selected UPL actions are incompatible with CLIG3 and CSAM3. Choose either UPL actions or CLIG3/CSAM3 on this parcel.</p>
+        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--wildlife" data-compatibility-hint-for="wildlife" hidden></p>
 
         <p>Total available area: 3.5125 hectares</p>
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input sfi-compatibility-option--wildlife" id="clig3" name="wildlife" type="radio" value="clig3"  aria-describedby="clig3-hint" {% if data['wildlife'] == "clig3" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--wildlife" id="clig3" name="wildlife" type="radio" value="clig3" data-action-code="CLIG3" data-field-group="wildlife" aria-describedby="clig3-hint" {% if data['wildlife'] == "clig3" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="clig3">
               Manage grassland with very low nutrient inputs: CLIG3
             </label>
@@ -262,7 +271,7 @@ href: "javascript:window.history.back()"
           </div>
           <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input sfi-compatibility-option--wildlife" id="csam3" name="wildlife" type="radio" value="csam3" data-aria-controls="conditional-csam3">
+            <input class="govuk-radios__input sfi-compatibility-option--wildlife" id="csam3" name="wildlife" type="radio" value="csam3" data-action-code="CSAM3" data-field-group="wildlife" data-aria-controls="conditional-csam3" {% if data['wildlife'] == "csam3" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="csam3">
               Herbal leys: CSAM3 
             </label>
@@ -324,39 +333,164 @@ href: "javascript:window.history.back()"
 </div> <!-- 2/3 col -->
 </div> <!-- grid-row -->
 
+<script id="compatibility-client-config" type="application/json">{{ compatibilityClientConfig | safe }}</script>
+
 <script>
   (function () {
-    var incompatibleWildlifeActions = [
-      document.getElementById('clig3'),
-      document.getElementById('csam3')
-    ].filter(Boolean)
-    var uplActions = document.querySelectorAll('input.govuk-radios__input[id^="upl"]')
-
-    if (!incompatibleWildlifeActions.length || !uplActions.length) {
+    var configElement = document.getElementById('compatibility-client-config')
+    if (!configElement) {
       return
     }
 
-    incompatibleWildlifeActions.forEach(function (wildlifeAction) {
-      wildlifeAction.addEventListener('change', function () {
-        if (!wildlifeAction.checked) {
+    var parsedConfig
+    try {
+      parsedConfig = JSON.parse(configElement.textContent || '{}')
+    } catch (error) {
+      return
+    }
+
+    var incompatibleByCode = parsedConfig.incompatibleByCode || {}
+    var displayNameByCode = parsedConfig.displayNameByCode || {}
+    var actionInputs = Array.prototype.slice.call(document.querySelectorAll('input[data-action-code]'))
+    var hintElements = Array.prototype.slice.call(document.querySelectorAll('[data-compatibility-hint-for]'))
+    var changeMessage = document.getElementById('compatibility-change-message')
+    var changeMessageText = document.getElementById('compatibility-change-message-text')
+
+    function getDisplayName(actionCode) {
+      return displayNameByCode[actionCode] || actionCode
+    }
+
+    function getCheckedInputs() {
+      return actionInputs.filter(function (input) {
+        return input.checked
+      })
+    }
+
+    function areIncompatible(leftCode, rightCode) {
+      var blockedCodes = incompatibleByCode[leftCode] || []
+      return blockedCodes.indexOf(rightCode) !== -1
+    }
+
+    function getSelectedInputForGroup(groupName) {
+      var groupInputs = actionInputs.filter(function (input) {
+        return input.dataset.fieldGroup === groupName
+      })
+
+      return groupInputs.find(function (input) {
+        return input.checked
+      }) || null
+    }
+
+    function getInputsForGroup(groupName) {
+      return actionInputs.filter(function (input) {
+        return input.dataset.fieldGroup === groupName
+      })
+    }
+
+    function getHintMessageForGroup(groupName) {
+      if (groupName === 'livestockGrazing' || groupName === 'shepherding') {
+        return 'Selected wildlife actions are incompatible with UPL actions. Choose either UPL actions or CLIG3/CSAM3 on this parcel.'
+      }
+
+      if (groupName === 'wildlife') {
+        return 'Selected UPL actions are incompatible with CLIG3 and CSAM3. Choose either UPL actions or CLIG3/CSAM3 on this parcel.'
+      }
+
+      return 'Selected actions are incompatible on this parcel.'
+    }
+
+    function updateHints() {
+      var checkedInputs = getCheckedInputs()
+
+      hintElements.forEach(function (hintElement) {
+        var groupName = hintElement.dataset.compatibilityHintFor
+        var selectedInput = getSelectedInputForGroup(groupName)
+        var groupInputs = getInputsForGroup(groupName)
+
+        if (!selectedInput) {
+          var selectedOutsideGroup = checkedInputs.filter(function (checkedInput) {
+            return checkedInput.dataset.fieldGroup !== groupName
+          })
+
+          var outsideConflict = selectedOutsideGroup.find(function (checkedInput) {
+            return groupInputs.some(function (groupInput) {
+              return areIncompatible(checkedInput.dataset.actionCode, groupInput.dataset.actionCode)
+            })
+          })
+
+          if (!outsideConflict) {
+            hintElement.textContent = ''
+            hintElement.hidden = true
+            return
+          }
+
+          hintElement.textContent = getHintMessageForGroup(groupName)
+          hintElement.hidden = false
           return
         }
 
-        uplActions.forEach(function (upl) {
-          upl.checked = false
+        var selectedCode = selectedInput.dataset.actionCode
+        var conflictInput = checkedInputs.find(function (checkedInput) {
+          if (checkedInput === selectedInput) {
+            return false
+          }
+
+          return areIncompatible(selectedCode, checkedInput.dataset.actionCode)
         })
+
+        if (!conflictInput) {
+          hintElement.textContent = ''
+          hintElement.hidden = true
+          return
+        }
+
+        hintElement.textContent = getHintMessageForGroup(groupName)
+        hintElement.hidden = false
+      })
+    }
+
+    function announceRemovedActions(removedCodes) {
+      if (!changeMessage || !changeMessageText || !removedCodes.length) {
+        return
+      }
+
+      var removedNames = removedCodes.map(getDisplayName)
+      changeMessageText.textContent = 'Removed incompatible action selection(s): ' + removedNames.join(', ')
+      changeMessage.hidden = false
+    }
+
+    function handleSelectionChange(changedInput) {
+      if (!changedInput.checked) {
+        updateHints()
+        return
+      }
+
+      var selectedCode = changedInput.dataset.actionCode
+      var removedCodes = []
+
+      getCheckedInputs().forEach(function (checkedInput) {
+        if (checkedInput === changedInput) {
+          return
+        }
+
+        var checkedCode = checkedInput.dataset.actionCode
+        if (areIncompatible(selectedCode, checkedCode)) {
+          checkedInput.checked = false
+          removedCodes.push(checkedCode)
+        }
+      })
+
+      announceRemovedActions(removedCodes)
+      updateHints()
+    }
+
+    actionInputs.forEach(function (actionInput) {
+      actionInput.addEventListener('change', function () {
+        handleSelectionChange(actionInput)
       })
     })
 
-    uplActions.forEach(function (upl) {
-      upl.addEventListener('change', function () {
-        if (upl.checked) {
-          incompatibleWildlifeActions.forEach(function (wildlifeAction) {
-            wildlifeAction.checked = false
-          })
-        }
-      })
-    })
+    updateHints()
   })()
 </script>
 

@@ -1,0 +1,410 @@
+[
+  {
+    "code": "CSAM1",
+    "name": "Assess soil, produce a soil management plan and test soil organic matter"
+  },
+  {
+    "code": "CSAM2",
+    "name": "Multi-species winter cover crop"
+  },
+  {
+    "code": "CSAM3",
+    "name": "Herbal leys"
+  },
+  {
+    "code": "SOH1",
+    "name": "No-till farming"
+  },
+  {
+    "code": "SOH2",
+    "name": "Multi-species spring-sown cover crop"
+  },
+  {
+    "code": "SOH3",
+    "name": "Multi-species summer-sown cover crop"
+  },
+  {
+    "code": "SOH4",
+    "name": "Winter cover following maize crops"
+  },
+  {
+    "code": "AGF1",
+    "name": "Maintain very low density in-field agroforestry on less sensitive land"
+  },
+  {
+    "code": "AGF2",
+    "name": "Maintain low density in-field agroforestry on less sensitive land"
+  },
+  {
+    "code": "CHRW1",
+    "name": "Assess and record hedgerow condition"
+  },
+  {
+    "code": "CHRW2",
+    "name": "Manage hedgerows"
+  },
+  {
+    "code": "CHRW3",
+    "name": "Maintain or establish hedgerow trees"
+  },
+  {
+    "code": "BND1",
+    "name": "Maintain dry stone walls"
+  },
+  {
+    "code": "BND2",
+    "name": "Maintain earth banks or stone-faced hedgebanks"
+  },
+  {
+    "code": "CAHL4",
+    "name": "4m to 12m grass buffer strip on arable and horticultural land"
+  },
+  {
+    "code": "CIGL3",
+    "name": "4m to 12m grass buffer strip on improved grassland"
+  },
+  {
+    "code": "BFS1",
+    "name": "12m to 24m watercourse buffer strip on cultivated land"
+  },
+  {
+    "code": "BFS2",
+    "name": "Buffer in-field ponds on arable land"
+  },
+  {
+    "code": "BFS3",
+    "name": "Buffer in-field ponds on improved grassland"
+  },
+  {
+    "code": "BFS4",
+    "name": "Protect in-field trees on arable land"
+  },
+  {
+    "code": "BFS5",
+    "name": "Protect in-field trees on intensive grassland"
+  },
+  {
+    "code": "BFS6",
+    "name": "6m to 12m habitat strip next to watercourses"
+  },
+  {
+    "code": "WBD1",
+    "name": "Manage ponds"
+  },
+  {
+    "code": "WBD2",
+    "name": "Manage ditches"
+  },
+  {
+    "code": "WBD3",
+    "name": "In-field grass strips"
+  },
+  {
+    "code": "WBD4",
+    "name": "Arable reversion to grassland with low fertiliser input"
+  },
+  {
+    "code": "WBD5",
+    "name": "Manage intensive grassland adjacent to a watercourse"
+  },
+  {
+    "code": "WBD6",
+    "name": "Remove livestock from intensive grassland during the autumn and winter (outside SDAs)"
+  },
+  {
+    "code": "WBD7",
+    "name": "Remove livestock from grassland during the autumn and winter (SDAs)"
+  },
+  {
+    "code": "WBD8",
+    "name": "Manage grassland to reduce nutrient levels in groundwater"
+  },
+  {
+    "code": "WBD9",
+    "name": "Nil fertiliser supplement"
+  },
+  {
+    "code": "OFC1",
+    "name": "Organic conversion \\'96 improved permanent grassland"
+  },
+  {
+    "code": "OFC2",
+    "name": "Organic conversion \\'96 unimproved permanent grassland"
+  },
+  {
+    "code": "OFC3",
+    "name": "Organic conversion \\'96 rotational land"
+  },
+  {
+    "code": "OFC4",
+    "name": "Organic conversion \\'96 horticultural land"
+  },
+  {
+    "code": "OFC5",
+    "name": "Organic conversion \\'96 top fruit"
+  },
+  {
+    "code": "OFM1",
+    "name": "Organic land management \\'96 improved permanent grassland"
+  },
+  {
+    "code": "OFM2",
+    "name": "Organic land management \\'96 unimproved permanent grassland"
+  },
+  {
+    "code": "OFM3",
+    "name": "Organic land management \\'96 enclosed rough grazing"
+  },
+  {
+    "code": "OFM4",
+    "name": "Organic land management \\'96 rotational land"
+  },
+  {
+    "code": "OFM5",
+    "name": "Organic land management \\'96 horticultural land"
+  },
+  {
+    "code": "OFM6",
+    "name": "Organic land management \\'96 top fruit"
+  },
+  {
+    "code": "OFA1",
+    "name": "Overwinter stubble (organic land)"
+  },
+  {
+    "code": "OFA3",
+    "name": "Supplementary winter bird food (organic land)"
+  },
+  {
+    "code": "OFA6",
+    "name": "Undersown cereal crop (organic land)"
+  },
+  {
+    "code": "CAHL1",
+    "name": "Pollen and nectar flower mix"
+  },
+  {
+    "code": "CAHL2",
+    "name": "Winter bird food on arable and horticultural land"
+  },
+  {
+    "code": "CAHL3",
+    "name": "Grassy field corners or blocks"
+  },
+  {
+    "code": "AHW1",
+    "name": "Bumblebird mix"
+  },
+  {
+    "code": "AHW2",
+    "name": "Supplementary winter bird food"
+  },
+  {
+    "code": "AHW3",
+    "name": "Beetle banks"
+  },
+  {
+    "code": "AHW4",
+    "name": "Skylark plots"
+  },
+  {
+    "code": "AHW5",
+    "name": "Nesting plots for lapwing"
+  },
+  {
+    "code": "AHW6",
+    "name": "Basic overwinter stubble"
+  },
+  {
+    "code": "AHW7",
+    "name": "Enhanced overwinter stubble"
+  },
+  {
+    "code": "AHW8",
+    "name": "Whole crop spring cereals and overwinter stubble"
+  },
+  {
+    "code": "AHW9",
+    "name": "Unharvested cereal headland"
+  },
+  {
+    "code": "AHW10",
+    "name": "Low input harvested cereal crop"
+  },
+  {
+    "code": "AHW11",
+    "name": "Cultivated areas for arable plants"
+  },
+  {
+    "code": "AHW12",
+    "name": "Manage woodland edges on arable land"
+  },
+  {
+    "code": "CMOR1",
+    "name": "Assess moorland and produce a written record"
+  },
+  {
+    "code": "UPL1",
+    "name": "Moderate livestock grazing on moorland"
+  },
+  {
+    "code": "UPL2",
+    "name": "Low livestock grazing on moorland"
+  },
+  {
+    "code": "UPL3",
+    "name": "Limited livestock grazing on moorland"
+  },
+  {
+    "code": "UPL4",
+    "name": "Keep cattle and ponies on moorland supplement (minimum 30% GLU)"
+  },
+  {
+    "code": "UPL5",
+    "name": "Keep cattle and ponies on moorland supplement (minimum 70% GLU)"
+  },
+  {
+    "code": "UPL6",
+    "name": "Keep cattle and ponies on moorland supplement (100% GLU)"
+  },
+  {
+    "code": "UPL7",
+    "name": "Shepherding livestock on moorland (no required stock removal period)"
+  },
+  {
+    "code": "UPL8",
+    "name": "Shepherding livestock on moorland (remove stock for at least 4 months)"
+  },
+  {
+    "code": "UPL9",
+    "name": "Shepherding livestock on moorland (remove stock for at least 6 months)"
+  },
+  {
+    "code": "UPL10",
+    "name": "Shepherding livestock on moorland (remove stock for at least 8 months)"
+  },
+  {
+    "code": "PRF1",
+    "name": "Variable rate application of nutrients"
+  },
+  {
+    "code": "PRF2",
+    "name": "Camera or remote sensor guided herbicide spraying"
+  },
+  {
+    "code": "PRF3",
+    "name": "Non-mechanical robotic weeding"
+  },
+  {
+    "code": "PRF4",
+    "name": "Mechanical robotic weeding"
+  },
+  {
+    "code": "CIGL1",
+    "name": "Take grassland field corners or blocks out of management"
+  },
+  {
+    "code": "CIGL2",
+    "name": "Winter bird food on improved grassland"
+  },
+  {
+    "code": "CLIG3",
+    "name": "Manage grassland with very low nutrient inputs"
+  },
+  {
+    "code": "GRH1",
+    "name": "Manage rough grazing for birds"
+  },
+  {
+    "code": "GRH6",
+    "name": "Manage priority habitat species-rich grassland (endorsed)"
+  },
+  {
+    "code": "GRH7",
+    "name": "Haymaking supplement"
+  },
+  {
+    "code": "GRH8",
+    "name": "Haymaking supplement (late cut)"
+  },
+  {
+    "code": "GRH10",
+    "name": "Lenient grazing supplement"
+  },
+  {
+    "code": "GRH11",
+    "name": "Cattle grazing supplement (non-moorland)"
+  },
+  {
+    "code": "SCR1",
+    "name": "Create scrub and open habitat mosaics"
+  },
+  {
+    "code": "SCR2",
+    "name": "Manage scrub and open habitat mosaics"
+  },
+  {
+    "code": "HEF1",
+    "name": "Maintain weatherproof traditional farm or forestry buildings"
+  },
+  {
+    "code": "HEF2",
+    "name": "Maintain weatherproof traditional farm or forestry buildings in remote areas"
+  },
+  {
+    "code": "HEF5",
+    "name": "Control scrub on historic and archaeological features"
+  },
+  {
+    "code": "HEF6",
+    "name": "Manage historic and archaeological features on grassland"
+  },
+  {
+    "code": "HEF8",
+    "name": "Maintain designed or engineered waterbodies"
+  },
+  {
+    "code": "SPM2",
+    "name": "Keep native breeds on grazed habitats supplement (50-80%)"
+  },
+  {
+    "code": "SPM3",
+    "name": "Keep native breeds on grazed habitats supplement (more than 80%)"
+  },
+  {
+    "code": "SPM4",
+    "name": "Keep native breeds on extensively managed habitats supplement (50-80%)"
+  },
+  {
+    "code": "SPM5",
+    "name": "Keep native breeds on extensively managed habitats supplement (more than %)"
+  },
+  {
+    "code": "CIPM1",
+    "name": "Assess integrated pest management and produce a plan"
+  },
+  {
+    "code": "CIPM2",
+    "name": "Flower-rich grass margins, blocks or in-field strips"
+  },
+  {
+    "code": "CIPM3",
+    "name": "Companion crop on arable and horticultural land"
+  },
+  {
+    "code": "CIPM4",
+    "name": "No use of insecticide on arable crops and permanent crops"
+  },
+  {
+    "code": "CNUM1",
+    "name": "Assess nutrient management and produce a review report"
+  },
+  {
+    "code": "CNUM2",
+    "name": "Legumes on improved grassland"
+  },
+  {
+    "code": "CNUM3",
+    "name": "Legume fallow }"
+  }
+]

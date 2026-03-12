@@ -1,5 +1,3 @@
 module.exports = {
-
-  // Insert values here
-
+  compatibilityYear: 2025
 }

@@ -144,6 +144,14 @@ tr .govuk-error-message {
 	display: none;
 }
 
+.sfi-compatibility-hint[data-compatibility-hint-for] {
+	display: block;
+}
+
+.sfi-compatibility-hint[data-compatibility-hint-for][hidden] {
+	display: none;
+}
+
 @supports selector(form:has(input:checked)) {
 	.js-enabled .sfi-compatibility-form:has(.sfi-compatibility-option--wildlife:checked) .sfi-compatibility-hint--upl {
 		display: block;
