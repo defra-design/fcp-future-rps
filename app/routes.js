@@ -792,7 +792,7 @@ function getActionErrorDisplayName(actionCode) {
     actionName = actionName.replace(/\s*\([^)]*\)/, '')
   }
 
-  return actionName + ': ' + code
+  return actionName + ' (' + code + ')'
 }
 
 function getConflictForAction(conflicts, actionCode) {
