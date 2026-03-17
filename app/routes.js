@@ -867,6 +867,41 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
   res.redirect('/day1-more-actions2/add-more-actions')
 })
 
+router.post('/day1-more-actions2/select-base-action-consents', function (req, res) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var selectedActions = getSelectedActionsForCompatibility(req.body)
+  var selectedCodes = Object.values(selectedActions).filter(Boolean)
+  var conflicts = findIncompatibilities(selectedCodes, compatibilityYear)
+
+  if (conflicts.length > 0) {
+    var fieldErrors = getConflictFields(selectedActions, conflicts)
+
+    req.session.data.wildlife = ''
+    req.session.data.livestockGrazing = ''
+    req.session.data.shepherding = ''
+    req.body.wildlife = ''
+    req.body.livestockGrazing = ''
+    req.body.shepherding = ''
+
+    return res.status(400).render('day1-more-actions2/select-base-action-consents', {
+      mutualExclusionError: true,
+      livestockFieldsetError: fieldErrors.livestockFieldsetError,
+      shepherdingFieldsetError: fieldErrors.shepherdingFieldsetError,
+      wildlifeFieldsetError: fieldErrors.wildlifeFieldsetError,
+      livestockErrorMessage: fieldErrors.livestockErrorMessage,
+      shepherdingErrorMessage: fieldErrors.shepherdingErrorMessage,
+      wildlifeErrorMessage: fieldErrors.wildlifeErrorMessage,
+      data: Object.assign({}, req.session.data, {
+        wildlife: '',
+        livestockGrazing: '',
+        shepherding: ''
+      })
+    })
+  }
+
+  res.redirect('/day1-more-actions2/add-more-actions')
+})
+
 router.post('/day1-more-actions2/select-base-action-none-option', function (req, res) {
   var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
   var selectedActions = getSelectedActionsForCompatibility(req.body)
