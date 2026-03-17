@@ -777,6 +777,24 @@ function getActionDisplayName(actionCode) {
   return actionName ? actionName + ': ' + code : code
 }
 
+function getActionErrorDisplayName(actionCode) {
+  var code = normaliseActionCode(actionCode)
+  if (!code) {
+    return ''
+  }
+
+  var actionName = actionNameByCode[code]
+  if (!actionName) {
+    return code
+  }
+
+  if (code === 'UPL8' || code === 'UPL10') {
+    actionName = actionName.replace(/\s*\([^)]*\)/, '')
+  }
+
+  return actionName + ': ' + code
+}
+
 function getConflictForAction(conflicts, actionCode) {
   if (!actionCode) {
     return null
@@ -796,7 +814,7 @@ function buildFieldErrorMessage(conflict, focalActionCode) {
     ? conflict.actionCodeB
     : conflict.actionCodeA
 
-  return 'You cannot select ' + getActionDisplayName(focalActionCode) + ' with ' + getActionDisplayName(otherActionCode) + ' as they are incompatible'
+  return getActionErrorDisplayName(focalActionCode) + ' is not compatible with ' + getActionErrorDisplayName(otherActionCode)
 }
 
 function getConflictFields(selectedActions, conflicts) {
