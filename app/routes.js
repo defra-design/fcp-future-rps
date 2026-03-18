@@ -965,6 +965,10 @@ router.get('/day1-more-actions2/select-base-all-actions2', function (req, res) {
   res.render('day1-more-actions2/select-base-all-actions2', getAllActionsPageViewData(req))
 })
 
+router.get('/day1-more-actions2/select-base-all-actions2a', function (req, res) {
+  res.render('day1-more-actions2/select-base-all-actions2a', getAllActionsPageViewData(req))
+})
+
 router.post('/day1-more-actions2/select-base-all-actions2', function (req, res) {
   var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
   var selectedActionsByGroup = getSelectedAllActionsByGroup(req.body)
@@ -994,6 +998,50 @@ router.post('/day1-more-actions2/select-base-all-actions2', function (req, res) 
 
     return res.status(400).render(
       'day1-more-actions2/select-base-all-actions2',
+      getAllActionsPageViewData(req, {
+        mutualExclusionError: true,
+        incompatibilityErrorMessage: buildFieldErrorMessage(conflicts[0], focalActionCode),
+        incompatibilityErrorAnchor: getActionAnchorId(focalActionCode),
+        compatibilityHintsByGroup: compatibilityHintsByGroup,
+        data: Object.assign({}, req.session.data, req.body)
+      })
+    )
+  }
+
+  req.session.data.selectedActions = selectedActionCodes
+  req.session.data = Object.assign(req.session.data, req.body)
+  res.redirect('/day1-more-actions2/select-land')
+})
+
+router.post('/day1-more-actions2/select-base-all-actions2a', function (req, res) {
+  var compatibilityYear = getCompatibilityYearFromSession(req.session.data)
+  var selectedActionsByGroup = getSelectedAllActionsByGroup(req.body)
+  var selectedActionCodes = Object.values(selectedActionsByGroup)
+  var existingCodes = getExistingAllActionsCompatibilityCodes(req.session.data)
+
+  if (!selectedActionCodes.length) {
+    return res.status(400).render(
+      'day1-more-actions2/select-base-all-actions2a',
+      getAllActionsPageViewData(req, {
+        mutualExclusionError: true,
+        incompatibilityErrorMessage: 'Select at least one action'
+      })
+    )
+  }
+
+  var selectedCodeLookup = new Set(selectedActionCodes)
+  var conflicts = findIncompatibilities(existingCodes.concat(selectedActionCodes), compatibilityYear).filter(function (conflict) {
+    return selectedCodeLookup.has(conflict.actionCodeA) || selectedCodeLookup.has(conflict.actionCodeB)
+  })
+
+  if (conflicts.length > 0) {
+    var compatibilityHintsByGroup = buildAllActionsCompatibilityHints(selectedActionsByGroup, conflicts)
+    var focalActionCode = selectedCodeLookup.has(conflicts[0].actionCodeA)
+      ? conflicts[0].actionCodeA
+      : conflicts[0].actionCodeB
+
+    return res.status(400).render(
+      'day1-more-actions2/select-base-all-actions2a',
       getAllActionsPageViewData(req, {
         mutualExclusionError: true,
         incompatibilityErrorMessage: buildFieldErrorMessage(conflicts[0], focalActionCode),
