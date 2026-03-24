@@ -1,0 +1,155 @@
+{% extends "layouts/main-thread.html" %}
+
+{% set pageName="Design history" %}
+
+{%- block beforeContent -%}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="/index">SFI Reform prototypes</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="index">Amend an application</a>
+    </li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      Amend an application
+      <span class="govuk-caption-xl">Design history</span>
+    </h1>
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-l">
+      Background
+    </h2>
+    <p>
+      One of the initiatives (<a href="https://eaflood.atlassian.net/browse/FDG-74">FDG-74</a>) was to allow a user to
+      re-access a previously submitted application in order to make amendments.
+    </p>
+    <p>
+      The original flow for the service was allowing a user to apply for a Farm payments technical test (FPTT) agreement.
+      This is achieved via a journey allowing a user to select a parcel, add the required actions, and repeat, until all parcels
+      and actions have been added to the application. This would then be submitted to the Rural Payments Agency (RPA), who
+      would perform their checks, before the sending out an agreement offer. The user would then review this offer, and accept
+      it to form an agreement.
+    </p>
+    <p>
+      At any point between the user submitting an application and accepting an agreement offer, there should be the capability
+      to allow the user to make any changes to the parcels and/or actions that were submitted. This process involves the
+      RPA 'reopening' the application and sending a new link to the user, in order for them to re-access the application.
+    </p>
+    <p>
+      That is what was ideated and designed for this version of the prototype. In this scenario:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>a user has submitted an application, which includes a parcel and action requiring SSSI consent</li>
+      <li>the RPA have not started reviewing the application (so it is not offer stage)</li>
+      <li>the user has decided they no longer want to obtain SSSI consent, so wish to remove the parcel which requires consent</li>
+    </ul>
+
+    <h2 class="govuk-heading-l">
+      Design approach
+    </h2>
+    <p>
+      The scope for the first iteration was only to allow changes to the parcels and actions that have been included in
+      the application. The ability to change any of the personal or business details was deemed out of scope at this stage.
+    </p>
+    <p>
+      This lead to us coming up with 3 'how might we' statements to help us ideate the design.
+    </p>
+
+    <h3 class="govuk-heading-m">
+      ‘How might we’ (HMW) statements
+    </h3>
+    <ol class="govuk-list govuk-list--number">
+      <li>HMW let the user initiate making a change to their application</li>
+      <li>HMW change the land parcels and/or actions within the application</li>
+      <li>HMW manage changes that need to be made but are outside our scope</li>
+    </ol>
+
+    <h3 class="govuk-heading-m">
+      Ideation
+    </h3>
+    <p>
+      The ideation work was carried out on the <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1767969697076/b99556be7c5df47541b18db03f7876461264db0b?wid=0-1772531207354">
+      changing an application/agreement ideation mural board</a>.
+    </p>
+    <p>
+      We started by putting together a high level flow considering what the <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1767969697076/b99556be7c5df47541b18db03f7876461264db0b?wid=0-1771335033341">
+      users journey</a> would be. It was identified that there were several points in the current service when a user may
+      request to change their application. Adding screen thumbnails to the flow highlighted that some new screens might be required.
+    </p>
+    <p>
+      When considering how we might let the user initiate making a change, we looked at the three pages that this journey
+      could be started from, and came up with some 'we would...' statements. The three we thought of were:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>we could add copy to the page informing the user how to amend the information</li>
+      <li>we could add another heading with the text underneath</li>
+      <li>we could add a call to action to the pages</li>
+    </ul>
+    <p>
+      After ideating some flat screen designs it was decided that using a button for the first iteration would involve
+      to much extra technical work, and adding only text could be easily missed. So we came up with a design to add in
+      a heading as well a text.
+    </p>
+    <p>
+      The main flow of amending any parcels or actions in the application would use the same pages already in the service.
+      It was decided that there would need to be an initial screen that would contain all the information contained in
+      the application, like a check your answers style page, from which the user would then be able to make amendments.
+    </p>
+
+
+    <h3 class="govuk-heading-m">
+      What was designed
+    </h3>
+    <p>An iterated confirmation screen with a new heading and information regarding how to amend an application.</p>
+    <img src="/public/images/design-history-amend-app/confirmation.png" alt="Screen design outlining the information that was submitted in an application."
+         style="margin-top: -10px" class="design-history">
+
+    <p>A new page to view an application after it has been submitted.</p>
+    <img src="/public/images/design-history-amend-app/view-application.png" alt="Screen showing an email saying that the request to amend has been approved."
+         style="margin-top: -10px" class="design-history">
+
+    <p>A new email informing the user that their application is available to amend.</p>
+    <img src="/public/images/design-history-amend-app/email.png" alt="Screen showing an email saying that the request to amend has been approved."
+         style="margin-top: -10px" class="design-history">
+
+    <p>A version of the 'View application' screen with links to allow changing the parcels and actions included.</p>
+    <img src="/public/images/design-history-amend-app/application.png" alt="Confirmation screen design including extra text letting the user know how to amend their application."
+         style="margin-top: -10px" class="design-history">
+
+
+    <h2 class="govuk-heading-l">
+      Conclusions and next steps
+    </h2>
+    <p>
+      The usability testing went well with all the participants being able to carry out the task of removing the parcel
+      that needs SSSI consent.
+    </p>
+    <p>
+      Moving forward there are a few tweaks that need to be made to the hierarchy of information when viewing the application,
+      as well as reviewing the copy used to inform the users about the SSSI consent.
+    </p>
+    <p>
+      As a result of technical discussions about implementing the design, there are some changes that need to be made to
+      the flow and some content in the screens. The revised version for this first iteration is in
+      <a href="/v2-amend-application/index">Version 2</a> of amending an application.
+    </p>
+  </div>
+
+  <!-- right third of page to link to relevant mural boards and UR findings -->
+  <div class="govuk-grid-column-one-third">
+
+  </div>
+</div>
+
+{% endblock %}
