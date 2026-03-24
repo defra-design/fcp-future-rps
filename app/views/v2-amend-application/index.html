@@ -1,0 +1,80 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block beforeContent %}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="/index">SFI Reform prototypes</a>
+    </li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">
+      Amend an application
+      <span class="govuk-caption-l">Version 2: 23 March 2026</span>
+    </h1>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <!-- outline the scenario and purpose of the prototype -->
+    <p>
+      One of the initiatives (<a href="https://eaflood.atlassian.net/browse/FDG-74">FDG-74</a>) was to allow a user to
+      re-access a previously submitted application in order to make amendments.
+    </p>
+    <p>
+      Usability testing was carried out on <a href="/v1-amend-application/index">Version 1</a>.
+    </p>
+    <p>
+      This version is for reference for the developers and has a slightly different flow this is due to the team set up
+      and who creates/owns each screen.
+    </p>
+    <p>
+      When going through the flow, it was realised that the 'view application' screen as a read only version of the
+      information submitted by the applicant through the journey, is not the screen
+      that would then be used to amend any parcel/action combinations for the amend journey.
+
+      From a tech perspective, the amend journey re-uses the flow (and therefore screens) in the apply journey;
+      which don't necessarily fit for an amend journey. It means that either the original 'Review your actions' screen,
+      or the ideated editable version of the 'view application' screen, would need to be used for both journeys.
+      As the latter does not fit in with the initial apply journey, it was decided to use the 'review your actions'
+      screen in the amend flow. As this screen doesn't contain the details about the user, it was decided that the
+      'Confirm your details' screen would need to also be included, as all information pertaining to the application
+      should be shown so the user is aware of what they submitted.
+    </p>
+    <p>
+      This was discussed with Clare, and although not ideal, this flow is sufficient for an initial iteration.
+    </p>
+
+    <a class="govuk-button" href="/v2-amend-application/initial-sign-in">Start prototype</a>
+  </div>
+
+  <!-- right third of page to link to other pages -->
+  <div class="govuk-grid-column-one-third">
+    <aside class="app-related-items" role="complementary">
+      <h2 class="govuk-heading-m">
+        Other pages
+      </h2>
+
+      <nav role="navigation" aria-labelledby="subsection-title">
+        <p class="govuk-!-font-size-16">
+          Other pages that are impacted by this initiative, but not included in the scenario flow include:
+        </p>
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li><a href="offer" class="govuk-link">Review your agreement offer</a></li>
+          <li><a href="view-application" class="govuk-link" >View application</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
+
+
+{% endblock %}

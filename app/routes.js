@@ -40,9 +40,17 @@ govukPrototypeKit.views.addFilter('formatCurrency', function(num) {
 router.post('/remove-3169', function (req, res) {
   var removeParcel = req.session.data['removeParcel']
   if (removeParcel == "yes"){
-    res.redirect('/amend-application/application-amend-2')
+    res.redirect('/v1-amend-application/application-amend-2')
   } else {
-    res.redirect('/amend-application/application-amend-1')
+    res.redirect('/v1-amend-application/application-amend-1')
+  }
+})
+router.post('/v2-remove-3169', function (req, res) {
+  var removeParcel = req.session.data['removeParcel']
+  if (removeParcel == "yes"){
+    res.redirect('/v2-amend-application/basket-removed')
+  } else {
+    res.redirect('/v2-amend-application/basket-initial')
   }
 })
 
