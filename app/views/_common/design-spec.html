@@ -89,6 +89,31 @@
         </dd>
       </div>
 
+                {% if _designSpecData.errormessages and _designSpecData.errormessages|length > 0 %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-body-s">
+                    Error messages
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <!-- <details class="govuk-details ">
+                        <summary class="govuk-details__summary govuk-body-s">
+                            <span class="govuk-details__summary-text">
+                            Error messages
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text"> -->
+                            <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                                {% for item in _designSpecData.errormessages %}
+                                <li>{% if item.field %}<strong>{{ item.field }} - </strong><br>{% endif %}{{ item.scenario }}: <br><span style="color: #d4351c">{{item.content}}</span></li>
+                                {% endfor %}
+                            </ul>
+                            {# <p class="govuk-body-s"><a href="https://eaflood.atlassian.net/wiki/spaces/SFD/pages/5461442697/Buffalo+1.0+MVP+-+validation+scenarios+and+messages" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">All validation messages are listed here (opens in new tab)</a></p> #}
+                        <!-- </div>
+                    </details> -->
+                </dd>
+            </div>
+            {% endif %}
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key govuk-body-s">
           Links
