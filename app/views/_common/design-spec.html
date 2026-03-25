@@ -1,5 +1,8 @@
 {% if _designSpecData %}
 
+{% set _version = myData.version or data.version %}
+{% set heroku = "https://fcp-future-rps-93c8d625018a.herokuapp.com/" + _version + "/" %}
+
 <div class="status-outer{% if _designSpecDrawerOpen %} draweropen{% endif %}">
   <div class="statusbox">
     <h1 class="govuk-heading-m">Design spec</h1>
@@ -28,7 +31,7 @@
           Page ID
         </dt>
         <dd class="govuk-summary-list__value govuk-body-s">
-          <strong>{{ _designSpecData.id }}</strong>. {{ _designSpecData.name }}
+          <strong>{{ _designSpecData.id }}</strong> - see <a href="https://app.mural.co/t/coredefra2548/m/coredefra2548/1759740891294/e6ad89e3213b44dd85b3a6faefbb2775938a0f35?wid=0-1761736730455" target="_blank" rel="no follow no referrer">Mural board</a>
         </dd>
       </div>
 
@@ -80,14 +83,14 @@
         </dd>
       </div>
 
-      <div class="govuk-summary-list__row">
+      {# <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key govuk-body-s">
           Prototype version
         </dt>
         <dd class="govuk-summary-list__value govuk-body-s">
-          {{ myData.version or data.version or "day1-hefer" }}
+          {{ myData.version or data.version }}
         </dd>
-      </div>
+      </div> #}
 
                 {% if _designSpecData.errormessages and _designSpecData.errormessages|length > 0 %}
             <div class="govuk-summary-list__row">
