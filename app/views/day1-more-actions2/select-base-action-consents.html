@@ -5,23 +5,36 @@
 {% set _designSpecData = {
   "status": "In development",
   "name": "Select actions",
-  "id": "ID tbc",
+  "id": "6",
   "url": "/day1-more-actions2/select-base-action",
-  "release": "Day 1 more actions 2",
+  "release": "Day 1 with more actions",
   "pagetitle": "Select actions",
-  "pagedesc": "Select actions for this parcel and avoid incompatible combinations.",
-  "pageurl": "day1-more-actions2/select-base-action",
+  "pagedesc": "Select actions for this parcel.",
+  "pageurl": "day1-more-actions2/select-base-action-consents",
+  "notes": [ "We only show available actions (based on land data) to the user. So CSAM3 will not show here if the parcel's total available area requires SSSI and/or HEFER consent (as per this design). If the parcel is partly affected, it will show with a reduced available area." ],
+  "errormessages": [
+      {
+        "scenario": "Incompatible selection",
+        "content": "Moderate livestock grazing on moorland (UPL1) is not compatible with Manage grassland with very low nutrient inputs (CLIG3)"
+      },
+      {
+        "scenario": "Incompatible selection",
+        "content": "Shepherding livestock on moorland (UPL8) is not compatible with Manage grassland with very low nutrient inputs (CLIG3)"
+      },
+      {
+        "scenario": "Incompatible selection",
+        "content": "Manage grassland with very low nutrient inputs (CLIG3) is not compatible with Moderate livestock grazing on moorland (UPL1)"
+      }
+    ],
+
   "variants": [
     {
       "name": "Default",
       "url": "/day1-more-actions2/select-base-action"
-    },
-    {
-      "name": "None option variant",
-      "url": "/day1-more-actions2/select-base-action-none-option"
     }
   ]
 } %}
+
 
 {% block pageTitle %}
 Select actions
