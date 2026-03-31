@@ -82,6 +82,9 @@
     #parcel-info-container #parcel-info .govuk-table__cell {
       width: 50%;
     }
+    .farm-table-extended-row {
+      display: none;
+    }
   </style>
 {% endblock %}
 
@@ -97,23 +100,23 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
         <div id="os-map-references">
-          <div id="oak-tree-farm-info">
-          <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Oak Tree Farm (SO1)</a></p>
+          <div id="oak-tree-farm-info" class="farm-info-panel">
+          <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link farm-focus-link" data-farm-key="oak-tree">Oak Tree Farm (SO1)</a></p>
           <table class="govuk-table">
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Available land parcels</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">35</td>
             </tr>
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row farm-table-extended-row">
               <td class="govuk-table__cell">Total area (hectares)</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">120.3451</td>
             </tr>
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row farm-table-extended-row">
             <td class="govuk-table__cell">Land parcels used for SFI actions</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
             </tr>
-                <tr class="govuk-table__row">
+            <tr class="govuk-table__row farm-table-extended-row">
             <td class="govuk-table__cell">SFI actions applied for</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
             </tr>
@@ -121,24 +124,96 @@
         </table>
         </div>
 
-        <div id="blackberry-farm-info">
-        <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link">Blackberry Farm (BO9)</a></p>
+        <div id="blackberry-farm-info" class="farm-info-panel">
+        <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link farm-focus-link" data-farm-key="blackberry">Blackberry Farm (BO9)</a></p>
         <table class="govuk-table">
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Available land parcels</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">31</td>
             </tr>
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row farm-table-extended-row">
               <td class="govuk-table__cell">Total area (hectares)</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">80.3160</td>
             </tr>
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row farm-table-extended-row">
               <td class="govuk-table__cell">Land parcels used for SFI actions</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
             </tr>
-                <tr class="govuk-table__row">
+            <tr class="govuk-table__row farm-table-extended-row">
             <td class="govuk-table__cell">SFI actions applied for</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <div id="cedar-vale-farm-info" class="farm-info-panel">
+        <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link farm-focus-link" data-farm-key="cedar-vale">Cedar Vale Farm (CV4)</a></p>
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Available land parcels</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">35</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">Total area (hectares)</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">120.3451</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">Land parcels used for SFI actions</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">SFI actions applied for</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <div id="fenland-edge-farm-info" class="farm-info-panel">
+        <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link farm-focus-link" data-farm-key="fenland-edge">Fenland Edge Farm (FE6)</a></p>
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Available land parcels</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">31</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">Total area (hectares)</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">80.3160</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">Land parcels used for SFI actions</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">SFI actions applied for</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <div id="ridgeway-farm-info" class="farm-info-panel">
+        <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link farm-focus-link" data-farm-key="ridgeway">Ridgeway Farm (RG8)</a></p>
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Available land parcels</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">35</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">Total area (hectares)</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">120.3451</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">Land parcels used for SFI actions</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+            </tr>
+            <tr class="govuk-table__row farm-table-extended-row">
+              <td class="govuk-table__cell">SFI actions applied for</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
             </tr>
           </tbody>
@@ -962,10 +1037,10 @@
   {% endif %}
 
   <script>
-    // Initialize the map - centered between both locations
+    // Initialize the map - centered to include all farm clusters
     var map = L.map('map', {
-      center: [51.85, -1.0], // Adjusted to show both locations without overlap
-      zoom: 9,
+      center: [52.22, -0.92],
+      zoom: 8,
       zoomControl: true,
       scrollWheelZoom: true
     });
@@ -979,6 +1054,27 @@
     // Store polygon references
     var parcelPolygons = {};
     var currentSelectedParcel = null;
+
+    var ALL_FARMS_MAP_CENTER = [52.22, -0.92];
+    var ALL_FARMS_MAP_ZOOM = 8;
+
+    var FARM_VIEW_CONFIG = {
+      'oak-tree': { panelId: 'oak-tree-farm-info', center: [51.7650, -1.2375], zoom: 15, parcelListId: 'oxfordshire-parcels' },
+      'blackberry': { panelId: 'blackberry-farm-info', center: [51.9525, -0.7520], zoom: 15, parcelListId: 'buckinghamshire-parcels' },
+      'cedar-vale': { panelId: 'cedar-vale-farm-info', center: [52.3500, -0.6300], zoom: 15, parcelListId: null },
+      'fenland-edge': { panelId: 'fenland-edge-farm-info', center: [52.4950, -0.6300], zoom: 15, parcelListId: null },
+      'ridgeway': { panelId: 'ridgeway-farm-info', center: [52.6400, -0.6300], zoom: 15, parcelListId: null }
+    };
+
+    var LOCATION_TO_PARCEL_LIST_ID = {
+      oxfordshire: 'oxfordshire-parcels',
+      buckinghamshire: 'buckinghamshire-parcels'
+    };
+
+    var LOCATION_TO_EXISTING_ACTIONS_ID = {
+      oxfordshire: 'oak-tree-existing-actions',
+      buckinghamshire: 'blackberry-existing-actions'
+    };
 
     // Parcel data with polygon coordinates matching actual field boundaries
     var parcelData = {
@@ -1976,6 +2072,67 @@
       }
     };
 
+    var BASE_LAYOUT_CENTERS = {
+      oxfordshire: [51.7650, -1.2375],
+      buckinghamshire: [51.9525, -0.7520]
+    };
+
+    function cloneFarmParcels(config) {
+      var sourceCenter = BASE_LAYOUT_CENTERS[config.sourceLocation];
+      if (!sourceCenter) {
+        return;
+      }
+
+      var latOffset = config.center[0] - sourceCenter[0];
+      var lngOffset = config.center[1] - sourceCenter[1];
+
+      var sourceParcelIds = Object.keys(parcelData).filter(function(parcelId) {
+        return parcelData[parcelId].location === config.sourceLocation;
+      });
+
+      sourceParcelIds.forEach(function(sourceParcelId) {
+        var sourceParcel = parcelData[sourceParcelId];
+        var clonedParcel = JSON.parse(JSON.stringify(sourceParcel));
+        var clonedParcelId = config.idPrefix + '-' + sourceParcelId;
+
+        clonedParcel.location = config.location;
+        clonedParcel.name = config.parcelNamePrefix + ' ' + sourceParcel.name;
+        clonedParcel.numActions = 0;
+        clonedParcel.coords = sourceParcel.coords.map(function(point) {
+          return [
+            Number((point[0] + latOffset).toFixed(4)),
+            Number((point[1] + lngOffset).toFixed(4))
+          ];
+        });
+
+        parcelData[clonedParcelId] = clonedParcel;
+      });
+    }
+
+    cloneFarmParcels({
+      idPrefix: 'cedar-vale',
+      sourceLocation: 'oxfordshire',
+      location: 'cedarshire',
+      parcelNamePrefix: 'Cedar',
+      center: FARM_VIEW_CONFIG['cedar-vale'].center
+    });
+
+    cloneFarmParcels({
+      idPrefix: 'fenland-edge',
+      sourceLocation: 'buckinghamshire',
+      location: 'fenlandshire',
+      parcelNamePrefix: 'Fenland',
+      center: FARM_VIEW_CONFIG['fenland-edge'].center
+    });
+
+    cloneFarmParcels({
+      idPrefix: 'ridgeway',
+      sourceLocation: 'oxfordshire',
+      location: 'ridgewayshire',
+      parcelNamePrefix: 'Ridgeway',
+      center: FARM_VIEW_CONFIG['ridgeway'].center
+    });
+
     var ACTION_CATALOG = [
       { code: 'AGF1', name: 'Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land', theme: 'Agroforestry', rateText: '£248/ha' },
       { code: 'AGF2', name: 'Maintain low density (51-130 trees/ha) in-field agroforestry on less sensitive land', theme: 'Agroforestry', rateText: '£385/ha' },
@@ -2151,6 +2308,23 @@
       'new-ground': 'Land lying fallow',
       'far-meadow': 'Temporary grass'
     };
+
+    var GENERATED_FARM_LAND_COVER_PROFILES = {
+      cedarshire: ['Other arable crops', 'Land lying fallow', 'Leguminous and nitrogen fixing crops', 'Perennial crops', 'Temporary grass'],
+      fenlandshire: ['Bog', 'Pond', 'Rivers and Streams type 3', 'Scrub - ungrazeable', 'Notional - scrub', 'Non-agricultural area', 'Rocky outcrop'],
+      ridgewayshire: ['Permanent grassland', 'Temporary grass', 'Track - natural surface', 'Notional - natural', 'Rivers and Streams type 2']
+    };
+
+    Object.keys(GENERATED_FARM_LAND_COVER_PROFILES).forEach(function(locationKey) {
+      var profile = GENERATED_FARM_LAND_COVER_PROFILES[locationKey];
+      var parcelIdsForLocation = Object.keys(parcelData).filter(function(parcelId) {
+        return parcelData[parcelId].location === locationKey;
+      }).sort();
+
+      parcelIdsForLocation.forEach(function(parcelId, index) {
+        PARCEL_LAND_COVERS[parcelId] = profile[index % profile.length];
+      });
+    });
 
     var DEFAULT_LAND_COVER = 'Permanent grassland';
 
@@ -2535,8 +2709,9 @@
       // Keep the left panel visible and only hide the farm summary tables.
       // This allows parcel-info-container (now in the same left panel) to be shown.
       document.getElementById('os-map-references').style.display = 'block';
-      document.getElementById('oak-tree-farm-info').style.display = 'none';
-      document.getElementById('blackberry-farm-info').style.display = 'none';
+      Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
+        panel.style.display = 'none';
+      });
 
       // Hide the save confirmation message when switching parcels
       document.getElementById('save-confirmation-message').style.display = 'none';
@@ -2561,20 +2736,27 @@
       document.getElementById('action-tools-panel').style.display = 'block';
 
       // Show the parcels list section
-      document.getElementById('parcels-list-section').style.display = 'block';
-
-      // Show/hide parcel lists and existing actions based on location
-      if (parcel.location === 'oxfordshire') {
-        document.getElementById('oxfordshire-parcels').style.display = 'block';
-        document.getElementById('buckinghamshire-parcels').style.display = 'none';
-        document.getElementById('oak-tree-existing-actions').style.display = 'block';
-        document.getElementById('blackberry-existing-actions').style.display = 'none';
-      } else if (parcel.location === 'buckinghamshire') {
-        document.getElementById('oxfordshire-parcels').style.display = 'none';
-        document.getElementById('buckinghamshire-parcels').style.display = 'block';
-        document.getElementById('oak-tree-existing-actions').style.display = 'none';
-        document.getElementById('blackberry-existing-actions').style.display = 'block';
+      var selectedParcelListId = LOCATION_TO_PARCEL_LIST_ID[parcel.location];
+      var parcelListSection = document.getElementById('parcels-list-section');
+      Object.keys(LOCATION_TO_PARCEL_LIST_ID).forEach(function(locationKey) {
+        var listId = LOCATION_TO_PARCEL_LIST_ID[locationKey];
+        var listEl = document.getElementById(listId);
+        if (listEl) {
+          listEl.style.display = listId === selectedParcelListId ? 'block' : 'none';
+        }
+      });
+      if (parcelListSection) {
+        parcelListSection.style.display = selectedParcelListId ? 'block' : 'none';
       }
+
+      var selectedExistingActionsId = LOCATION_TO_EXISTING_ACTIONS_ID[parcel.location];
+      Object.keys(LOCATION_TO_EXISTING_ACTIONS_ID).forEach(function(locationKey) {
+        var actionsId = LOCATION_TO_EXISTING_ACTIONS_ID[locationKey];
+        var actionsEl = document.getElementById(actionsId);
+        if (actionsEl) {
+          actionsEl.style.display = actionsId === selectedExistingActionsId ? 'block' : 'none';
+        }
+      });
 
       // Enable search box
       document.getElementById('search-actions-map').disabled = false;
@@ -3323,78 +3505,72 @@
       $(document).on('change', 'input[name="actions"]', function() {
         updateCompatibilityState();
       });
+
+      function focusFarmByKey(farmKey) {
+        var farmConfig = FARM_VIEW_CONFIG[farmKey];
+        if (!farmConfig) {
+          return;
+        }
+
+        Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
+          panel.style.display = panel.id === farmConfig.panelId ? 'block' : 'none';
+
+          Array.prototype.forEach.call(panel.querySelectorAll('.farm-table-extended-row'), function(row) {
+            row.style.display = panel.id === farmConfig.panelId ? 'table-row' : 'none';
+          });
+        });
+
+        document.getElementById('select-parcel-text').style.display = 'none';
+        document.getElementById('action-instruction').style.display = 'none';
+        document.getElementById('parcels-actions-summary-section').style.display = 'block';
+
+        var backToFarmLinkContainer = document.getElementById('back-to-farm-link-container');
+        if (backToFarmLinkContainer) {
+          backToFarmLinkContainer.style.display = 'block';
+        }
+
+        Object.keys(LOCATION_TO_PARCEL_LIST_ID).forEach(function(locationKey) {
+          var listId = LOCATION_TO_PARCEL_LIST_ID[locationKey];
+          var listEl = document.getElementById(listId);
+          if (listEl) {
+            listEl.style.display = listId === farmConfig.parcelListId ? 'block' : 'none';
+          }
+        });
+
+        var parcelListSection = document.getElementById('parcels-list-section');
+        if (parcelListSection) {
+          parcelListSection.style.display = farmConfig.parcelListId ? 'block' : 'none';
+        }
+
+        map.setView(farmConfig.center, farmConfig.zoom || 15);
+      }
       
       // Handle clicks on OS Map Sheet Reference links
       $(document).ready(function() {
-        // Click handler for Oak Tree Farm link (SO1)
-        $('a.govuk-link').filter(function() {
-          return $(this).text() === 'Oak Tree Farm (SO1)';
-        }).on('click', function(e) {
+        $(document).on('click', '.farm-focus-link', function(e) {
           e.preventDefault();
-          // Show Oak Tree Farm information
-          document.getElementById('oak-tree-farm-info').style.display = 'block';
-          // Hide Blackberry Farm information
-          document.getElementById('blackberry-farm-info').style.display = 'none';
-          // Hide the select parcel text
-          document.getElementById('select-parcel-text').style.display = 'none';
-          // Show action instruction
-          document.getElementById('action-instruction').style.display = 'none';
-          // Show the parcels and actions summary section
-          document.getElementById('parcels-actions-summary-section').style.display = 'block';
-          var backToFarmLinkContainer = document.getElementById('back-to-farm-link-container');
-          if (backToFarmLinkContainer) {
-            backToFarmLinkContainer.style.display = 'none';
-          }
-          // Show the parcels list section
-          document.getElementById('parcels-list-section').style.display = 'block';
-          // Show Oak Tree Farm (Oxfordshire) parcels, hide Blackberry Farm parcels
-          document.getElementById('oxfordshire-parcels').style.display = 'block';
-          document.getElementById('buckinghamshire-parcels').style.display = 'none';
-          // Zoom to Oak Tree Farm location - shifted east to center parcels in visible area
-          map.setView([51.7650, -1.2375], 15);
-        });
-        
-        // Click handler for Blackberry Farm link (BO9)
-        $('a.govuk-link').filter(function() {
-          return $(this).text() === 'Blackberry Farm (BO9)';
-        }).on('click', function(e) {
-          e.preventDefault();
-          // Hide Oak Tree Farm information
-          document.getElementById('oak-tree-farm-info').style.display = 'none';
-          // Show Blackberry Farm information
-          document.getElementById('blackberry-farm-info').style.display = 'block';
-          // Hide the select parcel text
-          document.getElementById('select-parcel-text').style.display = 'none';
-          // Show action instruction
-          document.getElementById('action-instruction').style.display = 'none';
-          // Show the parcels and actions summary section
-          document.getElementById('parcels-actions-summary-section').style.display = 'block';
-          var backToFarmLinkContainer = document.getElementById('back-to-farm-link-container');
-          if (backToFarmLinkContainer) {
-            backToFarmLinkContainer.style.display = 'none';
-          }
-          // Show the parcels list section
-          document.getElementById('parcels-list-section').style.display = 'block';
-          // Show Blackberry Farm (Buckinghamshire) parcels, hide Oak Tree Farm parcels
-          document.getElementById('buckinghamshire-parcels').style.display = 'block';
-          document.getElementById('oxfordshire-parcels').style.display = 'none';
-          // Zoom to Blackberry Farm location - shifted east to center parcels in visible area
-          map.setView([51.9525, -0.7520], 15);
+          var farmKey = $(this).attr('data-farm-key');
+          focusFarmByKey(farmKey);
         });
         
         // Click handler for "Back to OS map reference farm selection" link
         $('#back-to-farm-selection-link').on('click', function(e) {
           e.preventDefault();
           
-          // Reset map to initial view showing both farm locations
-          map.setView([51.85, -1.0], 9);
+          // Reset map to initial view showing all farm locations
+          map.setView(ALL_FARMS_MAP_CENTER, ALL_FARMS_MAP_ZOOM);
           
           // Show OS map references section
           document.getElementById('os-map-references').style.display = 'block';
           
-          // Show both farm information sections again
-          document.getElementById('oak-tree-farm-info').style.display = 'block';
-          document.getElementById('blackberry-farm-info').style.display = 'block';
+          // Show all farm information sections again
+          Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
+            panel.style.display = 'block';
+
+            Array.prototype.forEach.call(panel.querySelectorAll('.farm-table-extended-row'), function(row) {
+              row.style.display = 'none';
+            });
+          });
           
           // Hide action instruction
           document.getElementById('action-instruction').style.display = 'none';
