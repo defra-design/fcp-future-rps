@@ -1,0 +1,523 @@
+Land cover,Action Code
+Bog,OFM3
+Bog,UPL1
+Bog,UPL2
+Bog,UPL3
+Bog,UPL8
+Bog,UPL10
+Bog,BND1
+Bog,BND2
+Bog,CHRW2
+Bog,HEF1
+Bog,WBD2
+Boulders,OFM3
+Boulders,UPL1
+Boulders,UPL2
+Boulders,UPL3
+Boulders,UPL8
+Boulders,UPL10
+Boulders,BND1
+Boulders,BND2
+Boulders,CHRW2
+Boulders,HEF1
+Boulders,WBD2
+Cliffs,OFM3
+Cliffs,UPL1
+Cliffs,UPL2
+Cliffs,UPL3
+Cliffs,UPL8
+Cliffs,UPL10
+Cliffs,BND1
+Cliffs,BND2
+Cliffs,CHRW2
+Cliffs,HEF1
+Cliffs,WBD2
+Crops under water,OFC4
+Crops under water,OFM5
+Crops under water,BND1
+Crops under water,BND2
+Crops under water,CHRW2
+Crops under water,HEF1
+Crops under water,WBD2
+Drain/ditch/dyke,OFM3
+Drain/ditch/dyke,UPL1
+Drain/ditch/dyke,UPL2
+Drain/ditch/dyke,UPL3
+Drain/ditch/dyke,UPL8
+Drain/ditch/dyke,UPL10
+Drain/ditch/dyke,BND1
+Drain/ditch/dyke,BND2
+Drain/ditch/dyke,CHRW2
+Drain/ditch/dyke,HEF1
+Drain/ditch/dyke,WBD2
+Fen marsh & swamp,OFM3
+Fen marsh & swamp,UPL1
+Fen marsh & swamp,UPL2
+Fen marsh & swamp,UPL3
+Fen marsh & swamp,UPL8
+Fen marsh & swamp,UPL10
+Fen marsh & swamp,BND1
+Fen marsh & swamp,BND2
+Fen marsh & swamp,CHRW2
+Fen marsh & swamp,HEF1
+Fen marsh & swamp,WBD2
+Gallop,OFM3
+Gallop,UPL1
+Gallop,UPL2
+Gallop,UPL3
+Gallop,UPL8
+Gallop,UPL10
+Gallop,BND1
+Gallop,BND2
+Gallop,CHRW2
+Gallop,HEF1
+Gallop,WBD2
+Heaps,OFM3
+Heaps,UPL1
+Heaps,UPL2
+Heaps,UPL3
+Heaps,UPL8
+Heaps,UPL10
+Heaps,BND1
+Heaps,BND2
+Heaps,CHRW2
+Heaps,HEF1
+Heaps,WBD2
+Heath land and bracken - ungrazeable,OFM3
+Heath land and bracken - ungrazeable,UPL1
+Heath land and bracken - ungrazeable,UPL2
+Heath land and bracken - ungrazeable,UPL3
+Heath land and bracken - ungrazeable,UPL8
+Heath land and bracken - ungrazeable,UPL10
+Heath land and bracken - ungrazeable,BND1
+Heath land and bracken - ungrazeable,BND2
+Heath land and bracken - ungrazeable,CHRW2
+Heath land and bracken - ungrazeable,HEF1
+Heath land and bracken - ungrazeable,WBD2
+Land lying fallow,AFG2
+Land lying fallow,AGF1
+Land lying fallow,AHW10
+Land lying fallow,AHW11
+Land lying fallow,AHW3
+Land lying fallow,AHW8
+Land lying fallow,AHW9
+Land lying fallow,BFS1
+Land lying fallow,BFS6
+Land lying fallow,CAHL1
+Land lying fallow,CAHL2
+Land lying fallow,CAHL3
+Land lying fallow,CAHL4
+Land lying fallow,CIPM2
+Land lying fallow,CIPM3
+Land lying fallow,CNUM3
+Land lying fallow,CSAM2
+Land lying fallow,CSAM3
+Land lying fallow,OFC3
+Land lying fallow,OFM4
+Land lying fallow,PRF1
+Land lying fallow,PRF2
+Land lying fallow,PRF4
+Land lying fallow,SCR1
+Land lying fallow,SCR2
+Land lying fallow,SOH1
+Land lying fallow,SOH3
+Land lying fallow,WBD3
+Land lying fallow,WBD4
+Heath land and bracken - ungrazeable,BND1
+Heath land and bracken - ungrazeable,BND2
+Heath land and bracken - ungrazeable,CHRW2
+Heath land and bracken - ungrazeable,HEF1
+Heath land and bracken - ungrazeable,WBD2
+Leguminous and nitrogen fixing crops,AFG2
+Leguminous and nitrogen fixing crops,AGF1
+Leguminous and nitrogen fixing crops,AHW10
+Leguminous and nitrogen fixing crops,AHW11
+Leguminous and nitrogen fixing crops,AHW3
+Leguminous and nitrogen fixing crops,AHW4
+Leguminous and nitrogen fixing crops,AHW5
+Leguminous and nitrogen fixing crops,AHW8
+Leguminous and nitrogen fixing crops,AHW9
+Leguminous and nitrogen fixing crops,BFS1
+Leguminous and nitrogen fixing crops,BFS6
+Leguminous and nitrogen fixing crops,CAHL1
+Leguminous and nitrogen fixing crops,CAHL2
+Leguminous and nitrogen fixing crops,CAHL3
+Leguminous and nitrogen fixing crops,CAHL4
+Leguminous and nitrogen fixing crops,CIPM2
+Leguminous and nitrogen fixing crops,CIPM3
+Leguminous and nitrogen fixing crops,CIPM4
+Leguminous and nitrogen fixing crops,CNUM3
+Leguminous and nitrogen fixing crops,CSAM2
+Leguminous and nitrogen fixing crops,CSAM3
+Leguminous and nitrogen fixing crops,OFC3
+Leguminous and nitrogen fixing crops,OFM1
+Leguminous and nitrogen fixing crops,OFM4
+Leguminous and nitrogen fixing crops,PRF1
+Leguminous and nitrogen fixing crops,PRF2
+Leguminous and nitrogen fixing crops,PRF4
+Leguminous and nitrogen fixing crops,SCR1
+Leguminous and nitrogen fixing crops,SOH1
+Leguminous and nitrogen fixing crops,SOH3
+Leguminous and nitrogen fixing crops,WBD3
+Leguminous and nitrogen fixing crops,WBD4
+Leguminous and nitrogen fixing crops,BND1
+Leguminous and nitrogen fixing crops,BND2
+Leguminous and nitrogen fixing crops,CHRW2
+Leguminous and nitrogen fixing crops,HEF1
+Leguminous and nitrogen fixing crops,WBD2
+Non-agricultural area,OFM3
+Non-agricultural area,UPL1
+Non-agricultural area,UPL10
+Non-agricultural area,UPL2
+Non-agricultural area,UPL3
+Non-agricultural area,UPL8
+Non-agricultural area,BND1
+Non-agricultural area,BND2
+Non-agricultural area,CHRW2
+Non-agricultural area,HEF1
+Non-agricultural area,WBD2
+Notional - bracken,OFM3
+Notional - bracken,UPL1
+Notional - bracken,UPL2
+Notional - bracken,UPL3
+Notional - bracken,UPL8
+Notional - bracken,UPL10
+Notional - bracken,BND1
+Notional - bracken,BND2
+Notional - bracken,CHRW2
+Notional - bracken,HEF1
+Notional - bracken,WBD2
+Notional - manmade,OFM3
+Notional - manmade,UPL1
+Notional - manmade,UPL2
+Notional - manmade,UPL3
+Notional - manmade,UPL8
+Notional - manmade,UPL10
+Notional - manmade,BND1
+Notional - manmade,BND2
+Notional - manmade,CHRW2
+Notional - manmade,HEF1
+Notional - manmade,WBD2
+Notional - mixed,OFM3
+Notional - mixed,UPL1
+Notional - mixed,UPL2
+Notional - mixed,UPL3
+Notional - mixed,UPL8
+Notional - mixed,UPL10
+Notional - mixed,BND1
+Notional - mixed,BND2
+Notional - mixed,CHRW2
+Notional - mixed,HEF1
+Notional - mixed,WBD2
+Notional - natural,OFM3
+Notional - natural,UPL1
+Notional - natural,UPL2
+Notional - natural,UPL3
+Notional - natural,UPL8
+Notional - natural,UPL10
+Notional - natural,BND1
+Notional - natural,BND2
+Notional - natural,CHRW2
+Notional - natural,HEF1
+Notional - natural,WBD2
+Notional - rock,OFM3
+Notional - rock,UPL1
+Notional - rock,UPL2
+Notional - rock,UPL3
+Notional - rock,UPL8
+Notional - rock,UPL10
+Notional - rock,BND1
+Notional - rock,BND2
+Notional - rock,CHRW2
+Notional - rock,HEF1
+Notional - rock,WBD2
+Notional - scrub,BFS6
+Notional - scrub,OFM3
+Notional - scrub,UPL1
+Notional - scrub,UPL2
+Notional - scrub,UPL3
+Notional - scrub,UPL8
+Notional - scrub,UPL10
+Notional - scrub,SCR1
+Notional - scrub,SCR2
+Notional - scrub,BND1
+Notional - scrub,BND2
+Notional - scrub,CHRW2
+Notional - scrub,HEF1
+Notional - scrub,WBD2
+Notional - water,OFM3
+Notional - water,UPL1
+Notional - water,UPL2
+Notional - water,UPL3
+Notional - water,UPL8
+Notional - water,UPL10
+Notional - water,BND1
+Notional - water,BND2
+Notional - water,CHRW2
+Notional - water,HEF1
+Notional - water,WBD2
+Nurseries,CAHL1
+Nurseries,CAHL2
+Nurseries,CAHL3
+Nurseries,CAHL4
+Nurseries,CIPM2
+Nurseries,CIPM3
+Nurseries,CIPM4
+Nurseries,CNUM3
+Nurseries,CSAM2
+Nurseries,OFC5
+Nurseries,OFM6
+Nurseries,PRF2
+Nurseries,BND1
+Nurseries,BND2
+Nurseries,CHRW2
+Nurseries,HEF1
+Nurseries,WBD2
+Other arable crops,AFG2
+Other arable crops,AGF1
+Other arable crops,AHW10
+Other arable crops,AHW11
+Other arable crops,AHW3
+Other arable crops,AHW4
+Other arable crops,AHW5
+Other arable crops,AHW6
+Other arable crops,AHW7
+Other arable crops,AHW8
+Other arable crops,AHW9
+Other arable crops,BFS1
+Other arable crops,BFS6
+Other arable crops,CAHL1
+Other arable crops,CAHL2
+Other arable crops,CAHL3
+Other arable crops,CAHL4
+Other arable crops,CIPM2
+Other arable crops,CIPM3
+Other arable crops,CIPM4
+Other arable crops,CNUM3
+Other arable crops,CSAM2
+Other arable crops,CSAM3
+Other arable crops,OFC3
+Other arable crops,OFC4
+Other arable crops,OFM4
+Other arable crops,OFM5
+Other arable crops,PRF1
+Other arable crops,PRF2
+Other arable crops,PRF4
+Other arable crops,SCR1
+Other arable crops,SOH1
+Other arable crops,SOH3
+Other arable crops,WBD3
+Other arable crops,WBD4
+Other arable crops,BND1
+Other arable crops,BND2
+Other arable crops,CHRW2
+Other arable crops,HEF1
+Other arable crops,WBD2
+Perennial crops,AFG2
+Perennial crops,AGF1
+Perennial crops,CAHL1
+Perennial crops,CAHL2
+Perennial crops,CAHL3
+Perennial crops,CAHL4
+Perennial crops,CIPM2
+Perennial crops,CIPM3
+Perennial crops,CIPM4
+Perennial crops,CNUM3
+Perennial crops,CSAM2
+Perennial crops,OFC5
+Perennial crops,OFM6
+Perennial crops,PRF1
+Perennial crops,PRF2
+Perennial crops,SCR1
+Perennial crops,SCR2
+Perennial crops,SOH1
+Perennial crops,SOH3
+Perennial crops,BND1
+Perennial crops,BND2
+Perennial crops,CHRW2
+Perennial crops,HEF1
+Perennial crops,WBD2
+Permanent grassland,AFG2
+Permanent grassland,AGF1
+Permanent grassland,BFS6
+Permanent grassland,CIGL1
+Permanent grassland,CIGL2
+Permanent grassland,CIGL3
+Permanent grassland,CLIG3
+Permanent grassland,CNUM2
+Permanent grassland,CSAM3
+Permanent grassland,GRH1
+Permanent grassland,HEF6
+Permanent grassland,OFC1
+Permanent grassland,OFC2
+Permanent grassland,OFC3
+Permanent grassland,OFC4
+Permanent grassland,OFM1
+Permanent grassland,OFM2
+Permanent grassland,OFM3
+Permanent grassland,OFM3
+Permanent grassland,OFM3
+Permanent grassland,PRF1
+Permanent grassland,PRF2
+Permanent grassland,SCR1
+Permanent grassland,SCR2
+Permanent grassland,UPL1
+Permanent grassland,UPL1
+Permanent grassland,UPL10
+Permanent grassland,UPL10
+Permanent grassland,UPL2
+Permanent grassland,UPL2
+Permanent grassland,UPL3
+Permanent grassland,UPL3
+Permanent grassland,UPL8
+Permanent grassland,UPL8
+Permanent grassland,WBD6
+Permanent grassland,WBD7
+Permanent grassland,BND1
+Permanent grassland,BND2
+Permanent grassland,CHRW2
+Permanent grassland,HEF1
+Permanent grassland,WBD2
+Pond,OFM3
+Pond,UPL1
+Pond,UPL10
+Pond,UPL2
+Pond,UPL3
+Pond,UPL8
+Pond,WBD1
+Pond,BND1
+Pond,BND2
+Pond,CHRW2
+Pond,HEF1
+Pond,WBD2
+Rivers and Streams type 2,OFM3
+Rivers and Streams type 2,UPL1
+Rivers and Streams type 2,UPL2
+Rivers and Streams type 2,UPL3
+Rivers and Streams type 2,UPL8
+Rivers and Streams type 2,UPL10
+Rivers and Streams type 3,OFM3
+Rivers and Streams type 3,UPL1
+Rivers and Streams type 3,UPL2
+Rivers and Streams type 3,UPL3
+Rivers and Streams type 3,UPL8
+Rivers and Streams type 3,UPL10
+Rivers and Streams type 3,BND1
+Rivers and Streams type 3,BND2
+Rivers and Streams type 3,CHRW2
+Rivers and Streams type 3,HEF1
+Rivers and Streams type 3,WBD2
+Rocky outcrop,OFM3
+Rocky outcrop,UPL1
+Rocky outcrop,UPL10
+Rocky outcrop,UPL2
+Rocky outcrop,UPL3
+Rocky outcrop,UPL8
+Rocky outcrop,BND1
+Rocky outcrop,BND2
+Rocky outcrop,CHRW2
+Rocky outcrop,HEF1
+Rocky outcrop,WBD2
+Scree,OFM3
+Scree,UPL1
+Scree,UPL2
+Scree,UPL3
+Scree,UPL8
+Scree,UPL10
+Scree,BND1
+Scree,BND2
+Scree,CHRW2
+Scree,HEF1
+Scree,WBD2
+Scrub - ungrazeable,BFS6
+Scrub - ungrazeable,OFM3
+Scrub - ungrazeable,UPL1
+Scrub - ungrazeable,UPL2
+Scrub - ungrazeable,UPL3
+Scrub - ungrazeable,UPL8
+Scrub - ungrazeable,UPL10
+Scrub - ungrazeable,SCR1
+Scrub - ungrazeable,SCR2
+Scrub - ungrazeable,BND1
+Scrub - ungrazeable,BND2
+Scrub - ungrazeable,CHRW2
+Scrub - ungrazeable,HEF1
+Scrub - ungrazeable,WBD2
+Shingle,OFM3
+Shingle,UPL1
+Shingle,UPL2
+Shingle,UPL3
+Shingle,UPL8
+Shingle,UPL10
+Shingle,BND1
+Shingle,BND2
+Shingle,CHRW2
+Shingle,HEF1
+Shingle,WBD2
+Short rotation coppice,CAHL1
+Short rotation coppice,CAHL2
+Short rotation coppice,CAHL3
+Short rotation coppice,CAHL4
+Short rotation coppice,CIPM2
+Short rotation coppice,CIPM3
+Short rotation coppice,CIPM4
+Short rotation coppice,CNUM3
+Short rotation coppice,CSAM2
+Short rotation coppice,OFC5
+Short rotation coppice,OFM6
+Short rotation coppice,PRF2
+Short rotation coppice,BND1
+Short rotation coppice,BND2
+Short rotation coppice,CHRW2
+Short rotation coppice,HEF1
+Short rotation coppice,WBD2
+Temporary grass,AFG2
+Temporary grass,AGF1
+Temporary grass,AHW10
+Temporary grass,AHW11
+Temporary grass,AHW3
+Temporary grass,AHW8
+Temporary grass,AHW9
+Temporary grass,BFS1
+Temporary grass,BFS6
+Temporary grass,CAHL1
+Temporary grass,CAHL2
+Temporary grass,CAHL3
+Temporary grass,CAHL4
+Temporary grass,CIGL1
+Temporary grass,CIGL2
+Temporary grass,CIPM2
+Temporary grass,CIPM3
+Temporary grass,CLIG3
+Temporary grass,CNUM2
+Temporary grass,CNUM3
+Temporary grass,CSAM2
+Temporary grass,CSAM3
+Temporary grass,OFC3
+Temporary grass,OFC4
+Temporary grass,OFM4
+Temporary grass,OFM5
+Temporary grass,PRF1
+Temporary grass,PRF2
+Temporary grass,SCR1
+Temporary grass,SCR2
+Temporary grass,SOH1
+Temporary grass,WBD3
+Temporary grass,WBD4
+Temporary grass,WBD6
+Temporary grass,BND1
+Temporary grass,BND2
+Temporary grass,CHRW2
+Temporary grass,HEF1
+Temporary grass,WBD2
+Track - natural surface,OFM3
+Track - natural surface,UPL1
+Track - natural surface,UPL10
+Track - natural surface,UPL2
+Track - natural surface,UPL3
+Track - natural surface,UPL8
+Track - natural surface,BND1
+Track - natural surface,BND2
+Track - natural surface,CHRW2
+Track - natural surface,HEF1
+Track - natural surface,WBD2
