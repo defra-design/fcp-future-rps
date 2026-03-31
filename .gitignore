@@ -1,2 +1,5 @@
 node_modules
 app/data/sql/all_lms_data_sample.sql
+app/view/.DS_Store
+app/.DS_Store
+.DS_Store
