@@ -2136,11 +2136,16 @@
     var ACTION_CATALOG = [
       { code: 'AGF1', name: 'Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land', theme: 'Agroforestry', rateText: '£248/ha' },
       { code: 'AGF2', name: 'Maintain low density (51-130 trees/ha) in-field agroforestry on less sensitive land', theme: 'Agroforestry', rateText: '£385/ha' },
+      { code: 'BND1', name: 'Maintain dry stone walls', theme: 'Boundary Features', rateText: '£27/100m (both sides)' },
+      { code: 'BND2', name: 'Maintain earth banks or stone-faced hedgebanks', theme: 'Boundary Features', rateText: '£11/100m (both sides)' },
+      { code: 'CHRW2', name: 'Manage hedgerows', theme: 'Boundary Features', rateText: '£13/100m (one side)' },
       { code: 'CAHL4', name: '4m-12m grass buffer strip on arable and horticultural land', theme: 'Buffer Strips', rateText: '£515/ha' },
       { code: 'CIGL3', name: '4m to 12m grass buffer strip on improved grassland', theme: 'Buffer Strips', rateText: '£235/ha' },
       { code: 'BFS1', name: '12m-24m watercourse buffer strips on cultivated land', theme: 'Buffer Strips', rateText: '£707/ha' },
       { code: 'BFS6', name: '6m to 12m habitat strip next to watercourses', theme: 'Buffer Strips', rateText: '£742/ha' },
+      { code: 'AHW2', name: 'Supplementary winter bird food', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£732/t (max 1t per 2ha CAHL2)' },
       { code: 'AHW3', name: 'Beetle banks', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£764/ha' },
+      { code: 'AHW4', name: 'Skylark plots', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£11/plot (min 2 plots/ha)' },
       { code: 'AHW5', name: 'Nesting plots for lapwing', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£765/ha' },
       { code: 'AHW6', name: 'Basic overwinter stubble', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£58/ha' },
       { code: 'AHW7', name: 'Enhanced overwinter stubble', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£589/ha' },
@@ -2151,7 +2156,11 @@
       { code: 'CAHL1', name: 'Pollen and nectar flower mix', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£739/ha' },
       { code: 'CAHL2', name: 'Winter bird food on arable and horticultural land', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£648/ha*' },
       { code: 'CAHL3', name: 'Grassy field corners or blocks', theme: 'Farmland Wildlife - Arable/Horticultural', rateText: '£590/ha' },
+      { code: 'CIGL1', name: 'Take grassland field corners or blocks out of management', theme: 'Farmland Wildlife - Grassland', rateText: '£333/ha' },
+      { code: 'CIGL2', name: 'Winter bird food on improved grassland', theme: 'Farmland Wildlife - Grassland', rateText: '£515/ha' },
+      { code: 'CLIG3', name: 'Manage grassland with very low nutrient inputs', theme: 'Farmland Wildlife - Grassland', rateText: '£151/ha' },
       { code: 'HEF6', name: 'Manage historic and archaeological features on grassland', theme: 'Heritage', rateText: '£55/ha' },
+      { code: 'HEF1', name: 'Maintain weatherproof traditional farm or forestry buildings', theme: 'Heritage', rateText: '£5/sq m' },
       { code: 'CIPM2', name: 'Flower-rich grass margins, blocks or in-field strips', theme: 'Integrated Pest Management', rateText: '£798/ha' },
       { code: 'CIPM3', name: 'Companion crop on arable and horticultural land', theme: 'Integrated Pest Management', rateText: '£55/ha' },
       { code: 'CIPM4', name: 'No use of insecticide on arable crops and permanent crops', theme: 'Integrated Pest Management', rateText: '£45/ha' },
@@ -2182,6 +2191,12 @@
       { code: 'CSAM3', name: 'Herbal leys', theme: 'Soil Health', rateText: '£224/ha*' },
       { code: 'SOH1', name: 'No-till farming', theme: 'Soil Health', rateText: '£73/ha' },
       { code: 'SOH3', name: 'Multi-species summer-sown cover crop', theme: 'Soil Health', rateText: '£163/ha' },
+      { code: 'SCR1', name: 'Create scrub and open habitat mosaics', theme: 'Species Recovery/Management', rateText: '£588/ha' },
+      { code: 'SCR2', name: 'Manage scrub and open habitat mosaics', theme: 'Species Recovery/Management', rateText: '£350/ha' },
+      { code: 'SPM3', name: 'Keep native breeds on grazed habitats supplement (more than 80%)', theme: 'Species Recovery/Management', rateText: '£146/ha' },
+      { code: 'SPM5', name: 'Keep native breeds on extensively managed habitats supplement (more than 80%)', theme: 'Species Recovery/Management', rateText: '£11/ha' },
+      { code: 'WBD1', name: 'Manage ponds', theme: 'Waterbodies', rateText: '£257/pond (max 3 ponds/ha)' },
+      { code: 'WBD2', name: 'Manage ditches', theme: 'Waterbodies', rateText: '£4/100m (both sides)' },
       { code: 'WBD3', name: 'In-field grass strips', theme: 'Waterbodies', rateText: '£765/ha' },
       { code: 'WBD4', name: 'Arable reversion to grassland with low fertiliser input', theme: 'Waterbodies', rateText: '£489/ha' },
       { code: 'WBD6', name: 'Remove livestock from intensive grassland during the autumn and winter (outside SDAs)', theme: 'Waterbodies', rateText: '£115/ha' },
@@ -2219,38 +2234,38 @@
     }, {});
 
     var LAND_COVER_ELIGIBLE_ACTIONS = {
-      'Bog': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
+      'Bog': ['OFM3', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Boulders': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Cliffs': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Crops under water': ['OFC4', 'OFM5'],
-      'Drain/ditch/dyke': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
-      'Fen marsh & swamp': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
+      'Drain/ditch/dyke': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8', 'WBD2'],
+      'Fen marsh & swamp': ['OFM3', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Gallop': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Heaps': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
-      'Heath land and bracken - ungrazeable': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
-      'Land lying fallow': ['AGF1', 'AHW10', 'AHW11', 'AHW3', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CIPM2', 'CIPM3', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFM4', 'PRF1', 'PRF2', 'PRF4', 'SOH1', 'SOH3', 'WBD3', 'WBD4'],
-      'Leguminous and nitrogen fixing crops': ['AGF1', 'AHW10', 'AHW11', 'AHW3', 'AHW5', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFM1', 'OFM4', 'PRF1', 'PRF2', 'PRF4', 'SOH1', 'SOH3', 'WBD3', 'WBD4'],
+      'Heath land and bracken - ungrazeable': ['OFM3', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
+      'Land lying fallow': ['AGF1', 'AHW10', 'AHW11', 'AHW2', 'AHW3', 'AHW4', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'BND1', 'BND2', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CHRW2', 'CIPM2', 'CIPM3', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFM4', 'PRF1', 'PRF2', 'PRF4', 'SCR1', 'SCR2', 'SOH1', 'SOH3', 'WBD2', 'WBD3', 'WBD4'],
+      'Leguminous and nitrogen fixing crops': ['AGF1', 'AHW10', 'AHW11', 'AHW2', 'AHW3', 'AHW4', 'AHW5', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'BND1', 'BND2', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CHRW2', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFM1', 'OFM4', 'PRF1', 'PRF2', 'PRF4', 'SOH1', 'SOH3', 'WBD2', 'WBD3', 'WBD4'],
       'Non-agricultural area': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Notional - bracken': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Notional - manmade': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Notional - mixed': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Notional - natural': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Notional - rock': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
-      'Notional - scrub': ['BFS6', 'OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
+      'Notional - scrub': ['BFS6', 'OFM3', 'SCR1', 'SCR2', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Notional - water': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
-      'Nurseries': ['CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'OFC5', 'OFM6', 'PRF2'],
-      'Other arable crops': ['AGF1', 'AHW10', 'AHW11', 'AHW3', 'AHW5', 'AHW6', 'AHW7', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFC4', 'OFM4', 'OFM5', 'PRF1', 'PRF2', 'PRF4', 'SOH1', 'SOH3', 'WBD3', 'WBD4'],
-      'Perennial crops': ['AGF1', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'OFC5', 'OFM6', 'PRF1', 'PRF2', 'SOH1', 'SOH3'],
-      'Permanent grassland': ['AGF1', 'BFS6', 'CIGL3', 'CNUM2', 'CSAM3', 'GRH1', 'HEF6', 'OFC1', 'OFC2', 'OFC3', 'OFC4', 'OFM1', 'OFM2', 'OFM3', 'PRF1', 'PRF2', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8', 'WBD6', 'WBD7'],
-      'Pond': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
+      'Nurseries': ['BND1', 'BND2', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CHRW2', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'OFC5', 'OFM6', 'PRF2', 'WBD2'],
+      'Other arable crops': ['AGF1', 'AHW10', 'AHW11', 'AHW2', 'AHW3', 'AHW4', 'AHW5', 'AHW6', 'AHW7', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'BND1', 'BND2', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CHRW2', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFC4', 'OFM4', 'OFM5', 'PRF1', 'PRF2', 'PRF4', 'SCR1', 'SOH1', 'SOH3', 'WBD2', 'WBD3', 'WBD4'],
+      'Perennial crops': ['AGF1', 'BND1', 'BND2', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CHRW2', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'OFC5', 'OFM6', 'PRF1', 'PRF2', 'SOH1', 'SOH3', 'WBD2'],
+      'Permanent grassland': ['AGF1', 'BFS6', 'BND1', 'BND2', 'CHRW2', 'CIGL1', 'CIGL2', 'CIGL3', 'CLIG3', 'CNUM2', 'CSAM3', 'GRH1', 'HEF1', 'HEF6', 'OFC1', 'OFC2', 'OFC3', 'OFC4', 'OFM1', 'OFM2', 'OFM3', 'PRF1', 'PRF2', 'SCR2', 'SPM3', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8', 'WBD2', 'WBD6', 'WBD7'],
+      'Pond': ['OFM3', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8', 'WBD1', 'WBD2'],
       'Rivers and Streams type 2': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Rivers and Streams type 3': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Rocky outcrop': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Scree': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
-      'Scrub - ungrazeable': ['BFS6', 'OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
+      'Scrub - ungrazeable': ['BFS6', 'OFM3', 'SCR1', 'SCR2', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
       'Shingle': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
-      'Short rotation coppice': ['CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'OFC5', 'OFM6', 'PRF2'],
-      'Temporary grass': ['AGF1', 'AHW10', 'AHW11', 'AHW3', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CIPM2', 'CIPM3', 'CNUM2', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFC4', 'OFM4', 'OFM5', 'PRF1', 'PRF2', 'SOH1', 'WBD3', 'WBD4', 'WBD6'],
+      'Short rotation coppice': ['BND1', 'BND2', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CHRW2', 'CIPM2', 'CIPM3', 'CIPM4', 'CNUM3', 'CSAM2', 'OFC5', 'OFM6', 'PRF2', 'WBD2'],
+      'Temporary grass': ['AGF1', 'AHW10', 'AHW11', 'AHW2', 'AHW3', 'AHW8', 'AHW9', 'BFS1', 'BFS6', 'BND1', 'BND2', 'CAHL1', 'CAHL2', 'CAHL3', 'CAHL4', 'CHRW2', 'CIGL2', 'CIPM2', 'CIPM3', 'CNUM2', 'CNUM3', 'CSAM2', 'CSAM3', 'OFC3', 'OFC4', 'OFM4', 'OFM5', 'PRF1', 'PRF2', 'SCR1', 'SOH1', 'SPM3', 'WBD2', 'WBD3', 'WBD4', 'WBD6'],
       'Track - natural surface': ['OFM3', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8']
     };
 
@@ -2328,6 +2343,129 @@
 
     var DEFAULT_LAND_COVER = 'Permanent grassland';
 
+    var ACTION_FEATURE_REQUIREMENTS = {
+      AHW2: ['hasArableLand'],
+      AHW4: ['hasArableLand'],
+      BND1: ['hasBoundaryFeature'],
+      BND2: ['hasBoundaryFeature'],
+      CHRW2: ['hasBoundaryFeature', 'hasHedgerow'],
+      CIGL1: ['hasGrasslandHabitat'],
+      CIGL2: ['hasGrasslandHabitat'],
+      CLIG3: ['hasGrasslandHabitat'],
+      HEF1: ['hasHistoricAsset'],
+      SCR1: ['hasScrubMosaic'],
+      SCR2: ['hasScrubMosaic'],
+      SPM3: ['hasGrazedHabitat'],
+      SPM5: ['hasExtensiveHabitat'],
+      WBD1: ['hasPond'],
+      WBD2: ['hasDitch']
+    };
+
+    var HISTORIC_ASSET_PARCELS = {
+      'top-barn-field': true,
+      'barn-field': true,
+      'church-meadow': true,
+      'church-field': true,
+      'mill-field': true,
+      'mill-meadow': true,
+      'stone-bridge': true
+    };
+
+    var ARABLE_LAND_COVERS = {
+      'Other arable crops': true,
+      'Leguminous and nitrogen fixing crops': true,
+      'Land lying fallow': true,
+      'Temporary grass': true
+    };
+
+    var GRASSLAND_LAND_COVERS = {
+      'Permanent grassland': true,
+      'Temporary grass': true
+    };
+
+    var EXTENSIVE_HABITAT_LAND_COVERS = {
+      'Bog': true,
+      'Fen marsh & swamp': true,
+      'Heath land and bracken - ungrazeable': true,
+      'Notional - scrub': true,
+      'Scrub - ungrazeable': true,
+      'Permanent grassland': true
+    };
+
+    function getParcelFeatureFlags(parcelId, parcel) {
+      var landCover = parcel.landCover || DEFAULT_LAND_COVER;
+      var parcelName = (parcel.name || '').toLowerCase();
+
+      var hasBoundaryFeature = !{
+        'Bog': true,
+        'Boulders': true,
+        'Cliffs': true,
+        'Crops under water': true,
+        'Heaps': true,
+        'Notional - water': true,
+        'Pond': true,
+        'Rivers and Streams type 2': true,
+        'Rivers and Streams type 3': true,
+        'Scree': true,
+        'Shingle': true
+      }[landCover];
+
+      var hasHedgerow = hasBoundaryFeature && !!{
+        'Land lying fallow': true,
+        'Leguminous and nitrogen fixing crops': true,
+        'Other arable crops': true,
+        'Perennial crops': true,
+        'Permanent grassland': true,
+        'Short rotation coppice': true,
+        'Temporary grass': true
+      }[landCover];
+
+      var hasDitch = !!{
+        'Drain/ditch/dyke': true,
+        'Fen marsh & swamp': true,
+        'Pond': true,
+        'Rivers and Streams type 2': true,
+        'Rivers and Streams type 3': true
+      }[landCover] || /brook|river|pond|stone bridge/.test(parcelName);
+
+      var hasPond = landCover === 'Pond' || /pond/.test(parcelName);
+      var hasGrasslandHabitat = !!GRASSLAND_LAND_COVERS[landCover];
+      var hasArableLand = !!ARABLE_LAND_COVERS[landCover];
+      var hasScrubMosaic = !!{
+        'Bog': true,
+        'Notional - scrub': true,
+        'Scrub - ungrazeable': true,
+        'Heath land and bracken - ungrazeable': true,
+        'Land lying fallow': true
+      }[landCover];
+      var hasGrazedHabitat = !!{
+        'Permanent grassland': true,
+        'Temporary grass': true,
+        'Bog': true
+      }[landCover];
+      var hasExtensiveHabitat = !!EXTENSIVE_HABITAT_LAND_COVERS[landCover];
+
+      return {
+        hasArableLand: hasArableLand,
+        hasBoundaryFeature: hasBoundaryFeature,
+        hasDitch: hasDitch,
+        hasExtensiveHabitat: hasExtensiveHabitat,
+        hasGrasslandHabitat: hasGrasslandHabitat,
+        hasGrazedHabitat: hasGrazedHabitat,
+        hasHedgerow: hasHedgerow,
+        hasHistoricAsset: !!HISTORIC_ASSET_PARCELS[parcelId],
+        hasPond: hasPond,
+        hasScrubMosaic: hasScrubMosaic
+      };
+    }
+
+    function supportsActionFeatureRequirements(actionCode, features) {
+      var requirements = ACTION_FEATURE_REQUIREMENTS[actionCode] || [];
+      return requirements.every(function(featureKey) {
+        return !!features[featureKey];
+      });
+    }
+
     var actionCodesInCatalog = ACTION_CATALOG.reduce(function(lookup, action) {
       lookup[action.code] = true;
       return lookup;
@@ -2354,8 +2492,51 @@
         parcelData[parcelId].landCover = DEFAULT_LAND_COVER;
       }
 
-      var eligibleActions = getEligibleActionsForLandCover(parcelData[parcelId].landCover);
+      var parcelFeatures = getParcelFeatureFlags(parcelId, parcelData[parcelId]);
+      var eligibleActions = getEligibleActionsForLandCover(parcelData[parcelId].landCover).filter(function(code) {
+        return supportsActionFeatureRequirements(code, parcelFeatures);
+      });
       parcelData[parcelId].actions = eligibleActions.length > 0 ? eligibleActions : sharedParcelActionCodes.slice();
+    });
+
+    // Keep full SFI26 coverage while using stricter parcel-level feature gates.
+    var representedActionCodes = {};
+    Object.keys(parcelData).forEach(function(parcelId) {
+      parcelData[parcelId].actions.forEach(function(code) {
+        representedActionCodes[code] = true;
+      });
+    });
+
+    var missingActionCodes = sharedParcelActionCodes.filter(function(code) {
+      return !representedActionCodes[code];
+    });
+
+    missingActionCodes.forEach(function(code) {
+      var targetParcelId = null;
+
+      Object.keys(parcelData).some(function(parcelId) {
+        var parcel = parcelData[parcelId];
+        var eligibleByLandCover = getEligibleActionsForLandCover(parcel.landCover).indexOf(code) !== -1;
+        if (!eligibleByLandCover) {
+          return false;
+        }
+
+        var parcelFeatures = getParcelFeatureFlags(parcelId, parcel);
+        if (!supportsActionFeatureRequirements(code, parcelFeatures)) {
+          return false;
+        }
+
+        targetParcelId = parcelId;
+        return true;
+      });
+
+      if (!targetParcelId) {
+        targetParcelId = Object.keys(parcelData)[0];
+      }
+
+      if (parcelData[targetParcelId].actions.indexOf(code) === -1) {
+        parcelData[targetParcelId].actions.push(code);
+      }
     });
 
     var compatibilityConfig = {

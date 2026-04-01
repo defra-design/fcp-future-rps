@@ -1,0 +1,392 @@
+land_cover,eligible_actions_count,action_code,action_name,theme,rate_text
+Bog,7,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Bog,7,SPM5,Keep native breeds on extensively managed habitats supplement (more than 80%),Species Recovery/Management,£11/ha
+Bog,7,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Bog,7,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Bog,7,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Bog,7,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Bog,7,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Boulders,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Boulders,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Boulders,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Boulders,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Boulders,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Boulders,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Cliffs,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Cliffs,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Cliffs,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Cliffs,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Cliffs,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Cliffs,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Crops under water,2,OFC4,Organic conversion - horticultural land,Organic,£874/ha
+Crops under water,2,OFM5,Organic land management - horticultural land,Organic,£707/ha
+Drain/ditch/dyke,7,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Drain/ditch/dyke,7,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Drain/ditch/dyke,7,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Drain/ditch/dyke,7,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Drain/ditch/dyke,7,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Drain/ditch/dyke,7,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Drain/ditch/dyke,7,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Fen marsh & swamp,7,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Fen marsh & swamp,7,SPM5,Keep native breeds on extensively managed habitats supplement (more than 80%),Species Recovery/Management,£11/ha
+Fen marsh & swamp,7,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Fen marsh & swamp,7,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Fen marsh & swamp,7,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Fen marsh & swamp,7,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Fen marsh & swamp,7,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Gallop,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Gallop,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Gallop,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Gallop,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Gallop,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Gallop,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Heaps,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Heaps,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Heaps,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Heaps,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Heaps,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Heaps,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Heath land and bracken - ungrazeable,7,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Heath land and bracken - ungrazeable,7,SPM5,Keep native breeds on extensively managed habitats supplement (more than 80%),Species Recovery/Management,£11/ha
+Heath land and bracken - ungrazeable,7,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Heath land and bracken - ungrazeable,7,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Heath land and bracken - ungrazeable,7,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Heath land and bracken - ungrazeable,7,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Heath land and bracken - ungrazeable,7,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Land lying fallow,34,AGF1,Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land,Agroforestry,£248/ha
+Land lying fallow,34,AHW10,Low input harvested cereal crop,Farmland Wildlife - Arable/Horticultural,£354/ha
+Land lying fallow,34,AHW11,Cultivated areas for arable plants,Farmland Wildlife - Arable/Horticultural,£660/ha
+Land lying fallow,34,AHW2,Supplementary winter bird food,Farmland Wildlife - Arable/Horticultural,£732/t (max 1t per 2ha CAHL2)
+Land lying fallow,34,AHW3,Beetle banks,Farmland Wildlife - Arable/Horticultural,£764/ha
+Land lying fallow,34,AHW4,Skylark plots,Farmland Wildlife - Arable/Horticultural,£11/plot (min 2 plots/ha)
+Land lying fallow,34,AHW8,Whole crop spring cereals and overwinter stubble,Farmland Wildlife - Arable/Horticultural,£596/ha
+Land lying fallow,34,AHW9,Unharvested cereal headland,Farmland Wildlife - Arable/Horticultural,"£1,072/ha"
+Land lying fallow,34,BFS1,12m-24m watercourse buffer strips on cultivated land,Buffer Strips,£707/ha
+Land lying fallow,34,BFS6,6m to 12m habitat strip next to watercourses,Buffer Strips,£742/ha
+Land lying fallow,34,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Land lying fallow,34,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Land lying fallow,34,CAHL1,Pollen and nectar flower mix,Farmland Wildlife - Arable/Horticultural,£739/ha
+Land lying fallow,34,CAHL2,Winter bird food on arable and horticultural land,Farmland Wildlife - Arable/Horticultural,£648/ha*
+Land lying fallow,34,CAHL3,Grassy field corners or blocks,Farmland Wildlife - Arable/Horticultural,£590/ha
+Land lying fallow,34,CAHL4,4m-12m grass buffer strip on arable and horticultural land,Buffer Strips,£515/ha
+Land lying fallow,34,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Land lying fallow,34,CIPM2,"Flower-rich grass margins, blocks or in-field strips",Integrated Pest Management,£798/ha
+Land lying fallow,34,CIPM3,Companion crop on arable and horticultural land,Integrated Pest Management,£55/ha
+Land lying fallow,34,CNUM3,Legume fallow,Nutrient Management,£532/ha*
+Land lying fallow,34,CSAM2,Multi-species winter cover crop,Soil Health,£129/ha
+Land lying fallow,34,CSAM3,Herbal leys,Soil Health,£224/ha*
+Land lying fallow,34,OFC3,Organic conversion - rotational land,Organic,£298/ha
+Land lying fallow,34,OFM4,Organic land management - rotational land,Organic,£132/ha
+Land lying fallow,34,PRF1,Variable rate application of nutrients,Precision Farming,£27/ha
+Land lying fallow,34,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Land lying fallow,34,PRF4,Mechanical robotic weeding,Precision Farming,£150/ha
+Land lying fallow,34,SCR1,Create scrub and open habitat mosaics,Species Recovery/Management,£588/ha
+Land lying fallow,34,SCR2,Manage scrub and open habitat mosaics,Species Recovery/Management,£350/ha
+Land lying fallow,34,SOH1,No-till farming,Soil Health,£73/ha
+Land lying fallow,34,SOH3,Multi-species summer-sown cover crop,Soil Health,£163/ha
+Land lying fallow,34,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Land lying fallow,34,WBD3,In-field grass strips,Waterbodies,£765/ha
+Land lying fallow,34,WBD4,Arable reversion to grassland with low fertiliser input,Waterbodies,£489/ha
+Leguminous and nitrogen fixing crops,35,AGF1,Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land,Agroforestry,£248/ha
+Leguminous and nitrogen fixing crops,35,AHW10,Low input harvested cereal crop,Farmland Wildlife - Arable/Horticultural,£354/ha
+Leguminous and nitrogen fixing crops,35,AHW11,Cultivated areas for arable plants,Farmland Wildlife - Arable/Horticultural,£660/ha
+Leguminous and nitrogen fixing crops,35,AHW2,Supplementary winter bird food,Farmland Wildlife - Arable/Horticultural,£732/t (max 1t per 2ha CAHL2)
+Leguminous and nitrogen fixing crops,35,AHW3,Beetle banks,Farmland Wildlife - Arable/Horticultural,£764/ha
+Leguminous and nitrogen fixing crops,35,AHW4,Skylark plots,Farmland Wildlife - Arable/Horticultural,£11/plot (min 2 plots/ha)
+Leguminous and nitrogen fixing crops,35,AHW5,Nesting plots for lapwing,Farmland Wildlife - Arable/Horticultural,£765/ha
+Leguminous and nitrogen fixing crops,35,AHW8,Whole crop spring cereals and overwinter stubble,Farmland Wildlife - Arable/Horticultural,£596/ha
+Leguminous and nitrogen fixing crops,35,AHW9,Unharvested cereal headland,Farmland Wildlife - Arable/Horticultural,"£1,072/ha"
+Leguminous and nitrogen fixing crops,35,BFS1,12m-24m watercourse buffer strips on cultivated land,Buffer Strips,£707/ha
+Leguminous and nitrogen fixing crops,35,BFS6,6m to 12m habitat strip next to watercourses,Buffer Strips,£742/ha
+Leguminous and nitrogen fixing crops,35,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Leguminous and nitrogen fixing crops,35,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Leguminous and nitrogen fixing crops,35,CAHL1,Pollen and nectar flower mix,Farmland Wildlife - Arable/Horticultural,£739/ha
+Leguminous and nitrogen fixing crops,35,CAHL2,Winter bird food on arable and horticultural land,Farmland Wildlife - Arable/Horticultural,£648/ha*
+Leguminous and nitrogen fixing crops,35,CAHL3,Grassy field corners or blocks,Farmland Wildlife - Arable/Horticultural,£590/ha
+Leguminous and nitrogen fixing crops,35,CAHL4,4m-12m grass buffer strip on arable and horticultural land,Buffer Strips,£515/ha
+Leguminous and nitrogen fixing crops,35,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Leguminous and nitrogen fixing crops,35,CIPM2,"Flower-rich grass margins, blocks or in-field strips",Integrated Pest Management,£798/ha
+Leguminous and nitrogen fixing crops,35,CIPM3,Companion crop on arable and horticultural land,Integrated Pest Management,£55/ha
+Leguminous and nitrogen fixing crops,35,CIPM4,No use of insecticide on arable crops and permanent crops,Integrated Pest Management,£45/ha
+Leguminous and nitrogen fixing crops,35,CNUM3,Legume fallow,Nutrient Management,£532/ha*
+Leguminous and nitrogen fixing crops,35,CSAM2,Multi-species winter cover crop,Soil Health,£129/ha
+Leguminous and nitrogen fixing crops,35,CSAM3,Herbal leys,Soil Health,£224/ha*
+Leguminous and nitrogen fixing crops,35,OFC3,Organic conversion - rotational land,Organic,£298/ha
+Leguminous and nitrogen fixing crops,35,OFM1,Organic land management - improved permanent grassland,Organic,£20/ha
+Leguminous and nitrogen fixing crops,35,OFM4,Organic land management - rotational land,Organic,£132/ha
+Leguminous and nitrogen fixing crops,35,PRF1,Variable rate application of nutrients,Precision Farming,£27/ha
+Leguminous and nitrogen fixing crops,35,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Leguminous and nitrogen fixing crops,35,PRF4,Mechanical robotic weeding,Precision Farming,£150/ha
+Leguminous and nitrogen fixing crops,35,SOH1,No-till farming,Soil Health,£73/ha
+Leguminous and nitrogen fixing crops,35,SOH3,Multi-species summer-sown cover crop,Soil Health,£163/ha
+Leguminous and nitrogen fixing crops,35,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Leguminous and nitrogen fixing crops,35,WBD3,In-field grass strips,Waterbodies,£765/ha
+Leguminous and nitrogen fixing crops,35,WBD4,Arable reversion to grassland with low fertiliser input,Waterbodies,£489/ha
+Non-agricultural area,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Non-agricultural area,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Non-agricultural area,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Non-agricultural area,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Non-agricultural area,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Non-agricultural area,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Notional - bracken,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Notional - bracken,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Notional - bracken,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Notional - bracken,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Notional - bracken,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Notional - bracken,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Notional - manmade,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Notional - manmade,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Notional - manmade,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Notional - manmade,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Notional - manmade,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Notional - manmade,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Notional - mixed,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Notional - mixed,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Notional - mixed,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Notional - mixed,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Notional - mixed,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Notional - mixed,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Notional - natural,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Notional - natural,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Notional - natural,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Notional - natural,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Notional - natural,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Notional - natural,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Notional - rock,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Notional - rock,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Notional - rock,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Notional - rock,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Notional - rock,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Notional - rock,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Notional - scrub,10,BFS6,6m to 12m habitat strip next to watercourses,Buffer Strips,£742/ha
+Notional - scrub,10,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Notional - scrub,10,SCR1,Create scrub and open habitat mosaics,Species Recovery/Management,£588/ha
+Notional - scrub,10,SCR2,Manage scrub and open habitat mosaics,Species Recovery/Management,£350/ha
+Notional - scrub,10,SPM5,Keep native breeds on extensively managed habitats supplement (more than 80%),Species Recovery/Management,£11/ha
+Notional - scrub,10,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Notional - scrub,10,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Notional - scrub,10,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Notional - scrub,10,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Notional - scrub,10,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Notional - water,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Notional - water,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Notional - water,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Notional - water,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Notional - water,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Notional - water,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Nurseries,16,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Nurseries,16,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Nurseries,16,CAHL1,Pollen and nectar flower mix,Farmland Wildlife - Arable/Horticultural,£739/ha
+Nurseries,16,CAHL2,Winter bird food on arable and horticultural land,Farmland Wildlife - Arable/Horticultural,£648/ha*
+Nurseries,16,CAHL3,Grassy field corners or blocks,Farmland Wildlife - Arable/Horticultural,£590/ha
+Nurseries,16,CAHL4,4m-12m grass buffer strip on arable and horticultural land,Buffer Strips,£515/ha
+Nurseries,16,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Nurseries,16,CIPM2,"Flower-rich grass margins, blocks or in-field strips",Integrated Pest Management,£798/ha
+Nurseries,16,CIPM3,Companion crop on arable and horticultural land,Integrated Pest Management,£55/ha
+Nurseries,16,CIPM4,No use of insecticide on arable crops and permanent crops,Integrated Pest Management,£45/ha
+Nurseries,16,CNUM3,Legume fallow,Nutrient Management,£532/ha*
+Nurseries,16,CSAM2,Multi-species winter cover crop,Soil Health,£129/ha
+Nurseries,16,OFC5,Organic conversion - top fruit,Organic,"£1,920/ha"
+Nurseries,16,OFM6,Organic land management - top fruit,Organic,"£1,920/ha"
+Nurseries,16,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Nurseries,16,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Other arable crops,39,AGF1,Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land,Agroforestry,£248/ha
+Other arable crops,39,AHW10,Low input harvested cereal crop,Farmland Wildlife - Arable/Horticultural,£354/ha
+Other arable crops,39,AHW11,Cultivated areas for arable plants,Farmland Wildlife - Arable/Horticultural,£660/ha
+Other arable crops,39,AHW2,Supplementary winter bird food,Farmland Wildlife - Arable/Horticultural,£732/t (max 1t per 2ha CAHL2)
+Other arable crops,39,AHW3,Beetle banks,Farmland Wildlife - Arable/Horticultural,£764/ha
+Other arable crops,39,AHW4,Skylark plots,Farmland Wildlife - Arable/Horticultural,£11/plot (min 2 plots/ha)
+Other arable crops,39,AHW5,Nesting plots for lapwing,Farmland Wildlife - Arable/Horticultural,£765/ha
+Other arable crops,39,AHW6,Basic overwinter stubble,Farmland Wildlife - Arable/Horticultural,£58/ha
+Other arable crops,39,AHW7,Enhanced overwinter stubble,Farmland Wildlife - Arable/Horticultural,£589/ha
+Other arable crops,39,AHW8,Whole crop spring cereals and overwinter stubble,Farmland Wildlife - Arable/Horticultural,£596/ha
+Other arable crops,39,AHW9,Unharvested cereal headland,Farmland Wildlife - Arable/Horticultural,"£1,072/ha"
+Other arable crops,39,BFS1,12m-24m watercourse buffer strips on cultivated land,Buffer Strips,£707/ha
+Other arable crops,39,BFS6,6m to 12m habitat strip next to watercourses,Buffer Strips,£742/ha
+Other arable crops,39,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Other arable crops,39,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Other arable crops,39,CAHL1,Pollen and nectar flower mix,Farmland Wildlife - Arable/Horticultural,£739/ha
+Other arable crops,39,CAHL2,Winter bird food on arable and horticultural land,Farmland Wildlife - Arable/Horticultural,£648/ha*
+Other arable crops,39,CAHL3,Grassy field corners or blocks,Farmland Wildlife - Arable/Horticultural,£590/ha
+Other arable crops,39,CAHL4,4m-12m grass buffer strip on arable and horticultural land,Buffer Strips,£515/ha
+Other arable crops,39,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Other arable crops,39,CIPM2,"Flower-rich grass margins, blocks or in-field strips",Integrated Pest Management,£798/ha
+Other arable crops,39,CIPM3,Companion crop on arable and horticultural land,Integrated Pest Management,£55/ha
+Other arable crops,39,CIPM4,No use of insecticide on arable crops and permanent crops,Integrated Pest Management,£45/ha
+Other arable crops,39,CNUM3,Legume fallow,Nutrient Management,£532/ha*
+Other arable crops,39,CSAM2,Multi-species winter cover crop,Soil Health,£129/ha
+Other arable crops,39,CSAM3,Herbal leys,Soil Health,£224/ha*
+Other arable crops,39,OFC3,Organic conversion - rotational land,Organic,£298/ha
+Other arable crops,39,OFC4,Organic conversion - horticultural land,Organic,£874/ha
+Other arable crops,39,OFM4,Organic land management - rotational land,Organic,£132/ha
+Other arable crops,39,OFM5,Organic land management - horticultural land,Organic,£707/ha
+Other arable crops,39,PRF1,Variable rate application of nutrients,Precision Farming,£27/ha
+Other arable crops,39,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Other arable crops,39,PRF4,Mechanical robotic weeding,Precision Farming,£150/ha
+Other arable crops,39,SCR1,Create scrub and open habitat mosaics,Species Recovery/Management,£588/ha
+Other arable crops,39,SOH1,No-till farming,Soil Health,£73/ha
+Other arable crops,39,SOH3,Multi-species summer-sown cover crop,Soil Health,£163/ha
+Other arable crops,39,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Other arable crops,39,WBD3,In-field grass strips,Waterbodies,£765/ha
+Other arable crops,39,WBD4,Arable reversion to grassland with low fertiliser input,Waterbodies,£489/ha
+Perennial crops,20,AGF1,Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land,Agroforestry,£248/ha
+Perennial crops,20,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Perennial crops,20,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Perennial crops,20,CAHL1,Pollen and nectar flower mix,Farmland Wildlife - Arable/Horticultural,£739/ha
+Perennial crops,20,CAHL2,Winter bird food on arable and horticultural land,Farmland Wildlife - Arable/Horticultural,£648/ha*
+Perennial crops,20,CAHL3,Grassy field corners or blocks,Farmland Wildlife - Arable/Horticultural,£590/ha
+Perennial crops,20,CAHL4,4m-12m grass buffer strip on arable and horticultural land,Buffer Strips,£515/ha
+Perennial crops,20,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Perennial crops,20,CIPM2,"Flower-rich grass margins, blocks or in-field strips",Integrated Pest Management,£798/ha
+Perennial crops,20,CIPM3,Companion crop on arable and horticultural land,Integrated Pest Management,£55/ha
+Perennial crops,20,CIPM4,No use of insecticide on arable crops and permanent crops,Integrated Pest Management,£45/ha
+Perennial crops,20,CNUM3,Legume fallow,Nutrient Management,£532/ha*
+Perennial crops,20,CSAM2,Multi-species winter cover crop,Soil Health,£129/ha
+Perennial crops,20,OFC5,Organic conversion - top fruit,Organic,"£1,920/ha"
+Perennial crops,20,OFM6,Organic land management - top fruit,Organic,"£1,920/ha"
+Perennial crops,20,PRF1,Variable rate application of nutrients,Precision Farming,£27/ha
+Perennial crops,20,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Perennial crops,20,SOH1,No-till farming,Soil Health,£73/ha
+Perennial crops,20,SOH3,Multi-species summer-sown cover crop,Soil Health,£163/ha
+Perennial crops,20,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Permanent grassland,34,AGF1,Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land,Agroforestry,£248/ha
+Permanent grassland,34,BFS6,6m to 12m habitat strip next to watercourses,Buffer Strips,£742/ha
+Permanent grassland,34,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Permanent grassland,34,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Permanent grassland,34,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Permanent grassland,34,CIGL1,Take grassland field corners or blocks out of management,Farmland Wildlife - Grassland,£333/ha
+Permanent grassland,34,CIGL2,Winter bird food on improved grassland,Farmland Wildlife - Grassland,£515/ha
+Permanent grassland,34,CIGL3,4m to 12m grass buffer strip on improved grassland,Buffer Strips,£235/ha
+Permanent grassland,34,CLIG3,Manage grassland with very low nutrient inputs,Farmland Wildlife - Grassland,£151/ha
+Permanent grassland,34,CNUM2,Legumes on improved grassland,Nutrient Management,£102/ha
+Permanent grassland,34,CSAM3,Herbal leys,Soil Health,£224/ha*
+Permanent grassland,34,GRH1,Manage rough grazing for birds,Farmland Wildlife - Grassland,£121/ha
+Permanent grassland,34,HEF1,Maintain weatherproof traditional farm or forestry buildings,Heritage,£5/sq m
+Permanent grassland,34,HEF6,Manage historic and archaeological features on grassland,Heritage,£55/ha
+Permanent grassland,34,OFC1,Organic conversion - improved permanent grassland,Organic,£187/ha
+Permanent grassland,34,OFC2,Organic conversion - unimproved permanent grassland,Organic,£96/ha
+Permanent grassland,34,OFC3,Organic conversion - rotational land,Organic,£298/ha
+Permanent grassland,34,OFC4,Organic conversion - horticultural land,Organic,£874/ha
+Permanent grassland,34,OFM1,Organic land management - improved permanent grassland,Organic,£20/ha
+Permanent grassland,34,OFM2,Organic land management - unimproved permanent grassland,Organic,£41/ha
+Permanent grassland,34,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Permanent grassland,34,PRF1,Variable rate application of nutrients,Precision Farming,£27/ha
+Permanent grassland,34,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Permanent grassland,34,SCR2,Manage scrub and open habitat mosaics,Species Recovery/Management,£350/ha
+Permanent grassland,34,SPM3,Keep native breeds on grazed habitats supplement (more than 80%),Species Recovery/Management,£146/ha
+Permanent grassland,34,SPM5,Keep native breeds on extensively managed habitats supplement (more than 80%),Species Recovery/Management,£11/ha
+Permanent grassland,34,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Permanent grassland,34,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Permanent grassland,34,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Permanent grassland,34,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Permanent grassland,34,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Permanent grassland,34,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Permanent grassland,34,WBD6,Remove livestock from intensive grassland during the autumn and winter (outside SDAs),Waterbodies,£115/ha
+Permanent grassland,34,WBD7,Remove livestock from grassland during the autumn and winter (SDAs),Waterbodies,£115/ha
+Pond,9,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Pond,9,SPM5,Keep native breeds on extensively managed habitats supplement (more than 80%),Species Recovery/Management,£11/ha
+Pond,9,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Pond,9,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Pond,9,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Pond,9,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Pond,9,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Pond,9,WBD1,Manage ponds,Waterbodies,£257/pond (max 3 ponds/ha)
+Pond,9,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Rivers and Streams type 2,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Rivers and Streams type 2,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Rivers and Streams type 2,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Rivers and Streams type 2,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Rivers and Streams type 2,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Rivers and Streams type 2,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Rivers and Streams type 3,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Rivers and Streams type 3,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Rivers and Streams type 3,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Rivers and Streams type 3,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Rivers and Streams type 3,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Rivers and Streams type 3,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Rocky outcrop,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Rocky outcrop,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Rocky outcrop,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Rocky outcrop,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Rocky outcrop,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Rocky outcrop,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Scree,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Scree,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Scree,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Scree,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Scree,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Scree,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Scrub - ungrazeable,10,BFS6,6m to 12m habitat strip next to watercourses,Buffer Strips,£742/ha
+Scrub - ungrazeable,10,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Scrub - ungrazeable,10,SCR1,Create scrub and open habitat mosaics,Species Recovery/Management,£588/ha
+Scrub - ungrazeable,10,SCR2,Manage scrub and open habitat mosaics,Species Recovery/Management,£350/ha
+Scrub - ungrazeable,10,SPM5,Keep native breeds on extensively managed habitats supplement (more than 80%),Species Recovery/Management,£11/ha
+Scrub - ungrazeable,10,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Scrub - ungrazeable,10,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Scrub - ungrazeable,10,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Scrub - ungrazeable,10,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Scrub - ungrazeable,10,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Shingle,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Shingle,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Shingle,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Shingle,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Shingle,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Shingle,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
+Short rotation coppice,16,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Short rotation coppice,16,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Short rotation coppice,16,CAHL1,Pollen and nectar flower mix,Farmland Wildlife - Arable/Horticultural,£739/ha
+Short rotation coppice,16,CAHL2,Winter bird food on arable and horticultural land,Farmland Wildlife - Arable/Horticultural,£648/ha*
+Short rotation coppice,16,CAHL3,Grassy field corners or blocks,Farmland Wildlife - Arable/Horticultural,£590/ha
+Short rotation coppice,16,CAHL4,4m-12m grass buffer strip on arable and horticultural land,Buffer Strips,£515/ha
+Short rotation coppice,16,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Short rotation coppice,16,CIPM2,"Flower-rich grass margins, blocks or in-field strips",Integrated Pest Management,£798/ha
+Short rotation coppice,16,CIPM3,Companion crop on arable and horticultural land,Integrated Pest Management,£55/ha
+Short rotation coppice,16,CIPM4,No use of insecticide on arable crops and permanent crops,Integrated Pest Management,£45/ha
+Short rotation coppice,16,CNUM3,Legume fallow,Nutrient Management,£532/ha*
+Short rotation coppice,16,CSAM2,Multi-species winter cover crop,Soil Health,£129/ha
+Short rotation coppice,16,OFC5,Organic conversion - top fruit,Organic,"£1,920/ha"
+Short rotation coppice,16,OFM6,Organic land management - top fruit,Organic,"£1,920/ha"
+Short rotation coppice,16,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Short rotation coppice,16,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Temporary grass,36,AGF1,Maintain very low density (30-50 trees/ha) in-field agroforestry on less sensitive land,Agroforestry,£248/ha
+Temporary grass,36,AHW10,Low input harvested cereal crop,Farmland Wildlife - Arable/Horticultural,£354/ha
+Temporary grass,36,AHW11,Cultivated areas for arable plants,Farmland Wildlife - Arable/Horticultural,£660/ha
+Temporary grass,36,AHW2,Supplementary winter bird food,Farmland Wildlife - Arable/Horticultural,£732/t (max 1t per 2ha CAHL2)
+Temporary grass,36,AHW3,Beetle banks,Farmland Wildlife - Arable/Horticultural,£764/ha
+Temporary grass,36,AHW8,Whole crop spring cereals and overwinter stubble,Farmland Wildlife - Arable/Horticultural,£596/ha
+Temporary grass,36,AHW9,Unharvested cereal headland,Farmland Wildlife - Arable/Horticultural,"£1,072/ha"
+Temporary grass,36,BFS1,12m-24m watercourse buffer strips on cultivated land,Buffer Strips,£707/ha
+Temporary grass,36,BFS6,6m to 12m habitat strip next to watercourses,Buffer Strips,£742/ha
+Temporary grass,36,BND1,Maintain dry stone walls,Boundary Features,£27/100m (both sides)
+Temporary grass,36,BND2,Maintain earth banks or stone-faced hedgebanks,Boundary Features,£11/100m (both sides)
+Temporary grass,36,CAHL1,Pollen and nectar flower mix,Farmland Wildlife - Arable/Horticultural,£739/ha
+Temporary grass,36,CAHL2,Winter bird food on arable and horticultural land,Farmland Wildlife - Arable/Horticultural,£648/ha*
+Temporary grass,36,CAHL3,Grassy field corners or blocks,Farmland Wildlife - Arable/Horticultural,£590/ha
+Temporary grass,36,CAHL4,4m-12m grass buffer strip on arable and horticultural land,Buffer Strips,£515/ha
+Temporary grass,36,CHRW2,Manage hedgerows,Boundary Features,£13/100m (one side)
+Temporary grass,36,CIGL2,Winter bird food on improved grassland,Farmland Wildlife - Grassland,£515/ha
+Temporary grass,36,CIPM2,"Flower-rich grass margins, blocks or in-field strips",Integrated Pest Management,£798/ha
+Temporary grass,36,CIPM3,Companion crop on arable and horticultural land,Integrated Pest Management,£55/ha
+Temporary grass,36,CNUM2,Legumes on improved grassland,Nutrient Management,£102/ha
+Temporary grass,36,CNUM3,Legume fallow,Nutrient Management,£532/ha*
+Temporary grass,36,CSAM2,Multi-species winter cover crop,Soil Health,£129/ha
+Temporary grass,36,CSAM3,Herbal leys,Soil Health,£224/ha*
+Temporary grass,36,OFC3,Organic conversion - rotational land,Organic,£298/ha
+Temporary grass,36,OFC4,Organic conversion - horticultural land,Organic,£874/ha
+Temporary grass,36,OFM4,Organic land management - rotational land,Organic,£132/ha
+Temporary grass,36,OFM5,Organic land management - horticultural land,Organic,£707/ha
+Temporary grass,36,PRF1,Variable rate application of nutrients,Precision Farming,£27/ha
+Temporary grass,36,PRF2,Camera or remote sensor guided herbicide spraying,Precision Farming,£43/ha
+Temporary grass,36,SCR1,Create scrub and open habitat mosaics,Species Recovery/Management,£588/ha
+Temporary grass,36,SOH1,No-till farming,Soil Health,£73/ha
+Temporary grass,36,SPM3,Keep native breeds on grazed habitats supplement (more than 80%),Species Recovery/Management,£146/ha
+Temporary grass,36,WBD2,Manage ditches,Waterbodies,£4/100m (both sides)
+Temporary grass,36,WBD3,In-field grass strips,Waterbodies,£765/ha
+Temporary grass,36,WBD4,Arable reversion to grassland with low fertiliser input,Waterbodies,£489/ha
+Temporary grass,36,WBD6,Remove livestock from intensive grassland during the autumn and winter (outside SDAs),Waterbodies,£115/ha
+Track - natural surface,6,OFM3,Organic land management - enclosed rough grazing,Organic,£97/ha
+Track - natural surface,6,UPL1,Moderate livestock grazing on moorland,Moorland,£35/ha*
+Track - natural surface,6,UPL10,Shepherding livestock on moorland (remove stock for at least 8 months),Moorland,£102/ha*
+Track - natural surface,6,UPL2,Low livestock grazing on moorland,Moorland,£89/ha*
+Track - natural surface,6,UPL3,Limited livestock grazing on moorland,Moorland,£111/ha*
+Track - natural surface,6,UPL8,Shepherding livestock on moorland (remove stock for at least 4 months),Moorland,£74/ha*
