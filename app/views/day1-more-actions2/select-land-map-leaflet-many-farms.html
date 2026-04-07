@@ -2316,7 +2316,7 @@
       'lane-meadow': 'Temporary grass',
       'ash-copse': 'Scrub - ungrazeable',
       'home-paddock': 'Notional - mixed',
-      'gate-field': 'Other arable crops',
+      'gate-field': ['Permanent grassland', 'Other arable crops'],
       'stone-bridge': 'Rivers and Streams type 2',
       'beech-wood': 'Notional - natural',
       'orchard-plot': 'Perennial crops',
@@ -2342,6 +2342,23 @@
     });
 
     var DEFAULT_LAND_COVER = 'Permanent grassland';
+
+    function getParcelLandCovers(landCoverValue) {
+      if (Array.isArray(landCoverValue)) {
+        return landCoverValue.filter(Boolean);
+      }
+
+      if (typeof landCoverValue === 'string' && landCoverValue) {
+        return [landCoverValue];
+      }
+
+      return [DEFAULT_LAND_COVER];
+    }
+
+    function formatLandCoverDisplay(landCoverValue) {
+      var landCovers = getParcelLandCovers(landCoverValue);
+      return landCovers.join(', ');
+    }
 
     var ACTION_FEATURE_REQUIREMENTS = {
       AHW2: ['hasArableLand'],
@@ -2393,10 +2410,11 @@
     };
 
     function getParcelFeatureFlags(parcelId, parcel) {
-      var landCover = parcel.landCover || DEFAULT_LAND_COVER;
+      var landCovers = getParcelLandCovers(parcel.landCover);
       var parcelName = (parcel.name || '').toLowerCase();
 
-      var hasBoundaryFeature = !{
+      var hasBoundaryFeature = landCovers.some(function(landCover) {
+        return !{
         'Bog': true,
         'Boulders': true,
         'Cliffs': true,
@@ -2409,41 +2427,56 @@
         'Scree': true,
         'Shingle': true
       }[landCover];
+      });
 
-      var hasHedgerow = hasBoundaryFeature && !!{
-        'Land lying fallow': true,
-        'Leguminous and nitrogen fixing crops': true,
-        'Other arable crops': true,
-        'Perennial crops': true,
-        'Permanent grassland': true,
-        'Short rotation coppice': true,
-        'Temporary grass': true
-      }[landCover];
+      var hasHedgerow = hasBoundaryFeature && landCovers.some(function(landCover) {
+        return !!{
+          'Land lying fallow': true,
+          'Leguminous and nitrogen fixing crops': true,
+          'Other arable crops': true,
+          'Perennial crops': true,
+          'Permanent grassland': true,
+          'Short rotation coppice': true,
+          'Temporary grass': true
+        }[landCover];
+      });
 
-      var hasDitch = !!{
-        'Drain/ditch/dyke': true,
-        'Fen marsh & swamp': true,
-        'Pond': true,
-        'Rivers and Streams type 2': true,
-        'Rivers and Streams type 3': true
-      }[landCover] || /brook|river|pond|stone bridge/.test(parcelName);
+      var hasDitch = landCovers.some(function(landCover) {
+        return !!{
+          'Drain/ditch/dyke': true,
+          'Fen marsh & swamp': true,
+          'Pond': true,
+          'Rivers and Streams type 2': true,
+          'Rivers and Streams type 3': true
+        }[landCover];
+      }) || /brook|river|pond|stone bridge/.test(parcelName);
 
-      var hasPond = landCover === 'Pond' || /pond/.test(parcelName);
-      var hasGrasslandHabitat = !!GRASSLAND_LAND_COVERS[landCover];
-      var hasArableLand = !!ARABLE_LAND_COVERS[landCover];
-      var hasScrubMosaic = !!{
-        'Bog': true,
-        'Notional - scrub': true,
-        'Scrub - ungrazeable': true,
-        'Heath land and bracken - ungrazeable': true,
-        'Land lying fallow': true
-      }[landCover];
-      var hasGrazedHabitat = !!{
-        'Permanent grassland': true,
-        'Temporary grass': true,
-        'Bog': true
-      }[landCover];
-      var hasExtensiveHabitat = !!EXTENSIVE_HABITAT_LAND_COVERS[landCover];
+      var hasPond = landCovers.indexOf('Pond') !== -1 || /pond/.test(parcelName);
+      var hasGrasslandHabitat = landCovers.some(function(landCover) {
+        return !!GRASSLAND_LAND_COVERS[landCover];
+      });
+      var hasArableLand = landCovers.some(function(landCover) {
+        return !!ARABLE_LAND_COVERS[landCover];
+      });
+      var hasScrubMosaic = landCovers.some(function(landCover) {
+        return !!{
+          'Bog': true,
+          'Notional - scrub': true,
+          'Scrub - ungrazeable': true,
+          'Heath land and bracken - ungrazeable': true,
+          'Land lying fallow': true
+        }[landCover];
+      });
+      var hasGrazedHabitat = landCovers.some(function(landCover) {
+        return !!{
+          'Permanent grassland': true,
+          'Temporary grass': true,
+          'Bog': true
+        }[landCover];
+      });
+      var hasExtensiveHabitat = landCovers.some(function(landCover) {
+        return !!EXTENSIVE_HABITAT_LAND_COVERS[landCover];
+      });
 
       return {
         hasArableLand: hasArableLand,
@@ -2472,10 +2505,18 @@
     }, {});
 
     function getEligibleActionsForLandCover(landCover) {
-      var codes = LAND_COVER_ELIGIBLE_ACTIONS[landCover] || [];
-      return codes.filter(function(code) {
-        return !!actionCodesInCatalog[code];
+      var eligibleByCode = {};
+
+      getParcelLandCovers(landCover).forEach(function(cover) {
+        var codes = LAND_COVER_ELIGIBLE_ACTIONS[cover] || [];
+        codes.forEach(function(code) {
+          if (actionCodesInCatalog[code]) {
+            eligibleByCode[code] = true;
+          }
+        });
       });
+
+      return Object.keys(eligibleByCode);
     }
 
     var sharedParcelActionCodes = ACTION_CATALOG.map(function(action) {
@@ -2706,7 +2747,7 @@
         popupContent += ' - <a href="#existing-' + parcelId + '" class="govuk-link" id="view-existing-actions-link">view</a>';
       }
       
-      popupContent += '</p><p style="margin-top: 10px;">Land cover: ' + (data.landCover || '-') + '</p>';
+      popupContent += '</p><p style="margin-top: 10px;">Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>';
       
       polygon.bindPopup(popupContent, {
         maxWidth: 180,
@@ -2879,7 +2920,7 @@
       }
       var landCoverEl = document.getElementById('land-cover');
       if (landCoverEl) {
-        landCoverEl.textContent = parcel.landCover || '-';
+        landCoverEl.textContent = formatLandCoverDisplay(parcel.landCover);
       }
       var numActionsEl = document.getElementById('num-actions');
       if (numActionsEl) {
