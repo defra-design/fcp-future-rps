@@ -132,10 +132,31 @@
       white-space: nowrap;
       cursor: pointer;
     }
+    .farm-map-tooltip {
+      border: 2px solid #1d70b8;
+      background: #ffffff;
+      color: #0b0c0c;
+      padding: 3px 8px;
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .farm-map-tooltip:hover,
+    .farm-map-tooltip:focus {
+      background: #1d70b8;
+      color: #ffffff;
+      outline: 3px solid transparent;
+      box-shadow: 0 0 0 3px #ffdd00;
+    }
     .maplibregl-popup-content {
       font-family: "GDS Transport", arial, sans-serif;
-      max-width: 140px;
-      min-width: 100px;
+      max-width: 168px;
+      min-width: 120px;
       font-size: 12px;
       padding: 8px;
     }
@@ -1339,12 +1360,68 @@
     var ALL_FARMS_MAP_ZOOM = 8;
 
     var FARM_VIEW_CONFIG = {
-      'oak-tree': { panelId: 'oak-tree-farm-info', center: [51.7650, -1.2375], zoom: 15, parcelListId: 'oxfordshire-parcels' },
-      'blackberry': { panelId: 'blackberry-farm-info', center: [51.9525, -0.7520], zoom: 15, parcelListId: 'buckinghamshire-parcels' },
-      'cedar-vale': { panelId: 'cedar-vale-farm-info', center: [52.3500, -0.6300], zoom: 15, parcelListId: null },
-      'fenland-edge': { panelId: 'fenland-edge-farm-info', center: [52.4950, -0.6300], zoom: 15, parcelListId: null },
-      'ridgeway': { panelId: 'ridgeway-farm-info', center: [52.6400, -0.6300], zoom: 15, parcelListId: null }
+      'oak-tree': { label: 'Oak Tree Farm', panelId: 'oak-tree-farm-info', center: [51.7650, -1.2375], zoom: 15, parcelListId: 'oxfordshire-parcels' },
+      'blackberry': { label: 'Blackberry Farm', panelId: 'blackberry-farm-info', center: [51.9525, -0.7520], zoom: 15, parcelListId: 'buckinghamshire-parcels' },
+      'cedar-vale': { label: 'Cedar Vale Farm', panelId: 'cedar-vale-farm-info', center: [52.3500, -0.6300], zoom: 15, parcelListId: null },
+      'fenland-edge': { label: 'Fenland Edge Farm', panelId: 'fenland-edge-farm-info', center: [52.4950, -0.6300], zoom: 15, parcelListId: null },
+      'ridgeway': { label: 'Ridgeway Farm', panelId: 'ridgeway-farm-info', center: [52.6400, -0.6300], zoom: 15, parcelListId: null }
     };
+
+    var farmMapMarkers = [];
+
+    function clearFarmMapMarkers() {
+      farmMapMarkers.forEach(function(farmMarker) {
+        farmMarker.marker.remove();
+      });
+      farmMapMarkers = [];
+    }
+
+    function setFarmMapMarkerVisibility(activeFarmKey) {
+      farmMapMarkers.forEach(function(farmMarker) {
+        if (!farmMarker.element) {
+          return;
+        }
+
+        farmMarker.element.style.display = activeFarmKey && farmMarker.farmKey === activeFarmKey ? 'none' : '';
+      });
+    }
+
+    function renderFarmMapMarkers() {
+      if (!rawMap) {
+        return;
+      }
+
+      clearFarmMapMarkers();
+
+      Object.keys(FARM_VIEW_CONFIG).forEach(function(farmKey) {
+        var farmConfig = FARM_VIEW_CONFIG[farmKey];
+        var markerElement = document.createElement('a');
+        markerElement.href = '#';
+        markerElement.className = 'farm-map-tooltip farm-focus-link';
+        markerElement.setAttribute('data-farm-key', farmKey);
+        markerElement.textContent = farmConfig.label || farmKey;
+        markerElement.setAttribute('aria-label', 'Focus map on ' + (farmConfig.label || farmKey));
+
+        var marker = new maplibregl.Marker({
+          element: markerElement,
+          anchor: 'bottom'
+        })
+          .setLngLat(toMapLibreLatLng(farmConfig.center))
+          .addTo(rawMap);
+
+        farmMapMarkers.push({
+          farmKey: farmKey,
+          marker: marker,
+          element: markerElement
+        });
+      });
+
+      setFarmMapMarkerVisibility(null);
+    }
+
+    onMapReady(function() {
+      renderFarmMapMarkers();
+    });
 
     var LOCATION_TO_PARCEL_LIST_ID = {
       oxfordshire: 'oxfordshire-parcels',
@@ -2994,20 +3071,173 @@
       };
     }
 
+    var PARCEL_SOURCE_ID = 'parcels-source';
+    var PARCEL_FILL_LAYER_ID = 'parcels-fill';
+    var PARCEL_LINE_LAYER_ID = 'parcels-line';
+    var PARCEL_LABEL_LAYER_ID = 'parcels-labels';
+    var parcelFeatureCollection = { type: 'FeatureCollection', features: [] };
+    var parcelLayerEventsBound = false;
+    var hoveredParcelId = null;
+
+    function getParcelIdFromMapEvent(event) {
+      if (!event || !event.features || event.features.length === 0) {
+        return null;
+      }
+
+      var feature = event.features[0];
+      return feature.id || (feature.properties && feature.properties.parcelId) || null;
+    }
+
+    function applyParcelVisualState(parcelId, selected, hover) {
+      if (!rawMap || !rawMap.getSource(PARCEL_SOURCE_ID)) {
+        return;
+      }
+
+      rawMap.setFeatureState(
+        { source: PARCEL_SOURCE_ID, id: parcelId },
+        { selected: !!selected, hover: !!hover }
+      );
+    }
+
+    function ensureSharedParcelLayers(mapInstance) {
+      var existingSource = mapInstance.getSource(PARCEL_SOURCE_ID);
+      if (existingSource) {
+        existingSource.setData(parcelFeatureCollection);
+      } else {
+        mapInstance.addSource(PARCEL_SOURCE_ID, {
+          type: 'geojson',
+          data: parcelFeatureCollection
+        });
+      }
+
+      if (!mapInstance.getLayer(PARCEL_FILL_LAYER_ID)) {
+        mapInstance.addLayer({
+          id: PARCEL_FILL_LAYER_ID,
+          type: 'fill',
+          source: PARCEL_SOURCE_ID,
+          paint: {
+            'fill-color': ['get', 'color'],
+            'fill-opacity': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false], 1,
+              ['boolean', ['feature-state', 'hover'], false], 0.7,
+              0.5
+            ]
+          }
+        });
+      }
+
+      if (!mapInstance.getLayer(PARCEL_LINE_LAYER_ID)) {
+        mapInstance.addLayer({
+          id: PARCEL_LINE_LAYER_ID,
+          type: 'line',
+          source: PARCEL_SOURCE_ID,
+          paint: {
+            'line-color': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false], '#00703c',
+              ['boolean', ['feature-state', 'hover'], false], '#ffdd00',
+              '#0b0c0c'
+            ],
+            'line-width': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false], 5,
+              ['boolean', ['feature-state', 'hover'], false], 4,
+              2
+            ],
+            'line-opacity': 1
+          }
+        });
+      }
+
+      if (!mapInstance.getLayer(PARCEL_LABEL_LAYER_ID)) {
+        mapInstance.addLayer({
+          id: PARCEL_LABEL_LAYER_ID,
+          type: 'symbol',
+          source: PARCEL_SOURCE_ID,
+          layout: {
+            'text-field': ['get', 'name'],
+            'text-size': 11,
+            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular']
+          },
+          paint: {
+            'text-color': '#0b0c0c',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1
+          }
+        });
+      }
+
+      if (parcelLayerEventsBound) {
+        return;
+      }
+
+      function clearHover() {
+        if (!hoveredParcelId) {
+          return;
+        }
+
+        var hoveredPolygon = parcelPolygons[hoveredParcelId];
+        if (hoveredPolygon && hoveredPolygon._eventHandlers.mouseout) {
+          hoveredPolygon._eventHandlers.mouseout.call(hoveredPolygon, { target: hoveredPolygon });
+        }
+
+        hoveredParcelId = null;
+      }
+
+      function handleHover(event) {
+        var parcelId = getParcelIdFromMapEvent(event);
+        if (!parcelId || parcelId === hoveredParcelId) {
+          return;
+        }
+
+        clearHover();
+
+        hoveredParcelId = parcelId;
+        mapInstance.getCanvas().style.cursor = 'pointer';
+
+        var polygon = parcelPolygons[parcelId];
+        if (polygon && polygon._eventHandlers.mouseover) {
+          polygon._eventHandlers.mouseover.call(polygon, { target: polygon });
+        }
+      }
+
+      function handleClick(event) {
+        var parcelId = getParcelIdFromMapEvent(event);
+        if (!parcelId) {
+          return;
+        }
+
+        var polygon = parcelPolygons[parcelId];
+        if (polygon && polygon._eventHandlers.click) {
+          polygon._eventHandlers.click.call(polygon, { target: polygon });
+        }
+      }
+
+      mapInstance.on('mousemove', PARCEL_FILL_LAYER_ID, handleHover);
+      mapInstance.on('mousemove', PARCEL_LABEL_LAYER_ID, handleHover);
+      mapInstance.on('click', PARCEL_FILL_LAYER_ID, handleClick);
+      mapInstance.on('click', PARCEL_LABEL_LAYER_ID, handleClick);
+
+      mapInstance.on('mouseleave', PARCEL_FILL_LAYER_ID, function() {
+        mapInstance.getCanvas().style.cursor = '';
+        clearHover();
+      });
+
+      mapInstance.on('mouseleave', PARCEL_LABEL_LAYER_ID, function() {
+        mapInstance.getCanvas().style.cursor = '';
+        clearHover();
+      });
+
+      parcelLayerEventsBound = true;
+    }
+
     function createParcelOverlay(parcelId, data) {
-      var sourceId = 'parcel-source-' + parcelId;
-      var fillLayerId = 'parcel-fill-' + parcelId;
-      var lineLayerId = 'parcel-line-' + parcelId;
       var bounds = createBoundsFromLatLngs(data.coords);
       var popup = null;
+      var popupCloseTimer = null;
       var eventHandlers = {};
-      var style = {
-        color: '#0b0c0c',
-        fillColor: data.color,
-        fillOpacity: 0.5,
-        weight: 2,
-        opacity: 1
-      };
+      var visualState = { selected: false, hover: false };
 
       var popupContent = '<h3>' + data.name + '</h3>' +
         '<p>Available area: ' + data.availableArea + ' ha</p>' +
@@ -3019,107 +3249,45 @@
 
       popupContent += '</p><p style="margin-top: 10px;">Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>';
 
+      parcelFeatureCollection.features.push({
+        id: parcelId,
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [toClosedMapLibreRing(data.coords)]
+        },
+        properties: {
+          parcelId: parcelId,
+          name: data.name,
+          color: data.color
+        }
+      });
+
       function applyStyle(nextStyle) {
-        style = Object.assign({}, style, nextStyle || {});
-        if (!rawMap) {
-          return;
-        }
-        if (rawMap.getLayer(fillLayerId)) {
-          rawMap.setPaintProperty(fillLayerId, 'fill-color', style.fillColor);
-          rawMap.setPaintProperty(fillLayerId, 'fill-opacity', style.fillOpacity);
-        }
-        if (rawMap.getLayer(lineLayerId)) {
-          rawMap.setPaintProperty(lineLayerId, 'line-color', style.color);
-          rawMap.setPaintProperty(lineLayerId, 'line-opacity', style.opacity);
-          rawMap.setPaintProperty(lineLayerId, 'line-width', style.weight);
+        var selected = !!(nextStyle && nextStyle.color === '#00703c' && nextStyle.weight >= 5);
+        var hover = !!(nextStyle && nextStyle.color === '#ffdd00' && nextStyle.weight >= 4 && !selected);
+        visualState.selected = selected;
+        visualState.hover = hover;
+        applyParcelVisualState(parcelId, selected, hover);
+      }
+
+      function cancelPopupClose() {
+        if (popupCloseTimer) {
+          clearTimeout(popupCloseTimer);
+          popupCloseTimer = null;
         }
       }
 
-      onMapStyleReady(function(mapInstance) {
-        var featureData = {
-          type: 'Feature',
-          geometry: {
-            type: 'Polygon',
-            coordinates: [toClosedMapLibreRing(data.coords)]
-          },
-          properties: {
-            parcelId: parcelId,
-            name: data.name,
-            color: data.color
+      function schedulePopupClose() {
+        cancelPopupClose();
+        popupCloseTimer = setTimeout(function() {
+          if (!popup) {
+            return;
           }
-        };
-
-        var existingSource = mapInstance.getSource(sourceId);
-        if (existingSource) {
-          existingSource.setData(featureData);
-        } else {
-          mapInstance.addSource(sourceId, {
-            type: 'geojson',
-            data: featureData
-          });
-        }
-
-        if (!mapInstance.getLayer(fillLayerId)) {
-          mapInstance.addLayer({
-            id: fillLayerId,
-            type: 'fill',
-            source: sourceId,
-            paint: {
-              'fill-color': style.fillColor,
-              'fill-opacity': style.fillOpacity
-            }
-          });
-        }
-
-        if (!mapInstance.getLayer(lineLayerId)) {
-          mapInstance.addLayer({
-            id: lineLayerId,
-            type: 'line',
-            source: sourceId,
-            paint: {
-              'line-color': style.color,
-              'line-opacity': style.opacity,
-              'line-width': style.weight
-            }
-          });
-        }
-
-        mapInstance.on('mouseenter', fillLayerId, function() {
-          mapInstance.getCanvas().style.cursor = 'pointer';
-          if (eventHandlers.mouseover) {
-            eventHandlers.mouseover.call(parcelPolygons[parcelId], { target: parcelPolygons[parcelId] });
-          }
-        });
-
-        mapInstance.on('mouseleave', fillLayerId, function() {
-          mapInstance.getCanvas().style.cursor = '';
-          if (eventHandlers.mouseout) {
-            eventHandlers.mouseout.call(parcelPolygons[parcelId], { target: parcelPolygons[parcelId] });
-          }
-        });
-
-        mapInstance.on('click', fillLayerId, function() {
-          if (eventHandlers.click) {
-            eventHandlers.click.call(parcelPolygons[parcelId], { target: parcelPolygons[parcelId] });
-          }
-        });
-
-        var labelElement = document.createElement('div');
-        labelElement.className = 'parcel-label';
-        labelElement.textContent = data.name;
-        labelElement.addEventListener('click', function() {
-          selectParcel(parcelId);
-          if (currentSelectedParcel === null) {
-            map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
-          } else {
-            map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
-          }
-        });
-
-        new maplibregl.Marker({ element: labelElement, anchor: 'center' })
-          .setLngLat(toMapLibreLatLng(bounds.getCenter()))
-          .addTo(mapInstance);
-      });
+          popup.remove();
+          popup = null;
+        }, 220);
+      }
 
       return {
         feature: {
@@ -3130,6 +3298,10 @@
             color: data.color
           }
         },
+        _eventHandlers: eventHandlers,
+        _syncVisualState: function() {
+          applyParcelVisualState(parcelId, visualState.selected, visualState.hover);
+        },
         setStyle: function(nextStyle) {
           applyStyle(nextStyle);
         },
@@ -3138,16 +3310,34 @@
           return this;
         },
         openPopup: function() {
+          cancelPopupClose();
           if (!rawMap) {
             return;
           }
           if (popup) {
             popup.remove();
           }
-          popup = new maplibregl.Popup({ maxWidth: '180px' })
+          popup = new maplibregl.Popup({ maxWidth: '216px' })
             .setLngLat(toMapLibreLatLng(bounds.getCenter()))
             .setHTML(popupContent)
             .addTo(rawMap);
+
+          var popupElement = popup.getElement();
+          if (popupElement) {
+            popupElement.addEventListener('mouseenter', cancelPopupClose);
+            popupElement.addEventListener('mouseleave', schedulePopupClose);
+          }
+        },
+        closePopupWithDelay: function() {
+          schedulePopupClose();
+        },
+        closePopup: function() {
+          cancelPopupClose();
+          if (!popup) {
+            return;
+          }
+          popup.remove();
+          popup = null;
         },
         on: function(eventName, handler) {
           eventHandlers[eventName] = handler;
@@ -3159,7 +3349,7 @@
       };
     }
 
-    // Create overlays for each parcel after map initialization
+    // Create virtual overlays for each parcel, then draw them via one shared map source/layers.
     Object.keys(parcelData).forEach(function(parcelId) {
       var data = parcelData[parcelId];
       var polygon = createParcelOverlay(parcelId, data);
@@ -3174,12 +3364,14 @@
       );
 
       polygon.on('mouseover', function() {
+        this.openPopup();
         if (currentSelectedParcel !== parcelId) {
           this.setStyle(highlightStyle(this.feature));
         }
       });
 
       polygon.on('mouseout', function() {
+        this.closePopupWithDelay();
         if (currentSelectedParcel !== parcelId) {
           this.setStyle(defaultStyle(this.feature));
         }
@@ -3191,6 +3383,17 @@
           map.setView(this.getBounds().getCenter(), 14);
         } else {
           map.panTo(this.getBounds().getCenter());
+        }
+      });
+    });
+
+    onMapStyleReady(function(mapInstance) {
+      ensureSharedParcelLayers(mapInstance);
+
+      Object.keys(parcelPolygons).forEach(function(parcelId) {
+        var polygon = parcelPolygons[parcelId];
+        if (polygon && polygon._syncVisualState) {
+          polygon._syncVisualState();
         }
       });
     });
@@ -4157,6 +4360,7 @@
           parcelListSection.style.display = farmConfig.parcelListId ? 'block' : 'none';
         }
 
+        setFarmMapMarkerVisibility(farmKey);
         map.setView(farmConfig.center, farmConfig.zoom || 15);
       }
       
@@ -4171,6 +4375,8 @@
         // Click handler for "Back to OS map reference farm selection" link
         $('#back-to-farm-selection-link').on('click', function(e) {
           e.preventDefault();
+
+          setFarmMapMarkerVisibility(null);
           
           // Reset map to initial view showing all farm locations
           map.setView(ALL_FARMS_MAP_CENTER, ALL_FARMS_MAP_ZOOM);
