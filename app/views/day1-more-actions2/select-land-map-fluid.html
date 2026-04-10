@@ -4426,6 +4426,7 @@
 
         applyActionFilters();
         updateCompatibilityState();
+        updateAvailableQuantities();
       };
       
       // Show confirmation message and enable Continue button when Save actions button is clicked
@@ -4532,6 +4533,7 @@
 
       $(document).on('change', 'input[name="actions"]', function() {
         updateCompatibilityState();
+        updateAvailableQuantities();
       });
 
       function focusFarmByKey(farmKey) {
