@@ -765,6 +765,15 @@ function getAllActionsPageViewData(req, extraData) {
   }, extraData || {})
 }
 
+router.use(function (req, res, next) {
+  var compatibilityYear = getCompatibilityYearFromSession((req.session && req.session.data) || {})
+  var matrixClientConfig = buildMatrixClientConfig(ALL_KNOWN_ACTION_CODES, compatibilityYear)
+
+  res.locals.compatibilityYear = compatibilityYear
+  res.locals.compatibilityClientConfig = JSON.stringify(matrixClientConfig)
+  next()
+})
+
 function hasFieldConflict(conflicts, actionCode) {
   if (!actionCode) {
     return false
