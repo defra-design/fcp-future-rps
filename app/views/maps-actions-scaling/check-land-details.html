@@ -1,0 +1,69 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Check your land details
+{% endblock %}
+
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Confirm your land details are up to date
+      </h1>
+      
+      <p>You confirm you have checked your digital maps are up to date and show:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>all the land parcels you want to include in your application</li>
+        <li>the correct total area (in hectares) for each land parcel</li>
+        <li>the correct land covers for each land parcel, for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover</li>
+      </ul> 
+
+      <!-- <p>You confirm you have declared the correct land use codes for each land parcel in the Rural Payments service.</p> -->
+
+
+      <p>If your land details are not up to date:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>you may not be able to apply for the actions you select</li>
+          <li>the total area of land available to enter into an action may not be accurate</li>
+        </ul>
+  
+        <form class="form" action="select-land" method="post">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button>
+        </form>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                If you need to make an update
+              </span>
+          </summary>
+          <div class="govuk-details__text">
+            Contact the Rural Payments Agency (RPA) to update your details.<br><br>
+            Telephone: 020 8026 2395<br>
+            Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+            <p><a href="">Find out about call charges (opens in new tab)</a><br><br>
+              Email: <a href="">farmpayments@rpa.gov.uk</a></p>
+            <p>The RPA responds to email queries within 10 working days.</p>
+          </div>
+        </details>
+
+
+    </div>
+  </div>
+
+{% endblock %}

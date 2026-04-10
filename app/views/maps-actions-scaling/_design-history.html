@@ -1,0 +1,88 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Design history" %}
+
+{%- block beforeContent -%}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="/index">Future RPS prototypes</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="index">Mapping and scaling actions experiments</a>
+    </li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+     Mapping and scaling actions experiments
+      <span class="govuk-caption-xl">Design history</span>
+    </h1>
+  </div>
+
+ 
+
+  <div class="govuk-grid-column-two-thirds">
+     <p>Will be added soon.</p>
+    {# <h2 class="govuk-heading-m">Why we added CLIG3 and CSAM3</h2>
+    <p class="govuk-body">In March 2026 the team decided to add 2 more actions to the Farm Payments Technical Test (FPTT). These were:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>CLIG3 (manage grassland with very low nutrient inputs)</li>
+      <li>CSAM3 (herbal leys)</li>
+    </ul>
+    <p class="govuk-body">These actions, both relating to soil health on grassland, were chosen by product to provide a suitable technical challenge for the FPTT because they are a little different from the existing UPL upland actions in the FPTT. They are also believed likely to appeal to potential private beta users, as herbal leys has previously been an extremely popular action for farmers.</p>
+
+    <h2 class="govuk-heading-m">Understanding the design challenge</h2>
+    <p class="govuk-body">Adding these 2 actions involved 3 main design challenges:</p>
+    <ol class="govuk-list govuk-list--number">
+      <li>Adding actions which can be incompatible (previous actions were all compatible) - this became the main focus of design work as we do not yet have a design solution to this to meet user needs.</li>
+      <li>Adding actions which can be done on only part of available area (previous actions were only for a whole area). We have a basic design approach to this already (if partial use of parcel is allowed, automatically allow user to select part or whole).</li>
+      <li>Adding an action (CSAM3) which cannot be done on land with SSSI or historic features (previous actions could be done with consent). We have a basic design approach to this already (if action cannot be done on land with a SSSI or historic feature, do not show the action). But we need to consider whether content in the service can explain to users more clearly what they are not seeing and why.</li>
+    </ol>
+
+    <h2 class="govuk-heading-m">Pain points and user needs</h2>
+    <p class="govuk-body">From previous research we have noted the following:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>What is possible sometimes doesn't match my mental model and I don't trust the system to get it right. The system often gives generic "you can't do this" with no explanation. As a farmer, I need greyed‑out actions to explain why they're unavailable (incompatible, land use, area exhausted), so that I can adjust my plan intelligently.</li>
+      <li>It's hard to understand eligibility and available area I can apply for. As a farmer, I need only relevant parcels and actions to appear, so that I'm not overwhelmed by long lists and unnecessary information.</li>
+      <li>As a farmer, I need to see which actions can be layered or stacked, so that I can plan combinations without accidentally choosing conflicting options. Farmers want a draft/sandbox to explore safely - want to try, compare, copy across parcels, before they submit.</li>
+    </ul>
+
+    <h2 class="govuk-heading-m">The problem of adding incompatible actions</h2>
+    <p class="govuk-body">A scalable design that can show incompatible actions was decided by UCD and product to be a bigger problem and a separate, longer term goal (see <a href="#next-steps">'Next steps'</a> below).</p>
+    <p class="govuk-body">Instead we focused on designing a way to add these 2 new actions which allows the FPTT private beta to go ahead technically. This means a 'baseline' design without Javascript, which technically allows users to combine actions. The user then gets error messages on the next page to explain why they cannot proceed with incompatible combinations.</p>
+    <p class="govuk-body">The current design does not meet user needs even at this 'baseline' level because it involves a lot of cognitive processing for the user to try to work out compatibility from a long, detailed list of information, and a user is likely to become frustrated by repeatedly choosing a combination only to find multiple error messages prevent it. It is clear from past UR that users want to explore and experiment with combinations to check compatibility, and that they need less cognitive load.</p>
+    <p class="govuk-body">The design we have created for adding CLIG3 and CSAM3 is certainly not scalable beyond these actions, because once you add in conditional consent text and error messages for 70 actions on a page, it could get even more confusing for users.</p>
+    <p class="govuk-body">The combination of these upland and grassland actions for the same parcel is also not realistic for users as it would never be possible on the same parcel except in the extremely unlikely edge case of the parcel being exactly 50.000% grassland and 50.000% moorland.</p>
+    <p class="govuk-body">The current design's 'flat' groupings of actions under headings is also not scalable because actions vary and cannot be meaningfully grouped only under one group. We could explore a more ambitious, bespoke approach to mixing and matching actions, perhaps using filters, search, or q&a. For now, our design uses the holding text 'Soil health on grassland' as an acceptable heading for the 2 new actions, but these 2 actions do not necessarily belong together as part of a clear group.</p>
+
+    <h2 class="govuk-heading-m" id="next-steps">Next steps</h2>
+    <p class="govuk-body">Consider how to scale to 70+ actions, of different types, building on previous design work on 'many actions, many parcels' and mapping exploration.</p>
+    <p class="govuk-body">We need to allow users to explore combinations of large numbers of incompatible actions to make the design scalable. We could look at greying out incompatible options and using maps which have tested well previously.</p>
+    <p class="govuk-body">Looking at just the compatibility issue, this is essentially a mathematical problem of combinations where a small number of things can be combined in a vast number of ways (26 letters in the alphabet, billions of words!) There are around 36,000 possible combinations of actions for SFI alone. Once other schemes are added it would be more like 85,000.</p>
+    <p class="govuk-body">We want to redesign the information architecture in terms of the current flat grouping of actions, to make it more bespoke and flexible, as well as more meaningful and simpler. We could allow users to filter and search to find suitable combinations based on what land they have, what restrictions apply to it, and what they want to do on it.</p>
+    <p class="govuk-body">Historically, SitiAgri has forced a design using different codes for every variation of an action, but in future, we do not need to use so many different codes. We could use one code for a base action and then allow a user to customise it. UPL1-3, for example, could eventually be one single action with 3 ways of doing it (similar to ordering a steak rare, medium or well done, a t-shirt in small, medium or large).</p>
+    <p class="govuk-body">We will have other challenging kinds of actions to add too in future, including linear actions, and actions for other schemes outside SFI.</p>
+    <p class="govuk-body">It would be good to show helpful combinations of base and supplementary actions.</p>
+    <p class="govuk-body">It's vital to note that the complexity of the underlying rules cannot be made simple by design. Policy would need to create a simpler rule system for us to be able to deliver something 'one size fits all'.</p>
+    <p class="govuk-body">How might we statements to explore in design include:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>How might we give enough explanation (of why there is a conflict, or why some options are not showing as they are not available due to consents), without adding to cognitive overload?</li>
+      <li>How might we show conflicts clearly and at the right time?</li>
+      <li>How might we explore a bespoke and flexible approach to mixing and matching actions based on what we know about a user's specific land?</li>
+    </ul> #}
+  </div>
+
+  <!-- right third of page to link to relevant mural boards and UR findings -->
+  <div class="govuk-grid-column-one-third">
+
+  </div>
+</div>
+
+{% endblock %}
