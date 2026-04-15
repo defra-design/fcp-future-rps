@@ -3427,6 +3427,19 @@
     }
 
     // Create virtual overlays for each parcel, then draw them via one shared map source/layers.
+    function closeAllParcelPopups(exceptParcelId) {
+      Object.keys(parcelPolygons).forEach(function(parcelId) {
+        if (exceptParcelId && parcelId === exceptParcelId) {
+          return;
+        }
+
+        var polygon = parcelPolygons[parcelId];
+        if (polygon && typeof polygon.closePopup === 'function') {
+          polygon.closePopup();
+        }
+      });
+    }
+
     Object.keys(parcelData).forEach(function(parcelId) {
       var data = parcelData[parcelId];
       var polygon = createParcelOverlay(parcelId, data);
@@ -3441,20 +3454,20 @@
       );
 
       polygon.on('mouseover', function() {
-        this.openPopup();
         if (currentSelectedParcel !== parcelId) {
           this.setStyle(highlightStyle(this.feature));
         }
       });
 
       polygon.on('mouseout', function() {
-        this.closePopupWithDelay();
         if (currentSelectedParcel !== parcelId) {
           this.setStyle(defaultStyle(this.feature));
         }
       });
 
       polygon.on('click', function() {
+        closeAllParcelPopups(parcelId);
+        this.openPopup();
         selectParcel(parcelId);
         if (currentSelectedParcel === null) {
           map.setView(this.getBounds().getCenter(), 14);
@@ -3705,6 +3718,7 @@
           map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
         }
         // Open the popup for the selected parcel
+        closeAllParcelPopups(parcelId);
         parcelPolygons[parcelId].openPopup();
       }
       // Scroll to map
@@ -4426,6 +4440,7 @@
 
         applyActionFilters();
         updateCompatibilityState();
+        updateAvailableQuantities();
       };
       
       // Show confirmation message and enable Continue button when Save actions button is clicked
@@ -4532,6 +4547,7 @@
 
       $(document).on('change', 'input[name="actions"]', function() {
         updateCompatibilityState();
+        updateAvailableQuantities();
       });
 
       function focusFarmByKey(farmKey) {
