@@ -3930,8 +3930,17 @@
         var checkbox = $(this);
         var $item = checkbox.closest('.govuk-checkboxes__item');
         var conditional = $item.next('.govuk-checkboxes__conditional');
+        var actionCode = (checkbox.val() || '').toString().toLowerCase();
+        var $quantityInput = $('#quantity-' + actionCode);
 
         checkbox.prop('checked', false);
+        if ($quantityInput.length) {
+          var $formGroup = $quantityInput.closest('.govuk-form-group');
+          $quantityInput.val('');
+          $quantityInput.removeClass('govuk-input--error');
+          $formGroup.removeClass('govuk-form-group--error');
+          $formGroup.find('.govuk-error-message').remove();
+        }
         if (conditional.length) {
           conditional.addClass('govuk-checkboxes__conditional--hidden');
         }
@@ -4292,13 +4301,18 @@
         
         // Calculate total used for hectares
         var totalUsedHa = 0;
-        $('input[id^="quantity-"]').each(function() {
-          var inputId = $(this).attr('id');
-          var suffix = $(this).siblings('.govuk-input__suffix').text();
-          var value = parseFloat($(this).val()) || 0;
-          
-          // Only count hectare inputs
-          if (suffix === 'ha' && value > 0) {
+        $('input[name="actions"]:checked').each(function() {
+          var actionCode = ($(this).val() || '').toString().toLowerCase();
+          var $quantityInput = $('#quantity-' + actionCode);
+          if (!$quantityInput.length) {
+            return;
+          }
+
+          var suffix = $quantityInput.siblings('.govuk-input__suffix').text();
+          var value = parseFloat($quantityInput.val());
+
+          // Only count hectare inputs on selected actions
+          if (suffix === 'ha' && Number.isFinite(value) && value > 0) {
             totalUsedHa += value;
           }
         });
@@ -4546,6 +4560,18 @@
       }
 
       $(document).on('change', 'input[name="actions"]', function() {
+        if (!$(this).is(':checked')) {
+          var actionCode = ($(this).val() || '').toString().toLowerCase();
+          var $quantityInput = $('#quantity-' + actionCode);
+          if ($quantityInput.length) {
+            var $formGroup = $quantityInput.closest('.govuk-form-group');
+            $quantityInput.val('');
+            $quantityInput.removeClass('govuk-input--error');
+            $formGroup.removeClass('govuk-form-group--error');
+            $formGroup.find('.govuk-error-message').remove();
+          }
+        }
+
         updateCompatibilityState();
         updateAvailableQuantities();
       });
