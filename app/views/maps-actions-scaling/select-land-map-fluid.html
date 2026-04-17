@@ -3546,6 +3546,12 @@
           scrollTop: $actionsSection.offset().top - 20
         }, 500);
       }
+
+      // Ensure hectare hints are recalculated immediately after state restore.
+      var $anyQuantityInput = $('input[id^="quantity-"]').first();
+      if ($anyQuantityInput.length > 0) {
+        $anyQuantityInput.trigger('input');
+      }
     }
 
     // Function to select a parcel
@@ -3734,6 +3740,18 @@
     function getSelectedSortOption() {
       var sortSelect = document.getElementById('actions-sort-select');
       return sortSelect ? sortSelect.value : 'default';
+    }
+
+    function formatCurrencyGBP(amount) {
+      var numericAmount = Number(amount);
+      if (!Number.isFinite(numericAmount)) {
+        return '£0.00';
+      }
+
+      return '£' + numericAmount.toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     }
 
     function compareByActionName(codeA, codeB) {
@@ -4140,7 +4158,7 @@
                 var quantity = parseFloat(action.quantity);
                 payment = quantity * paymentRates[action.code];
                 totalPayment += payment;
-                valueText = action.quantity + ' ha (£' + payment.toFixed(2) + ')';
+                valueText = action.quantity + ' ha (' + formatCurrencyGBP(payment) + ')';
               } else if (action.quantity) {
                 valueText = action.quantity + ' ha';
               } else {
@@ -4166,7 +4184,7 @@
             if (totalPayment > 0) {
               var $paymentRow = $('<div class="govuk-summary-list__row"></div>');
               var $paymentKey = $('<dt class="govuk-summary-list__key"></dt>').text('Yearly payment for this parcel');
-              var $paymentValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>£' + totalPayment.toFixed(2) + '</strong>');
+              var $paymentValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>' + formatCurrencyGBP(totalPayment) + '</strong>');
               $paymentRow.append($paymentKey).append($paymentValue);
               $summaryList.append($paymentRow);
               
@@ -4184,7 +4202,7 @@
           var $grandTotalList = $('<dl class="govuk-summary-list" style="margin-top: 30px;"></dl>');
           var $grandTotalRow = $('<div class="govuk-summary-list__row"></div>');
           var $grandTotalKey = $('<dt class="govuk-summary-list__key"></dt>').text('Total yearly payment');
-          var $grandTotalValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>£' + grandTotalPayment.toFixed(2) + '</strong>');
+          var $grandTotalValue = $('<dd class="govuk-summary-list__value"></dd>').html('<strong>' + formatCurrencyGBP(grandTotalPayment) + '</strong>');
           $grandTotalRow.append($grandTotalKey).append($grandTotalValue);
           $grandTotalList.append($grandTotalRow);
           $summaryContainer.append($grandTotalList);
