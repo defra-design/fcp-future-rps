@@ -461,25 +461,10 @@
           <div id="theme-filters">
             <details class="govuk-details govuk-!-margin-bottom-4" data-module="govuk-details" open>
               <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">Filter by theme</span>
+                <span class="govuk-details__summary-text">Areas of interest</span>
               </summary>
               <div class="govuk-details__text theme-filter-panel">
-                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-agroforestry" type="checkbox" value="Agroforestry" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-agroforestry">Agroforestry</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-boundary" type="checkbox" value="Boundary Features" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-boundary">Boundary Features</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-buffer" type="checkbox" value="Buffer Strips" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-buffer">Buffer Strips</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-farmland-arable" type="checkbox" value="Farmland Wildlife - Arable/Horticultural" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-farmland-arable">Farmland Wildlife - Arable/Horticultural</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-farmland-grassland" type="checkbox" value="Farmland Wildlife - Grassland" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-farmland-grassland">Farmland Wildlife - Grassland</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-heritage" type="checkbox" value="Heritage" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-heritage">Heritage</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-ipm" type="checkbox" value="Integrated Pest Management" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-ipm">Integrated Pest Management</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-moorland" type="checkbox" value="Moorland" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-moorland">Moorland</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-nutrient" type="checkbox" value="Nutrient Management" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-nutrient">Nutrient Management</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-organic" type="checkbox" value="Organic" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-organic">Organic</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-precision" type="checkbox" value="Precision Farming" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-precision">Precision Farming</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-soil" type="checkbox" value="Soil Health" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-soil">Soil Health</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-species" type="checkbox" value="Species Recovery/Management" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-species">Species Recovery/Management</label></div>
-                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="theme-filter-water" type="checkbox" value="Waterbodies" data-theme-filter><label class="govuk-label govuk-checkboxes__label" for="theme-filter-water">Waterbodies</label></div>
-                </div>
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes" id="areas-of-interest-filters"></div>
               </div>
             </details>
           </div>
@@ -2649,10 +2634,163 @@
     var parcelSelections = {};
     var currentAvailableActions = [];
 
-    var actionThemeByCode = ACTION_CATALOG.reduce(function(lookup, action) {
-      lookup[action.code] = action.theme;
+    var GOV_AREAS_BY_CODE = {
+      'AGF1': ['Agroforestry', 'Trees'],
+      'AGF2': ['Agroforestry', 'Trees'],
+      'AHW10': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'AHW11': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'AHW2': ['Pollinators', 'Wildlife'],
+      'AHW3': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'AHW4': ['Pollinators', 'Wildlife'],
+      'AHW5': ['Pollinators', 'Wildlife'],
+      'AHW6': ['Pollinators', 'Wildlife'],
+      'AHW7': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'AHW8': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'AHW9': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'BFS1': ['Flood prevention', 'Integrated pest management', 'Pollinators', 'Water availability and storage', 'Water quality', 'Wildlife'],
+      'BFS6': ['Integrated pest management', 'Pollinators', 'Water quality', 'Wildlife'],
+      'BND1': ['Field boundaries'],
+      'BND2': ['Field boundaries', 'Flood prevention'],
+      'CAHL1': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'CAHL2': ['Horticulture', 'Pollinators', 'Wildlife'],
+      'CAHL3': ['Horticulture', 'Integrated pest management', 'Pollinators', 'Wildlife'],
+      'CAHL4': ['Flood prevention', 'Horticulture', 'Integrated pest management', 'Pollinators', 'Water quality', 'Wildlife'],
+      'CHRW2': ['Field boundaries'],
+      'CIGL1': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'CIGL2': ['Pollinators', 'Wildlife'],
+      'CIGL3': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'CIPM2': ['Horticulture', 'Integrated pest management', 'Pollinators', 'Wildlife'],
+      'CIPM3': ['Horticulture', 'Integrated pest management', 'Pollinators', 'Wildlife'],
+      'CIPM4': ['Horticulture', 'Integrated pest management', 'Pollinators', 'Water quality', 'Wildlife'],
+      'CLIG3': ['Soil health', 'Water quality'],
+      'CNUM2': ['Integrated pest management', 'Nutrient management', 'Water quality'],
+      'CNUM3': ['Nutrient management'],
+      'CSAM2': ['Horticulture', 'Soil health', 'Water quality'],
+      'CSAM3': ['Nutrient management', 'Soil health', 'Water quality'],
+      'GRH1': ['Pollinators', 'Wildlife'],
+      'GRH10': ['Pollinators', 'Wildlife'],
+      'GRH7': ['Pollinators', 'Wildlife'],
+      'GRH8': ['Pollinators', 'Wildlife'],
+      'HEF6': ['Historic and archaeological features'],
+      'OFC1': ['Organic'],
+      'OFC2': ['Organic'],
+      'OFC3': ['Organic'],
+      'OFC4': ['Horticulture', 'Organic'],
+      'OFC5': ['Organic'],
+      'OFM1': ['Organic'],
+      'OFM2': ['Organic'],
+      'OFM3': ['Organic'],
+      'OFM4': ['Organic'],
+      'OFM5': ['Horticulture', 'Organic'],
+      'OFM6': ['Horticulture', 'Organic'],
+      'PRF1': ['Horticulture', 'Nutrient management', 'Precision farming, equipment and machinery', 'Water quality'],
+      'PRF2': ['Horticulture', 'Integrated pest management', 'Precision farming, equipment and machinery', 'Water quality'],
+      'PRF4': ['Integrated pest management', 'Precision farming, equipment and machinery'],
+      'SCR1': ['Flood prevention', 'Integrated pest management', 'Pollinators', 'Wildlife'],
+      'SCR2': ['Integrated pest management', 'Pollinators', 'Wildlife'],
+      'SOH1': ['Soil health', 'Water quality'],
+      'SOH3': ['Soil health', 'Water quality'],
+      'SPM3': ['Livestock management', 'Pollinators', 'Wildlife'],
+      'SPM5': ['Livestock management', 'Pollinators', 'Wildlife'],
+      'UPL1': ['Livestock management', 'Water quality'],
+      'UPL10': ['Flood prevention', 'Livestock management'],
+      'UPL2': ['Livestock management', 'Water quality'],
+      'UPL3': ['Flood prevention', 'Livestock management', 'Water quality'],
+      'UPL5': ['Flood prevention', 'Livestock management'],
+      'UPL6': ['Flood prevention', 'Livestock management'],
+      'UPL8': ['Flood prevention', 'Livestock management'],
+      'WBD1': ['Horticulture', 'Water availability and storage', 'Water quality'],
+      'WBD2': ['Water quality'],
+      'WBD3': ['Integrated pest management', 'Water quality'],
+      'WBD4': ['Water quality'],
+      'WBD6': ['Livestock management', 'Water quality'],
+      'WBD7': ['Water availability and storage', 'Water quality']
+    };
+
+    var LEGACY_THEME_TO_AREA = {
+      'Agroforestry': 'Agroforestry',
+      'Boundary Features': 'Field boundaries',
+      'Buffer Strips': 'Buffer strips',
+      'Farmland Wildlife - Arable/Horticultural': 'Wildlife',
+      'Farmland Wildlife - Grassland': 'Wildlife',
+      'Heritage': 'Historic and archaeological features',
+      'Integrated Pest Management': 'Integrated pest management',
+      'Moorland': 'Vegetation control',
+      'Nutrient Management': 'Nutrient management',
+      'Organic': 'Organic',
+      'Precision Farming': 'Precision farming, equipment and machinery',
+      'Soil Health': 'Soil health',
+      'Species Recovery/Management': 'Species recovery and management',
+      'Waterbodies': 'Water quality'
+    };
+
+    var GOV_AREAS_FILTER_ORDER = [
+      'Access',
+      'Agroforestry',
+      'Biodiversity',
+      'Buffer strips',
+      'Field boundaries',
+      'Flood prevention',
+      'Historic and archaeological features',
+      'Horticulture',
+      'Integrated pest management',
+      'Livestock management',
+      'Nutrient management',
+      'Orchards',
+      'Organic',
+      'Peat',
+      'Pollinators',
+      'Precision farming, equipment and machinery',
+      'Soil health',
+      'Species recovery and management',
+      'Trees',
+      'Vegetation control',
+      'Water availability and storage',
+      'Water quality',
+      'Wildlife'
+    ];
+
+    var actionAreasByCode = ACTION_CATALOG.reduce(function(lookup, action) {
+      if (GOV_AREAS_BY_CODE[action.code]) {
+        lookup[action.code] = GOV_AREAS_BY_CODE[action.code].slice();
+      } else {
+        var fallbackArea = LEGACY_THEME_TO_AREA[action.theme];
+        lookup[action.code] = fallbackArea ? [fallbackArea] : [];
+      }
       return lookup;
     }, {});
+
+    function toAreaFilterId(label) {
+      return 'areas-filter-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    function renderAreasOfInterestFilters() {
+      var container = document.getElementById('areas-of-interest-filters');
+      if (!container) {
+        return;
+      }
+
+      var availableLookup = {};
+      Object.keys(actionAreasByCode).forEach(function(code) {
+        (actionAreasByCode[code] || []).forEach(function(area) {
+          availableLookup[area] = true;
+        });
+      });
+
+      var availableAreas = GOV_AREAS_FILTER_ORDER.filter(function(area) {
+        return Boolean(availableLookup[area]);
+      });
+
+      var html = availableAreas.map(function(area) {
+        var inputId = toAreaFilterId(area);
+        return '<div class="govuk-checkboxes__item">' +
+          '<input class="govuk-checkboxes__input" id="' + inputId + '" type="checkbox" value="' + area + '" data-theme-filter>' +
+          '<label class="govuk-label govuk-checkboxes__label" for="' + inputId + '">' + area + '</label>' +
+        '</div>';
+      }).join('');
+
+      container.innerHTML = html;
+    }
 
     var LAND_COVER_ELIGIBLE_ACTIONS = {
       'Bog': ['OFM3', 'SPM5', 'UPL1', 'UPL10', 'UPL2', 'UPL3', 'UPL8'],
@@ -3897,10 +4035,12 @@
         var $item = $(checkbox).closest('.govuk-checkboxes__item');
         var actionCode = checkbox.value;
         var conditional = $item.next('.govuk-checkboxes__conditional');
-        var actionTheme = actionThemeByCode[actionCode] || '';
+        var actionAreas = actionAreasByCode[actionCode] || [];
 
         var isAvailableForParcel = currentAvailableActions.indexOf(actionCode) > -1;
-        var matchesTheme = showAllThemes || selectedThemes.indexOf(actionTheme) !== -1;
+        var matchesTheme = showAllThemes || selectedThemes.some(function(selectedTheme) {
+          return actionAreas.indexOf(selectedTheme) !== -1;
+        });
         var matchesSearch = filter === '' || filterRegex.test($item.text());
         var shouldShow = isAvailableForParcel && matchesTheme && matchesSearch;
 
@@ -3970,6 +4110,8 @@
 
     // Search functionality
     $(document).ready(function(){
+      renderAreasOfInterestFilters();
+
       // Initialize parcelSelections from session data if available
       var sessionDataElement = document.getElementById('session-data');
       if (sessionDataElement) {
@@ -4296,7 +4438,7 @@
         applyActionFilters();
       });
 
-      $('input[data-theme-filter]').on('change', function() {
+      $(document).on('change', 'input[data-theme-filter]', function() {
         applyActionFilters();
       });
 
