@@ -262,11 +262,11 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l" id="page-heading">Select land for your actions</h1>
-    <p id="select-parcel-text">Your available land is grouped by Ordnance Survey map sheet references. To view your land parcels, click on the OS map sheet reference links in the table, or the icons in the map.<br><br>
-        You'll then be able to add actions to parcels.</p>
-    <p id="selected-parcel-text" style="display: none;">This shows the available actions for the selected parcel based on the land data we hold for you.</p>
+    <p id="select-parcel-text">Choose a farm using the map or the links within the page. You'll then be able to add actions to parcels.</p>
+    <p id="choose-parcel-text" style="display: none;">Choose a land parcel on the map. Available actions will then be listed below the map.</p>
+    <p id="selected-parcel-text" style="display: none;">Available actions for the chosen land parcel are now listed below the map.</p>
 
-    <div class="govuk-grid-row app-map-shell">
+    <div class="govuk-grid-row app-map-shell govuk-!-margin-top-6">
       <div class="govuk-grid-column-one-third">
         <div id="os-map-references">
           <div id="oak-tree-farm-info" class="farm-info-panel">
@@ -3597,6 +3597,7 @@
 
       document.getElementById('page-heading').textContent = 'Choose actions for ' + parcel.name + (osRefDisplay ? ' - ' + osRefDisplay : '');
       document.getElementById('select-parcel-text').style.display = 'none';
+      document.getElementById('choose-parcel-text').style.display = 'none';
       document.getElementById('selected-parcel-text').style.display = 'block';
       var osRefEl = document.getElementById('os-ref');
       if (osRefEl) {
@@ -4609,6 +4610,8 @@
         });
 
         document.getElementById('select-parcel-text').style.display = 'none';
+        document.getElementById('choose-parcel-text').style.display = 'block';
+        document.getElementById('selected-parcel-text').style.display = 'none';
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
 
@@ -4693,6 +4696,7 @@
           // Reset page heading
           document.getElementById('page-heading').textContent = "Select land";
           document.getElementById('select-parcel-text').style.display = 'block';
+          document.getElementById('choose-parcel-text').style.display = 'none';
           document.getElementById('selected-parcel-text').style.display = 'none';
           
           // Hide save confirmation message
