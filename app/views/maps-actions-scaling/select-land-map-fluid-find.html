@@ -262,9 +262,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l" id="page-heading">Select land for your actions</h1>
-    <p id="select-parcel-text">Choose a farm using the map or the links within the page. You'll then be able to add actions to parcels.</p>
+    <p id="select-parcel-text">Click on the farm name in the list or on the map. You'll then be able to add actions to land parcels.</p>
     <p id="choose-parcel-text" style="display: none;">Choose a land parcel on the map. Available actions will then be listed below the map.</p>
-    <p id="selected-parcel-text" style="display: none;">Available actions for the chosen land parcel are now listed below the map.</p>
+    <p id="selected-parcel-text" style="display: none;">You can see a list of available actions for the chosen parcel under the map.</p>
 
     <div class="govuk-grid-row app-map-shell govuk-!-margin-top-6">
       <div class="govuk-grid-column-one-third">
@@ -393,7 +393,7 @@
             <table class="govuk-table">
               <tbody class="govuk-table__body" id="parcel-info">
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">OS reference</td>
+                  <td class="govuk-table__cell">Ordnance Survey reference</td>
                   <td class="govuk-table__cell" id="os-ref">-</td>
                 </tr>
                 <tr class="govuk-table__row">
@@ -3751,7 +3751,14 @@
       }
       var landCoverEl = document.getElementById('land-cover');
       if (landCoverEl) {
-        landCoverEl.textContent = formatLandCoverDisplay(parcel.landCover);
+        var landCoverLines = getParcelLandCovers(parcel.landCover);
+        landCoverEl.innerHTML = '';
+        landCoverLines.forEach(function(landCover, index) {
+          if (index > 0) {
+            landCoverEl.appendChild(document.createElement('br'));
+          }
+          landCoverEl.appendChild(document.createTextNode(landCover));
+        });
       }
       var numActionsEl = document.getElementById('num-actions');
       if (numActionsEl) {
