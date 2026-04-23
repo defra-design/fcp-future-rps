@@ -282,7 +282,7 @@
         <!-- {{ parcel.parcelName }} -->
         <div style="display: flex; justify-content: space-between; align-items: baseline;">
           <h3 class="govuk-heading-s" style="margin-bottom: 15px;">{{ parcel.parcelName }}{% if parcel.osRef %} - {{ parcel.osRef }}{% endif %}</h3>
-          <a class="govuk-link" href="select-land-map-fluid" data-parcel-id="{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} actions</span></a>
+          <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} actions</span></a>
         </div>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
           {% set parcelPayment = 0 %}
@@ -343,7 +343,7 @@
       <!-- Upper Field -->
       <div style="display: flex; justify-content: space-between; align-items: baseline;">
         <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Upper Field - SO3758 3159</h3>
-        <a class="govuk-link" href="select-land-map-fluid" data-parcel-id="upper-field" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Upper Field actions</span></a>
+        <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="upper-field" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Upper Field actions</span></a>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
@@ -381,7 +381,7 @@
       <!-- Long Meadow -->
       <div style="display: flex; justify-content: space-between; align-items: baseline;">
         <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Long Meadow - SO3760 3161</h3>
-        <a class="govuk-link" href="select-land-map-fluid" data-parcel-id="long-meadow" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Long Meadow actions</span></a>
+        <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="long-meadow" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Long Meadow actions</span></a>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
@@ -409,7 +409,7 @@
       <!-- River Pasture -->
       <div style="display: flex; justify-content: space-between; align-items: baseline;">
         <h3 class="govuk-heading-s" style="margin-bottom: 15px;">River Pasture - SO3761 3162</h3>
-        <a class="govuk-link" href="select-land-map-fluid" data-parcel-id="river-pasture" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> River Pasture actions</span></a>
+        <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="river-pasture" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> River Pasture actions</span></a>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
@@ -485,7 +485,7 @@
       link.addEventListener('click', function(e) {
         var parcelId = this.getAttribute('data-parcel-id');
         
-        // Store the parcel ID in session storage so select-land-map-fluid can use it
+        // Store the parcel ID in session storage so select-land-map-fluid-find can use it
         if (parcelId) {
           sessionStorage.setItem('selectedParcelId', parcelId);
         }
