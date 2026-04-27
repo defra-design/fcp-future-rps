@@ -600,6 +600,43 @@ function getSelectedActionsForCompatibility(body) {
   }
 }
 
+const CSAM3_AVAILABLE_AREA = 3.5125
+
+function parseHectaresInput(value) {
+  if (value === undefined || value === null) {
+    return null
+  }
+
+  var cleaned = String(value).trim().replace(/,/g, '')
+  if (!cleaned) {
+    return null
+  }
+
+  var parsed = Number(cleaned)
+  if (!Number.isFinite(parsed)) {
+    return null
+  }
+
+  return parsed
+}
+
+function getCsam3QuantityError(selectedActions, quantityInput) {
+  if (selectedActions.wildlife !== 'CSAM3') {
+    return null
+  }
+
+  var quantity = parseHectaresInput(quantityInput)
+  if (quantity === null) {
+    return 'Enter how much land you want to use for Herbal leys: CSAM3, in hectares'
+  }
+
+  if (quantity > CSAM3_AVAILABLE_AREA) {
+    return 'The amount of land for Herbal leys: (CSAM3) must be the same as or less than the available area'
+  }
+
+  return null
+}
+
 const MATRIX_PAGE_ACTION_CODES = [
   'CMOR1',
   'UPL1',
@@ -878,6 +915,15 @@ router.post('/day1-more-actions2/select-base-action', function (req, res) {
         livestockGrazing: '',
         shepherding: ''
       })
+    })
+  }
+
+  var csam3QuantityErrorMessage = getCsam3QuantityError(selectedActions, req.body['quantity-csam3'])
+  if (csam3QuantityErrorMessage) {
+    return res.status(400).render('day1-more-actions2/select-base-action', {
+      csam3QuantityError: true,
+      csam3QuantityErrorMessage: csam3QuantityErrorMessage,
+      data: Object.assign({}, req.session.data, req.body)
     })
   }
 
