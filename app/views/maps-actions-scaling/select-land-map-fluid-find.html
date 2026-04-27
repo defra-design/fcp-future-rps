@@ -1368,6 +1368,7 @@
     // Store polygon references
     var parcelPolygons = {};
     var currentSelectedParcel = null;
+    var pendingParcelRestoreTimeout = null;
 
     var ALL_FARMS_MAP_CENTER = [52.22, -0.92];
     var ALL_FARMS_MAP_ZOOM = 8;
@@ -2634,6 +2635,36 @@
     var parcelSelections = {};
     var currentAvailableActions = [];
 
+    function resetActionSelectionUiState() {
+      $('input[name="actions"]').each(function() {
+        var $input = $(this);
+        var $item = $input.closest('.govuk-checkboxes__item');
+        var actionCode = ($input.val() || '').toString().toLowerCase();
+        var $quantityInput = $('#quantity-' + actionCode);
+        var $conditional = $('#conditional-' + actionCode);
+
+        $input.prop('checked', false);
+        $input.prop('disabled', false);
+        $input.attr('aria-expanded', 'false');
+        $input.removeAttr('data-disabled-reason');
+
+        $item.css('opacity', '1').removeClass('sfi-compatibility-disabled');
+        $item.find('.compatibility-hint, .area-full-hint, .sfi-compatibility-option-hint').remove();
+
+        if ($quantityInput.length) {
+          var $formGroup = $quantityInput.closest('.govuk-form-group');
+          $quantityInput.val('');
+          $quantityInput.removeClass('govuk-input--error');
+          $formGroup.removeClass('govuk-form-group--error');
+          $formGroup.find('.govuk-error-message').remove();
+        }
+
+        if ($conditional.length) {
+          $conditional.addClass('govuk-checkboxes__conditional--hidden');
+        }
+      });
+    }
+
     var GOV_AREAS_BY_CODE = {
       'AGF1': ['Agroforestry', 'Trees'],
       'AGF2': ['Agroforestry', 'Trees'],
@@ -3628,14 +3659,13 @@
 
     // Function to restore parcel state from saved selections
     function restoreParcelState(parcelId) {
+      if (currentSelectedParcel !== parcelId) {
+        return;
+      }
+
       console.log('Restoring parcel state for:', parcelId);
-      
-      // First, uncheck all checkboxes and clear all inputs
-      $('input[name="actions"]').prop('checked', false).attr('aria-expanded', 'false');
-      $('input[type="text"][id^="quantity-"]').val('');
-      
-      // Hide all conditional content
-      $('.govuk-checkboxes__conditional').addClass('govuk-checkboxes__conditional--hidden');
+
+      resetActionSelectionUiState();
       
       // Get saved selections for this parcel
       var savedSelections = parcelSelections[parcelId];
@@ -3696,6 +3726,11 @@
     function selectParcel(parcelId) {
       var parcel = parcelData[parcelId];
       if (!parcel) return;
+
+      if (pendingParcelRestoreTimeout) {
+        clearTimeout(pendingParcelRestoreTimeout);
+        pendingParcelRestoreTimeout = null;
+      }
 
       // Track if this is the first selection
       var isFirstSelection = (currentSelectedParcel === null);
@@ -3842,8 +3877,13 @@
       
       // Restore parcel state if it has saved actions
       if (parcelSelections[parcelId] && parcelSelections[parcelId].actions && parcelSelections[parcelId].actions.length > 0) {
-        setTimeout(function() {
+        pendingParcelRestoreTimeout = setTimeout(function() {
+          if (currentSelectedParcel !== parcelId) {
+            return;
+          }
+
           restoreParcelState(parcelId);
+          pendingParcelRestoreTimeout = null;
         }, 200);
       }
 
@@ -4092,25 +4132,7 @@
     function updateActionsList(availableActions) {
       currentAvailableActions = Array.isArray(availableActions) ? availableActions.slice() : [];
 
-      $('input[name="actions"]').each(function() {
-        var checkbox = $(this);
-        var $item = checkbox.closest('.govuk-checkboxes__item');
-        var conditional = $item.next('.govuk-checkboxes__conditional');
-        var actionCode = (checkbox.val() || '').toString().toLowerCase();
-        var $quantityInput = $('#quantity-' + actionCode);
-
-        checkbox.prop('checked', false);
-        if ($quantityInput.length) {
-          var $formGroup = $quantityInput.closest('.govuk-form-group');
-          $quantityInput.val('');
-          $quantityInput.removeClass('govuk-input--error');
-          $formGroup.removeClass('govuk-form-group--error');
-          $formGroup.find('.govuk-error-message').remove();
-        }
-        if (conditional.length) {
-          conditional.addClass('govuk-checkboxes__conditional--hidden');
-        }
-      });
+      resetActionSelectionUiState();
 
       applyActionFilters();
     }
@@ -4584,6 +4606,8 @@
       // Update quantities when parcel changes
       var originalSelectParcel = selectParcel;
       selectParcel = function(parcelId) {
+        resetActionSelectionUiState();
+
         originalSelectParcel(parcelId);
         
         // Clear all quantity inputs
@@ -4664,8 +4688,15 @@
 
       function getSelectedActionCodes() {
         return $('input[name="actions"]:checked').map(function() {
-          return getActionCode($(this));
-        }).get();
+          var code = getActionCode($(this));
+          if (currentAvailableActions.indexOf(code) === -1) {
+            return null;
+          }
+
+          return code;
+        }).get().filter(function(code) {
+          return Boolean(code);
+        });
       }
 
       function clearCompatibilityState($input) {
@@ -4797,6 +4828,11 @@
         // Click handler for "Back to OS map reference farm selection" link
         $('#back-to-farm-selection-link').on('click', function(e) {
           e.preventDefault();
+
+          if (pendingParcelRestoreTimeout) {
+            clearTimeout(pendingParcelRestoreTimeout);
+            pendingParcelRestoreTimeout = null;
+          }
 
           setFarmMapMarkerVisibility(null);
           
