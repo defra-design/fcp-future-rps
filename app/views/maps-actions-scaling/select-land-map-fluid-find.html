@@ -1369,6 +1369,11 @@
     var parcelPolygons = {};
     var currentSelectedParcel = null;
     var pendingParcelRestoreTimeout = null;
+    var suppressParcelSelectionUntil = 0;
+
+    function suppressParcelSelectionFor(milliseconds) {
+      suppressParcelSelectionUntil = Date.now() + Math.max(0, Number(milliseconds) || 0);
+    }
 
     var ALL_FARMS_MAP_CENTER = [52.22, -0.92];
     var ALL_FARMS_MAP_ZOOM = 8;
@@ -3635,6 +3640,10 @@
       });
 
       polygon.on('click', function() {
+        if (Date.now() < suppressParcelSelectionUntil) {
+          return;
+        }
+
         closeAllParcelPopups(parcelId);
         this.openPopup();
         selectParcel(parcelId);
@@ -4781,6 +4790,20 @@
           return;
         }
 
+        suppressParcelSelectionFor(350);
+
+        if (pendingParcelRestoreTimeout) {
+          clearTimeout(pendingParcelRestoreTimeout);
+          pendingParcelRestoreTimeout = null;
+        }
+
+        closeAllParcelPopups();
+
+        if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
+          parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+        }
+        currentSelectedParcel = null;
+
         Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
           panel.style.display = panel.id === farmConfig.panelId ? 'block' : 'none';
 
@@ -4794,6 +4817,41 @@
         document.getElementById('selected-parcel-text').style.display = 'none';
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
+        document.getElementById('page-heading').textContent = 'Select land for your actions';
+
+        var parcelInfoContainer = document.getElementById('parcel-info-container');
+        if (parcelInfoContainer) {
+          parcelInfoContainer.style.display = 'none';
+        }
+
+        var actionsSection = document.getElementById('actions-section');
+        if (actionsSection) {
+          actionsSection.style.display = 'none';
+        }
+
+        var actionToolsPanel = document.getElementById('action-tools-panel');
+        if (actionToolsPanel) {
+          actionToolsPanel.style.display = 'none';
+        }
+
+        var searchInput = document.getElementById('search-actions-map');
+        if (searchInput) {
+          searchInput.value = '';
+          searchInput.disabled = true;
+        }
+
+        var searchButton = document.getElementById('search-button-map');
+        if (searchButton) {
+          searchButton.disabled = true;
+        }
+
+        var clearSearchButton = document.getElementById('clear-search');
+        if (clearSearchButton) {
+          clearSearchButton.style.display = 'none';
+        }
+
+        $('input[data-theme-filter]').prop('checked', false);
+        resetActionSelectionUiState();
 
         var backToFarmLinkContainer = document.getElementById('back-to-farm-link-container');
         if (backToFarmLinkContainer) {
@@ -4821,6 +4879,13 @@
       $(document).ready(function() {
         $(document).on('click', '.farm-focus-link', function(e) {
           e.preventDefault();
+          e.stopPropagation();
+          if (e.stopImmediatePropagation) {
+            e.stopImmediatePropagation();
+          }
+
+          suppressParcelSelectionFor(350);
+
           var farmKey = $(this).attr('data-farm-key');
           focusFarmByKey(farmKey);
         });
