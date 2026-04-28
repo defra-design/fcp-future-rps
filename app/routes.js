@@ -592,11 +592,16 @@ router.post('/select-land-sssi-hefer', function (req, res) {
 // Start Post-day 1 more actions mutual exclusivity logic //
 
 function getSelectedActionsForCompatibility(body) {
+  function getKnownMatrixActionCode(value) {
+    var code = normaliseActionCode(value)
+    return MATRIX_PAGE_ACTION_CODES.includes(code) ? code : ''
+  }
+
   return {
-    livestockGrazing: normaliseActionCode(body.livestockGrazing),
-    shepherding: normaliseActionCode(body.shepherding),
-    wildlife: normaliseActionCode(body.wildlife),
-    cmor1: normaliseActionCode(body.cmor1)
+    livestockGrazing: getKnownMatrixActionCode(body.livestockGrazing),
+    shepherding: getKnownMatrixActionCode(body.shepherding),
+    wildlife: getKnownMatrixActionCode(body.wildlife),
+    cmor1: getKnownMatrixActionCode(body.cmor1)
   }
 }
 

@@ -168,11 +168,13 @@ href: "javascript:window.history.back()"
           </p>
         {% endif %}
 
+        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--upl">Selected wildlife actions are incompatible with UPL actions. Choose either UPL actions or CLIG3/CSAM3 on this parcel.</p>
+
         <p>Total available area: 3.5125 hectares</p>
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl1" name="livestockGrazing" type="radio" value="upl1" aria-describedby="UPL1-hint" {% if data['livestockGrazing'] == "upl1" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl1" name="livestockGrazing" type="radio" value="upl1" aria-describedby="UPL1-hint" {% if data['livestockGrazing'] == "upl1" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl1">
               Moderate livestock grazing on moorland: UPL1
             </label>
@@ -181,7 +183,7 @@ href: "javascript:window.history.back()"
             </div>
           </div>
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl2" name="livestockGrazing" type="radio" value="upl2" aria-describedby="UPL2-hint" {% if data['livestockGrazing'] == "upl2" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl2" name="livestockGrazing" type="radio" value="upl2" aria-describedby="UPL2-hint" {% if data['livestockGrazing'] == "upl2" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl2">
               Low livestock grazing on moorland: UPL2
             </label>
@@ -190,7 +192,7 @@ href: "javascript:window.history.back()"
             </div>
           </div>
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl3" name="livestockGrazing" type="radio" value="upl3"  aria-describedby="UPL3-hint" {% if data['livestockGrazing'] == "upl3" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl3" name="livestockGrazing" type="radio" value="upl3"  aria-describedby="UPL3-hint" {% if data['livestockGrazing'] == "upl3" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl3">
               Limited livestock grazing on moorland: UPL3
             </label>
@@ -215,11 +217,13 @@ href: "javascript:window.history.back()"
           </p>
         {% endif %}
 
+        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--upl">Selected wildlife actions are incompatible with UPL actions. Choose either UPL actions or CLIG3/CSAM3 on this parcel.</p>
+
         <p>Total available area: 3.5125 hectares</p>
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl8" name="shepherding" type="radio" value="upl8"  aria-describedby="UPL8-hint" {% if data['shepherding'] == "upl8" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl8" name="shepherding" type="radio" value="upl8"  aria-describedby="UPL8-hint" {% if data['shepherding'] == "upl8" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl8">
               Shepherding livestock on moorland (remove stock for at least 4 months): UPL8
             </label>
@@ -237,7 +241,7 @@ href: "javascript:window.history.back()"
             </div>
           </div> #}
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="upl10" name="shepherding" type="radio" value="upl10"  aria-describedby="UPL10-hint" {% if data['shepherding'] == "upl10" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--upl" id="upl10" name="shepherding" type="radio" value="upl10"  aria-describedby="UPL10-hint" {% if data['shepherding'] == "upl10" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="upl10">
               Shepherding livestock on moorland (remove stock for at least 8 months): UPL10
             </label>
@@ -263,11 +267,13 @@ href: "javascript:window.history.back()"
           </p>
         {% endif %}
 
+        <p class="govuk-hint sfi-compatibility-hint sfi-compatibility-hint--wildlife">Selected UPL actions are incompatible with CLIG3 and CSAM3. Choose either UPL actions or CLIG3/CSAM3 on this parcel.</p>
+
         <p>Total available area: 3.5125 hectares</p>
 
         <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="clig3" name="wildlife" type="radio" value="clig3"  aria-describedby="clig3-hint" {% if data['wildlife'] == "clig3" %}checked{% endif %}>
+            <input class="govuk-radios__input sfi-compatibility-option--wildlife" id="clig3" name="wildlife" type="radio" value="clig3"  aria-describedby="clig3-hint" {% if data['wildlife'] == "clig3" %}checked{% endif %}>
             <label class="govuk-label govuk-radios__label" for="clig3">
               Manage grassland with very low nutrient inputs: CLIG3
             </label>
@@ -277,7 +283,7 @@ href: "javascript:window.history.back()"
           </div>
           <div class="govuk-radios" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="csam3" name="wildlife" type="radio" value="csam3" data-aria-controls="conditional-csam3">
+            <input class="govuk-radios__input sfi-compatibility-option--wildlife" id="csam3" name="wildlife" type="radio" value="csam3" data-aria-controls="conditional-csam3">
             <label class="govuk-label govuk-radios__label" for="csam3">
               Herbal leys: CSAM3 
             </label>
@@ -343,5 +349,41 @@ href: "javascript:window.history.back()"
 {# <p><a href="">Go back and choose another parcel</a></p> #}
 </div> <!-- 2/3 col -->
 </div> <!-- grid-row -->
+
+<script>
+  (function () {
+    var incompatibleWildlifeActions = [
+      document.getElementById('clig3'),
+      document.getElementById('csam3')
+    ].filter(Boolean)
+    var uplActions = document.querySelectorAll('input.govuk-radios__input[id^="upl"]')
+
+    if (!incompatibleWildlifeActions.length || !uplActions.length) {
+      return
+    }
+
+    incompatibleWildlifeActions.forEach(function (wildlifeAction) {
+      wildlifeAction.addEventListener('change', function () {
+        if (!wildlifeAction.checked) {
+          return
+        }
+
+        uplActions.forEach(function (upl) {
+          upl.checked = false
+        })
+      })
+    })
+
+    uplActions.forEach(function (upl) {
+      upl.addEventListener('change', function () {
+        if (upl.checked) {
+          incompatibleWildlifeActions.forEach(function (wildlifeAction) {
+            wildlifeAction.checked = false
+          })
+        }
+      })
+    })
+  })()
+</script>
 
 {% endblock %}
