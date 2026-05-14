@@ -748,11 +748,7 @@
             <div id="actions-sort-accordion-content-1" style="margin-top: -20px;" class="govuk-accordion__section-content" aria-labelledby="actions-sort-accordion-heading-1">
               <div class="govuk-radios govuk-radios--small" data-module="govuk-radios" id="actions-sort-radios">
                 <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="actions-sort-default" name="actions-sort-option" type="radio" value="default" checked>
-                  <label class="govuk-label govuk-radios__label" for="actions-sort-default">Default</label>
-                </div>
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="actions-sort-alpha-asc" name="actions-sort-option" type="radio" value="alpha-asc">
+                  <input class="govuk-radios__input" id="actions-sort-alpha-asc" name="actions-sort-option" type="radio" value="alpha-asc" checked>
                   <label class="govuk-label govuk-radios__label" for="actions-sort-alpha-asc">Alphabetical (A - Z)</label>
                 </div>
                 <div class="govuk-radios__item">
@@ -4098,7 +4094,7 @@
 
     function getSelectedSortOption() {
       var selectedOption = document.querySelector('input[name="actions-sort-option"]:checked');
-      return selectedOption ? selectedOption.value : 'default';
+      return selectedOption ? selectedOption.value : 'alpha-asc';
     }
 
     function formatCurrencyGBP(amount) {
@@ -4782,6 +4778,8 @@
         resetActionSelectionUiState();
 
         originalSelectParcel(parcelId);
+
+        $('#actions-sort-alpha-asc').prop('checked', true);
         
         // Clear all quantity inputs
         $('input[id^="quantity-"]').val('');
