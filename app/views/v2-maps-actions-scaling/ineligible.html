@@ -1,0 +1,38 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  You are not eligible 
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+
+      <h1 class="govuk-heading-l">You are not eligible to apply</h1>
+<p class="govuk-body">Based on your last answer, you’re not eligible to apply for an agreement.</p>
+<p class="govuk-body">You can select ‘Back’ and change your answers or sign out.</p>
+
+{# <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+  Withdraw application
+</button> #}
+    
+    </div>
+  </div>
+
+{% endblock %}
