@@ -807,6 +807,255 @@ function getAllActionsPageViewData(req, extraData) {
   }, extraData || {})
 }
 
+const ACTIONS_SUMMARY_DEFAULTS = {
+  AHW4: { quantity: 2, unit: 'plots', payment: 1011.56 },
+  CHRW2: { quantity: 320.0404, unit: 'm', payment: 166.49 },
+  CIGL2: { quantity: 16.0309, unit: 'ha', payment: 344.62 },
+  GRH12: { quantity: 16.0156, unit: 'ha', payment: 10432.96 }
+}
+
+const ACTIONS_SUMMARY_RATE_BY_CODE = {
+  AGF1: 248,
+  AGF2: 385,
+  CAHL4: 515,
+  CIGL3: 235,
+  BFS1: 707,
+  BFS6: 742,
+  AHW3: 764,
+  AHW5: 765,
+  AHW6: 58,
+  AHW7: 589,
+  AHW8: 596,
+  AHW9: 1072,
+  AHW10: 354,
+  AHW11: 660,
+  CAHL1: 739,
+  CAHL2: 648,
+  CAHL3: 590,
+  CIGL1: 333,
+  CIGL2: 515,
+  CLIG3: 151,
+  HEF6: 55,
+  CIPM2: 798,
+  CIPM3: 55,
+  CIPM4: 45,
+  UPL1: 35,
+  UPL2: 89,
+  UPL3: 111,
+  UPL5: 18,
+  UPL6: 23,
+  UPL8: 74,
+  UPL10: 102,
+  CNUM2: 102,
+  CNUM3: 532,
+  OFC1: 187,
+  OFC2: 96,
+  OFC3: 298,
+  OFC4: 874,
+  OFC5: 1920,
+  OFM1: 20,
+  OFM2: 41,
+  OFM3: 97,
+  OFM4: 132,
+  OFM5: 707,
+  OFM6: 1920,
+  PRF1: 27,
+  PRF2: 43,
+  PRF4: 150,
+  CSAM2: 129,
+  CSAM3: 224,
+  SOH1: 73,
+  SOH3: 163,
+  SCR1: 588,
+  SCR2: 350,
+  SPM3: 146,
+  SPM5: 11,
+  WBD3: 765,
+  WBD4: 489,
+  WBD6: 115,
+  WBD7: 115,
+  GRH1: 121,
+  GRH7: 157,
+  GRH8: 187,
+  GRH10: 28
+}
+
+function parseNumberInput(value) {
+  if (value === undefined || value === null) {
+    return null
+  }
+
+  var parsed = Number(String(value).trim().replace(/,/g, ''))
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function getSessionActionQuantity(sessionData, code, fallbackQuantity) {
+  var key = 'quantity-' + code.toLowerCase()
+  var parsed = parseNumberInput(sessionData[key])
+  return parsed === null ? fallbackQuantity : parsed
+}
+
+function getSessionActionPayment(sessionData, code, fallbackPayment) {
+  var key = 'payment-' + code.toLowerCase()
+  var parsed = parseNumberInput(sessionData[key])
+  return parsed === null ? fallbackPayment : parsed
+}
+
+function formatQuantityForDisplay(quantity, unit) {
+  if (!Number.isFinite(quantity)) {
+    return ''
+  }
+
+  var quantityText = Number.isInteger(quantity)
+    ? quantity.toLocaleString('en-GB')
+    : quantity.toFixed(4)
+
+  return quantityText + ' ' + unit
+}
+
+function parseParcelSelectionsData(rawValue) {
+  if (!rawValue) {
+    return null
+  }
+
+  if (typeof rawValue === 'object') {
+    return rawValue
+  }
+
+  if (typeof rawValue !== 'string') {
+    return null
+  }
+
+  try {
+    return JSON.parse(rawValue)
+  } catch (error) {
+    try {
+      return JSON.parse(rawValue.replace(/'/g, '"'))
+    } catch (innerError) {
+      return null
+    }
+  }
+}
+
+function buildActionsSummaryFromParcelSelectionsData(rawParcelSelectionsData) {
+  var parcelSelections = parseParcelSelectionsData(rawParcelSelectionsData)
+  if (!parcelSelections || typeof parcelSelections !== 'object') {
+    return { rows: [], total: 0 }
+  }
+
+  var rowsByCode = {}
+
+  Object.keys(parcelSelections).forEach(function (parcelId) {
+    var parcel = parcelSelections[parcelId] || {}
+    var actions = Array.isArray(parcel.actions) ? parcel.actions : []
+
+    actions.forEach(function (action) {
+      var code = normaliseActionCode(action && action.code)
+      if (!code) {
+        return
+      }
+
+      if (!rowsByCode[code]) {
+        var actionName = (action && action.name) || actionNameByCode[code] || code
+        rowsByCode[code] = {
+          code: code,
+          label: code + ': ' + actionName,
+          quantityValue: 0,
+          unit: 'ha',
+          payment: 0
+        }
+      }
+
+      var quantity = parseNumberInput(action && action.quantity)
+      if (quantity !== null) {
+        rowsByCode[code].quantityValue += quantity
+        var paymentRate = ACTIONS_SUMMARY_RATE_BY_CODE[code]
+        if (Number.isFinite(paymentRate)) {
+          rowsByCode[code].payment += quantity * paymentRate
+        }
+      }
+    })
+  })
+
+  var rows = Object.values(rowsByCode).map(function (row) {
+    return {
+      code: row.code,
+      label: row.label,
+      quantity: formatQuantityForDisplay(row.quantityValue, row.unit),
+      payment: row.payment
+    }
+  })
+
+  var total = rows.reduce(function (sum, row) {
+    return sum + (Number.isFinite(row.payment) ? row.payment : 0)
+  }, 0)
+
+  return {
+    rows: rows,
+    total: total
+  }
+}
+
+function buildActionsSummaryFromSession(sessionData) {
+  var selectedCodes = Array.isArray(sessionData.selectedActions)
+    ? sessionData.selectedActions.map(normaliseActionCode).filter(Boolean)
+    : []
+
+  if (!selectedCodes.length) {
+    return buildActionsSummaryFromParcelSelectionsData(sessionData.parcelSelectionsData)
+  }
+
+  var uniqueCodes = Array.from(new Set(selectedCodes))
+
+  var rows = uniqueCodes.map(function (code) {
+    var defaults = ACTIONS_SUMMARY_DEFAULTS[code] || { quantity: 0, unit: 'ha', payment: 0 }
+    var quantity = getSessionActionQuantity(sessionData, code, defaults.quantity)
+    var payment = getSessionActionPayment(sessionData, code, defaults.payment)
+    var actionName = actionNameByCode[code] || code
+
+    return {
+      code: code,
+      label: code + ': ' + actionName,
+      quantity: formatQuantityForDisplay(quantity, defaults.unit),
+      payment: payment
+    }
+  })
+
+  var total = rows.reduce(function (sum, row) {
+    return sum + (Number.isFinite(row.payment) ? row.payment : 0)
+  }, 0)
+
+  return {
+    rows: rows,
+    total: total
+  }
+}
+
+router.get('/day1-more-actions2/check-your-answers', function (req, res) {
+  var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+
+  res.render('day1-more-actions2/check-your-answers', {
+    data: Object.assign({}, req.session.data),
+    actionsSummaryRows: actionsSummary.rows,
+    actionsSummaryTotal: actionsSummary.total
+  })
+})
+
+router.get('/v2-maps-actions-scaling/check-your-answers', function (req, res) {
+  var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+
+  res.render('v2-maps-actions-scaling/check-your-answers', {
+    data: Object.assign({}, req.session.data),
+    actionsSummaryRows: actionsSummary.rows,
+    actionsSummaryTotal: actionsSummary.total
+  })
+})
+
+router.post('/v2-maps-actions-scaling/check-your-answers', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  res.redirect('/v2-maps-actions-scaling/check-your-answers')
+})
+
 router.use(function (req, res, next) {
   var compatibilityYear = getCompatibilityYearFromSession((req.session && req.session.data) || {})
   var matrixClientConfig = buildMatrixClientConfig(ALL_KNOWN_ACTION_CODES, compatibilityYear)

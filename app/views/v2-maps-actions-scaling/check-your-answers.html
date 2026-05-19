@@ -205,7 +205,52 @@
 
     <!-- Considered in design: Average of 6 actions per application during SFI 2024 -->
 
-    <h2 class="govuk-heading-m">Parcels and actions</h2>
+    <h2 class="govuk-heading-m">Actions</h2>
+
+    {% set actionsRows = actionsSummaryRows or [] %}
+    {% set actionsTotal = actionsSummaryTotal or 0 %}
+
+    {# <h3 class="govuk-heading-s">Actions</h3> #}
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      {# <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Actions selected
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ actionsRows | length }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="select-base-all-actions-checkboxes">Change<span class="govuk-visually-hidden"> actions</span></a>
+        </dd>
+      </div> #}
+
+      {% for action in actionsRows %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ action.label }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ action.quantity }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          £{{ action.payment | formatCurrency }}
+        </dd>
+      </div>
+      {% endfor %}
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Indicative total for actions
+        </dt>
+        <dd class="govuk-summary-list__value">
+          £{{ actionsTotal | formatCurrency }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+    </dl>
+
+    <h2 class="govuk-heading-m">Parcels</h2>
 
     {% set parcelData = data['parcelSelectionsData'] | replace("'", '"') | safe %}
     {% if parcelData %}
