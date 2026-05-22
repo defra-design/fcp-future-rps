@@ -403,13 +403,13 @@
                   <td class="govuk-table__cell">Land cover</td>
                   <td class="govuk-table__cell" id="land-cover">-</td>
                 </tr>
-                <tr class="govuk-table__row">
+                {# <tr class="govuk-table__row">
                   <td class="govuk-table__cell">Current actions</td>
                   <td class="govuk-table__cell">
                     <span id="num-actions">-</span>
                     <span id="view-existing-link" style="display: none;"> - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a></span>
                   </td>
-                </tr>
+                </tr> #}
               </tbody>
             </table>
           </div>
@@ -724,7 +724,7 @@
       <div class="govuk-grid-column-full">
         <div style="background-color: #f3f2f1; margin-top: 20px; padding: 20px;">
         {# <h2 class="govuk-heading-s">Parcels and actions summary</h2> #}
-        <div class="govuk-accordion" data-module="govuk-accordion" id="application-summary-accordion">
+        <div class="govuk-accordion" data-module="govuk-accordion" id="application-summary-accordion" style="display: none;">
           
 
           <!-- Selected parcels section -->
