@@ -79,7 +79,7 @@
 
     .app-map-shell {
       display: grid;
-      grid-template-columns: minmax(320px, 20vw) minmax(0, 80vw);
+      grid-template-columns: 1fr;
       gap: 24px;
       align-items: start;
     }
@@ -107,7 +107,8 @@
       padding-right: 8px;
     }
 
-    .app-map-shell .govuk-grid-column-two-thirds > .govuk-body-s {
+    .app-map-shell .govuk-grid-column-two-thirds > .govuk-body-s,
+    .app-map-shell .govuk-grid-column-full > .govuk-body-s {
       display: none;
     }
 
@@ -354,68 +355,7 @@
     <p id="selected-parcel-text" style="display: none;">You can see a list of available actions for the chosen parcel under the map.</p>
 
     <div class="govuk-grid-row app-map-shell govuk-!-margin-top-6">
-      <div class="govuk-grid-column-one-third">
-        <div id="os-map-references">
-        <div id="blackberry-farm-info" class="farm-info-panel">
-        {# <p class="govuk-body govuk-!-font-weight-bold"><a href="#" class="govuk-link farm-focus-link" data-farm-key="blackberry">Blackberry Farm (BO9)</a></p> #}
-        <table class="govuk-table">
-          <tbody class="govuk-table__body">
-            {# <tr class="govuk-table__row">
-              <td class="govuk-table__cell">Available land parcels</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric" id="blackberry-summary-parcel-count">23</td>
-            </tr> #}
-            <tr class="govuk-table__row farm-table-extended-row">
-              <td class="govuk-table__cell">Total area (hectares)</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric" id="blackberry-summary-total-area">80.3160</td>
-            </tr>
-            {# <tr class="govuk-table__row farm-table-extended-row">
-              <td class="govuk-table__cell">Total available area (hectares)</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric" id="blackberry-summary-available-area">80.3160</td>
-            </tr>
-            <tr class="govuk-table__row farm-table-extended-row">
-              <td class="govuk-table__cell">Land parcels used for SFI actions</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric" id="blackberry-summary-with-actions">0</td>
-            </tr>
-            <tr class="govuk-table__row farm-table-extended-row">
-            <td class="govuk-table__cell">SFI actions applied for</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric" id="blackberry-summary-actions-applied">0</td>
-            </tr> #}
-          </tbody>
-        </table>
-        </div>
-
-          <div class="govuk-!-margin-bottom-6" id="parcel-info-container" style="display: none;">
-            <table class="govuk-table">
-              <tbody class="govuk-table__body" id="parcel-info">
-                {# <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Ordnance Survey reference</td>
-                  <td class="govuk-table__cell" id="os-ref">-</td>
-                </tr> #}
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Total area<br>(hectares)</td>
-                  <td class="govuk-table__cell" id="total-area">-</td>
-                </tr>
-                {# <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Available area (hectares)</td>
-                  <td class="govuk-table__cell" id="available-area">-</td>
-                </tr> #}
-                <tr class="govuk-table__row">
-                  {# <td class="govuk-table__cell">Land cover</td>
-                  <td class="govuk-table__cell" id="land-cover">-</td>
-                </tr> #}
-                {# <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Current actions</td>
-                  <td class="govuk-table__cell">
-                    <span id="num-actions">-</span>
-                    <span id="view-existing-link" style="display: none;"> - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a></span>
-                  </td>
-                </tr> #}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-grid-column-full">
         <div id="map"></div>
         <p class="govuk-body-s govuk-!-margin-top-2">
           {# Click on the field parcels to select and see details.
@@ -3808,6 +3748,36 @@
       }
     }
 
+    function setMinimalActionsView(isMinimal) {
+      var actionsSection = document.getElementById('actions-section');
+      if (actionsSection) {
+        var actionsHeading = document.getElementById('actions-heading');
+        Array.prototype.forEach.call(actionsSection.children, function(child) {
+          if (child === actionsHeading) {
+            return;
+          }
+          child.style.display = isMinimal ? 'none' : '';
+        });
+      }
+
+      if (isMinimal) {
+        var actionToolsPanel = document.getElementById('action-tools-panel');
+        if (actionToolsPanel) {
+          actionToolsPanel.style.display = 'none';
+        }
+
+        var parcelListSection = document.getElementById('parcels-list-section');
+        if (parcelListSection) {
+          parcelListSection.style.display = 'none';
+        }
+
+        var parcelsActionsSummarySection = document.getElementById('parcels-actions-summary-section');
+        if (parcelsActionsSummarySection) {
+          parcelsActionsSummarySection.style.display = 'none';
+        }
+      }
+    }
+
     // Function to select a parcel
     function selectParcel(parcelId) {
       var parcel = parcelData[parcelId];
@@ -3889,7 +3859,10 @@
 
       // Keep the left panel visible and only hide the farm summary tables.
       // This allows parcel-info-container (now in the same left panel) to be shown.
-      document.getElementById('os-map-references').style.display = 'block';
+      var osMapReferences = document.getElementById('os-map-references');
+      if (osMapReferences) {
+        osMapReferences.style.display = 'block';
+      }
       Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
         panel.style.display = 'none';
       });
@@ -3912,6 +3885,7 @@
 
       // Show the actions section
       document.getElementById('actions-section').style.display = 'block';
+      setMinimalActionsView(true);
 
       // Show left-column action tools (search and theme filters)
       document.getElementById('action-tools-panel').style.display = 'block';
@@ -4905,6 +4879,7 @@
 
         var actionsSection = document.getElementById('actions-section');
         if (actionsSection) {
+          setMinimalActionsView(false);
           actionsSection.style.display = 'none';
         }
 
@@ -4988,7 +4963,10 @@
           map.setView(ALL_FARMS_MAP_CENTER, ALL_FARMS_MAP_ZOOM);
           
           // Show OS map references section
-          document.getElementById('os-map-references').style.display = 'block';
+          var osMapReferences = document.getElementById('os-map-references');
+          if (osMapReferences) {
+            osMapReferences.style.display = 'block';
+          }
           
           // Show all farm information sections again
           Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
@@ -5013,6 +4991,7 @@
           }
           
           // Hide actions section
+          setMinimalActionsView(false);
           document.getElementById('actions-section').style.display = 'none';
 
           // Hide and reset action tools panel
