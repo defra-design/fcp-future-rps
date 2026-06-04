@@ -2669,6 +2669,15 @@
       return cleaned ? Number(cleaned[0]) : null;
     }
 
+    function extractRateAmount(rateText) {
+      if (typeof rateText !== 'string') {
+        return null;
+      }
+
+      var cleaned = rateText.replace(/,/g, '').match(/\d+(?:\.\d+)?/);
+      return cleaned ? Number(cleaned[0]) : null;
+    }
+
     var paymentRates = ACTION_CATALOG.reduce(function(lookup, action) {
       var amount = extractHaRateValue(action.rateText);
       if (amount !== null) {
@@ -2676,6 +2685,37 @@
       }
       return lookup;
     }, {});
+
+    var actionRateTextByCode = ACTION_CATALOG.reduce(function(lookup, action) {
+      lookup[action.code] = action.rateText;
+      return lookup;
+    }, {});
+
+    function calculateActionYearlyPayment(actionCode, quantity) {
+      var normalizedCode = String(actionCode || '').toUpperCase();
+      var numericQuantity = Number(quantity);
+      var rateText = actionRateTextByCode[normalizedCode] || '';
+      var rateAmount = extractRateAmount(rateText);
+      var lowerRateText = String(rateText).toLowerCase();
+
+      if (!Number.isFinite(numericQuantity) || numericQuantity <= 0 || rateAmount === null) {
+        return null;
+      }
+
+      if (lowerRateText.indexOf('/ha') !== -1) {
+        return numericQuantity * rateAmount;
+      }
+
+      if (lowerRateText.indexOf('/100m') !== -1) {
+        return (numericQuantity / 100) * rateAmount;
+      }
+
+      if (lowerRateText.indexOf('/m') !== -1) {
+        return numericQuantity * rateAmount;
+      }
+
+      return null;
+    }
 
     var actionNameByCode = ACTION_CATALOG.reduce(function(lookup, action) {
       lookup[action.code] = action.name;
@@ -4441,7 +4481,7 @@
             // Calculate total area used by actions
             var totalUsedArea = 0;
             parcelSelection.actions.forEach(function(action) {
-              if (action.quantity) {
+              if (action.quantity && getQuantityUnitForAction(action.code) === 'ha') {
                 totalUsedArea += parseFloat(action.quantity);
               }
             });
@@ -4471,16 +4511,26 @@
               var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.name + ' (' + action.code + ')');
               var $actionValue = $('<dd class="govuk-summary-list__value"></dd>');
               
-              var payment = 0;
+              var payment = null;
               var valueText = '';
+              var quantityUnit = getQuantityUnitForAction(action.code);
+              var quantityValue = Number(action.quantity);
               
-              if (action.quantity && paymentRates[action.code]) {
-                var quantity = parseFloat(action.quantity);
-                payment = quantity * paymentRates[action.code];
-                totalPayment += payment;
-                valueText = action.quantity + ' ha (' + formatCurrencyGBP(payment) + ')';
+              if (Number.isFinite(quantityValue) && quantityValue > 0) {
+                payment = calculateActionYearlyPayment(action.code, quantityValue);
+
+                var quantityDisplay = quantityUnit === 'm'
+                  ? Math.round(quantityValue).toLocaleString('en-GB')
+                  : quantityValue.toFixed(4);
+
+                if (payment !== null) {
+                  totalPayment += payment;
+                  valueText = quantityDisplay + ' ' + quantityUnit + ' (' + formatCurrencyGBP(payment) + ')';
+                } else {
+                  valueText = quantityDisplay + ' ' + quantityUnit;
+                }
               } else if (action.quantity) {
-                valueText = action.quantity + ' ha';
+                valueText = String(action.quantity) + ' ' + quantityUnit;
               } else {
                 valueText = 'No area entered';
               }
