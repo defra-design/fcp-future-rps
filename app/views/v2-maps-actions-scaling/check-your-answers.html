@@ -255,9 +255,20 @@
     {% set parcelData = data['parcelSelectionsData'] | replace("'", '"') | safe %}
     {% if parcelData %}
       {% set parcels = parcelData | fromJson %}
+      {% set linearActionCodes = {
+        'BND1': true,
+        'BND2': true,
+        'CHRW1': true,
+        'CHRW2': true,
+        'CHRW3': true,
+        'WBD2': true
+      } %}
       {% set actionRates = {
         'AGF1': 248,
         'AGF2': 385,
+        'BND1': 27,
+        'BND2': 11,
+        'CHRW2': 13,
         'CAHL4': 515,
         'CIGL3': 235,
         'BFS1': 707,
@@ -311,6 +322,7 @@
         'SCR2': 350,
         'SPM3': 146,
         'SPM5': 11,
+        'WBD2': 4,
         'WBD3': 765,
         'WBD4': 489,
         'WBD6': 115,
@@ -334,22 +346,36 @@
           {% for action in parcel.actions %}
             {% set actionName = action.name or action.code %}
             {% set actionRate = actionRates[action.code] or 0 %}
+            {% set quantityValue = action.quantity | float %}
+            {% set quantityUnit = action.unit or (linearActionCodes[action.code] and 'm' or 'ha') %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                 {{ actionName }}: {{ action.code }}
               </dt>
               <dd class="govuk-summary-list__value">
                 {% if action.quantity %}
-                  {{ action.quantity }} ha
+                  {% if quantityUnit == 'm' %}
+                    {{ quantityValue | round(0, 'floor') }} {{ quantityUnit }}
+                  {% else %}
+                    {{ action.quantity }} {{ quantityUnit }}
+                  {% endif %}
                 {% else %}
-                  No area entered
+                  No quantity entered
                 {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="{{ parcelId }}" data-action-code="{{ action.code }}">Change<span class="govuk-visually-hidden"> {{ actionName }}: {{ action.code }}</span></a>
               </dd>
             </div>
-            {% if action.quantity %}
-              {% set actionPayment = (action.quantity | float) * actionRate %}
+            {% set storedAnnualPayment = action.annualPayment | float %}
+            {% if storedAnnualPayment > 0 %}
+              {% set actionPayment = storedAnnualPayment %}
+            {% elif action.quantity %}
+              {% if quantityUnit == 'm' and (action.code == 'BND1' or action.code == 'BND2' or action.code == 'CHRW2' or action.code == 'WBD2') %}
+                {% set actionPayment = (quantityValue / 100) * actionRate %}
+              {% else %}
+                {% set actionPayment = quantityValue * actionRate %}
+              {% endif %}
             {% else %}
               {% set actionPayment = 0 %}
             {% endif %}
@@ -521,7 +547,7 @@
 </div>
 
 <script>
-  // Handle Change link clicks to store the target parcel ID
+  // Handle Change link clicks to store the target parcel/action IDs
   document.addEventListener('DOMContentLoaded', function() {
     // Get all Change links with data-parcel-id
     var changeLinks = document.querySelectorAll('a.govuk-link[data-parcel-id]');
@@ -529,10 +555,17 @@
     changeLinks.forEach(function(link) {
       link.addEventListener('click', function(e) {
         var parcelId = this.getAttribute('data-parcel-id');
+        var actionCode = this.getAttribute('data-action-code');
         
-        // Store the parcel ID in session storage so select-land-map-fluid-find can use it
+        // Store target parcel/action in session storage so select-land-map-fluid-find can use it
         if (parcelId) {
           sessionStorage.setItem('selectedParcelId', parcelId);
+        }
+
+        if (actionCode) {
+          sessionStorage.setItem('selectedActionCode', actionCode);
+        } else {
+          sessionStorage.removeItem('selectedActionCode');
         }
         
         // Let the link navigate normally

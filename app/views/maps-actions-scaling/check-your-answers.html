@@ -301,6 +301,7 @@
                 {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="{{ parcelId }}" data-action-code="{{ action.code }}">Change<span class="govuk-visually-hidden"> {{ actionName }}: {{ action.code }}</span></a>
               </dd>
             </div>
             {% if action.quantity %}
@@ -476,7 +477,7 @@
 </div>
 
 <script>
-  // Handle Change link clicks to store the target parcel ID
+  // Handle Change link clicks to store the target parcel/action IDs
   document.addEventListener('DOMContentLoaded', function() {
     // Get all Change links with data-parcel-id
     var changeLinks = document.querySelectorAll('a.govuk-link[data-parcel-id]');
@@ -484,10 +485,17 @@
     changeLinks.forEach(function(link) {
       link.addEventListener('click', function(e) {
         var parcelId = this.getAttribute('data-parcel-id');
+        var actionCode = this.getAttribute('data-action-code');
         
-        // Store the parcel ID in session storage so select-land-map-fluid-find can use it
+        // Store target parcel/action in session storage so select-land-map-fluid-find can use it
         if (parcelId) {
           sessionStorage.setItem('selectedParcelId', parcelId);
+        }
+
+        if (actionCode) {
+          sessionStorage.setItem('selectedActionCode', actionCode);
+        } else {
+          sessionStorage.removeItem('selectedActionCode');
         }
         
         // Let the link navigate normally

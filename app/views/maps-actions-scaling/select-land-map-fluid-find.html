@@ -4137,6 +4137,30 @@
       }
     }
 
+    function focusActionByCode(actionCode, attempt) {
+      var normalizedActionCode = String(actionCode || '').toUpperCase();
+      if (!normalizedActionCode) {
+        return;
+      }
+
+      var maxAttempts = 12;
+      var currentAttempt = Number.isFinite(attempt) ? attempt : 0;
+      var checkboxSelector = 'input[name="actions"][value="' + normalizedActionCode + '"]';
+      var checkbox = document.querySelector(checkboxSelector);
+
+      if (checkbox) {
+        checkbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        checkbox.focus();
+        return;
+      }
+
+      if (currentAttempt < maxAttempts) {
+        setTimeout(function() {
+          focusActionByCode(normalizedActionCode, currentAttempt + 1);
+        }, 120);
+      }
+    }
+
     // Function to update actions list
     function updateActionsList(availableActions) {
       currentAvailableActions = Array.isArray(availableActions) ? availableActions.slice() : [];
@@ -4172,6 +4196,10 @@
       
       // Check if user came from check-your-answers with a specific parcel to edit
       var selectedParcelId = sessionStorage.getItem('selectedParcelId');
+      var selectedActionCode = sessionStorage.getItem('selectedActionCode');
+      if (selectedActionCode) {
+        sessionStorage.removeItem('selectedActionCode');
+      }
       if (selectedParcelId) {
         // Clear the stored parcel ID
         sessionStorage.removeItem('selectedParcelId');
@@ -4183,6 +4211,10 @@
           // Zoom to the parcel
           if (parcelPolygons[selectedParcelId]) {
             map.fitBounds(parcelPolygons[selectedParcelId].getBounds(), {padding: [50, 50]});
+          }
+
+          if (selectedActionCode) {
+            focusActionByCode(selectedActionCode, 0);
           }
         }, 500);
       }
@@ -4227,6 +4259,7 @@
         e.preventDefault();
         console.log('Change link clicked');
         var targetParcelId = $(this).attr('data-parcel-id');
+        var targetActionCode = $(this).attr('data-action-code');
         console.log('Target parcel ID:', targetParcelId);
         
         if (targetParcelId) {
@@ -4238,6 +4271,10 @@
           setTimeout(function() {
             console.log('Calling restoreParcelState');
             restoreParcelState(targetParcelId);
+
+            if (targetActionCode) {
+              focusActionByCode(targetActionCode, 0);
+            }
           }, 250);
         }
       });

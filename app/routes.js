@@ -817,6 +817,9 @@ const ACTIONS_SUMMARY_DEFAULTS = {
 const ACTIONS_SUMMARY_RATE_BY_CODE = {
   AGF1: 248,
   AGF2: 385,
+  BND1: 27,
+  BND2: 11,
+  CHRW2: 13,
   CAHL4: 515,
   CIGL3: 235,
   BFS1: 707,
@@ -872,12 +875,29 @@ const ACTIONS_SUMMARY_RATE_BY_CODE = {
   SPM5: 11,
   WBD3: 765,
   WBD4: 489,
+  WBD2: 4,
   WBD6: 115,
   WBD7: 115,
   GRH1: 121,
   GRH7: 157,
   GRH8: 187,
   GRH10: 28
+}
+
+const ACTIONS_SUMMARY_LINEAR_CODES = {
+  BND1: true,
+  BND2: true,
+  CHRW1: true,
+  CHRW2: true,
+  CHRW3: true,
+  WBD2: true
+}
+
+const ACTIONS_SUMMARY_PER_100M_RATE_CODES = {
+  BND1: true,
+  BND2: true,
+  CHRW2: true,
+  WBD2: true
 }
 
 function parseNumberInput(value) {
@@ -911,6 +931,27 @@ function formatQuantityForDisplay(quantity, unit) {
     : quantity.toFixed(4)
 
   return quantityText + ' ' + unit
+}
+
+function isLinearActionCode(code) {
+  return Boolean(ACTIONS_SUMMARY_LINEAR_CODES[code])
+}
+
+function calculateFallbackActionPayment(code, quantity, unit) {
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    return 0
+  }
+
+  var rate = ACTIONS_SUMMARY_RATE_BY_CODE[code]
+  if (!Number.isFinite(rate)) {
+    return 0
+  }
+
+  if (unit === 'm' && ACTIONS_SUMMARY_PER_100M_RATE_CODES[code]) {
+    return (quantity / 100) * rate
+  }
+
+  return quantity * rate
 }
 
 function parseParcelSelectionsData(rawValue) {
@@ -961,7 +1002,7 @@ function buildActionsSummaryFromParcelSelectionsData(rawParcelSelectionsData) {
           code: code,
           label: code + ': ' + actionName,
           quantityValue: 0,
-          unit: 'ha',
+          unit: (action && action.unit) || (isLinearActionCode(code) ? 'm' : 'ha'),
           payment: 0
         }
       }
@@ -969,9 +1010,12 @@ function buildActionsSummaryFromParcelSelectionsData(rawParcelSelectionsData) {
       var quantity = parseNumberInput(action && action.quantity)
       if (quantity !== null) {
         rowsByCode[code].quantityValue += quantity
-        var paymentRate = ACTIONS_SUMMARY_RATE_BY_CODE[code]
-        if (Number.isFinite(paymentRate)) {
-          rowsByCode[code].payment += quantity * paymentRate
+
+        var storedPayment = parseNumberInput(action && action.annualPayment)
+        if (storedPayment !== null) {
+          rowsByCode[code].payment += storedPayment
+        } else {
+          rowsByCode[code].payment += calculateFallbackActionPayment(code, quantity, rowsByCode[code].unit)
         }
       }
     })
@@ -997,12 +1041,17 @@ function buildActionsSummaryFromParcelSelectionsData(rawParcelSelectionsData) {
 }
 
 function buildActionsSummaryFromSession(sessionData) {
+  var parcelSummary = buildActionsSummaryFromParcelSelectionsData(sessionData.parcelSelectionsData)
+  if (parcelSummary.rows.length > 0) {
+    return parcelSummary
+  }
+
   var selectedCodes = Array.isArray(sessionData.selectedActions)
     ? sessionData.selectedActions.map(normaliseActionCode).filter(Boolean)
     : []
 
   if (!selectedCodes.length) {
-    return buildActionsSummaryFromParcelSelectionsData(sessionData.parcelSelectionsData)
+    return parcelSummary
   }
 
   var uniqueCodes = Array.from(new Set(selectedCodes))

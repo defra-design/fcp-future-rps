@@ -1478,6 +1478,7 @@
     var parcelPolygons = {};
     var currentSelectedParcel = null;
     var pendingParcelRestoreTimeout = null;
+    var pendingActionFocusCode = null;
     var suppressParcelSelectionUntil = 0;
 
     function suppressParcelSelectionFor(milliseconds) {
@@ -3895,9 +3896,11 @@
         }
       });
       
-      // Scroll to the actions section
+      var hasQueuedActionFocus = Boolean(pendingActionFocusCode);
+
+      // Scroll to the actions section only when no specific action focus is queued.
       var $actionsSection = $('#actions-section');
-      if ($actionsSection.length > 0) {
+      if ($actionsSection.length > 0 && !hasQueuedActionFocus) {
         $('html, body').animate({
           scrollTop: $actionsSection.offset().top - 20
         }, 500);
@@ -3908,6 +3911,9 @@
       if ($anyQuantityInput.length > 0) {
         $anyQuantityInput.trigger('input');
       }
+
+      // Run action-specific focus directly when queued.
+      consumeQueuedActionFocus(hasQueuedActionFocus ? 120 : 0);
     }
 
     // Function to select a parcel
@@ -4062,6 +4068,11 @@
 
       // Update actions list
       updateActionsList(parcel.actions);
+
+      // If there is no saved state to restore, still move focus to the queued action.
+      if (pendingActionFocusCode && !(parcelSelections[parcelId] && parcelSelections[parcelId].actions && parcelSelections[parcelId].actions.length > 0)) {
+        consumeQueuedActionFocus(120);
+      }
       
       // Restore parcel state if it has saved actions
       if (parcelSelections[parcelId] && parcelSelections[parcelId].actions && parcelSelections[parcelId].actions.length > 0) {
@@ -4316,6 +4327,53 @@
       }
     }
 
+    function focusActionByCode(actionCode, attempt) {
+      var normalizedActionCode = String(actionCode || '').toUpperCase();
+      if (!normalizedActionCode) {
+        return;
+      }
+
+      var maxAttempts = 12;
+      var currentAttempt = Number.isFinite(attempt) ? attempt : 0;
+      var checkboxSelector = 'input[name="actions"][value="' + normalizedActionCode + '"]';
+      var checkbox = document.querySelector(checkboxSelector);
+
+      if (checkbox) {
+        checkbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (typeof checkbox.focus === 'function') {
+          try {
+            checkbox.focus({ preventScroll: true });
+          } catch (error) {
+            checkbox.focus();
+          }
+        }
+        return;
+      }
+
+      if (currentAttempt < maxAttempts) {
+        setTimeout(function() {
+          focusActionByCode(normalizedActionCode, currentAttempt + 1);
+        }, 120);
+      }
+    }
+
+    function queueActionFocus(actionCode) {
+      var normalizedActionCode = String(actionCode || '').toUpperCase();
+      pendingActionFocusCode = normalizedActionCode || null;
+    }
+
+    function consumeQueuedActionFocus(delayMs) {
+      if (!pendingActionFocusCode) {
+        return;
+      }
+
+      var actionCodeToFocus = pendingActionFocusCode;
+      pendingActionFocusCode = null;
+      setTimeout(function() {
+        focusActionByCode(actionCodeToFocus, 0);
+      }, Number.isFinite(delayMs) ? delayMs : 0);
+    }
+
     // Function to update actions list
     function updateActionsList(availableActions) {
       currentAvailableActions = Array.isArray(availableActions) ? availableActions.slice() : [];
@@ -4351,6 +4409,11 @@
       
       // Check if user came from check-your-answers with a specific parcel to edit
       var selectedParcelId = sessionStorage.getItem('selectedParcelId');
+      var selectedActionCode = sessionStorage.getItem('selectedActionCode');
+      if (selectedActionCode) {
+        sessionStorage.removeItem('selectedActionCode');
+        queueActionFocus(selectedActionCode);
+      }
       if (selectedParcelId) {
         // Clear the stored parcel ID
         sessionStorage.removeItem('selectedParcelId');
@@ -4406,7 +4469,12 @@
         e.preventDefault();
         console.log('Change link clicked');
         var targetParcelId = $(this).attr('data-parcel-id');
+        var targetActionCode = $(this).attr('data-action-code');
         console.log('Target parcel ID:', targetParcelId);
+
+        if (targetActionCode) {
+          queueActionFocus(targetActionCode);
+        }
         
         if (targetParcelId) {
           // Select the parcel
@@ -4618,11 +4686,18 @@
           // Get quantity if entered
           var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
           var quantity = $quantityInput.val() ? $quantityInput.val() : null;
+          var numericQuantity = Number(quantity);
+          var quantityUnit = getQuantityUnitForAction(actionCode);
+          var annualPayment = (Number.isFinite(numericQuantity) && numericQuantity > 0)
+            ? calculateActionYearlyPayment(actionCode, numericQuantity)
+            : null;
           
           actions.push({
             code: actionCode,
             name: actionName,
-            quantity: quantity
+            quantity: quantity,
+            unit: quantityUnit,
+            annualPayment: annualPayment
           });
         });
         
