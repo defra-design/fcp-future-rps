@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Future – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+{{ govukPhaseBanner({
+  tag: {
+    text: "Prototype"
+  },
+  html: 'This is a prototype used for testing purposes only.'
+}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+
+<div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-full-column">
+
+<h1 class="govuk-heading-l">Funding applications and agreements</h1>
+<span class="govuk-caption-l govuk-!-padding-bottom-5">SARAH FARMER</span>
+
+    <table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">App. number</th>
+      <th scope="col" class="govuk-table__header">Type</th>
+      <th scope="col" class="govuk-table__header">Active</th>
+      <th scope="col" class="govuk-table__header">Submit date</th>
+      <th scope="col" class="govuk-table__header">Status</th>
+      <th scope="col" class="govuk-table__header"></th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">HDJ1234D</td>
+      <td class="govuk-table__cell">SFI</td>
+      <td class="govuk-table__cell">Yes</td>
+      <td class="govuk-table__cell"></td>
+      <td class="govuk-table__cell">Application submitted</td>
+      <td class="govuk-table__cell"><button type="submit" class="govuk-button" data-module="govuk-button">
+            Application document</button></td>
+    </tr>
+ </tbody>
+</table>
+
+  <form class="form" action="tasklist-1" method="post">
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Apply for a new agreement
+</button>
+</form>
+
+</div>
+</div>
+
+</main>
+</div>
+
+{% endblock %}

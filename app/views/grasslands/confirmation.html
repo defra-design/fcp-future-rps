@@ -1,0 +1,51 @@
+{% extends "layouts/day1-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Application complete
+        </h1>
+        <div class="govuk-panel__body">
+          Your application number<br><strong>HDJ1234D</strong>
+        </div>
+      </div>
+
+      <p>It may be useful to write down your application number, so you have it ready if you need to contact us.</p>
+      
+      <h2 class="govuk-heading-m">
+        What happens next
+      </h2>
+      <p class="govuk-body">
+        The Rural Payments Agency (RPA) will email you when your agreement offer is available to review.
+      </p>
+        
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            If you have a question
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          Contact the Rural Payments Agency (RPA) if you have a query.<br><br>
+          Telephone: 020 8026 2395<br>
+          Monday to Friday, 8:30am to 5pm (except bank holidays)<br><br>
+          <p><a href="">Find out about call charges (opens in new tab)</a><br><br>
+            Email: <a href="">farmpayments@rpa.gov.uk</a></p>
+          <p>The RPA responds to email queries within 10 working days.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+{% endblock %}
