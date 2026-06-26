@@ -1105,6 +1105,21 @@ router.post('/v2-maps-actions-scaling/check-your-answers', function (req, res) {
   res.redirect('/v2-maps-actions-scaling/check-your-answers')
 })
 
+router.get('/grasslands/check-your-answers', function (req, res) {
+  var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+
+  res.render('grasslands/check-your-answers', {
+    data: Object.assign({}, req.session.data),
+    actionsSummaryRows: actionsSummary.rows,
+    actionsSummaryTotal: actionsSummary.total
+  })
+})
+
+router.post('/grasslands/check-your-answers', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  res.redirect('/grasslands/check-your-answers')
+})
+
 router.use(function (req, res, next) {
   var compatibilityYear = getCompatibilityYearFromSession((req.session && req.session.data) || {})
   var matrixClientConfig = buildMatrixClientConfig(ALL_KNOWN_ACTION_CODES, compatibilityYear)
