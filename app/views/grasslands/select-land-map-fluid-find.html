@@ -570,7 +570,6 @@
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('pond-close'); return false;" class="govuk-link">Pond Close - BO4539 2861</a><span>29.3214 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('river-meadow'); return false;" class="govuk-link">River Meadow - BO4532 2854</a><span>67.3421 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('spring-pasture'); return false;" class="govuk-link">Spring Pasture - BO4523 2845</a><span>64.3215 ha available</span></li>
-                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('stone-bridge'); return false;" class="govuk-link">Stone Bridge - BO4547 2869</a><span>51.2341 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('upper-slope'); return false;" class="govuk-link">Upper Slope - BO4540 2862</a><span>54.6789 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('valley-bottom'); return false;" class="govuk-link">Valley Bottom - BO4525 2847</a><span>88.9423 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('woodland-edge'); return false;" class="govuk-link">Woodland Edge - BO4531 2853</a><span>28.4516 ha available</span></li>
@@ -1115,38 +1114,6 @@
                   <dd class="govuk-summary-list__value">
                     <ul class="govuk-list">
                       <li>Beetle banks: AHW3</li>
-                    </ul>
-                  </dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-stone-bridge">Stone Bridge - SP 877 521</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Total area</dt>
-                  <dd class="govuk-summary-list__value">51.2341 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">51.2341 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">End date</dt>
-                  <dd class="govuk-summary-list__value">31 May 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Number of actions</dt>
-                  <dd class="govuk-summary-list__value">1</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Actions</dt>
-                  <dd class="govuk-summary-list__value">
-                    <ul class="govuk-list">
-                      <li>12m to 24m watercourse buffer strip on cultivated land: BFS1</li>
                     </ul>
                   </dd>
                 </div>
@@ -2359,25 +2326,6 @@
         actions: ['CNUM2', 'CSAM2', 'CAHL1', 'AHW7', 'CIGL1'],
         color: '#CD853F'
       },
-      'stone-bridge': {
-        name: 'Stone Bridge',
-        osRef: 'SP 877 521',
-        numParcels: 9,
-        totalArea: '51.2341',
-        availableArea: '51.2341',
-        numActions: 1,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9470, -0.7549],
-          [51.9473, -0.7526],
-          [51.9466, -0.7523],
-          [51.9459, -0.7527],
-          [51.9456, -0.7550],
-          [51.9463, -0.7553]
-        ],
-        actions: ['BFS1', 'CIPM2', 'CAHL2', 'CSAM2', 'SOH1'],
-        color: '#BC8F8F'
-      },
       'beech-wood': {
         name: 'Beech Wood',
         osRef: 'SP 907 524',
@@ -2950,7 +2898,6 @@
       'ash-copse': 'Scrub - ungrazeable',
       'home-paddock': 'Notional - mixed',
       'gate-field': ['Permanent grassland', 'Other arable crops'],
-      'stone-bridge': 'Rivers and Streams type 2',
       'beech-wood': 'Notional - natural',
       'orchard-plot': 'Perennial crops',
       'new-ground': 'Land lying fallow',
@@ -3029,8 +2976,7 @@
       'church-meadow': true,
       'church-field': true,
       'mill-field': true,
-      'mill-meadow': true,
-      'stone-bridge': true
+      'mill-meadow': true
     };
 
     var ARABLE_LAND_COVERS = {
