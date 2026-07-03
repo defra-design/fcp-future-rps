@@ -1,0 +1,62 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Management control of land
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "check-land-details"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Management control of land</h1>
+
+      <p class="govuk-body">
+        You must have management control of the land in your SFI agreement for the duration of your selected SFI actions.
+      </p>
+
+      <p class="govuk-body">
+        If you occupy land under a short-term tenancy, you must only enter this land into your SFI agreement if you expect to have management control of it for the entire duration of your selected SFI actions.
+      </p>
+
+      <p class="govuk-body">
+        Read the SFI26 scheme information on <a class="govuk-link" href="#">management control of land</a>.
+      </p>
+
+      <form class="form" action="/grasslands-v2/management-control-answer" method="post">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              Select if you will have the required management control of the land in this application
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="management-answer-v2-yes" name="management-answer-v2" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="management-answer-v2-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="management-answer-v2-no" name="management-answer-v2" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="management-answer-v2-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Save and continue
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

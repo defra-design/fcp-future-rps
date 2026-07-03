@@ -1,0 +1,68 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Land with historic or archaeological features
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Land with historic or archaeological features</h1>
+
+      <p class="govuk-body">
+        You can apply for SFI actions on land with historic or archaeological features if it's eligible for the action. You can check this for each action in the <a class="govuk-link" href="https://www.gov.uk/find-funding-for-land-or-farms" target="_blank" rel="noopener noreferrer">'Find funding for land or farms'</a> tool.
+      </p>
+
+      <p class="govuk-body">
+        Before you do SFI actions on land with historic or archaeological features, you must get an SFI Historic Environment Farm Environment Record (HEFER) from Historic England.
+      </p>
+
+      <p class="govuk-body">
+        Read the SFI26 scheme information on <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-scheme-expanded-offer-for-2024/sfi-scheme-information-expanded-offer-for-2024#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">SFI HEFERs and how to get one.</a>
+      </p>
+
+      <p class="govuk-body">
+        If you do not want to apply for SFI actions on land with historic or archaeological features, select 'yes' to continue with your application.
+      </p>
+
+      <form class="form" action="/grasslands-v2/hefer-answer" method="post">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              <h2 class="govuk-fieldset__heading">
+                Will you get a SFI HEFER if you're required to?
+              </h2>
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="hefer-answer-v2-yes" name="hefer-answer-v2" type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="hefer-answer-v2-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="hefer-answer-v2-no" name="hefer-answer-v2" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="hefer-answer-v2-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

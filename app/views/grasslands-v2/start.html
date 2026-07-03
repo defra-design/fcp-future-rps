@@ -1,0 +1,40 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+  Apply for funding
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Start page
+    </h1>
+
+    <form action="/mvp/tasklist-1" method="post">
+            <button class="govuk-button" data-module="govuk-button">
+              Continue
+            </button>
+    </form>
+
+    </div>
+  </div>
+
+
+
+</div>
+
+
+
+{% endblock %}

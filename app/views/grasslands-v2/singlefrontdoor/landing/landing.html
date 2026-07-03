@@ -1,0 +1,120 @@
+{% extends "layouts/logged-in-nav-v4.html" %}
+
+{% set pageName="Home" %}
+
+{%- block beforeContent -%}
+
+
+<a href="../start/your-businesses-list" class="govuk-back-link">Back to your businesses</a> 
+
+{% endblock %} 
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if data['valleySFD'] == 'True' %}  
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l">Alfred Waldron</span>
+      Valley Farm
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 192846125</p>
+    {% elif data['agileSFD'] == 'True' %}  
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l govuk-!-margin-bottom-2">Alfred Waldron</span>
+      Agile Farms Ltd
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
+    {% else %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l">Alfred Waldron</span>
+      Agile Farms Ltd
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
+  {% endif %}
+
+  </div>
+</div>
+
+    <div class="govuk-width-container">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+
+
+
+
+       <div class="gem-c-cards card-page">
+     
+            <ul class="gem-c-cards__list gem-c-cards__list-cards">
+              <li class="gem-c-cards__list-item-variant">
+
+                <div class="gem-c-cards__list-item-wrapper-variant">
+
+                  <h3 class="govuk-heading-s">
+                   Farm and Land Service
+                  </h3>
+                  <a href="/grasslands-v2/check-land-details" class="govuk-link govuk-link--no-visited-state">
+                      Go to application
+                  </a>
+                </div>
+                
+              </li>
+      
+
+
+            {# <li class="gem-c-cards__list-item-variant">
+              <a class="govuk-link govuk-link--no-visited-state" href="manage-your-actions.html">
+                <div class="gem-c-cards__list-item-wrapper-variant">
+                  <h3 class="gem-c-cards__sub-heading govuk-heading-s link-style govuk-link">Farming Transformation Fund</h3>
+                  <p class="govuk-body-s gem-c-cards__description p-link-style">Manage {{ data['project-name'] or 'Browns Hill Farm reservoir' }} (WM-VMA-1234) application</p>          
+                </div>
+              </a>  
+            </li>
+
+            <li class="gem-c-cards__list-item-variant">
+              <a class="govuk-link govuk-link--no-visited-state" href="manage-your-actions">
+                <div class="gem-c-cards__list-item-wrapper-variant">
+                  <h3 class="gem-c-cards__sub-heading govuk-heading-s link-style govuk-link">Manage your land</h3>
+                  <p class="govuk-body-s gem-c-cards__description p-link-style">Actions and capital grants</p>          
+                </div>
+              </a>  
+            </li> #}
+
+          
+          </ul>
+        </div>
+
+        
+
+        <h2 class="govuk-heading-m">
+          Business details
+        </h2>
+        <p><a href="#">View and update your business details</a></p>
+        
+        <h2 class="govuk-heading-m">
+          Personal details
+        </h2>
+        <p><a href="#">View and update your personal details</a></p>
+          
+    
+        </div>
+
+        {# <div class="govuk-grid-column-one-third">
+
+
+          <h2 class="govuk-heading-m">
+            Messages
+          </h2>
+      
+          <p><a class="govuk-link--no-visited-state" href="/to-be/mvp-v1/messages/message-history">View messages</a></p>
+
+        </div> #}
+
+
+      </div>
+    </div>
+
+
+{% endblock %}

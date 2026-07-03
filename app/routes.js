@@ -1120,6 +1120,65 @@ router.post('/grasslands/check-your-answers', function (req, res) {
   res.redirect('/grasslands/check-your-answers')
 })
 
+router.post('/grasslands-v2/management-control-answer', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  var managementControlAnswer = req.session.data['management-answer-v2']
+
+  if (managementControlAnswer === 'yes') {
+    res.redirect('/grasslands-v2/hefer')
+  } else {
+    res.redirect('/grasslands-v2/ineligible')
+  }
+})
+
+router.post('/grasslands-v2/hefer-answer', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  var heferAnswer = req.session.data['hefer-answer-v2']
+
+  if (heferAnswer === 'yes') {
+    res.redirect('/grasslands-v2/sssi')
+  } else {
+    res.redirect('/grasslands-v2/ineligible')
+  }
+})
+
+router.post('/grasslands-v2/sssi-answer', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  var sssiAnswer = req.session.data['sssi-answer-v2']
+
+  if (sssiAnswer === 'yes') {
+    res.redirect('/grasslands-v2/eligible')
+  } else {
+    res.redirect('/grasslands-v2/ineligible')
+  }
+})
+
+router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  var landDetailsAnswer = req.session.data['land-details-answer']
+
+  if (landDetailsAnswer === 'yes') {
+    res.redirect('/grasslands-v2/confirm-eligibility-details')
+  } else {
+    res.redirect('/grasslands-v2/update-land-details')
+  }
+})
+
+router.get('/grasslands-v2/check-your-answers', function (req, res) {
+  var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+
+  res.render('grasslands-v2/check-your-answers', {
+    data: Object.assign({}, req.session.data),
+    actionsSummaryRows: actionsSummary.rows,
+    actionsSummaryTotal: actionsSummary.total
+  })
+})
+
+router.post('/grasslands-v2/check-your-answers', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  res.redirect('/grasslands-v2/check-your-answers')
+})
+
 router.use(function (req, res, next) {
   var compatibilityYear = getCompatibilityYearFromSession((req.session && req.session.data) || {})
   var matrixClientConfig = buildMatrixClientConfig(ALL_KNOWN_ACTION_CODES, compatibilityYear)

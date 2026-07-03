@@ -1,0 +1,62 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+    Application saved
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <form class="form" action="/saveReturn-answer" method="post">
+
+        <h1 class="govuk-heading-l">
+         You have saved your application
+        </h1>
+        <p class="govuk-body">
+         You can return to this application using the invite email you received from the Rural Payments Agency.
+        </p><br>
+          {# <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+               What would you like to do?
+              </legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="saveReturn" name="saveReturn-answer" type="radio" value="dashboard">
+                  <label class="govuk-label govuk-radios__label" for="saveReturn">
+                   Go to dashboard
+                  </label>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="saveReturn-2" name="saveReturn-answer" type="radio" value="sign-out">
+                  <label class="govuk-label govuk-radios__label" for="saveReturn-2">
+                     Sign out 
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div> #}
+          {# <button type="submit" class="govuk-button" data-module="govuk-button">
+            Continue
+          </button> #}
+
+       </form>
+    </div>
+  </div>
+
+{% endblock %}

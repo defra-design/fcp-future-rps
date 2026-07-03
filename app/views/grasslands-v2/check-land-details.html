@@ -1,0 +1,82 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Check your land details
+{% endblock %}
+
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Check your land details
+      </h1>
+
+      <p class="govuk-body">
+        Before you continue with this application, check the land details on your digital maps are up to date. If they are not, this may prevent you from applying for the SFI actions you select. Read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/digital-maps-in-the-rural-payments-service-check-and-change-mapping-updates" target="_blank" rel="noopener noreferrer">how to check your digital maps</a>.
+      </p>
+
+      <p class="govuk-body">Check that your digital maps show:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>all the land parcels you want to include in this application</li>
+        <li>the correct total area (in hectares) for each land parcel</li>
+        <li>the correct land covers for each land parcel, for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover</li>
+      </ul>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="https://www.gov.uk/guidance/digital-maps-in-the-rural-payments-service-check-and-change-mapping-updates" target="_blank" rel="noopener noreferrer">Check your digital maps</a>
+      </p>
+
+      <form class="form" action="/grasslands-v2/check-land-details-answer" method="post">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do your digital maps show the correct land details?
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="land-details-answer-yes" name="land-details-answer" type="radio" value="yes" data-aria-controls="conditional-land-uses-notice">
+                <label class="govuk-label govuk-radios__label" for="land-details-answer-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-land-uses-notice">
+                <div class="govuk-warning-text">
+                  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                  <strong class="govuk-warning-text__text">
+                    <span class="govuk-visually-hidden">Warning</span>
+                    You may also need to update land uses. We'll tell you if this is the case when you select land parcels in this application.
+                  </strong>
+                </div>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="land-details-answer-no" name="land-details-answer" type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="land-details-answer-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Save and continue
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

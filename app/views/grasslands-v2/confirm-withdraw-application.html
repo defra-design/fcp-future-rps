@@ -1,0 +1,43 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Are you sure you want to withdraw your application?
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Are you sure you want to withdraw your application?</h1>
+
+      <p class="govuk-body">
+        A record of your withdrawn application will show on your applications page.
+      </p>
+
+      <p class="govuk-body">
+        You will not be able to reopen it or view related documents.
+      </p>
+
+      <p class="govuk-body">
+        If you want to apply in the future, you will need to complete a new application.
+      </p>
+
+      <form class="form" action="dashboard" method="post">
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+            Yes, withdraw application
+          </button>
+          <a class="govuk-link" href="javascript:window.history.back()">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

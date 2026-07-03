@@ -1,0 +1,26 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  You may continue your application
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">You may continue your application</h1>
+
+      <a href="select-land-map-fluid-find?map:center=-0.7448892,51.9497679&map:zoom=13.9865053" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Continue
+      </a>
+    </div>
+  </div>
+{% endblock %}

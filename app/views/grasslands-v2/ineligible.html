@@ -1,0 +1,30 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  You are not eligible to apply
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">You are not eligible to apply</h1>
+
+      <p class="govuk-body">
+        As your last answer was 'no', you are not eligible to apply for an SFI agreement. Select 'back' to change your answer, or withdraw your application.
+      </p>
+
+      <a href="confirm-withdraw-application" role="button" draggable="false" class="govuk-button govuk-button--warning" data-module="govuk-button">
+        Withdraw application
+      </a>
+    </div>
+  </div>
+{% endblock %}

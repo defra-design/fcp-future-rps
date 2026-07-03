@@ -1,0 +1,145 @@
+{% extends "layouts/main-thread.html" %}
+
+{% block pageTitle %}
+    Apply for funding
+{% endblock %}
+
+
+{% block beforeContent %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {% include "_common/sub-header.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Apply for funding</h1>
+
+{# <p class="govuk-body govuk-!-font-weight-bold">Application incomplete</p>
+
+<p class="govuk-body">You have completed 1 of 4 sections</p> #}
+
+      <h2 class="govuk-heading-m">1. Check before you start</h2>
+
+      {% set completedStatus = {
+        text: "Completed"
+      } %}
+
+      {% set incompleteStatus = {
+        tag: {
+          text: "Incomplete",
+          classes: "govuk-tag--blue"
+        }
+      } %}
+
+      {# To switch between the completed and incomplete statues, use some inline logic within the component below, like this: "status: (completedStatus if ... else incompleteStatus)" #}
+
+      {{ govukTaskList({
+        idPrefix: "first-section",
+        items: [
+          {
+            title: {
+              text: "Confirm your land details are up to date"
+            },
+            href: "check-land-details",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Confirm you’re eligible to apply"
+            },
+        href: "management-control",
+        status: completedStatus
+    },
+               {
+            title: {
+              text: "Enter your agreement name"
+            },
+            href: "agreement-name",
+            status: completedStatus
+    }
+        ]
+      }) }}
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land and actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "second-section",
+        items: [
+          {
+            title: {
+              text: "Select the land you want to do the actions on"
+            },
+            href: "select-land",
+            status: incompleteStatus    
+    },
+       
+          {
+            title: {
+              text: "Select which actions to do"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    }
+        ]
+      }) }}
+
+      {# <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Select your actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "third-section",
+        items: [
+          {
+            title: {
+              text: "Select which actions to do"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    }
+        ]
+      }) }} #}
+
+         <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+
+      {{ govukTaskList({
+        idPrefix: "third-section",
+        items: [
+                 {
+            title: {
+              text: "Check your answers"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }          
+    },
+                 {
+            title: {
+              text: "Submit your application"
+            },
+        status: {
+        text: "Cannot start yet",
+        classes: "govuk-task-list__status--cannot-start-yet"
+      }
+          }
+        ]
+      }) }}
+
+    </div>
+  </div>
+
+{% endblock %}
