@@ -1120,9 +1120,70 @@ router.post('/grasslands/check-your-answers', function (req, res) {
   res.redirect('/grasslands/check-your-answers')
 })
 
+function getGrasslandsV2SessionData (req) {
+  return req.session.data || {}
+}
+
+function renderGrasslandsV2EligibilityPage (req, res, view, options) {
+  var opts = options || {}
+
+  res.render(view, {
+    data: getGrasslandsV2SessionData(req),
+    returnTo: opts.returnTo || req.query.from || req.body.returnTo || '',
+    eligibilityError: opts.eligibilityError || false,
+    eligibilityErrorMessage: opts.eligibilityErrorMessage || '',
+    eligibilityErrorFieldId: opts.eligibilityErrorFieldId || ''
+  })
+}
+
+function saveGrasslandsV2Answer (req, fieldName, value) {
+  req.session.data = req.session.data || {}
+  req.session.data[fieldName] = value
+}
+
+router.get('/grasslands-v2/check-land-details', function (req, res) {
+  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-land-details')
+})
+
+router.get('/grasslands-v2/confirm-eligibility-details', function (req, res) {
+  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/confirm-eligibility-details')
+})
+
+router.get('/grasslands-v2/management-control', function (req, res) {
+  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/management-control')
+})
+
+router.get('/grasslands-v2/hefer', function (req, res) {
+  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/hefer')
+})
+
+router.get('/grasslands-v2/sssi', function (req, res) {
+  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/sssi')
+})
+
 router.post('/grasslands-v2/management-control-answer', function (req, res) {
-  req.session.data = Object.assign(req.session.data || {}, req.body || {})
-  var managementControlAnswer = req.session.data['management-answer-v2']
+  var managementControlAnswer = req.body['management-answer-v2']
+  var returnTo = req.body.returnTo || ''
+
+  if (!managementControlAnswer) {
+    var referer = req.get('Referer') || ''
+    var managementView = referer.indexOf('/management-control') !== -1
+      ? 'grasslands-v2/management-control'
+      : 'grasslands-v2/confirm-eligibility-details'
+
+    return renderGrasslandsV2EligibilityPage(req, res, managementView, {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if you will have the required management control of the land in this application',
+      eligibilityErrorFieldId: 'management-answer-v2-error'
+    })
+  }
+
+  saveGrasslandsV2Answer(req, 'management-answer-v2', managementControlAnswer)
+
+  if (returnTo === 'check-your-answers') {
+    return res.redirect('/grasslands-v2/check-your-answers')
+  }
 
   if (managementControlAnswer === 'yes') {
     res.redirect('/grasslands-v2/hefer')
@@ -1132,8 +1193,23 @@ router.post('/grasslands-v2/management-control-answer', function (req, res) {
 })
 
 router.post('/grasslands-v2/hefer-answer', function (req, res) {
-  req.session.data = Object.assign(req.session.data || {}, req.body || {})
-  var heferAnswer = req.session.data['hefer-answer-v2']
+  var heferAnswer = req.body['hefer-answer-v2']
+  var returnTo = req.body.returnTo || ''
+
+  if (!heferAnswer) {
+    return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/hefer', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: "Select if you will get a SFI HEFER if you're required to",
+      eligibilityErrorFieldId: 'hefer-answer-v2-error'
+    })
+  }
+
+  saveGrasslandsV2Answer(req, 'hefer-answer-v2', heferAnswer)
+
+  if (returnTo === 'check-your-answers') {
+    return res.redirect('/grasslands-v2/check-your-answers')
+  }
 
   if (heferAnswer === 'yes') {
     res.redirect('/grasslands-v2/sssi')
@@ -1143,8 +1219,23 @@ router.post('/grasslands-v2/hefer-answer', function (req, res) {
 })
 
 router.post('/grasslands-v2/sssi-answer', function (req, res) {
-  req.session.data = Object.assign(req.session.data || {}, req.body || {})
-  var sssiAnswer = req.session.data['sssi-answer-v2']
+  var sssiAnswer = req.body['sssi-answer-v2']
+  var returnTo = req.body.returnTo || ''
+
+  if (!sssiAnswer) {
+    return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/sssi', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: "Select if you will get SSSI consent if you're required to",
+      eligibilityErrorFieldId: 'sssi-answer-v2-error'
+    })
+  }
+
+  saveGrasslandsV2Answer(req, 'sssi-answer-v2', sssiAnswer)
+
+  if (returnTo === 'check-your-answers') {
+    return res.redirect('/grasslands-v2/check-your-answers')
+  }
 
   if (sssiAnswer === 'yes') {
     res.redirect('/grasslands-v2/eligible')
@@ -1154,8 +1245,23 @@ router.post('/grasslands-v2/sssi-answer', function (req, res) {
 })
 
 router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
-  req.session.data = Object.assign(req.session.data || {}, req.body || {})
-  var landDetailsAnswer = req.session.data['land-details-answer']
+  var landDetailsAnswer = req.body['land-details-answer']
+  var returnTo = req.body.returnTo || ''
+
+  if (!landDetailsAnswer) {
+    return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-land-details', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if your digital maps show the correct land details',
+      eligibilityErrorFieldId: 'land-details-answer-error'
+    })
+  }
+
+  saveGrasslandsV2Answer(req, 'land-details-answer', landDetailsAnswer)
+
+  if (returnTo === 'check-your-answers') {
+    return res.redirect('/grasslands-v2/check-your-answers')
+  }
 
   if (landDetailsAnswer === 'yes') {
     res.redirect('/grasslands-v2/confirm-eligibility-details')

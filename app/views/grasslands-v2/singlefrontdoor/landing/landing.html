@@ -1,12 +1,16 @@
-{% extends "layouts/logged-in-nav-v4.html" %}
+{% extends "layouts/grasslands-v2-header.html" %}
 
-{% set pageName="Home" %}
+{% block pageTitle %}
+  Your businesses
+{% endblock %}
 
-{%- block beforeContent -%}
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
 
-
-<a href="../start/your-businesses-list" class="govuk-back-link">Back to your businesses</a> 
-
+  {{ govukBackLink({
+    text: "Back to your businesses",
+    href: "../start/your-businesses-list"
+  }) }}
 {% endblock %} 
 
 {% block content %}
@@ -23,13 +27,13 @@
     {% elif data['agileSFD'] == 'True' %}  
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
       <span class="govuk-caption-l govuk-!-margin-bottom-2">Alfred Waldron</span>
-      Agile Farms Ltd
+      Agile Farm Ltd
     </h1>
     <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
     {% else %}
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
       <span class="govuk-caption-l">Alfred Waldron</span>
-      Agile Farms Ltd
+      Agile Farm Ltd
     </h1>
     <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
   {% endif %}
@@ -53,9 +57,9 @@
                 <div class="gem-c-cards__list-item-wrapper-variant">
 
                   <h3 class="govuk-heading-s">
-                   Farm and Land Service
+                   Grassland application
                   </h3>
-                  <a href="/grasslands-v2/check-land-details" class="govuk-link govuk-link--no-visited-state">
+                  <a href="/grasslands-v2/before-you-start" class="govuk-link govuk-link--no-visited-state">
                       Go to application
                   </a>
                 </div>

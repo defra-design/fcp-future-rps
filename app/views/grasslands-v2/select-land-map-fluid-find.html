@@ -1,4 +1,4 @@
-{% extends "layouts/beta-header.html" %}
+{% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
   Select land and actions
@@ -392,6 +392,8 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
+    {% include "grasslands-v2/_includes/journey-caption.html" %}
+
     <h1 class="govuk-heading-l" id="page-heading">Select land for your actions</h1>
     <p id="select-parcel-text">Click on the farm name in the list or on the map. You'll then be able to add actions to land parcels.</p>
     <p id="choose-parcel-text" style="display: none;">Choose a land parcel on the map. Available actions will then be listed below the map.</p>

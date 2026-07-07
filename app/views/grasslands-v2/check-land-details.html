@@ -10,7 +10,7 @@
 
   {{ govukBackLink({
     text: "Back",
-    href: "javascript:window.history.back()"
+    href: "before-you-start"
   }) }}
 
 {% endblock %}
@@ -19,6 +19,11 @@
 
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
+
+      {% include "grasslands-v2/_includes/eligibility-error-summary.html" %}
+
+      {% include "grasslands-v2/_includes/journey-caption.html" %}
+
 
       <h1 class="govuk-heading-l">
         Check your land details
@@ -40,19 +45,25 @@
       </p>
 
       <form class="form" action="/grasslands-v2/check-land-details-answer" method="post">
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
+        {% include "grasslands-v2/_includes/eligibility-return-to.html" %}
+        <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="land-details-answer-error"{% endif %}>
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
               Do your digital maps show the correct land details?
             </legend>
+            {% if eligibilityError %}
+              <p id="land-details-answer-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
+              </p>
+            {% endif %}
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="land-details-answer-yes" name="land-details-answer" type="radio" value="yes" data-aria-controls="conditional-land-uses-notice">
+                <input class="govuk-radios__input" id="land-details-answer-yes" name="land-details-answer" type="radio" value="yes" data-aria-controls="conditional-land-uses-notice" {% if data['land-details-answer'] == "yes" %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="land-details-answer-yes">
                   Yes
                 </label>
               </div>
-              <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-land-uses-notice">
+              <div class="govuk-radios__conditional{% if data['land-details-answer'] != "yes" %} govuk-radios__conditional--hidden{% endif %}" id="conditional-land-uses-notice">
                 <div class="govuk-warning-text">
                   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                   <strong class="govuk-warning-text__text">
@@ -62,7 +73,7 @@
                 </div>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="land-details-answer-no" name="land-details-answer" type="radio" value="no">
+                <input class="govuk-radios__input" id="land-details-answer-no" name="land-details-answer" type="radio" value="no" {% if data['land-details-answer'] == "no" %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="land-details-answer-no">
                   No
                 </label>

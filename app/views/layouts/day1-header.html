@@ -46,7 +46,8 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
   {{ govukServiceNavigation({
     rebrand: true,
     serviceName: serviceName or "Farm payments",
-    serviceUrl: "../bd1-common-v1/home"
+    serviceUrl: serviceUrl or "../bd1-common-v1/home",
+    navigation: navigation or []
       }) }}
 {% endblock %}
 

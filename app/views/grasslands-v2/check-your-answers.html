@@ -24,6 +24,9 @@
 <div class="govuk-grid-row">
       <div class="govuk-grid-column-three-quarters">
 
+    {% include "grasslands-v2/_includes/journey-caption.html" %}
+
+
     <h1 class="govuk-heading-l">Check your answers before sending your application</h1>
 
     <h2 class="govuk-heading-m">Business details</h2>
@@ -33,12 +36,10 @@
           Business
         </dt>
         <dd class="govuk-summary-list__value">
-          SARAH FARM LTD<br>
-          2 Toomers Wharf<br>
+          Agile Farm Ltd<br>
           Canal Walk<br>
           Newbury<br>
-          Berkshire<br>
-          RG14 1DY
+          Berkshire
         </dd>
         <dd class="govuk-summary-list__actions">
         </dd>
@@ -69,46 +70,35 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          Land details
+          Digital land maps are up to date
         </dt>
         <dd class="govuk-summary-list__value">
-          Up to date
+          {{ data['land-details-answer'] | capitalize if data['land-details-answer'] else 'Yes' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="check-land-details">Change<span class="govuk-visually-hidden"> land details</span></a>
-        </dd>
-      </div>
-      {# <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Agreement name
-        </dt>
-        <dd class="govuk-summary-list__value">
-          Sarah's Farm Funding 2024
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="agreement-name">Change<span class="govuk-visually-hidden"> agreement name</span></a>
-        </dd>
-      </div> #}
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Management control of land
-        </dt>
-        <dd class="govuk-summary-list__value">
-          Yes
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="management-control">Change<span class="govuk-visually-hidden"> management control of land</span></a>
+          <a class="govuk-link" href="check-land-details?from=check-your-answers">Change<span class="govuk-visually-hidden"> digital land maps are up to date</span></a>
         </dd>
       </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          Land with scheduled monuments or historic or archaeological features
+          Management control of the land
         </dt>
         <dd class="govuk-summary-list__value">
-          Yes
+          {{ data['management-answer-v2'] | capitalize if data['management-answer-v2'] else 'Yes' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="hefer">Change<span class="govuk-visually-hidden"> historic or archaeological features</span></a>
+          <a class="govuk-link" href="management-control?from=check-your-answers">Change<span class="govuk-visually-hidden"> management control of the land</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Historic or archaeological features (HEFER)
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['hefer-answer-v2'] | capitalize if data['hefer-answer-v2'] else 'Yes' }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="hefer?from=check-your-answers">Change<span class="govuk-visually-hidden"> historic or archaeological features (HEFER)</span></a>
         </dd>
       </div>
       <div class="govuk-summary-list__row">
@@ -116,21 +106,10 @@
           Sites of special scientific interest (SSSIs)
         </dt>
         <dd class="govuk-summary-list__value">
-          Yes
+          {{ data['sssi-answer-v2'] | capitalize if data['sssi-answer-v2'] else 'Yes' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="sssi">Change<span class="govuk-visually-hidden"> SSSIs</span></a>
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Inheritance tax exemptions
-        </dt>
-        <dd class="govuk-summary-list__value">
-          Yes
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="ite">Change<span class="govuk-visually-hidden"> inheritance tax exemptions</span></a>
+          <a class="govuk-link" href="sssi?from=check-your-answers">Change<span class="govuk-visually-hidden"> SSSIs</span></a>
         </dd>
       </div>
       

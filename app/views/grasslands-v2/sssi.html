@@ -16,6 +16,10 @@
 {% block content %}
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
+      {% include "grasslands-v2/_includes/eligibility-error-summary.html" %}
+
+      {% include "grasslands-v2/_includes/journey-caption.html" %}
+
       <h1 class="govuk-heading-l">Sites of special scientific interest</h1>
 
       <p class="govuk-body">
@@ -35,22 +39,28 @@
       </p>
 
       <form class="form" action="/grasslands-v2/sssi-answer" method="post">
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
+        {% include "grasslands-v2/_includes/eligibility-return-to.html" %}
+        <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="sssi-answer-v2-error"{% endif %}>
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
               <h2 class="govuk-fieldset__heading">
                 Will you get SSSI consent if you're required to?
               </h2>
             </legend>
+            {% if eligibilityError %}
+              <p id="sssi-answer-v2-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
+              </p>
+            {% endif %}
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="sssi-answer-v2-yes" name="sssi-answer-v2" type="radio" value="yes">
+                <input class="govuk-radios__input" id="sssi-answer-v2-yes" name="sssi-answer-v2" type="radio" value="yes" {% if data['sssi-answer-v2'] == "yes" %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="sssi-answer-v2-yes">
                   Yes
                 </label>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="sssi-answer-v2-no" name="sssi-answer-v2" type="radio" value="no">
+                <input class="govuk-radios__input" id="sssi-answer-v2-no" name="sssi-answer-v2" type="radio" value="no" {% if data['sssi-answer-v2'] == "no" %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="sssi-answer-v2-no">
                   No
                 </label>
