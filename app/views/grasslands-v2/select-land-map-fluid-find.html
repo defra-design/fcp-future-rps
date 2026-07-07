@@ -113,6 +113,50 @@
       border: 2px solid #b1b4b6;
       cursor: pointer;
     }
+
+    .map-viewport {
+      position: relative;
+    }
+
+    .map-reset-view-button {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      padding: 8px 12px;
+      background: #ffffff;
+      border: 2px solid #0b0c0c;
+      box-shadow: 0 2px 4px rgba(11, 12, 12, 0.15);
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.25;
+      color: #0b0c0c;
+      cursor: pointer;
+    }
+
+    .map-reset-view-button:hover {
+      background: #f3f2f1;
+    }
+
+    .map-reset-view-button:focus {
+      outline: 3px solid transparent;
+      box-shadow: 0 0 0 3px #ffdd00, 0 2px 4px rgba(11, 12, 12, 0.15);
+    }
+
+    .map-reset-view-button__icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+    }
+
+    .map-reset-view-button[hidden] {
+      display: none;
+    }
     .im-map,
     .maplibregl-map {
       font-family: "GDS Transport", arial, sans-serif;
@@ -399,13 +443,6 @@
                   <td class="govuk-table__cell">Land cover</td>
                   <td class="govuk-table__cell" id="land-cover">-</td>
                 </tr>
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Current actions</td>
-                  <td class="govuk-table__cell">
-                    <span id="num-actions">-</span>
-                    <span id="view-existing-link" style="display: none;"> - <a href="#application-summary-accordion" class="govuk-link" id="view-existing-actions-link">view</a></span>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -413,7 +450,19 @@
         </div>
       </div>
       <div class="govuk-grid-column-two-thirds">
-        <div id="map"></div>
+        <div class="map-viewport">
+          <div id="map"></div>
+          <button type="button" id="reset-map-view-button" class="map-reset-view-button" hidden aria-label="Show all parcels on the map" title="Show all parcels on the map">
+            <svg class="map-reset-view-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M8 4H4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M16 4h4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M8 20H4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M16 20h4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <rect x="7" y="7" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"></rect>
+            </svg>
+            Show all parcels
+          </button>
+        </div>
         <p class="govuk-body-s govuk-!-margin-top-2">
           {# Click on the field parcels to select and see details.
         </p> #}
@@ -691,6 +740,15 @@
 
             </div>
           </div>
+
+        <div id="quantity-error-summary" class="govuk-error-summary govuk-!-margin-top-6" aria-labelledby="quantity-error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" hidden>
+          <h2 class="govuk-error-summary__title" id="quantity-error-summary-title">
+            There is a problem
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list" id="quantity-error-summary-list"></ul>
+          </div>
+        </div>
 
         <button type="button" id="save-actions-button" class="govuk-button govuk-button--secondary govuk-!-margin-top-6" data-module="govuk-button">
           Save actions for this parcel
@@ -1267,6 +1325,25 @@
       };
     }
 
+    function resetMapToAllParcelsView() {
+      suppressParcelSelectionFor(350);
+      closeAllParcelPopups();
+
+      if (!rawMap) {
+        return;
+      }
+
+      if (defaultMapView) {
+        rawMap.easeTo({
+          center: [defaultMapView.lng, defaultMapView.lat],
+          zoom: defaultMapView.zoom
+        });
+        return;
+      }
+
+      map.setView(ALL_FARMS_MAP_CENTER, ALL_FARMS_MAP_ZOOM);
+    }
+
     function normalizePadding(padding) {
       if (!padding) {
         return 0;
@@ -1278,7 +1355,62 @@
     }
 
     var rawMap = null;
+    var defaultMapView = null;
     var mapReadyCallbacks = [];
+
+    var ALL_FARMS_MAP_CENTER = [51.9497679, -0.7448892];
+    var ALL_FARMS_MAP_ZOOM = 13.9865053;
+
+    function clearMapViewQueryParams() {
+      try {
+        var url = new URL(window.location.href);
+        var changed = false;
+
+        ['map:center', 'map:zoom'].forEach(function(param) {
+          if (url.searchParams.has(param)) {
+            url.searchParams.delete(param);
+            changed = true;
+          }
+        });
+
+        if (changed) {
+          window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+        }
+      } catch (error) {
+        // Ignore URL parsing issues in older browsers.
+      }
+    }
+
+    function establishDefaultMapView() {
+      defaultMapView = {
+        lat: ALL_FARMS_MAP_CENTER[0],
+        lng: ALL_FARMS_MAP_CENTER[1],
+        zoom: ALL_FARMS_MAP_ZOOM
+      };
+    }
+
+    function isMapAwayFromDefaultView() {
+      if (!rawMap || !defaultMapView) {
+        return false;
+      }
+
+      var center = rawMap.getCenter();
+      var zoom = rawMap.getZoom();
+      var latDiff = Math.abs(center.lat - defaultMapView.lat);
+      var lngDiff = Math.abs(center.lng - defaultMapView.lng);
+      var zoomDiff = Math.abs(zoom - defaultMapView.zoom);
+
+      return latDiff > 0.0015 || lngDiff > 0.0015 || zoomDiff > 0.12;
+    }
+
+    function updateResetMapViewButtonVisibility() {
+      var button = document.getElementById('reset-map-view-button');
+      if (!button) {
+        return;
+      }
+
+      button.hidden = !isMapAwayFromDefaultView();
+    }
 
     function onMapReady(callback) {
       if (rawMap) {
@@ -1315,12 +1447,14 @@
 
     var mapHeight = Math.max(window.innerHeight - 260, 380);
 
+    clearMapViewQueryParams();
+
     var interactiveMap = new defra.InteractiveMap('map', {
       behaviour: 'inline',
       mapProvider: defra.maplibreProvider(),
       mapLabel: 'Land parcel map for action selection',
-      center: [-0.7448892, 51.9497679],
-      zoom: 13.9865053,
+      center: [ALL_FARMS_MAP_CENTER[1], ALL_FARMS_MAP_CENTER[0]],
+      zoom: ALL_FARMS_MAP_ZOOM,
       minZoom: 6,
       maxZoom: 19,
       containerHeight: mapHeight + 'px',
@@ -1343,6 +1477,17 @@
       rawMap = event.map;
       mapReadyCallbacks.splice(0).forEach(function(callback) {
         callback(rawMap);
+      });
+
+      establishDefaultMapView();
+      rawMap.on('moveend', updateResetMapViewButtonVisibility);
+      rawMap.once('idle', function() {
+        if (isMapAwayFromDefaultView()) {
+          resetMapToAllParcelsView();
+          return;
+        }
+
+        updateResetMapViewButtonVisibility();
       });
     });
 
@@ -1389,9 +1534,6 @@
     function suppressParcelSelectionFor(milliseconds) {
       suppressParcelSelectionUntil = Date.now() + Math.max(0, Number(milliseconds) || 0);
     }
-
-    var ALL_FARMS_MAP_CENTER = [51.9497679, -0.7448892];
-    var ALL_FARMS_MAP_ZOOM = 13.9865053;
 
     var FARM_VIEW_CONFIG = {
       'blackberry': { label: 'Blackberry Farm', panelId: 'blackberry-farm-info', center: [51.9525, -0.7520], zoom: 15, parcelListId: 'buckinghamshire-parcels' }
@@ -2683,6 +2825,175 @@
       return 4 * Math.sqrt(areaSqM);
     }
 
+    function parseQuantityInput(rawValue) {
+      var trimmed = String(rawValue || '').trim();
+
+      if (!trimmed) {
+        return { valid: false, reason: 'empty' };
+      }
+
+      if (!/^\d+(\.\d{1,4})?$/.test(trimmed)) {
+        return { valid: false, reason: 'format' };
+      }
+
+      var value = parseFloat(trimmed);
+
+      if (!Number.isFinite(value) || value <= 0) {
+        return { valid: false, reason: 'zero' };
+      }
+
+      return { valid: true, value: value };
+    }
+
+    function hasClearlyInvalidQuantityInput(rawValue) {
+      var trimmed = String(rawValue || '').trim();
+
+      if (!trimmed) {
+        return false;
+      }
+
+      if (/[^\d.]/.test(trimmed)) {
+        return true;
+      }
+
+      var parsed = parseQuantityInput(trimmed);
+      return !parsed.valid && parsed.reason === 'zero';
+    }
+
+    function getFormatErrorMessage(unit, reason) {
+      if (reason === 'zero') {
+        return 'Enter a number greater than 0';
+      }
+
+      if (unit === 'm') {
+        return 'Enter a number of metres, for example 100 or 250';
+      }
+
+      return 'Enter a number of hectares, for example 12.5 or 100';
+    }
+
+    function getQuantityCheckbox($quantityInput) {
+      var codeLower = ($quantityInput.attr('id') || '').replace('quantity-', '');
+      return $('input[name="actions"][value="' + codeLower.toUpperCase() + '"]');
+    }
+
+    function getQuantityErrorsStore($quantityInput) {
+      var store = $quantityInput.data('quantityErrors');
+
+      if (!store) {
+        store = { format: null, overLimit: null };
+        $quantityInput.data('quantityErrors', store);
+      }
+
+      return store;
+    }
+
+    function refreshQuantityFieldDisplay($quantityInput) {
+      var errors = getQuantityErrorsStore($quantityInput);
+      var priority = ['format', 'overLimit'];
+      var message = null;
+
+      for (var i = 0; i < priority.length; i++) {
+        if (errors[priority[i]]) {
+          message = errors[priority[i]];
+          break;
+        }
+      }
+
+      var $formGroup = $quantityInput.closest('.govuk-form-group');
+      $formGroup.find('.govuk-error-message').remove();
+
+      if (message) {
+        $formGroup.addClass('govuk-form-group--error');
+        $quantityInput.addClass('govuk-input--error');
+        $formGroup.find('label').first().after(
+          '<p class="govuk-error-message" id="error-' + $quantityInput.attr('id') + '"><span class="govuk-visually-hidden">Error:</span> ' + message + '</p>'
+        );
+      } else {
+        $formGroup.removeClass('govuk-form-group--error');
+        $quantityInput.removeClass('govuk-input--error');
+      }
+    }
+
+    function clearQuantityFieldValidation($quantityInput) {
+      $quantityInput.removeData('quantityErrors');
+      $quantityInput.removeData('blurred');
+
+      var $formGroup = $quantityInput.closest('.govuk-form-group');
+      $formGroup.removeClass('govuk-form-group--error');
+      $quantityInput.removeClass('govuk-input--error');
+      $formGroup.find('.govuk-error-message').remove();
+    }
+
+    function hideQuantityErrorSummary() {
+      var $summary = $('#quantity-error-summary');
+      $summary.prop('hidden', true).attr('aria-hidden', 'true');
+      $('#quantity-error-summary-list').empty();
+    }
+
+    function showQuantityErrorSummary(summaryErrors) {
+      var $list = $('#quantity-error-summary-list');
+      $list.empty();
+
+      summaryErrors.forEach(function(item) {
+        $list.append(
+          '<li><a href="#' + item.fieldId + '">' + item.linkText + '</a></li>'
+        );
+      });
+
+      var $summary = $('#quantity-error-summary');
+      $summary.prop('hidden', false).attr('aria-hidden', 'false');
+      $summary[0].focus();
+    }
+
+    function updateQuantityFormatErrors($quantityInput) {
+      var $checkbox = getQuantityCheckbox($quantityInput);
+      var errors = getQuantityErrorsStore($quantityInput);
+      errors.format = null;
+
+      if (!$checkbox.is(':checked')) {
+        refreshQuantityFieldDisplay($quantityInput);
+        return;
+      }
+
+      var unit = $quantityInput.siblings('.govuk-input__suffix').text();
+      var parsed = parseQuantityInput($quantityInput.val());
+
+      if (!parsed.valid && parsed.reason !== 'empty') {
+        errors.format = getFormatErrorMessage(unit, parsed.reason);
+      }
+
+      refreshQuantityFieldDisplay($quantityInput);
+    }
+
+    function calculateParcelQuantityTotals() {
+      var totals = { ha: 0, m: 0 };
+
+      $('input[name="actions"]:checked').each(function() {
+        var actionCode = ($(this).val() || '').toString().toLowerCase();
+        var $quantityInput = $('#quantity-' + actionCode);
+
+        if (!$quantityInput.length) {
+          return;
+        }
+
+        var suffix = $quantityInput.siblings('.govuk-input__suffix').text();
+        var parsed = parseQuantityInput($quantityInput.val());
+
+        if (!parsed.valid) {
+          return;
+        }
+
+        if (suffix === 'ha') {
+          totals.ha += parsed.value;
+        } else if (suffix === 'm') {
+          totals.m += parsed.value;
+        }
+      });
+
+      return totals;
+    }
+
     function resetActionSelectionUiState() {
       $('input[name="actions"]').each(function() {
         var $input = $(this);
@@ -2700,11 +3011,8 @@
         $item.find('.compatibility-hint, .area-full-hint, .sfi-compatibility-option-hint').remove();
 
         if ($quantityInput.length) {
-          var $formGroup = $quantityInput.closest('.govuk-form-group');
+          clearQuantityFieldValidation($quantityInput);
           $quantityInput.val('');
-          $quantityInput.removeClass('govuk-input--error');
-          $formGroup.removeClass('govuk-form-group--error');
-          $formGroup.find('.govuk-error-message').remove();
         }
 
         if ($conditional.length) {
@@ -3231,7 +3539,7 @@
       parcelData[parcelId].actions = eligibleActions.length > 0 ? eligibleActions : sharedParcelActionCodes.slice();
     });
 
-    // Keep full SFI26 coverage while using stricter parcel-level feature gates.
+    // Keep full SFI coverage while using stricter parcel-level feature gates.
     var representedActionCodes = {};
     Object.keys(parcelData).forEach(function(parcelId) {
       parcelData[parcelId].actions.forEach(function(code) {
@@ -3390,6 +3698,7 @@
         qtyInput.id = 'quantity-' + codeLower;
         qtyInput.name = 'quantity-' + codeLower;
         qtyInput.type = 'text';
+        qtyInput.inputMode = 'decimal';
         qtyInput.spellcheck = false;
 
         var suffix = document.createElement('div');
@@ -3932,10 +4241,6 @@
           landCoverEl.appendChild(document.createTextNode(landCover));
         });
       }
-      var numActionsEl = document.getElementById('num-actions');
-      if (numActionsEl) {
-        numActionsEl.textContent = parcel.numActions;
-      }
       document.getElementById('actions-heading').textContent = 'Available actions on ' + formatParcelReference(parcel);
 
       // Keep the left panel visible and only hide the farm summary tables.
@@ -3993,21 +4298,6 @@
       // Enable search box
       document.getElementById('search-actions-map').disabled = false;
       document.getElementById('search-button-map').disabled = false;
-
-      // Show/hide the "view" link based on number of existing actions
-      var viewLink = document.getElementById('view-existing-link');
-      if (viewLink) {
-        if (parcel.numActions > 0) {
-          viewLink.style.display = 'inline';
-          // Update the href to point to this specific parcel's section
-          var viewExistingActionsLink = document.getElementById('view-existing-actions-link');
-          if (viewExistingActionsLink) {
-            viewExistingActionsLink.setAttribute('href', '#existing-' + parcelId);
-          }
-        } else {
-          viewLink.style.display = 'none';
-        }
-      }
 
       // Update actions list
       updateActionsList(parcel.actions);
@@ -4724,105 +5014,70 @@
       // Function to update available quantities based on what's been entered
       function updateAvailableQuantities() {
         if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) return;
-        
+
         var parcel = parcelData[currentSelectedParcel];
         var totalAreaHa = parseFloat(parcel.availableArea);
         var totalAreaM = getLinearAvailableMetres(parcel);
-        
-        // Calculate totals used by unit
-        var totalUsedHa = 0;
-        var totalUsedM = 0;
-        $('input[name="actions"]:checked').each(function() {
-          var actionCode = ($(this).val() || '').toString().toLowerCase();
-          var $quantityInput = $('#quantity-' + actionCode);
-          if (!$quantityInput.length) {
-            return;
-          }
-
-          var suffix = $quantityInput.siblings('.govuk-input__suffix').text();
-          var value = parseFloat($quantityInput.val());
-
-          if (suffix === 'ha' && Number.isFinite(value) && value > 0) {
-            totalUsedHa += value;
-          } else if (suffix === 'm' && Number.isFinite(value) && value > 0) {
-            totalUsedM += value;
-          }
-        });
-        
-        var remainingHa = Math.max(0, totalAreaHa - totalUsedHa);
-        var remainingM = Math.max(0, totalAreaM - totalUsedM);
-        var isOverLimitHa = totalUsedHa > totalAreaHa;
-        var isOverLimitM = totalUsedM > totalAreaM;
+        var totals = calculateParcelQuantityTotals();
+        var remainingHa = Math.max(0, totalAreaHa - totals.ha);
+        var remainingM = Math.max(0, totalAreaM - totals.m);
+        var isOverLimitHa = totals.ha > totalAreaHa;
+        var isOverLimitM = totals.m > totalAreaM;
         var isOverLimit = isOverLimitHa || isOverLimitM;
-        
+
         // Update all quantity hints
         $('.govuk-checkboxes__conditional').each(function() {
           var $conditional = $(this);
           var $hint = $conditional.find('.govuk-hint.govuk-checkboxes__hint');
           var $suffix = $conditional.find('.govuk-input__suffix');
           var actionCode = $conditional.attr('id').replace('conditional-', '').toUpperCase();
-          
+
           if ($suffix.text() === 'ha') {
             $hint.text(remainingHa.toFixed(4) + ' hectares available');
           } else if ($suffix.text() === 'm') {
             $hint.text(getAvailableHintText(actionCode, remainingM));
           }
         });
-        
-        // Handle over-limit errors
-        if (isOverLimit) {
-          // Add error styling to inputs with values
-          $('input[id^="quantity-"]').each(function() {
-            var $input = $(this);
-            var suffix = $input.siblings('.govuk-input__suffix').text();
-            var value = parseFloat($input.val()) || 0;
-            
-            if ((suffix === 'ha' && value > 0 && isOverLimitHa) || (suffix === 'm' && value > 0 && isOverLimitM)) {
-              var $formGroup = $input.closest('.govuk-form-group');
-              
-              // Add error class to input
-              $input.addClass('govuk-input--error');
-              
-              // Add error class to form group if not already present
-              if (!$formGroup.hasClass('govuk-form-group--error')) {
-                $formGroup.addClass('govuk-form-group--error');
-              }
-              
-              // Add error message if not already present
-              if (!$formGroup.find('.govuk-error-message').length) {
-                var errorText = suffix === 'm'
-                  ? 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel'
-                  : 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
-                var errorHtml = '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> ' + errorText + '</p>';
-                $formGroup.find('label').after(errorHtml);
-              }
+
+        // Tier 1: live over-limit validation
+        $('input[id^="quantity-"]').each(function() {
+          var $input = $(this);
+          var errors = getQuantityErrorsStore($input);
+          var $checkbox = getQuantityCheckbox($input);
+          errors.overLimit = null;
+
+          if (!$checkbox.is(':checked')) {
+            refreshQuantityFieldDisplay($input);
+            return;
+          }
+
+          var suffix = $input.siblings('.govuk-input__suffix').text();
+          var parsed = parseQuantityInput($input.val());
+
+          if (isOverLimit && parsed.valid) {
+            if ((suffix === 'ha' && isOverLimitHa) || (suffix === 'm' && isOverLimitM)) {
+              errors.overLimit = suffix === 'm'
+                ? 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel'
+                : 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
             }
-          });
-        } else {
-          // Remove error styling when within limit
-          $('input[id^="quantity-"]').each(function() {
-            var $input = $(this);
-            var $formGroup = $input.closest('.govuk-form-group');
-            
-            $input.removeClass('govuk-input--error');
-            $formGroup.removeClass('govuk-form-group--error');
-            $formGroup.find('.govuk-error-message').remove();
-          });
-        }
-        
+          }
+
+          refreshQuantityFieldDisplay($input);
+        });
+
         // Check if all available area is used (but not exceeded)
         if (remainingHa === 0 && !isOverLimit) {
           // Disable all unchecked, compatible (non-disabled) checkboxes
           $('input[name="actions"]').each(function() {
             var $cb = $(this);
             var $item = $cb.closest('.govuk-checkboxes__item');
-            
+
             // Only disable if: not checked, visible, and not already disabled due to compatibility
             if (!$cb.is(':checked') && $item.css('display') !== 'none' && !$cb.prop('disabled')) {
               $cb.prop('disabled', true);
               $cb.attr('data-disabled-reason', 'area-full');
               $item.css('opacity', '0.5');
-              
+
               var $label = $cb.siblings('.govuk-checkboxes__label');
               if (!$label.find('.area-full-hint').length) {
                 $label.append('<span class="area-full-hint" style="display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;">All available area on land parcel used</span>');
@@ -4836,7 +5091,7 @@
             if ($cb.attr('data-disabled-reason') === 'area-full') {
               $cb.prop('disabled', false);
               $cb.removeAttr('data-disabled-reason');
-              
+
               var $item = $cb.closest('.govuk-checkboxes__item');
               $item.css('opacity', '1');
               $cb.siblings('.govuk-checkboxes__label').find('.area-full-hint').remove();
@@ -4846,15 +5101,78 @@
 
         updateCompatibilityState();
       }
-      
-      // Attach input event listeners to all quantity inputs
+
+      function validateBeforeSave() {
+        hideQuantityErrorSummary();
+
+        $('input[name="actions"]:checked').each(function() {
+          var actionCode = ($(this).val() || '').toString();
+          var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
+          $quantityInput.data('blurred', true);
+          updateQuantityFormatErrors($quantityInput);
+        });
+
+        updateAvailableQuantities();
+
+        var summaryErrors = [];
+
+        $('input[name="actions"]:checked').each(function() {
+          var actionCode = ($(this).val() || '').toString();
+          var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
+          var errors = getQuantityErrorsStore($quantityInput);
+
+          if (errors.format || errors.overLimit) {
+            summaryErrors.push({
+              fieldId: $quantityInput.attr('id'),
+              linkText: getActionName(actionCode) + ': ' + actionCode
+            });
+          }
+        });
+
+        if (summaryErrors.length === 0) {
+          return true;
+        }
+
+        showQuantityErrorSummary(summaryErrors);
+        $('#save-confirmation-message').hide();
+
+        var $summary = $('#quantity-error-summary');
+        if ($summary.length) {
+          $('html, body').animate({
+            scrollTop: $summary.offset().top - 20
+          }, 300);
+        }
+
+        return false;
+      }
+
+      // Tier 1: live over-limit updates; show format errors for clearly invalid input
       $(document).on('input', 'input[id^="quantity-"]', function() {
+        var $input = $(this);
+
+        if ($input.data('blurred') || hasClearlyInvalidQuantityInput($input.val())) {
+          updateQuantityFormatErrors($input);
+        } else {
+          var errors = getQuantityErrorsStore($input);
+          errors.format = null;
+          refreshQuantityFieldDisplay($input);
+        }
+
+        updateAvailableQuantities();
+      });
+
+      // Tier 2: format validation when the user leaves the field
+      $(document).on('blur', 'input[id^="quantity-"]', function() {
+        var $input = $(this);
+        $input.data('blurred', true);
+        updateQuantityFormatErrors($input);
         updateAvailableQuantities();
       });
       
       // Update quantities when parcel changes
       var originalSelectParcel = selectParcel;
       selectParcel = function(parcelId) {
+        hideQuantityErrorSummary();
         resetActionSelectionUiState();
 
         originalSelectParcel(parcelId);
@@ -4898,6 +5216,12 @@
       
       // Show confirmation message and enable Continue button when Save actions button is clicked
       $('#save-actions-button').click(function() {
+        if (!validateBeforeSave()) {
+          return;
+        }
+
+        hideQuantityErrorSummary();
+
         // Capture the current parcel state when saving
         var savedParcelId = currentSelectedParcel;
         captureCurrentParcelState();
@@ -5010,11 +5334,8 @@
           var actionCode = ($(this).val() || '').toString().toLowerCase();
           var $quantityInput = $('#quantity-' + actionCode);
           if ($quantityInput.length) {
-            var $formGroup = $quantityInput.closest('.govuk-form-group');
             $quantityInput.val('');
-            $quantityInput.removeClass('govuk-input--error');
-            $formGroup.removeClass('govuk-form-group--error');
-            $formGroup.find('.govuk-error-message').remove();
+            clearQuantityFieldValidation($quantityInput);
           }
         }
 
@@ -5129,6 +5450,11 @@
           focusFarmByKey(farmKey);
         });
         
+        $('#reset-map-view-button').on('click', function(e) {
+          e.preventDefault();
+          resetMapToAllParcelsView();
+        });
+
         // Click handler for "Back to OS map reference farm selection" link
         $('#back-to-farm-selection-link').on('click', function(e) {
           e.preventDefault();

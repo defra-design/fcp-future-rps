@@ -2961,7 +2961,7 @@
       parcelData[parcelId].actions = eligibleActions.length > 0 ? eligibleActions : sharedParcelActionCodes.slice();
     });
 
-    // Keep full SFI26 coverage while using stricter parcel-level feature gates.
+    // Keep full SFI coverage while using stricter parcel-level feature gates.
     var representedActionCodes = {};
     Object.keys(parcelData).forEach(function(parcelId) {
       parcelData[parcelId].actions.forEach(function(code) {
