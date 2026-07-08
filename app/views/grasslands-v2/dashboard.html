@@ -1,68 +1,49 @@
-{% extends "layouts/main.html" %}
+{% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
-  Future – {{ serviceName }} – GOV.UK Prototype Kit
+  Funding applications and agreements
 {% endblock %}
 
-
 {% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
 
-{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
-
-{{ govukPhaseBanner({
-  tag: {
-    text: "Prototype"
-  },
-  html: 'This is a prototype used for testing purposes only.'
-}) }}
   {{ govukBackLink({
     text: "Back",
-    href: "javascript:window.history.back()"
+    href: "/grasslands-v2/singlefrontdoor/landing/landing"
   }) }}
 {% endblock %}
 
 {% block content %}
-
-
-<div class="govuk-width-container">
-<main class="govuk-main-wrapper">
-
   <div class="govuk-grid-row">
-    <div class="govuk-grid-full-column">
+    <div class="govuk-grid-column-two-thirds">
 
-<h1 class="govuk-heading-l">Funding applications and agreements</h1>
-<span class="govuk-caption-l govuk-!-padding-bottom-5">SARAH FARMER</span>
+      <h1 class="govuk-heading-l">Funding applications and agreements</h1>
 
-    <table class="govuk-table">
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header">App. number</th>
-      <th scope="col" class="govuk-table__header">Type</th>
-      <th scope="col" class="govuk-table__header">Active</th>
-      <th scope="col" class="govuk-table__header">Submit date</th>
-      <th scope="col" class="govuk-table__header">Status</th>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">App. number</th>
+            <th scope="col" class="govuk-table__header">Type</th>
+            <th scope="col" class="govuk-table__header">Active</th>
+            <th scope="col" class="govuk-table__header">Submit date</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header"></th>
+            <td class="govuk-table__cell"></td>
+            <td class="govuk-table__cell">No items</td>
+            <td class="govuk-table__cell"></td>
+            <td class="govuk-table__cell"></td>
+          </tr>
+        </tbody>
+      </table>
 
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"></th>
-      <td class="govuk-table__cell"></td>
-      <td class="govuk-table__cell">No items</td>
-      <td class="govuk-table__cell"></td>
-      <td class="govuk-table__cell"></td>
-    </tr>
- </tbody>
-</table>
+      <a href="before-you-start" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Apply for a new agreement
+      </a>
 
-  <a href="check-land-details" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-    Apply for a new agreement
-  </a>
-
-</div>
-</div>
-
-</main>
-</div>
-
+    </div>
+  </div>
 {% endblock %}

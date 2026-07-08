@@ -438,10 +438,6 @@
                   <td class="govuk-table__cell" id="total-area">-</td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Available area (hectares)</td>
-                  <td class="govuk-table__cell" id="available-area">-</td>
-                </tr>
-                <tr class="govuk-table__row">
                   <td class="govuk-table__cell">Land cover</td>
                   <td class="govuk-table__cell" id="land-cover">-</td>
                 </tr>
@@ -763,9 +759,14 @@
 
         <form action="check-your-answers" method="post" id="continue-form">
           <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
-          <button type="submit" id="continue-button" disabled class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
-            Continue
-          </button>
+          <div class="govuk-button-group govuk-!-margin-top-2">
+            <button type="submit" id="continue-button" disabled class="govuk-button" data-module="govuk-button">
+              Continue
+            </button>
+            <a href="/grasslands-v2/check-your-answers" id="return-to-cya-link" class="govuk-link govuk-link--no-visited-state" style="display: none;">
+              Cancel changes
+            </a>
+          </div>
         </form>
         </div>
 
@@ -1362,6 +1363,14 @@
 
     var ALL_FARMS_MAP_CENTER = [51.9497679, -0.7448892];
     var ALL_FARMS_MAP_ZOOM = 13.9865053;
+
+    // Capture before InteractiveMap rewrites the URL query string
+    var fromCheckYourAnswersParam = new URLSearchParams(window.location.search).get('from') === 'check-your-answers';
+    if (fromCheckYourAnswersParam) {
+      sessionStorage.setItem('editingFromCheckYourAnswers', 'true');
+    } else if (document.referrer.indexOf('check-your-answers') === -1) {
+      sessionStorage.removeItem('editingFromCheckYourAnswers');
+    }
 
     function clearMapViewQueryParams() {
       try {
@@ -3916,7 +3925,6 @@
 
     function buildParcelPopupContent(parcelId, data) {
       var content = '<h3>' + data.name + '</h3>' +
-        '<p>Available area: ' + data.availableArea + ' ha</p>' +
         '<p>Actions from previous agreements: ' + data.numActions;
 
       if (data.numActions > 0) {
@@ -4636,12 +4644,28 @@
               updateApplicationSummary();
               // Show the accordion section
               $('#parcels-actions-summary-section').show();
+              enableReturnFromCheckYourAnswersFlow();
             }, 100);
           }
         } catch(e) {
           console.error('Error parsing session data:', e);
         }
       }
+
+      var cameFromCheckYourAnswers = sessionStorage.getItem('editingFromCheckYourAnswers') === 'true';
+
+      function enableReturnFromCheckYourAnswersFlow() {
+        if (!cameFromCheckYourAnswers) {
+          $('#return-to-cya-link').hide();
+          return;
+        }
+
+        $('#return-to-cya-link').show();
+      }
+
+      $('#return-to-cya-link').on('click', function() {
+        sessionStorage.removeItem('editingFromCheckYourAnswers');
+      });
       
       // Check if user came from check-your-answers with a specific parcel to edit
       var selectedParcelId = sessionStorage.getItem('selectedParcelId');
@@ -4662,7 +4686,13 @@
           if (parcelPolygons[selectedParcelId]) {
             map.fitBounds(parcelPolygons[selectedParcelId].getBounds(), {padding: [50, 50]});
           }
+
+          enableReturnFromCheckYourAnswersFlow();
         }, 500);
+      } else if (cameFromCheckYourAnswers) {
+        enableReturnFromCheckYourAnswersFlow();
+      } else {
+        $('#return-to-cya-link').hide();
       }
       
       // Handle click on "Apply actions to this parcel" link in map popups
@@ -5534,6 +5564,7 @@
         // Store parcelSelections in hidden field before form submission
         $('#continue-form').on('submit', function() {
           $('#parcelSelectionsData').val(JSON.stringify(parcelSelections));
+          sessionStorage.removeItem('editingFromCheckYourAnswers');
         });
 
         onMapReady(function() {

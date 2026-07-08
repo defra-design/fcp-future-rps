@@ -7,6 +7,7 @@ const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 const https = require('https')
 const actionCodeNames = require('./data/sfi24-codes-names.json')
+const sessionDataDefaults = require('./data/session-data-defaults')
 const {
   areActionsCompatible,
   findIncompatibilities,
@@ -35,6 +36,34 @@ govukPrototypeKit.views.addFilter('fromJson', function(str) {
 govukPrototypeKit.views.addFilter('formatCurrency', function(num) {
   return parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 })
+
+function getSafeReturnUrl (returnUrl) {
+  if (typeof returnUrl !== 'string') {
+    return '/'
+  }
+
+  var trimmedReturnUrl = returnUrl.trim()
+
+  if (!trimmedReturnUrl.startsWith('/') || trimmedReturnUrl.startsWith('//')) {
+    return '/'
+  }
+
+  if (trimmedReturnUrl.startsWith('/manage-prototype') || trimmedReturnUrl.startsWith('/clear-session-data')) {
+    return '/'
+  }
+
+  return trimmedReturnUrl
+}
+
+function clearSessionDataAndRedirect (req, res) {
+  req.session.data = Object.assign({}, sessionDataDefaults)
+
+  var returnUrl = getSafeReturnUrl(req.query.returnUrl || req.get('Referer') || '/')
+  res.redirect(returnUrl)
+}
+
+router.get('/clear-session-data', clearSessionDataAndRedirect)
+router.post('/clear-session-data', clearSessionDataAndRedirect)
 
 // Add your routes here
 router.post('/remove-3169', function (req, res) {
@@ -1124,12 +1153,62 @@ function getGrasslandsV2SessionData (req) {
   return req.session.data || {}
 }
 
+function clearGrasslandsV2ApplicationData (req) {
+  var existingData = getGrasslandsV2SessionData(req)
+  var preservedBusinessContext = {}
+
+  if (existingData.agileSFD) {
+    preservedBusinessContext.agileSFD = existingData.agileSFD
+  }
+
+  if (existingData.valleySFD) {
+    preservedBusinessContext.valleySFD = existingData.valleySFD
+  }
+
+  req.session.data = Object.assign({}, sessionDataDefaults, preservedBusinessContext)
+}
+
+router.get('/grasslands-v2/before-you-start', function (req, res) {
+  clearGrasslandsV2ApplicationData(req)
+
+  res.render('grasslands-v2/before-you-start', {
+    data: getGrasslandsV2SessionData(req)
+  })
+})
+
+function setEligibilityReturnTo (req, returnTo) {
+  if (returnTo === 'check-your-answers') {
+    req.session.data = req.session.data || {}
+    req.session.data.eligibilityReturnTo = returnTo
+  }
+}
+
+function getEligibilityReturnTo (req, bodyReturnTo) {
+  if (bodyReturnTo) {
+    return bodyReturnTo
+  }
+
+  return getGrasslandsV2SessionData(req).eligibilityReturnTo || ''
+}
+
+function clearEligibilityReturnTo (req) {
+  if (req.session.data) {
+    delete req.session.data.eligibilityReturnTo
+  }
+}
+
 function renderGrasslandsV2EligibilityPage (req, res, view, options) {
   var opts = options || {}
 
+  if (req.query.from === 'check-your-answers') {
+    setEligibilityReturnTo(req, 'check-your-answers')
+  }
+
+  var returnTo = opts.returnTo || req.query.from || req.body.returnTo || getEligibilityReturnTo(req)
+
   res.render(view, {
     data: getGrasslandsV2SessionData(req),
-    returnTo: opts.returnTo || req.query.from || req.body.returnTo || '',
+    returnTo: returnTo,
     eligibilityError: opts.eligibilityError || false,
     eligibilityErrorMessage: opts.eligibilityErrorMessage || '',
     eligibilityErrorFieldId: opts.eligibilityErrorFieldId || ''
@@ -1163,7 +1242,7 @@ router.get('/grasslands-v2/sssi', function (req, res) {
 
 router.post('/grasslands-v2/management-control-answer', function (req, res) {
   var managementControlAnswer = req.body['management-answer-v2']
-  var returnTo = req.body.returnTo || ''
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
 
   if (!managementControlAnswer) {
     var referer = req.get('Referer') || ''
@@ -1181,20 +1260,23 @@ router.post('/grasslands-v2/management-control-answer', function (req, res) {
 
   saveGrasslandsV2Answer(req, 'management-answer-v2', managementControlAnswer)
 
+  if (managementControlAnswer === 'no') {
+    clearEligibilityReturnTo(req)
+    return res.redirect('/grasslands-v2/ineligible')
+  }
+
   if (returnTo === 'check-your-answers') {
+    clearEligibilityReturnTo(req)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  if (managementControlAnswer === 'yes') {
-    res.redirect('/grasslands-v2/hefer')
-  } else {
-    res.redirect('/grasslands-v2/ineligible')
-  }
+  clearEligibilityReturnTo(req)
+  res.redirect('/grasslands-v2/hefer')
 })
 
 router.post('/grasslands-v2/hefer-answer', function (req, res) {
   var heferAnswer = req.body['hefer-answer-v2']
-  var returnTo = req.body.returnTo || ''
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
 
   if (!heferAnswer) {
     return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/hefer', {
@@ -1207,20 +1289,23 @@ router.post('/grasslands-v2/hefer-answer', function (req, res) {
 
   saveGrasslandsV2Answer(req, 'hefer-answer-v2', heferAnswer)
 
+  if (heferAnswer === 'no') {
+    clearEligibilityReturnTo(req)
+    return res.redirect('/grasslands-v2/ineligible')
+  }
+
   if (returnTo === 'check-your-answers') {
+    clearEligibilityReturnTo(req)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  if (heferAnswer === 'yes') {
-    res.redirect('/grasslands-v2/sssi')
-  } else {
-    res.redirect('/grasslands-v2/ineligible')
-  }
+  clearEligibilityReturnTo(req)
+  res.redirect('/grasslands-v2/sssi')
 })
 
 router.post('/grasslands-v2/sssi-answer', function (req, res) {
   var sssiAnswer = req.body['sssi-answer-v2']
-  var returnTo = req.body.returnTo || ''
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
 
   if (!sssiAnswer) {
     return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/sssi', {
@@ -1233,20 +1318,23 @@ router.post('/grasslands-v2/sssi-answer', function (req, res) {
 
   saveGrasslandsV2Answer(req, 'sssi-answer-v2', sssiAnswer)
 
+  if (sssiAnswer === 'no') {
+    clearEligibilityReturnTo(req)
+    return res.redirect('/grasslands-v2/ineligible')
+  }
+
   if (returnTo === 'check-your-answers') {
+    clearEligibilityReturnTo(req)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  if (sssiAnswer === 'yes') {
-    res.redirect('/grasslands-v2/eligible')
-  } else {
-    res.redirect('/grasslands-v2/ineligible')
-  }
+  clearEligibilityReturnTo(req)
+  res.redirect('/grasslands-v2/eligible')
 })
 
 router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
   var landDetailsAnswer = req.body['land-details-answer']
-  var returnTo = req.body.returnTo || ''
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
 
   if (!landDetailsAnswer) {
     return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-land-details', {
@@ -1259,15 +1347,18 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
 
   saveGrasslandsV2Answer(req, 'land-details-answer', landDetailsAnswer)
 
+  if (landDetailsAnswer === 'no') {
+    clearEligibilityReturnTo(req)
+    return res.redirect('/grasslands-v2/update-land-details')
+  }
+
   if (returnTo === 'check-your-answers') {
+    clearEligibilityReturnTo(req)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  if (landDetailsAnswer === 'yes') {
-    res.redirect('/grasslands-v2/confirm-eligibility-details')
-  } else {
-    res.redirect('/grasslands-v2/update-land-details')
-  }
+  clearEligibilityReturnTo(req)
+  res.redirect('/grasslands-v2/confirm-eligibility-details')
 })
 
 router.get('/grasslands-v2/check-your-answers', function (req, res) {

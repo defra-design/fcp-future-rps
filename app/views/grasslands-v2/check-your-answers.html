@@ -6,11 +6,6 @@
 
 {% block beforeContent %}
   {% include "_common/sub-header-beta.html" %}
-
-  {{ govukBackLink({
-    text: "Back",
-    href: "javascript:window.history.back()"
-  }) }}
 {% endblock %}
 
 {% block content %}
@@ -76,7 +71,7 @@
           {{ data['land-details-answer'] | capitalize if data['land-details-answer'] else 'Yes' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="check-land-details?from=check-your-answers">Change<span class="govuk-visually-hidden"> digital land maps are up to date</span></a>
+          <a class="govuk-link" href="/grasslands-v2/check-land-details?from=check-your-answers">Change<span class="govuk-visually-hidden"> digital land maps are up to date</span></a>
         </dd>
       </div>
       <div class="govuk-summary-list__row">
@@ -87,7 +82,7 @@
           {{ data['management-answer-v2'] | capitalize if data['management-answer-v2'] else 'Yes' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="management-control?from=check-your-answers">Change<span class="govuk-visually-hidden"> management control of the land</span></a>
+          <a class="govuk-link" href="/grasslands-v2/management-control?from=check-your-answers">Change<span class="govuk-visually-hidden"> management control of the land</span></a>
         </dd>
       </div>
       <div class="govuk-summary-list__row">
@@ -98,7 +93,7 @@
           {{ data['hefer-answer-v2'] | capitalize if data['hefer-answer-v2'] else 'Yes' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="hefer?from=check-your-answers">Change<span class="govuk-visually-hidden"> historic or archaeological features (HEFER)</span></a>
+          <a class="govuk-link" href="/grasslands-v2/hefer?from=check-your-answers">Change<span class="govuk-visually-hidden"> historic or archaeological features (HEFER)</span></a>
         </dd>
       </div>
       <div class="govuk-summary-list__row">
@@ -109,7 +104,7 @@
           {{ data['sssi-answer-v2'] | capitalize if data['sssi-answer-v2'] else 'Yes' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="sssi?from=check-your-answers">Change<span class="govuk-visually-hidden"> SSSIs</span></a>
+          <a class="govuk-link" href="/grasslands-v2/sssi?from=check-your-answers">Change<span class="govuk-visually-hidden"> SSSIs</span></a>
         </dd>
       </div>
       
@@ -305,7 +300,7 @@
         <!-- {{ parcel.parcelName }} -->
         <div style="display: flex; justify-content: space-between; align-items: baseline;">
           <h3 class="govuk-heading-s" style="margin-bottom: 15px;">{{ parcel.parcelName }}{% if parcel.osRef %} - {{ parcel.osRef }}{% endif %}</h3>
-          <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} actions</span></a>
+          <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} actions</span></a>
         </div>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
           {% set parcelPayment = 0 %}
@@ -330,7 +325,7 @@
                 {% endif %}
               </dd>
               <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="{{ parcelId }}" data-action-code="{{ action.code }}">Change<span class="govuk-visually-hidden"> {{ actionName }}: {{ action.code }}</span></a>
+                <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="{{ parcelId }}" data-action-code="{{ action.code }}">Change<span class="govuk-visually-hidden"> {{ actionName }}: {{ action.code }}</span></a>
               </dd>
             </div>
             {% set storedAnnualPayment = action.annualPayment | float %}
@@ -380,7 +375,7 @@
       <!-- Upper Field -->
       <div style="display: flex; justify-content: space-between; align-items: baseline;">
         <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Upper Field - SO3758 3159</h3>
-        <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="upper-field" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Upper Field actions</span></a>
+        <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="upper-field" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Upper Field actions</span></a>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
@@ -418,7 +413,7 @@
       <!-- Long Meadow -->
       <div style="display: flex; justify-content: space-between; align-items: baseline;">
         <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Long Meadow - SO3760 3161</h3>
-        <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="long-meadow" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Long Meadow actions</span></a>
+        <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="long-meadow" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Long Meadow actions</span></a>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
@@ -446,7 +441,7 @@
       <!-- River Pasture -->
       <div style="display: flex; justify-content: space-between; align-items: baseline;">
         <h3 class="govuk-heading-s" style="margin-bottom: 15px;">River Pasture - SO3761 3162</h3>
-        <a class="govuk-link" href="select-land-map-fluid-find" data-parcel-id="river-pasture" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> River Pasture actions</span></a>
+        <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="river-pasture" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> River Pasture actions</span></a>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
@@ -526,6 +521,7 @@
         // Store target parcel/action in session storage so select-land-map-fluid-find can use it
         if (parcelId) {
           sessionStorage.setItem('selectedParcelId', parcelId);
+          sessionStorage.setItem('editingFromCheckYourAnswers', 'true');
         }
 
         if (actionCode) {

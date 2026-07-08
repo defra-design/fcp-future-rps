@@ -1,3 +1,3 @@
 module.exports = {
-  compatibilityYear: 2025
+  compatibilityYear: 2026
 }

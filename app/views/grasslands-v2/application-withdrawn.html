@@ -1,0 +1,31 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Application withdrawn
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Application withdrawn
+        </h1>
+      </div>
+
+      <p class="govuk-body">
+        Your application has been withdrawn.
+      </p>
+
+      <a href="/grasslands-v2/singlefrontdoor/landing/landing" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Return to your business overview
+      </a>
+
+    </div>
+  </div>
+{% endblock %}

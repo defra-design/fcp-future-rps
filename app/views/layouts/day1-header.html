@@ -64,7 +64,7 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
           <a class="govuk-footer__link" href="/manage-prototype">Manage your prototype</a>
         </li>
         <li class="govuk-footer__inline-list-item">
-          <a class="govuk-footer__link" href="/manage-prototype/clear-data">Clear data</a>
+          <a class="govuk-footer__link" href="/clear-session-data" data-clear-session-data>Clear data</a>
         </li>
         <li class="govuk-footer__inline-list-item">
           <a class="govuk-footer__link" href="javascript:toggleDrawer()" id="speclink">Design spec</a>
@@ -79,6 +79,45 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
       }
     }) }}
   {% else %}
-    {{ super() }}
+    {% if (GOVUKPrototypeKit.isDevelopment) %}
+      {% set footerItems = [
+        {
+          href: "/manage-prototype",
+          text: "Manage your prototype"
+        }, {
+          href: "/clear-session-data",
+          text: "Clear data",
+          attributes: {
+            "data-clear-session-data": ""
+          }
+        }
+      ] %}
+    {% else %}
+      {% set footerItems = [
+        {
+          href: "/clear-session-data",
+          text: "Clear data",
+          attributes: {
+            "data-clear-session-data": ""
+          }
+        }
+      ] %}
+    {% endif %}
+
+    {{ govukFooter({
+      meta: {
+        items: footerItems,
+        visuallyHiddenTitle: "Footer links"
+      }
+    }) }}
   {% endif %}
+  <script>
+    document.querySelectorAll('[data-clear-session-data], a[href="/manage-prototype/clear-data"], a[href="/clear-session-data"]').forEach(function (link) {
+      link.setAttribute('data-clear-session-data', '')
+      link.addEventListener('click', function (event) {
+        event.preventDefault()
+        window.location.href = '/clear-session-data?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash)
+      })
+    })
+  </script>
 {% endblock %}
