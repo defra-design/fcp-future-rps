@@ -16,29 +16,52 @@
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l">
       Grasslands 2
       <span class="govuk-caption-l">Application journey</span>
     </h1>
 
+    <p class="govuk-body">
+      Private beta MVP with the 16 grasslands actions. Eligibility updated to match SPI 26.
+    </p>
+
     <a class="govuk-button" href="/clear-session-data?returnUrl=/grasslands-v2/sign-in">Start prototype</a>
 
-    <h2 class="govuk-heading-m">Pages</h2>
+    <h2 class="govuk-heading-m">Land and actions</h2>
+    <p class="govuk-body">
+      Split into three steps: select a parcel, select compatible actions, then confirm in an application basket.
+    </p>
     <ul class="govuk-list govuk-list--bullet">
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/sign-in">Sign in page</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/select-land">Select land</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/select-actions">Select actions</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/confirm-land-and-actions">Confirm land and actions (basket)</a></li>
+    </ul>
+
+    <h2 class="govuk-heading-m">What changed in this version</h2>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Select land and select actions are separate pages</li>
+      <li>Confirm page uses a single basket grouped by parcel, with change, remove, and add another parcel</li>
+      <li>Save and continue on select actions stays enabled and shows a GOV.UK error if nothing is selected</li>
+    </ul>
+
+    <h2 class="govuk-heading-m">All pages</h2>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/sign-in">Sign in</a></li>
       <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/singlefrontdoor/start/your-businesses-list">Your businesses list</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/singlefrontdoor/landing/landing">Single front door landing page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/task-list">Task list page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/check-land-details">Check land details page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/confirm-eligibility-details">Confirm eligibility details page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/hefer">Land with historic or archaeological features page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/sssi">Sites of special scientific interest page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/eligible">You are eligible page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/select-land-map-fluid-find">Select parcel and action page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/check-your-answers">Check your answers page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/submit-application">Declaration page</a></li>
-      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/confirmation">Confirmation page</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/singlefrontdoor/landing/landing">Single front door landing</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/task-list">Task list</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/check-land-details">Check land details</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/confirm-eligibility-details">Confirm eligibility details</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/hefer">Land with historic or archaeological features</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/sssi">Sites of special scientific interest</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/eligible">You are eligible</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/select-land">Select land</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/select-actions">Select actions</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/confirm-land-and-actions">Confirm land and actions</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/check-your-answers">Check your answers</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/submit-application">Declaration</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/grasslands-v2/confirmation">Confirmation</a></li>
     </ul>
   </div>
 </div>

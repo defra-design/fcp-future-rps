@@ -9,6 +9,7 @@ const https = require('https')
 const actionCodeNames = require('./data/sfi24-codes-names.json')
 const sessionDataDefaults = require('./data/session-data-defaults')
 const grasslandsV2Tasks = require('./grasslands-v2-tasks')
+const grasslandsV2LandActions = require('./grasslands-v2-land-actions')
 const {
   areActionsCompatible,
   findIncompatibilities,
@@ -1182,7 +1183,8 @@ router.get('/grasslands-v2/task-list', function (req, res) {
 
   var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
   grasslandsV2Tasks.syncFromSessionAnswers(req, {
-    hasSelectedLand: actionsSummary.rows && actionsSummary.rows.length > 0
+    hasSelectedLand: (actionsSummary.rows && actionsSummary.rows.length > 0) ||
+      grasslandsV2LandActions.hasSavedLandAndActions(req)
   })
 
   var taskListPage = grasslandsV2Tasks.getTaskListPageData(req)
@@ -1273,6 +1275,227 @@ router.get('/grasslands-v2/select-land-map-fluid-find', function (req, res) {
   res.render('grasslands-v2/select-land-map-fluid-find', {
     data: getGrasslandsV2SessionData(req)
   })
+})
+
+router.get('/grasslands-v2/select-land', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+
+  if (req.query.addAnother === '1' || req.query.addAnother === 'true') {
+    grasslandsV2LandActions.commitDraftToApplication(req)
+    if (grasslandsV2LandActions.hasSavedLandAndActions(req)) {
+      grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+    }
+  }
+
+  res.render('grasslands-v2/select-land', {
+    data: getGrasslandsV2SessionData(req),
+    draftParcel: grasslandsV2LandActions.getDraftParcel(req),
+    applicationParcels: grasslandsV2LandActions.getApplicationParcels(req)
+  })
+})
+
+router.post('/grasslands-v2/select-land', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+
+  if (!req.body.selectedParcelId) {
+    return res.redirect('/grasslands-v2/select-land')
+  }
+
+  var previousDraft = grasslandsV2LandActions.getDraftParcel(req)
+  var previousParcelId = previousDraft && previousDraft.parcelId
+  grasslandsV2LandActions.saveDraftParcelFromBody(req, req.body)
+
+  // Only clear draft actions when the parcel changes
+  if (previousParcelId !== req.body.selectedParcelId) {
+    grasslandsV2LandActions.setDraftActions(req, [])
+  }
+
+  res.redirect('/grasslands-v2/select-actions')
+})
+
+router.get('/grasslands-v2/select-actions', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+
+  var draftParcel = grasslandsV2LandActions.getDraftParcel(req)
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/grasslands-v2/select-land')
+  }
+
+  var sessionData = getGrasslandsV2SessionData(req)
+  var focusActionCode = sessionData.focusActionCode || null
+  if (sessionData.focusActionCode) {
+    delete sessionData.focusActionCode
+  }
+
+  res.render('grasslands-v2/select-actions', {
+    data: sessionData,
+    draftParcel: draftParcel,
+    draftActions: grasslandsV2LandActions.getDraftActions(req),
+    applicationParcels: grasslandsV2LandActions.getApplicationParcels(req),
+    focusActionCode: focusActionCode,
+    returnToCheckYourAnswers: Boolean(sessionData.returnToCheckYourAnswers)
+  })
+})
+
+router.post('/grasslands-v2/select-actions', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+
+  var draftParcel = grasslandsV2LandActions.getDraftParcel(req)
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/grasslands-v2/select-land')
+  }
+
+  var draftActions = grasslandsV2LandActions.getDraftActions(req)
+  if (req.body.draftLandActions) {
+    draftActions = typeof req.body.draftLandActions === 'string'
+      ? (function () {
+        try {
+          return JSON.parse(req.body.draftLandActions)
+        } catch (error) {
+          return []
+        }
+      })()
+      : req.body.draftLandActions
+  }
+
+  if (!Array.isArray(draftActions) || draftActions.length === 0) {
+    return res.render('grasslands-v2/select-actions', {
+      data: getGrasslandsV2SessionData(req),
+      draftParcel: draftParcel,
+      draftActions: [],
+      applicationParcels: grasslandsV2LandActions.getApplicationParcels(req),
+      actionsError: true,
+      actionsErrorMessage: 'Select at least one action'
+    })
+  }
+
+  grasslandsV2LandActions.setDraftActions(req, draftActions)
+  res.redirect('/grasslands-v2/confirm-land-and-actions')
+})
+
+router.get('/grasslands-v2/confirm-land-and-actions', function (req, res) {
+  var basketParcels = grasslandsV2LandActions.buildBasketParcels(req)
+  var basketSummary = grasslandsV2LandActions.summariseBasket(basketParcels)
+  var sessionData = getGrasslandsV2SessionData(req)
+  var flashMessage = sessionData.confirmLandFlash || null
+
+  if (req.query.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  delete sessionData.confirmLandFlash
+
+  if (!basketSummary.isEmpty) {
+    grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+  }
+
+  res.render('grasslands-v2/confirm-land-and-actions', {
+    data: sessionData,
+    basketParcels: basketParcels,
+    basketSummary: basketSummary,
+    flashMessage: flashMessage
+  })
+})
+
+router.post('/grasslands-v2/confirm-land-and-actions', function (req, res) {
+  var action = req.body && req.body.confirmAction
+  var sessionData = getGrasslandsV2SessionData(req)
+
+  grasslandsV2LandActions.commitDraftToApplication(req)
+
+  if (grasslandsV2LandActions.hasSavedLandAndActions(req)) {
+    grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+  } else if (
+    grasslandsV2LandActions.getDraftParcel(req) ||
+    grasslandsV2LandActions.buildBasketParcels(req).length
+  ) {
+    grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+  } else {
+    grasslandsV2Tasks.setTaskStatus(
+      req,
+      grasslandsV2Tasks.TASK_IDS.selectLand,
+      grasslandsV2Tasks.STATUS.NOT_STARTED
+    )
+  }
+
+  if (action === 'addAnother') {
+    // Keep returnToCheckYourAnswers so after adding they still return to CYA
+    if (req.body.from === 'check-your-answers') {
+      sessionData.returnToCheckYourAnswers = true
+    }
+    return res.redirect('/grasslands-v2/select-land?addAnother=1')
+  }
+
+  if (action === 'returnToCya' || req.body.from === 'check-your-answers' || sessionData.returnToCheckYourAnswers) {
+    delete sessionData.returnToCheckYourAnswers
+    return res.redirect('/grasslands-v2/check-your-answers')
+  }
+
+  res.redirect('/grasslands-v2/task-list')
+})
+
+router.get('/grasslands-v2/confirm-land-and-actions/change/:parcelId', function (req, res) {
+  var parcelId = req.params.parcelId
+  var sessionData = getGrasslandsV2SessionData(req)
+  var loaded = grasslandsV2LandActions.loadParcelIntoDraftForEdit(req, parcelId)
+
+  if (!loaded) {
+    var draftParcel = grasslandsV2LandActions.getDraftParcel(req)
+    if (!draftParcel || draftParcel.parcelId !== parcelId) {
+      return res.redirect('/grasslands-v2/confirm-land-and-actions')
+    }
+  }
+
+  if (req.query.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  if (req.query.actionCode) {
+    sessionData.focusActionCode = String(req.query.actionCode).toUpperCase()
+  }
+
+  res.redirect('/grasslands-v2/select-actions')
+})
+
+router.get('/grasslands-v2/remove-parcel-actions/:parcelId', function (req, res) {
+  var parcel = grasslandsV2LandActions.findBasketParcel(req, req.params.parcelId)
+
+  if (!parcel) {
+    return res.redirect('/grasslands-v2/confirm-land-and-actions')
+  }
+
+  res.render('grasslands-v2/remove-parcel-actions', {
+    data: getGrasslandsV2SessionData(req),
+    parcel: parcel
+  })
+})
+
+router.post('/grasslands-v2/remove-parcel-actions/:parcelId', function (req, res) {
+  var parcelId = req.params.parcelId
+  var parcel = grasslandsV2LandActions.findBasketParcel(req, parcelId)
+  var parcelLabel = parcel
+    ? (parcel.parcelName || 'This land parcel')
+    : 'This land parcel'
+
+  if (req.body && req.body.confirmRemove === 'yes') {
+    grasslandsV2LandActions.removeParcelFromBasket(req, parcelId)
+
+    if (grasslandsV2LandActions.hasSavedLandAndActions(req) ||
+        (grasslandsV2LandActions.getDraftActions(req) || []).length > 0) {
+      grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+    } else {
+      grasslandsV2Tasks.setTaskStatus(
+        req,
+        grasslandsV2Tasks.TASK_IDS.selectLand,
+        grasslandsV2Tasks.STATUS.NOT_STARTED
+      )
+    }
+
+    req.session.data = req.session.data || {}
+    req.session.data.confirmLandFlash = parcelLabel + ' and its actions have been removed.'
+  }
+
+  res.redirect('/grasslands-v2/confirm-land-and-actions')
 })
 
 router.get('/grasslands-v2/submit-application', function (req, res) {

@@ -28,7 +28,7 @@ var DEFAULT_TASKS = {
   submitApplication: STATUS.NOT_STARTED
 }
 
-var SELECT_LAND_HREF = '/grasslands-v2/select-land-map-fluid-find?map:center=-0.7448892,51.9497679&map:zoom=13.9865053'
+var SELECT_LAND_HREF = '/grasslands-v2/select-land'
 
 function getSessionData (req) {
   req.session.data = req.session.data || {}
@@ -253,7 +253,8 @@ function getResolvedTaskStates (req) {
     selectLand = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      href: SELECT_LAND_HREF
+      // Completed: land/actions overview and management
+      href: '/grasslands-v2/confirm-land-and-actions'
     }
   } else {
     selectLand = {
@@ -352,7 +353,7 @@ function getTaskListPageData (req) {
     ],
     section2Items: [
       buildTaskItem({
-        title: 'Select a land parcel and the actions you want to apply for',
+        title: 'Select the land and the actions you want to apply for',
         href: states.selectLand.href,
         status: states.selectLand.status
       })

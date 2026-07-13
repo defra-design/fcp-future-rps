@@ -1,0 +1,123 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Your land and actions
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+  {% set parcels = basketParcels if basketParcels else [] %}
+  {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
+  {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: fromCheckYourAnswers and "/grasslands-v2/check-your-answers" or (summary.isEmpty and "/grasslands-v2/select-land" or "/grasslands-v2/select-actions")
+  }) }}
+{% endblock %}
+
+{% block content %}
+  {% set parcels = basketParcels if basketParcels else [] %}
+  {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
+  {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% if flashMessage %}
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="confirm-land-success-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="confirm-land-success-title">
+              Success
+            </h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">{{ flashMessage }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      <h1 class="govuk-heading-l">Your land and actions</h1>
+      {% if summary.isEmpty %}
+        <p class="govuk-body">You have not added any land parcels or actions yet.</p>
+        <p class="govuk-body">
+          <a class="govuk-link" href="/grasslands-v2/select-land">Select a land parcel and add actions</a>
+        </p>
+      {% else %}
+        {% for parcel in parcels %}
+          <div class="govuk-!-margin-bottom-9" id="parcel-{{ parcel.parcelId }}">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px;">
+              <h2 class="govuk-heading-m" style="margin: 0;">{{ parcel.heading }}</h2>
+              <a class="govuk-link" href="/grasslands-v2/remove-parcel-actions/{{ parcel.parcelId }}" style="font-size: 19px; line-height: 1.31579; white-space: nowrap;">
+                Remove all actions<span class="govuk-visually-hidden"> from {{ parcel.heading }}</span>
+              </a>
+            </div>
+
+            <dl class="govuk-summary-list govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Total area</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.totalAreaFormatted }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Area used for actions</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.areaUsedFormatted }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Available area left</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.availableLeftFormatted }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+
+              {% for action in parcel.actions %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">{{ action.name }} ({{ action.code }})</dt>
+                  <dd class="govuk-summary-list__value">{{ action.valueDisplay }}</dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
+                      Change<span class="govuk-visually-hidden"> {{ action.name }} ({{ action.code }})</span>
+                    </a>
+                  </dd>
+                </div>
+              {% endfor %}
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Yearly payment for this parcel</dt>
+                <dd class="govuk-summary-list__value"><strong>{{ parcel.yearlyPaymentFormatted }}</strong></dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+            </dl>
+          </div>
+        {% endfor %}
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Total yearly payment</dt>
+            <dd class="govuk-summary-list__value"><strong>{{ summary.totalYearlyPaymentFormatted }}</strong></dd>
+            <dd class="govuk-summary-list__actions"></dd>
+          </div>
+        </dl>
+
+        <form action="/grasslands-v2/confirm-land-and-actions" method="post">
+          {% if fromCheckYourAnswers %}
+            <input type="hidden" name="from" value="check-your-answers">
+          {% endif %}
+          <div class="govuk-button-group">
+            {% if fromCheckYourAnswers %}
+              <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="returnToCya">
+                Save and return to check your answers
+              </button>
+            {% else %}
+              <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="save">
+                Save and continue
+              </button>
+            {% endif %}
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" name="confirmAction" value="addAnother">
+              Add another land parcel
+            </button>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

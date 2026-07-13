@@ -58,7 +58,7 @@
       </div> #}
     </dl>
 
-    <h2 class="govuk-heading-m">Agreement details</h2>
+    <h2 class="govuk-heading-m">Eligibility</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
@@ -163,52 +163,7 @@
 
     <!-- Considered in design: Average of 6 actions per application during SFI 2024 -->
 
-    <h2 class="govuk-heading-m">Actions</h2>
-
-    {% set actionsRows = actionsSummaryRows or [] %}
-    {% set actionsTotal = actionsSummaryTotal or 0 %}
-
-    {# <h3 class="govuk-heading-s">Actions</h3> #}
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-      {# <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Actions selected
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ actionsRows | length }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="select-base-all-actions-checkboxes">Change<span class="govuk-visually-hidden"> actions</span></a>
-        </dd>
-      </div> #}
-
-      {% for action in actionsRows %}
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ action.label }}
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ action.quantity }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          £{{ action.payment | formatCurrency }}
-        </dd>
-      </div>
-      {% endfor %}
-
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Indicative total for actions
-        </dt>
-        <dd class="govuk-summary-list__value">
-          £{{ actionsTotal | formatCurrency }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-        </dd>
-      </div>
-    </dl>
-
-    <h2 class="govuk-heading-m">Parcels</h2>
+    <h2 class="govuk-heading-m">Your land and actions</h2>
 
     {% set parcelData = data['parcelSelectionsData'] | replace("'", '"') | safe %}
     {% if parcelData %}
@@ -297,7 +252,7 @@
         <!-- {{ parcel.parcelName }} -->
         <div style="display: flex; justify-content: space-between; align-items: baseline;">
           <h3 class="govuk-heading-s" style="margin-bottom: 15px;">{{ parcel.parcelName }}{% if parcel.osRef %} - {{ parcel.osRef }}{% endif %}</h3>
-          <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} actions</span></a>
+          <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions?from=check-your-answers#parcel-{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} land and actions</span></a>
         </div>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
           {% set parcelPayment = 0 %}
@@ -306,7 +261,7 @@
             {% set actionRate = actionRates[action.code] or 0 %}
             {% set quantityValue = action.quantity | float %}
             {% set quantityUnit = action.unit or (linearActionCodes[action.code] and 'm' or 'ha') %}
-            <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
               <dt class="govuk-summary-list__key">
                 {{ actionName }}: {{ action.code }}
               </dt>
@@ -320,9 +275,6 @@
                 {% else %}
                   No quantity entered
                 {% endif %}
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="{{ parcelId }}" data-action-code="{{ action.code }}">Change<span class="govuk-visually-hidden"> {{ actionName }}: {{ action.code }}</span></a>
               </dd>
             </div>
             {% set storedAnnualPayment = action.annualPayment | float %}
@@ -340,14 +292,12 @@
             {% set parcelPayment = parcelPayment + actionPayment %}
           {% endfor %}
           
-          <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key">
               Annual payment for this parcel
             </dt>
             <dd class="govuk-summary-list__value">
               £{{ parcelPayment | formatCurrency }}
-            </dd>
-            <dd class="govuk-summary-list__actions">
             </dd>
           </div>
         </dl>
@@ -356,133 +306,29 @@
 
       <h2 class="govuk-heading-m">Payment summary</h2>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
           <dt class="govuk-summary-list__key">
             Annual payment for all parcels
           </dt>
           <dd class="govuk-summary-list__value">
             £{{ totalPayment | formatCurrency }}
           </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
         </div>
       </dl>
     {% else %}
-      <!-- Fallback to static content if no data -->
-      <!-- Upper Field -->
-      <div style="display: flex; justify-content: space-between; align-items: baseline;">
-        <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Upper Field - SO3758 3159</h3>
-        <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="upper-field" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Upper Field actions</span></a>
-      </div>
-      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Legume fallow: CNUM3
-          </dt>
-          <dd class="govuk-summary-list__value">
-            2.5 ha
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Pollen and nectar flower mix: CAHL1
-          </dt>
-          <dd class="govuk-summary-list__value">
-            1.8 ha
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Yearly payment for this parcel
-          </dt>
-          <dd class="govuk-summary-list__value">
-            £2,640.20
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-      </dl>
-
-      <!-- Long Meadow -->
-      <div style="display: flex; justify-content: space-between; align-items: baseline;">
-        <h3 class="govuk-heading-s" style="margin-bottom: 15px;">Long Meadow - SO3760 3161</h3>
-        <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="long-meadow" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> Long Meadow actions</span></a>
-      </div>
-      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Winter bird food on arable and horticultural land: CAHL2
-          </dt>
-          <dd class="govuk-summary-list__value">
-            3.2 ha
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Annual payment for this parcel
-          </dt>
-          <dd class="govuk-summary-list__value">
-            £2,048.00
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-      </dl>
-
-      <!-- River Pasture -->
-      <div style="display: flex; justify-content: space-between; align-items: baseline;">
-        <h3 class="govuk-heading-s" style="margin-bottom: 15px;">River Pasture - SO3761 3162</h3>
-        <a class="govuk-link" href="select-land-map-fluid-find?from=check-your-answers" data-parcel-id="river-pasture" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> River Pasture actions</span></a>
-      </div>
-      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Multi-species winter cover crop: CSAM2
-          </dt>
-          <dd class="govuk-summary-list__value">
-            5.5 ha
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            12m to 24m watercourse buffer strip on cultivated land: BFS1
-          </dt>
-          <dd class="govuk-summary-list__value">
-            2.3 ha
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Yearly payment for this parcel
-          </dt>
-          <dd class="govuk-summary-list__value">
-            £2,311.60
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-      </dl>
+      <p class="govuk-body">No land parcels or actions have been added yet.</p>
+      <p class="govuk-body govuk-!-margin-bottom-9">
+        <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions?from=check-your-answers">Add land and actions</a>
+      </p>
 
       <h2 class="govuk-heading-m">Payment summary</h2>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
           <dt class="govuk-summary-list__key">
-            Total payments for all parcels
+            Annual payment for all parcels
           </dt>
           <dd class="govuk-summary-list__value">
-            £6,999.80
-          </dd>
-          <dd class="govuk-summary-list__actions">
+            £0.00
           </dd>
         </div>
       </dl>
@@ -505,29 +351,13 @@
 </div>
 
 <script>
-  // Handle Change link clicks to store the target parcel/action IDs
+  // Keep CYA return flag when deep-linking into action edits
   document.addEventListener('DOMContentLoaded', function() {
-    // Get all Change links with data-parcel-id
-    var changeLinks = document.querySelectorAll('a.govuk-link[data-parcel-id]');
-    
-    changeLinks.forEach(function(link) {
-      link.addEventListener('click', function(e) {
-        var parcelId = this.getAttribute('data-parcel-id');
-        var actionCode = this.getAttribute('data-action-code');
-        
-        // Store target parcel/action in session storage so select-land-map-fluid-find can use it
-        if (parcelId) {
-          sessionStorage.setItem('selectedParcelId', parcelId);
-          sessionStorage.setItem('editingFromCheckYourAnswers', 'true');
-        }
+    var changeLinks = document.querySelectorAll('a.govuk-link[href*="from=check-your-answers"]');
 
-        if (actionCode) {
-          sessionStorage.setItem('selectedActionCode', actionCode);
-        } else {
-          sessionStorage.removeItem('selectedActionCode');
-        }
-        
-        // Let the link navigate normally
+    changeLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        sessionStorage.setItem('editingFromCheckYourAnswers', 'true');
       });
     });
   });
