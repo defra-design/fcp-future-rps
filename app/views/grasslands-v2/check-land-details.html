@@ -4,13 +4,12 @@
   Check your land details
 {% endblock %}
 
-
 {% block beforeContent %}
   {% include "_common/sub-header-beta.html" %}
 
   {{ govukBackLink({
     text: "Back",
-    href: "before-you-start"
+    href: "/grasslands-v2/task-list"
   }) }}
 
 {% endblock %}
@@ -21,9 +20,6 @@
     <div class="govuk-grid-column-two-thirds">
 
       {% include "grasslands-v2/_includes/eligibility-error-summary.html" %}
-
-      {% include "grasslands-v2/_includes/journey-caption.html" %}
-
 
       <h1 class="govuk-heading-l">
         Check your land details

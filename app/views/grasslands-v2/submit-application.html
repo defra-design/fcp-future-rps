@@ -18,9 +18,6 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
-      {% include "grasslands-v2/_includes/journey-caption.html" %}
-
-
       <h1 class="govuk-heading-l">
         Submit your application
       </h1>
@@ -42,14 +39,9 @@
       </p>
 
       <form class="form" action="confirmation" method="post">
-        <div class="govuk-button-group">
-          <button type="submit" class="govuk-button" data-module="govuk-button">
-            I agree – submit my application
-          </button>
-          <a href="confirm-withdraw-application" role="button" draggable="false" class="govuk-button govuk-button--warning" data-module="govuk-button">
-            Withdraw my application
-          </a>
-        </div>
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          I agree – submit my application
+        </button>
       </form>
     </div>
   </div>

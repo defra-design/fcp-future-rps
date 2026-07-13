@@ -8,6 +8,7 @@ const router = govukPrototypeKit.requests.setupRouter()
 const https = require('https')
 const actionCodeNames = require('./data/sfi24-codes-names.json')
 const sessionDataDefaults = require('./data/session-data-defaults')
+const grasslandsV2Tasks = require('./grasslands-v2-tasks')
 const {
   areActionsCompatible,
   findIncompatibilities,
@@ -1176,6 +1177,21 @@ router.get('/grasslands-v2/before-you-start', function (req, res) {
   })
 })
 
+router.get('/grasslands-v2/task-list', function (req, res) {
+  grasslandsV2Tasks.ensureTasks(req)
+
+  var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+  grasslandsV2Tasks.syncFromSessionAnswers(req, {
+    hasSelectedLand: actionsSummary.rows && actionsSummary.rows.length > 0
+  })
+
+  var taskListPage = grasslandsV2Tasks.getTaskListPageData(req)
+
+  res.render('grasslands-v2/task-list', Object.assign({
+    data: getGrasslandsV2SessionData(req)
+  }, taskListPage))
+})
+
 function setEligibilityReturnTo (req, returnTo) {
   if (returnTo === 'check-your-answers') {
     req.session.data = req.session.data || {}
@@ -1221,23 +1237,73 @@ function saveGrasslandsV2Answer (req, fieldName, value) {
 }
 
 router.get('/grasslands-v2/check-land-details', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkLandDetails)
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-land-details')
 })
 
 router.get('/grasslands-v2/confirm-eligibility-details', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/confirm-eligibility-details')
 })
 
 router.get('/grasslands-v2/management-control', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/management-control')
 })
 
 router.get('/grasslands-v2/hefer', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/hefer')
 })
 
 router.get('/grasslands-v2/sssi', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/sssi')
+})
+
+router.get('/grasslands-v2/eligible', function (req, res) {
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
+  res.render('grasslands-v2/eligible', {
+    data: getGrasslandsV2SessionData(req)
+  })
+})
+
+router.get('/grasslands-v2/select-land-map-fluid-find', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+  res.render('grasslands-v2/select-land-map-fluid-find', {
+    data: getGrasslandsV2SessionData(req)
+  })
+})
+
+router.get('/grasslands-v2/submit-application', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  res.render('grasslands-v2/submit-application', {
+    data: getGrasslandsV2SessionData(req)
+  })
+})
+
+router.post('/grasslands-v2/submit-application', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.checkAnswers)
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  res.render('grasslands-v2/submit-application', {
+    data: getGrasslandsV2SessionData(req)
+  })
+})
+
+router.get('/grasslands-v2/confirmation', function (req, res) {
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  res.render('grasslands-v2/confirmation', {
+    data: getGrasslandsV2SessionData(req)
+  })
+})
+
+router.post('/grasslands-v2/confirmation', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  res.render('grasslands-v2/confirmation', {
+    data: getGrasslandsV2SessionData(req)
+  })
 })
 
 router.post('/grasslands-v2/management-control-answer', function (req, res) {
@@ -1259,6 +1325,7 @@ router.post('/grasslands-v2/management-control-answer', function (req, res) {
   }
 
   saveGrasslandsV2Answer(req, 'management-answer-v2', managementControlAnswer)
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
 
   if (managementControlAnswer === 'no') {
     clearEligibilityReturnTo(req)
@@ -1288,6 +1355,7 @@ router.post('/grasslands-v2/hefer-answer', function (req, res) {
   }
 
   saveGrasslandsV2Answer(req, 'hefer-answer-v2', heferAnswer)
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
 
   if (heferAnswer === 'no') {
     clearEligibilityReturnTo(req)
@@ -1320,15 +1388,18 @@ router.post('/grasslands-v2/sssi-answer', function (req, res) {
 
   if (sssiAnswer === 'no') {
     clearEligibilityReturnTo(req)
+    grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
     return res.redirect('/grasslands-v2/ineligible')
   }
 
   if (returnTo === 'check-your-answers') {
     clearEligibilityReturnTo(req)
+    grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
   clearEligibilityReturnTo(req)
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
   res.redirect('/grasslands-v2/eligible')
 })
 
@@ -1349,8 +1420,11 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
 
   if (landDetailsAnswer === 'no') {
     clearEligibilityReturnTo(req)
+    grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkLandDetails)
     return res.redirect('/grasslands-v2/update-land-details')
   }
+
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.checkLandDetails)
 
   if (returnTo === 'check-your-answers') {
     clearEligibilityReturnTo(req)
@@ -1358,11 +1432,17 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
   }
 
   clearEligibilityReturnTo(req)
-  res.redirect('/grasslands-v2/confirm-eligibility-details')
+  res.redirect('/grasslands-v2/task-list')
 })
 
 router.get('/grasslands-v2/check-your-answers', function (req, res) {
   var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+
+  if (actionsSummary.rows && actionsSummary.rows.length > 0) {
+    grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+  }
+
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkAnswers)
 
   res.render('grasslands-v2/check-your-answers', {
     data: Object.assign({}, req.session.data),
@@ -1373,6 +1453,8 @@ router.get('/grasslands-v2/check-your-answers', function (req, res) {
 
 router.post('/grasslands-v2/check-your-answers', function (req, res) {
   req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.selectLand)
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkAnswers)
   res.redirect('/grasslands-v2/check-your-answers')
 })
 

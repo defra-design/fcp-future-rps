@@ -1,0 +1,46 @@
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Grasslands application
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "_common/sub-header-beta.html" %}
+
+  {{ govukBackLink({
+    text: "Back to Farm and Land Service",
+    href: "/grasslands-v2/singlefrontdoor/landing/landing"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Grasslands application</h1>
+
+
+      <h2 class="govuk-heading-m">1. Check before you start</h2>
+
+      {{ govukTaskList({
+        idPrefix: "check-before-you-start",
+        items: section1Items
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land and actions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "select-land-parcels",
+        items: section2Items
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+
+      {{ govukTaskList({
+        idPrefix: "review-and-submit",
+        items: section3Items
+      }) }}
+
+    </div>
+  </div>
+{% endblock %}
