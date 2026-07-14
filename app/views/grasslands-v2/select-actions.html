@@ -360,6 +360,95 @@
       margin-bottom: 16px;
     }
 
+    .app-previous-agreements {
+      margin-top: 16px;
+      margin-bottom: 0;
+      padding: 15px;
+      border: 0;
+      background: #f3f2f1;
+    }
+
+    .app-previous-agreements .govuk-details {
+      margin-bottom: 0;
+    }
+
+    .app-previous-agreements .govuk-details__summary {
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-previous-agreements .govuk-details__text {
+      font-size: 16px;
+      line-height: 1.25;
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    /* Stack key/value in the narrow card — table-style summary list wraps awkwardly */
+    .app-previous-agreements .govuk-summary-list {
+      margin-bottom: 0;
+    }
+
+    .app-previous-agreements .govuk-summary-list__row {
+      display: block;
+      border-bottom: 0;
+      margin-bottom: 12px;
+      padding-bottom: 0;
+    }
+
+    .app-previous-agreements .govuk-summary-list__row:last-child {
+      margin-bottom: 0;
+    }
+
+    .app-previous-agreements .govuk-summary-list__key,
+    .app-previous-agreements .govuk-summary-list__value {
+      display: block;
+      width: auto;
+      float: none;
+      padding: 0;
+      border: 0;
+    }
+
+    .app-previous-agreements .govuk-summary-list__key {
+      margin-bottom: 2px;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-previous-agreements .govuk-summary-list__value {
+      margin-bottom: 0;
+      color: #0b0c0c;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-previous-agreements .govuk-heading-s {
+      font-size: 16px;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .app-previous-agreements .govuk-list {
+      margin-bottom: 0;
+      padding-left: 0;
+      list-style-type: none;
+      font-size: 16px;
+      line-height: 1.25;
+      color: #0b0c0c;
+    }
+
+    .app-previous-agreements .govuk-list > li {
+      margin-bottom: 5px;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-previous-agreements .govuk-list > li:last-child {
+      margin-bottom: 0;
+    }
+
     .app-selected-parcel__list .govuk-summary-list__row {
       display: block;
       border-bottom: 0;
@@ -614,6 +703,24 @@
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
+              {% if draftParcel and draftParcel.parcelId == 'far-meadow' %}
+                <div class="govuk-inset-text" id="far-meadow-hefer-notice">
+                  You must
+                  <a class="govuk-link" href="https://www.gov.uk/guidance/agreement-holders-information-for-sfi24-and-re-opened-sfi24#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">
+                    get a HEFER (opens in new tab)</a>
+                  to do this action on this land parcel.
+                </div>
+              {% elif draftParcel and draftParcel.parcelId == 'gate-field' %}
+                <div class="govuk-inset-text" id="gate-field-consent-notice">
+                  You must
+                  <a class="govuk-link" href="https://www.gov.uk/guidance/sites-of-special-scientific-interest-managing-your-land-and-getting-consent-for-activities#:~:text=Check%20if%20you%20need%20consent,-There%20are%20certain&amp;text=Each%20SSSI%20has%20a%20list,additional%20permissions%20from%20other%20authorities" target="_blank" rel="noopener noreferrer">
+                    have SSSI consent (opens in new tab)</a>
+                  and
+                  <a class="govuk-link" href="https://www.gov.uk/guidance/agreement-holders-information-for-sfi24-and-re-opened-sfi24#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">
+                    get a HEFER (opens in new tab)</a>
+                  to do these actions on this land parcel.
+                </div>
+              {% endif %}
               <p id="actions-selection-error" class="govuk-body"{% if not actionsError %} hidden{% endif %}>
                 {{ actionsErrorMessageText }}
               </p>
@@ -683,6 +790,15 @@
               <p class="govuk-body app-selected-parcel__change">
                 <a class="govuk-link" href="/grasslands-v2/select-land">Change parcel</a>
               </p>
+            </div>
+            <div id="previous-agreements-section" class="app-previous-agreements" hidden>
+              <p class="govuk-visually-hidden" id="previous-agreements-summary"></p>
+              <details class="govuk-details" data-module="govuk-details" id="previous-agreements-details" hidden>
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text" id="previous-agreements-summary-text">View previous agreement actions</span>
+                </summary>
+                <div class="govuk-details__text" id="previous-agreements-detail"></div>
+              </details>
             </div>
           {% endif %}
         </div>
@@ -2866,6 +2982,182 @@
       return totals;
     }
 
+    function getExistingAgreementFieldValue(sourceDl, labelText) {
+      if (!sourceDl) {
+        return '';
+      }
+      var rows = sourceDl.querySelectorAll('.govuk-summary-list__row');
+      for (var i = 0; i < rows.length; i++) {
+        var key = rows[i].querySelector('.govuk-summary-list__key');
+        var value = rows[i].querySelector('.govuk-summary-list__value');
+        if (!key || !value) {
+          continue;
+        }
+        if ((key.textContent || '').trim() === labelText) {
+          return (value.textContent || '').replace(/\s+/g, ' ').trim();
+        }
+      }
+      return '';
+    }
+
+    function getExistingAgreementActionLabels(sourceDl) {
+      if (!sourceDl) {
+        return [];
+      }
+
+      var labels = [];
+      sourceDl.querySelectorAll('ul.govuk-list li').forEach(function(item) {
+        var text = (item.textContent || '').replace(/\s+/g, ' ').trim();
+        if (text) {
+          labels.push(text);
+        }
+      });
+      return labels;
+    }
+
+    function appendPreviousAgreementSummaryRow(listEl, keyText, valueText) {
+      var row = document.createElement('div');
+      row.className = 'govuk-summary-list__row';
+
+      var key = document.createElement('dt');
+      key.className = 'govuk-summary-list__key';
+      key.textContent = keyText;
+
+      var value = document.createElement('dd');
+      value.className = 'govuk-summary-list__value';
+      value.textContent = valueText;
+
+      row.appendChild(key);
+      row.appendChild(value);
+      listEl.appendChild(row);
+    }
+
+    function formatPreviousAgreementsCountSummary(agreementCount) {
+      if (agreementCount === 1) {
+        return '1 previous agreement';
+      }
+      return agreementCount + ' previous agreements';
+    }
+
+    function formatPreviousAgreementsDetailsLabel(agreementCount) {
+      return 'View ' + agreementCount + ' previous agreement actions';
+    }
+
+    function updatePreviousAgreementsSummary(parcelId) {
+      var sectionEl = document.getElementById('previous-agreements-section');
+      var summaryEl = document.getElementById('previous-agreements-summary');
+      var summaryTextEl = document.getElementById('previous-agreements-summary-text');
+      var detailsEl = document.getElementById('previous-agreements-details');
+      var detailEl = document.getElementById('previous-agreements-detail');
+      if (!sectionEl || !summaryEl || !detailsEl || !detailEl) {
+        return;
+      }
+
+      detailEl.innerHTML = '';
+      detailsEl.removeAttribute('open');
+      detailsEl.hidden = true;
+      sectionEl.hidden = true;
+      if (summaryTextEl) {
+        summaryTextEl.textContent = 'View previous agreement actions';
+      }
+
+      var agreements = [];
+      var sourceHeading = document.getElementById('existing-' + parcelId);
+      if (sourceHeading) {
+        var sourceEl = sourceHeading.nextElementSibling;
+        while (sourceEl && sourceEl.tagName === 'DL') {
+          agreements.push({
+            scheme: getExistingAgreementFieldValue(sourceEl, 'Scheme'),
+            endDate: getExistingAgreementFieldValue(sourceEl, 'Agreement end date') ||
+              getExistingAgreementFieldValue(sourceEl, 'End date'),
+            availableArea: getExistingAgreementFieldValue(sourceEl, 'Available area'),
+            actionLabels: getExistingAgreementActionLabels(sourceEl)
+          });
+          sourceEl = sourceEl.nextElementSibling;
+        }
+      }
+
+      // Fallback to shared existing-agreements data if accordion markup is missing
+      if (!agreements.length && window.GrasslandsV2ExistingAgreements) {
+        var fallbackActions = window.GrasslandsV2ExistingAgreements.get(parcelId) || [];
+        if (fallbackActions.length) {
+          agreements.push({
+            scheme: '',
+            endDate: '',
+            availableArea: '',
+            actionLabels: fallbackActions.map(function(action) {
+              return window.GrasslandsV2ExistingAgreements.formatLabel(action);
+            })
+          });
+        }
+      }
+
+      agreements = agreements.filter(function(agreement) {
+        return agreement.actionLabels && agreement.actionLabels.length > 0;
+      });
+
+      if (!agreements.length) {
+        return;
+      }
+
+      summaryEl.textContent = formatPreviousAgreementsCountSummary(agreements.length);
+      if (summaryTextEl) {
+        summaryTextEl.textContent = formatPreviousAgreementsDetailsLabel(agreements.length);
+      }
+      sectionEl.hidden = false;
+
+      agreements.forEach(function(agreement, index) {
+        if (agreements.length > 1) {
+          var agreementHeading = document.createElement('h3');
+          agreementHeading.className = 'govuk-heading-s';
+          if (index > 0) {
+            agreementHeading.className += ' govuk-!-margin-top-4';
+          }
+          agreementHeading.textContent = agreement.scheme || ('Previous agreement ' + (index + 1));
+          detailEl.appendChild(agreementHeading);
+        }
+
+        var list = document.createElement('dl');
+        list.className = 'govuk-summary-list';
+
+        if (agreement.scheme) {
+          appendPreviousAgreementSummaryRow(list, 'Scheme', agreement.scheme);
+        }
+        if (agreement.endDate) {
+          appendPreviousAgreementSummaryRow(list, 'Agreement end date', agreement.endDate);
+        }
+        if (agreement.availableArea) {
+          appendPreviousAgreementSummaryRow(list, 'Available area', agreement.availableArea);
+        }
+
+        var actionsRow = document.createElement('div');
+        actionsRow.className = 'govuk-summary-list__row';
+
+        var actionsKey = document.createElement('dt');
+        actionsKey.className = 'govuk-summary-list__key';
+        actionsKey.textContent = 'Existing actions';
+
+        var actionsValue = document.createElement('dd');
+        actionsValue.className = 'govuk-summary-list__value';
+
+        var actionsList = document.createElement('ul');
+        actionsList.className = 'govuk-list';
+        agreement.actionLabels.forEach(function(label) {
+          var item = document.createElement('li');
+          item.textContent = label;
+          actionsList.appendChild(item);
+        });
+
+        actionsValue.appendChild(actionsList);
+        actionsRow.appendChild(actionsKey);
+        actionsRow.appendChild(actionsValue);
+        list.appendChild(actionsRow);
+        detailEl.appendChild(list);
+      });
+
+      detailsEl.hidden = false;
+    }
+
     function resetActionSelectionUiState() {
       $('input[name="actions"]').each(function() {
         var $input = $(this);
@@ -4545,6 +4837,7 @@
         var draftActions = draftActionsEl ? JSON.parse(draftActionsEl.textContent) : [];
 
         if (draftParcel && draftParcel.parcelId) {
+          updatePreviousAgreementsSummary(draftParcel.parcelId);
           setTimeout(function() {
             selectParcelById(draftParcel.parcelId);
             document.getElementById('actions-section').style.display = 'block';

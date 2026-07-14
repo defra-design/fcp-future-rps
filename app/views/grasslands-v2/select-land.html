@@ -205,27 +205,6 @@
       white-space: nowrap;
       cursor: pointer;
     }
-    .farm-map-tooltip {
-      border: 2px solid #1d70b8;
-      background: #ffffff;
-      color: #0b0c0c;
-      padding: 3px 8px;
-      font-family: "GDS Transport", arial, sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.2;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .farm-map-tooltip:hover,
-    .farm-map-tooltip:focus {
-      background: #1d70b8;
-      color: #ffffff;
-      outline: 3px solid transparent;
-      box-shadow: 0 0 0 3px #ffdd00;
-    }
     .maplibregl-popup-content {
       font-family: "GDS Transport", arial, sans-serif;
       max-width: 168px;
@@ -278,6 +257,21 @@
     }
 
     #selected-parcel-summary .govuk-details__text .govuk-list {
+      margin-bottom: 0;
+      padding-left: 0;
+      list-style-type: none;
+      font-size: 19px;
+      line-height: 1.31579;
+      color: #0b0c0c;
+    }
+
+    #selected-parcel-summary .govuk-details__text .govuk-list > li {
+      margin-bottom: 5px;
+      font-size: 19px;
+      line-height: 1.31579;
+    }
+
+    #selected-parcel-summary .govuk-details__text .govuk-list > li:last-child {
       margin-bottom: 0;
     }
 
@@ -581,7 +575,7 @@
         <p class="govuk-visually-hidden" id="previous-agreements-summary"></p>
         <details class="govuk-details" data-module="govuk-details" id="previous-agreements-details" hidden>
           <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">View previous agreement actions</span>
+            <span class="govuk-details__summary-text" id="previous-agreements-summary-text">View previous agreement actions</span>
           </summary>
           <div class="govuk-details__text" id="previous-agreements-detail"></div>
         </details>
@@ -1575,62 +1569,6 @@
     var FARM_VIEW_CONFIG = {
       'blackberry': { label: 'Blackberry Farm', panelId: 'blackberry-farm-info', center: [51.9525, -0.7520], zoom: 15, parcelListId: 'buckinghamshire-parcels' }
     };
-
-    var farmMapMarkers = [];
-
-    function clearFarmMapMarkers() {
-      farmMapMarkers.forEach(function(farmMarker) {
-        farmMarker.marker.remove();
-      });
-      farmMapMarkers = [];
-    }
-
-    function setFarmMapMarkerVisibility(activeFarmKey) {
-      farmMapMarkers.forEach(function(farmMarker) {
-        if (!farmMarker.element) {
-          return;
-        }
-
-        farmMarker.element.style.display = activeFarmKey && farmMarker.farmKey === activeFarmKey ? 'none' : '';
-      });
-    }
-
-    function renderFarmMapMarkers() {
-      if (!rawMap) {
-        return;
-      }
-
-      clearFarmMapMarkers();
-
-      Object.keys(FARM_VIEW_CONFIG).forEach(function(farmKey) {
-        var farmConfig = FARM_VIEW_CONFIG[farmKey];
-        var markerElement = document.createElement('a');
-        markerElement.href = '#';
-        markerElement.className = 'farm-map-tooltip farm-focus-link';
-        markerElement.setAttribute('data-farm-key', farmKey);
-        markerElement.textContent = farmConfig.label || farmKey;
-        markerElement.setAttribute('aria-label', 'Focus map on ' + (farmConfig.label || farmKey));
-
-        var marker = new maplibregl.Marker({
-          element: markerElement,
-          anchor: 'bottom'
-        })
-          .setLngLat(toMapLibreLatLng(farmConfig.center))
-          .addTo(rawMap);
-
-        farmMapMarkers.push({
-          farmKey: farmKey,
-          marker: marker,
-          element: markerElement
-        });
-      });
-
-      setFarmMapMarkerVisibility(null);
-    }
-
-    onMapReady(function() {
-      renderFarmMapMarkers();
-    });
 
     var LOCATION_TO_PARCEL_LIST_ID = {
       buckinghamshire: 'buckinghamshire-parcels'
@@ -4295,9 +4233,14 @@
       return agreementCount + ' previous agreements';
     }
 
+    function formatPreviousAgreementsDetailsLabel(agreementCount) {
+      return 'View ' + agreementCount + ' previous agreement actions';
+    }
+
     function updatePreviousAgreementsSummary(parcelId) {
       var sectionEl = document.getElementById('previous-agreements-section');
       var summaryEl = document.getElementById('previous-agreements-summary');
+      var summaryTextEl = document.getElementById('previous-agreements-summary-text');
       var detailsEl = document.getElementById('previous-agreements-details');
       var detailEl = document.getElementById('previous-agreements-detail');
       if (!sectionEl || !summaryEl || !detailsEl || !detailEl) {
@@ -4308,6 +4251,9 @@
       detailsEl.removeAttribute('open');
       detailsEl.hidden = true;
       sectionEl.hidden = true;
+      if (summaryTextEl) {
+        summaryTextEl.textContent = 'View previous agreement actions';
+      }
 
       var sourceHeading = document.getElementById('existing-' + parcelId);
       var agreementBlocks = [];
@@ -4334,6 +4280,9 @@
       }
 
       summaryEl.textContent = formatPreviousAgreementsCountSummary(agreements.length);
+      if (summaryTextEl) {
+        summaryTextEl.textContent = formatPreviousAgreementsDetailsLabel(agreements.length);
+      }
       sectionEl.hidden = false;
 
       agreements.forEach(function(agreement, index) {
@@ -4371,7 +4320,7 @@
         actionsValue.className = 'govuk-summary-list__value';
 
         var actionsList = document.createElement('ul');
-        actionsList.className = 'govuk-list govuk-list--bullet';
+        actionsList.className = 'govuk-list';
         agreement.actionLabels.forEach(function(label) {
           var item = document.createElement('li');
           item.textContent = label;
@@ -5869,7 +5818,6 @@
           parcelListSection.style.display = farmConfig.parcelListId ? 'block' : 'none';
         }
 
-        setFarmMapMarkerVisibility(farmKey);
         map.setView(farmConfig.center, farmConfig.zoom || 15);
       }
       
@@ -5901,8 +5849,6 @@
             clearTimeout(pendingParcelRestoreTimeout);
             pendingParcelRestoreTimeout = null;
           }
-
-          setFarmMapMarkerVisibility(null);
           
           // Reset map to initial view showing all farm locations
           map.setView(ALL_FARMS_MAP_CENTER, ALL_FARMS_MAP_ZOOM);

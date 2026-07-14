@@ -1244,8 +1244,9 @@ router.get('/grasslands-v2/check-land-details', function (req, res) {
 })
 
 router.get('/grasslands-v2/confirm-eligibility-details', function (req, res) {
-  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
-  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/confirm-eligibility-details')
+  // Alias kept; task list now uses management control directly
+  var query = req.query.from ? ('?from=' + encodeURIComponent(req.query.from)) : ''
+  res.redirect('/grasslands-v2/management-control' + query)
 })
 
 router.get('/grasslands-v2/management-control', function (req, res) {
@@ -1254,13 +1255,13 @@ router.get('/grasslands-v2/management-control', function (req, res) {
 })
 
 router.get('/grasslands-v2/hefer', function (req, res) {
-  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
-  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/hefer')
+  // Temporarily removed from the eligibility journey
+  res.redirect('/grasslands-v2/task-list')
 })
 
 router.get('/grasslands-v2/sssi', function (req, res) {
-  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
-  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/sssi')
+  // Temporarily removed from the eligibility journey
+  res.redirect('/grasslands-v2/task-list')
 })
 
 router.get('/grasslands-v2/eligible', function (req, res) {
@@ -1370,6 +1371,28 @@ router.post('/grasslands-v2/select-actions', function (req, res) {
   }
 
   grasslandsV2LandActions.setDraftActions(req, draftActions)
+
+  // Consent interruptions before confirm: Gate Field (SSSI + HEFER), Far Meadow (HEFER)
+  if (draftParcel.parcelId === 'gate-field' || draftParcel.parcelId === 'far-meadow') {
+    return res.redirect('/grasslands-v2/consent-interruption')
+  }
+
+  res.redirect('/grasslands-v2/confirm-land-and-actions')
+})
+
+router.get('/grasslands-v2/consent-interruption', function (req, res) {
+  var draftParcel = grasslandsV2LandActions.getDraftParcel(req)
+  if (!draftParcel || (draftParcel.parcelId !== 'gate-field' && draftParcel.parcelId !== 'far-meadow')) {
+    return res.redirect('/grasslands-v2/confirm-land-and-actions')
+  }
+
+  res.render('grasslands-v2/consent-interruption', {
+    data: getGrasslandsV2SessionData(req),
+    interruptionType: draftParcel.parcelId === 'far-meadow' ? 'hefer' : 'sssi-hefer'
+  })
+})
+
+router.post('/grasslands-v2/consent-interruption', function (req, res) {
   res.redirect('/grasslands-v2/confirm-land-and-actions')
 })
 
@@ -1514,18 +1537,44 @@ router.post('/grasslands-v2/submit-application', function (req, res) {
   })
 })
 
+function getGrasslandsV2ConfirmationNotices (req) {
+  var parcels = grasslandsV2LandActions.getApplicationParcels(req) || []
+  var draftParcel = grasslandsV2LandActions.getDraftParcel(req)
+  var parcelIds = parcels.map(function (parcel) {
+    return parcel && parcel.parcelId
+  }).filter(Boolean)
+
+  if (draftParcel && draftParcel.parcelId && parcelIds.indexOf(draftParcel.parcelId) === -1) {
+    parcelIds.push(draftParcel.parcelId)
+  }
+
+  var hasGateField = parcelIds.indexOf('gate-field') !== -1
+  var hasFarMeadow = parcelIds.indexOf('far-meadow') !== -1
+
+  return {
+    showHeferNotice: hasGateField || hasFarMeadow,
+    showSssiNotice: hasGateField
+  }
+}
+
 router.get('/grasslands-v2/confirmation', function (req, res) {
   grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  var notices = getGrasslandsV2ConfirmationNotices(req)
   res.render('grasslands-v2/confirmation', {
-    data: getGrasslandsV2SessionData(req)
+    data: getGrasslandsV2SessionData(req),
+    showHeferNotice: notices.showHeferNotice,
+    showSssiNotice: notices.showSssiNotice
   })
 })
 
 router.post('/grasslands-v2/confirmation', function (req, res) {
   req.session.data = Object.assign(req.session.data || {}, req.body || {})
   grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  var notices = getGrasslandsV2ConfirmationNotices(req)
   res.render('grasslands-v2/confirmation', {
-    data: getGrasslandsV2SessionData(req)
+    data: getGrasslandsV2SessionData(req),
+    showHeferNotice: notices.showHeferNotice,
+    showSssiNotice: notices.showSssiNotice
   })
 })
 
@@ -1548,82 +1597,32 @@ router.post('/grasslands-v2/management-control-answer', function (req, res) {
   }
 
   saveGrasslandsV2Answer(req, 'management-answer-v2', managementControlAnswer)
-  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
 
   if (managementControlAnswer === 'no') {
-    clearEligibilityReturnTo(req)
-    return res.redirect('/grasslands-v2/ineligible')
-  }
-
-  if (returnTo === 'check-your-answers') {
-    clearEligibilityReturnTo(req)
-    return res.redirect('/grasslands-v2/check-your-answers')
-  }
-
-  clearEligibilityReturnTo(req)
-  res.redirect('/grasslands-v2/hefer')
-})
-
-router.post('/grasslands-v2/hefer-answer', function (req, res) {
-  var heferAnswer = req.body['hefer-answer-v2']
-  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
-
-  if (!heferAnswer) {
-    return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/hefer', {
-      returnTo: returnTo,
-      eligibilityError: true,
-      eligibilityErrorMessage: "Select if you will get a SFI HEFER if you're required to",
-      eligibilityErrorFieldId: 'hefer-answer-v2-error'
-    })
-  }
-
-  saveGrasslandsV2Answer(req, 'hefer-answer-v2', heferAnswer)
-  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
-
-  if (heferAnswer === 'no') {
-    clearEligibilityReturnTo(req)
-    return res.redirect('/grasslands-v2/ineligible')
-  }
-
-  if (returnTo === 'check-your-answers') {
-    clearEligibilityReturnTo(req)
-    return res.redirect('/grasslands-v2/check-your-answers')
-  }
-
-  clearEligibilityReturnTo(req)
-  res.redirect('/grasslands-v2/sssi')
-})
-
-router.post('/grasslands-v2/sssi-answer', function (req, res) {
-  var sssiAnswer = req.body['sssi-answer-v2']
-  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
-
-  if (!sssiAnswer) {
-    return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/sssi', {
-      returnTo: returnTo,
-      eligibilityError: true,
-      eligibilityErrorMessage: "Select if you will get SSSI consent if you're required to",
-      eligibilityErrorFieldId: 'sssi-answer-v2-error'
-    })
-  }
-
-  saveGrasslandsV2Answer(req, 'sssi-answer-v2', sssiAnswer)
-
-  if (sssiAnswer === 'no') {
     clearEligibilityReturnTo(req)
     grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
     return res.redirect('/grasslands-v2/ineligible')
   }
 
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
+
   if (returnTo === 'check-your-answers') {
     clearEligibilityReturnTo(req)
-    grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
   clearEligibilityReturnTo(req)
-  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
-  res.redirect('/grasslands-v2/eligible')
+  res.redirect('/grasslands-v2/task-list')
+})
+
+router.post('/grasslands-v2/hefer-answer', function (req, res) {
+  // HEFER step temporarily removed from grasslands-v2 journey
+  return res.redirect('/grasslands-v2/task-list')
+})
+
+router.post('/grasslands-v2/sssi-answer', function (req, res) {
+  // SSSI step temporarily removed from grasslands-v2 journey
+  return res.redirect('/grasslands-v2/task-list')
 })
 
 router.post('/grasslands-v2/check-land-details-answer', function (req, res) {

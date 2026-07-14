@@ -160,17 +160,9 @@ function syncFromSessionAnswers (req, options) {
     tasks.checkLandDetails = STATUS.IN_PROGRESS
   }
 
-  if (
-    data['management-answer-v2'] === 'yes' &&
-    data['hefer-answer-v2'] === 'yes' &&
-    data['sssi-answer-v2'] === 'yes'
-  ) {
+  if (data['management-answer-v2'] === 'yes') {
     tasks.confirmEligible = STATUS.COMPLETED
-  } else if (
-    data['management-answer-v2'] ||
-    data['hefer-answer-v2'] ||
-    data['sssi-answer-v2']
-  ) {
+  } else if (data['management-answer-v2']) {
     if (tasks.confirmEligible !== STATUS.COMPLETED) {
       tasks.confirmEligible = STATUS.INCOMPLETE
     }
@@ -231,13 +223,13 @@ function getResolvedTaskStates (req) {
     confirmEligible = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      href: '/grasslands-v2/confirm-eligibility-details'
+      href: '/grasslands-v2/management-control'
     }
   } else {
     confirmEligible = {
       key: STATUS.INCOMPLETE,
       status: statusViewIncomplete(),
-      href: '/grasslands-v2/confirm-eligibility-details'
+      href: '/grasslands-v2/management-control'
     }
   }
 
@@ -346,7 +338,7 @@ function getTaskListPageData (req) {
         status: states.checkLandDetails.status
       }),
       buildTaskItem({
-        title: "Confirm you're eligible to apply",
+        title: 'Confirm management control of the land',
         href: states.confirmEligible.href,
         status: states.confirmEligible.status
       })

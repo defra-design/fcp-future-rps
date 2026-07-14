@@ -17,7 +17,7 @@
 </style>
 
 <div class="govuk-grid-row">
-      <div class="govuk-grid-column-three-quarters">
+      <div class="govuk-grid-column-full">
 
     <h1 class="govuk-heading-l">Check your answers before sending your application</h1>
 
@@ -58,7 +58,7 @@
       </div> #}
     </dl>
 
-    <h2 class="govuk-heading-m">Eligibility</h2>
+    <h2 class="govuk-heading-m">Before you start</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
@@ -80,28 +80,6 @@
         </dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href="/grasslands-v2/management-control?from=check-your-answers">Change<span class="govuk-visually-hidden"> management control of the land</span></a>
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Historic or archaeological features (HEFER)
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ data['hefer-answer-v2'] | capitalize if data['hefer-answer-v2'] else 'Yes' }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="/grasslands-v2/hefer?from=check-your-answers">Change<span class="govuk-visually-hidden"> historic or archaeological features (HEFER)</span></a>
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Sites of special scientific interest (SSSIs)
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ data['sssi-answer-v2'] | capitalize if data['sssi-answer-v2'] else 'Yes' }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="/grasslands-v2/sssi?from=check-your-answers">Change<span class="govuk-visually-hidden"> SSSIs</span></a>
         </dd>
       </div>
       

@@ -34,21 +34,25 @@
         We will notify you when your SFI agreement offer is available for you to check in the Rural Payments service.
       </p>
 
-      <h2 class="govuk-heading-m">
-        Request a SFI Historic Environment Farm Environment Record (HEFER)
-      </h2>
+      {% if showHeferNotice %}
+        <h2 class="govuk-heading-m">
+          Request a SFI Historic Environment Farm Environment Record (HEFER)
+        </h2>
 
-      <p class="govuk-body">
-        You’ve applied for SFI actions on land with historic or archaeological features. This means you must request an SFI HEFER from Historic England before you do your SFI actions on this land. Read the SFI scheme information on <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-scheme-expanded-offer-for-2024/sfi-scheme-information-expanded-offer-for-2024#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">what a SFI HEFER is and how to get one</a>.
-      </p>
+        <p class="govuk-body">
+          You’ve applied for SFI actions on land with historic or archaeological features. This means you must request an SFI HEFER from Historic England before you do your SFI actions on this land. Read the SFI scheme information on <a class="govuk-link" href="https://www.gov.uk/guidance/agreement-holders-information-for-sfi24-and-re-opened-sfi24#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">what a SFI HEFER is and how to get one</a>.
+        </p>
+      {% endif %}
 
-      <h2 class="govuk-heading-m">
-        Get site of special scientific interest (SSSI) consent
-      </h2>
+      {% if showSssiNotice %}
+        <h2 class="govuk-heading-m">
+          Get site of special scientific interest (SSSI) consent
+        </h2>
 
-      <p class="govuk-body">
-        You've applied for actions or items on land that's a site of special scientific interest. Once you've received and accepted your agreement offer, you must get SSSI consent from Natural England before you start your selected actions or items on this land. Read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/protected-areas-sites-of-special-scientific-interest#:~:text=Check%20if%20you%20need%20consent,-There%20are%20certain&text=Each%20SSSI%20has%20a%20list,additional%20permissions%20from%20other%20authorities" target="_blank" rel="noopener noreferrer">SSSI consent and how to get it</a>.
-      </p>
+        <p class="govuk-body">
+          You've applied for actions or items on land that's a site of special scientific interest. Once you've received and accepted your agreement offer, you must get SSSI consent from Natural England before you start your selected actions or items on this land. Read the guidance on <a class="govuk-link" href="https://www.gov.uk/guidance/sites-of-special-scientific-interest-managing-your-land-and-getting-consent-for-activities#:~:text=Check%20if%20you%20need%20consent,-There%20are%20certain&amp;text=Each%20SSSI%20has%20a%20list,additional%20permissions%20from%20other%20authorities" target="_blank" rel="noopener noreferrer">SSSI consent and how to get it</a>.
+        </p>
+      {% endif %}
 
       <a href="/grasslands-v2/singlefrontdoor/landing/landing" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
         Return to your business overview
