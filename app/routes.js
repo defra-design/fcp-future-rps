@@ -1238,6 +1238,17 @@ function saveGrasslandsV2Answer (req, fieldName, value) {
   req.session.data[fieldName] = value
 }
 
+router.get('/grasslands-v2/check-business-details', function (req, res) {
+  grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
+  renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-business-details')
+})
+
+router.get('/grasslands-v2/update-business-details', function (req, res) {
+  res.render('grasslands-v2/update-business-details', {
+    data: getGrasslandsV2SessionData(req)
+  })
+})
+
 router.get('/grasslands-v2/check-land-details', function (req, res) {
   grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkLandDetails)
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-land-details')
@@ -1625,6 +1636,38 @@ router.post('/grasslands-v2/sssi-answer', function (req, res) {
   return res.redirect('/grasslands-v2/task-list')
 })
 
+router.post('/grasslands-v2/check-business-details-answer', function (req, res) {
+  var businessDetailsAnswer = req.body['business-details-answer']
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
+
+  if (!businessDetailsAnswer) {
+    return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-business-details', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if these details are correct',
+      eligibilityErrorFieldId: 'business-details-answer-error'
+    })
+  }
+
+  saveGrasslandsV2Answer(req, 'business-details-answer', businessDetailsAnswer)
+
+  if (businessDetailsAnswer === 'no') {
+    clearEligibilityReturnTo(req)
+    grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
+    return res.redirect('/grasslands-v2/update-business-details')
+  }
+
+  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
+
+  if (returnTo === 'check-your-answers') {
+    clearEligibilityReturnTo(req)
+    return res.redirect('/grasslands-v2/check-your-answers')
+  }
+
+  // Continue straight to the next question
+  res.redirect('/grasslands-v2/check-land-details')
+})
+
 router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
   var landDetailsAnswer = req.body['land-details-answer']
   var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
@@ -1653,8 +1696,8 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  clearEligibilityReturnTo(req)
-  res.redirect('/grasslands-v2/task-list')
+  // Continue straight to the next eligibility question
+  res.redirect('/grasslands-v2/management-control')
 })
 
 router.get('/grasslands-v2/check-your-answers', function (req, res) {

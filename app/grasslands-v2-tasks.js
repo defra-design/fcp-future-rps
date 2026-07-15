@@ -1,10 +1,11 @@
 /**
  * Modular task definitions and session helpers for the grasslands-v2 task list.
  * Mirrors SFI task list behaviour: Cannot start yet / Incomplete / Completed,
- * with Not started → In progress → Completed for the first land-details task.
+ * with Not started → In progress → Completed for early "check before you start" tasks.
  */
 
 var TASK_IDS = {
+  checkBusinessDetails: 'checkBusinessDetails',
   checkLandDetails: 'checkLandDetails',
   confirmEligible: 'confirmEligible',
   selectLand: 'selectLand',
@@ -21,6 +22,7 @@ var STATUS = {
 }
 
 var DEFAULT_TASKS = {
+  checkBusinessDetails: STATUS.NOT_STARTED,
   checkLandDetails: STATUS.NOT_STARTED,
   confirmEligible: STATUS.NOT_STARTED,
   selectLand: STATUS.NOT_STARTED,
@@ -29,6 +31,11 @@ var DEFAULT_TASKS = {
 }
 
 var SELECT_LAND_HREF = '/grasslands-v2/select-land'
+
+var IN_PROGRESS_TASKS = [
+  TASK_IDS.checkBusinessDetails,
+  TASK_IDS.checkLandDetails
+]
 
 function getSessionData (req) {
   req.session.data = req.session.data || {}
@@ -45,9 +52,9 @@ function ensureTasks (req) {
       if (!data.grasslandsV2Tasks[taskId]) {
         data.grasslandsV2Tasks[taskId] = DEFAULT_TASKS[taskId]
       }
-      // Migrate older in-progress values for non-land tasks to Incomplete
+      // Migrate older in-progress values for non-early check tasks to Incomplete
       if (
-        taskId !== TASK_IDS.checkLandDetails &&
+        IN_PROGRESS_TASKS.indexOf(taskId) === -1 &&
         data.grasslandsV2Tasks[taskId] === STATUS.IN_PROGRESS
       ) {
         data.grasslandsV2Tasks[taskId] = STATUS.INCOMPLETE
@@ -77,8 +84,7 @@ function markInProgress (req, taskId) {
   if (isCompleted(req, taskId)) {
     return STATUS.COMPLETED
   }
-  // Only the land-details task uses In progress; others use Incomplete
-  if (taskId === TASK_IDS.checkLandDetails) {
+  if (IN_PROGRESS_TASKS.indexOf(taskId) !== -1) {
     return setTaskStatus(req, taskId, STATUS.IN_PROGRESS)[taskId]
   }
   return setTaskStatus(req, taskId, STATUS.INCOMPLETE)[taskId]
@@ -154,6 +160,12 @@ function syncFromSessionAnswers (req, options) {
   var tasks = ensureTasks(req)
   var hasSelectedLand = options && options.hasSelectedLand
 
+  if (data['business-details-answer'] === 'yes') {
+    tasks.checkBusinessDetails = STATUS.COMPLETED
+  } else if (data['business-details-answer'] === 'no' && tasks.checkBusinessDetails !== STATUS.COMPLETED) {
+    tasks.checkBusinessDetails = STATUS.IN_PROGRESS
+  }
+
   if (data['land-details-answer'] === 'yes') {
     tasks.checkLandDetails = STATUS.COMPLETED
   } else if (data['land-details-answer'] === 'no' && tasks.checkLandDetails !== STATUS.COMPLETED) {
@@ -175,43 +187,68 @@ function syncFromSessionAnswers (req, options) {
   return tasks
 }
 
+function resolveCheckTask (stored, completed, href) {
+  if (completed) {
+    return {
+      key: STATUS.COMPLETED,
+      status: statusViewCompleted(),
+      href: href
+    }
+  }
+  if (stored === STATUS.IN_PROGRESS) {
+    return {
+      key: STATUS.IN_PROGRESS,
+      status: statusViewInProgress(),
+      href: href
+    }
+  }
+  return {
+    key: STATUS.NOT_STARTED,
+    status: statusViewNotStarted(),
+    href: href
+  }
+}
+
 function getResolvedTaskStates (req) {
+  var businessStored = getStoredStatus(req, TASK_IDS.checkBusinessDetails)
   var landDetailsStored = getStoredStatus(req, TASK_IDS.checkLandDetails)
   var eligibleStored = getStoredStatus(req, TASK_IDS.confirmEligible)
   var selectLandStored = getStoredStatus(req, TASK_IDS.selectLand)
   var checkAnswersStored = getStoredStatus(req, TASK_IDS.checkAnswers)
   var submitStored = getStoredStatus(req, TASK_IDS.submitApplication)
 
+  var businessCompleted = businessStored === STATUS.COMPLETED
   var landDetailsCompleted = landDetailsStored === STATUS.COMPLETED
   var eligibleCompleted = eligibleStored === STATUS.COMPLETED
-  var section1Complete = landDetailsCompleted && eligibleCompleted
+  var section1Complete = businessCompleted && landDetailsCompleted && eligibleCompleted
   var selectLandCompleted = selectLandStored === STATUS.COMPLETED
   var checkAnswersCompleted = checkAnswersStored === STATUS.COMPLETED
   var submitCompleted = submitStored === STATUS.COMPLETED
 
-  // 1a. Land details — always available
+  // 1a. Business details — always available
+  var checkBusinessDetails = resolveCheckTask(
+    businessStored,
+    businessCompleted,
+    '/grasslands-v2/check-business-details'
+  )
+
+  // 1b. Land details — locked until business details completed
   var checkLandDetails
-  if (landDetailsCompleted) {
+  if (!businessCompleted) {
     checkLandDetails = {
-      key: STATUS.COMPLETED,
-      status: statusViewCompleted(),
-      href: '/grasslands-v2/check-land-details'
-    }
-  } else if (landDetailsStored === STATUS.IN_PROGRESS) {
-    checkLandDetails = {
-      key: STATUS.IN_PROGRESS,
-      status: statusViewInProgress(),
-      href: '/grasslands-v2/check-land-details'
+      key: STATUS.CANNOT_START,
+      status: statusViewCannotStart(),
+      href: null
     }
   } else {
-    checkLandDetails = {
-      key: STATUS.NOT_STARTED,
-      status: statusViewNotStarted(),
-      href: '/grasslands-v2/check-land-details'
-    }
+    checkLandDetails = resolveCheckTask(
+      landDetailsStored,
+      landDetailsCompleted,
+      '/grasslands-v2/check-land-details'
+    )
   }
 
-  // 1b. Eligibility — locked until land details completed
+  // 1c. Eligibility — locked until land details completed
   var confirmEligible
   if (!landDetailsCompleted) {
     confirmEligible = {
@@ -245,7 +282,6 @@ function getResolvedTaskStates (req) {
     selectLand = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      // Completed: land/actions overview and management
       href: '/grasslands-v2/confirm-land-and-actions'
     }
   } else {
@@ -293,7 +329,6 @@ function getResolvedTaskStates (req) {
       href: '/grasslands-v2/submit-application'
     }
   } else {
-    // Available after CYA — show as Incomplete until submitted (SFI pattern)
     submitApplication = {
       key: STATUS.INCOMPLETE,
       status: statusViewIncomplete(),
@@ -310,6 +345,7 @@ function getResolvedTaskStates (req) {
   if (section3Complete) completedSections += 1
 
   return {
+    checkBusinessDetails: checkBusinessDetails,
     checkLandDetails: checkLandDetails,
     confirmEligible: confirmEligible,
     selectLand: selectLand,
@@ -332,6 +368,11 @@ function getTaskListPageData (req) {
     totalSections: states.totalSections,
     applicationComplete: states.applicationComplete,
     section1Items: [
+      buildTaskItem({
+        title: 'Check your details',
+        href: states.checkBusinessDetails.href,
+        status: states.checkBusinessDetails.status
+      }),
       buildTaskItem({
         title: 'Confirm your land details are up to date',
         href: states.checkLandDetails.href,
@@ -369,6 +410,7 @@ function getTaskListPageData (req) {
 function getTaskStatusesForView (req) {
   var states = getResolvedTaskStates(req)
   return {
+    checkBusinessDetails: states.checkBusinessDetails.status,
     checkLandDetails: states.checkLandDetails.status,
     confirmEligible: states.confirmEligible.status,
     selectLand: states.selectLand.status,

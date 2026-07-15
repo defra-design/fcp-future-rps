@@ -1,11 +1,14 @@
+{% set serviceName = "Apply for a Grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2/task-list" %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
-  Grasslands application
+  Apply for a Grasslands agreement
 {% endblock %}
 
 {% block beforeContent %}
-  {% include "_common/sub-header-beta.html" %}
+  {{ super() }}
+  {% include "grasslands-v2/_includes/account-bar.html" %}
 
   {{ govukBackLink({
     text: "Back to Farm and Land Service",
@@ -17,24 +20,24 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
 
-      <h1 class="govuk-heading-l">Grasslands application</h1>
+      <h1 class="govuk-heading-l">Apply for a Grasslands agreement</h1>
 
 
-      <h2 class="govuk-heading-m">1. Check before you start</h2>
+      <h2 class="govuk-heading-m">Check before you start</h2>
 
       {{ govukTaskList({
         idPrefix: "check-before-you-start",
         items: section1Items
       }) }}
 
-      <h2 class="govuk-heading-m govuk-!-margin-top-5">2. Select land and actions</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Select land and actions</h2>
 
       {{ govukTaskList({
         idPrefix: "select-land-parcels",
         items: section2Items
       }) }}
 
-      <h2 class="govuk-heading-m govuk-!-margin-top-5">3. Review and submit your application</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Review and submit your application</h2>
 
       {{ govukTaskList({
         idPrefix: "review-and-submit",

@@ -1,3 +1,5 @@
+{% set serviceName = "Apply for a Grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2/task-list" %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
@@ -5,7 +7,8 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% include "_common/sub-header-beta.html" %}
+  {{ super() }}
+  {% include "grasslands-v2/_includes/account-bar.html" %}
 
   <!-- DEFRA Interactive Map CSS -->
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/dist/css/index.css">
@@ -29,7 +32,7 @@
       box-sizing: border-box;
     }
 
-    .govuk-header__logo.govuk-width-container {
+    .govuk-header__container.govuk-width-container {
       max-width: none;
       width: 100%;
       margin: 0;
@@ -345,7 +348,7 @@
     }
 
     @media (max-width: 1023px) {
-      .govuk-header__logo.govuk-width-container {
+      .govuk-header__container.govuk-width-container {
         padding-left: 15px;
         padding-right: 15px;
       }

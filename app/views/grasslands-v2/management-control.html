@@ -1,3 +1,5 @@
+{% set serviceName = "Apply for a Grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2/task-list" %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
@@ -5,11 +7,12 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% include "_common/sub-header-beta.html" %}
+  {{ super() }}
+  {% include "grasslands-v2/_includes/account-bar.html" %}
 
   {{ govukBackLink({
     text: "Back",
-    href: "javascript:window.history.back()"
+    href: "/grasslands-v2/check-land-details"
   }) }}
 {% endblock %}
 

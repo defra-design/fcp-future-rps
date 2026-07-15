@@ -5,6 +5,56 @@
 
 // Add extra styles here
 
+// Farm and Land Service header — match farm-and-land.service.defra.gov.uk
+// Live site uses .govuk-header__homepage-link (not .govuk-header__link--homepage)
+// so the crown's 30px font-size does not inflate the blue bar.
+.govuk-template--rebranded .govuk-header .govuk-header__logo {
+  display: flex;
+  align-items: center;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+.govuk-header__homepage-link {
+  display: inline-block;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.govuk-header__homepage-link:focus {
+  outline: 3px solid transparent;
+  color: #0b0c0c;
+  background-color: #fd0;
+  box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+}
+
+.govuk-header__homepage-link .govuk-header__logotype {
+  display: block;
+  position: static; // cancel GOV.UK's top: -3px which pulls the brand up
+  height: 30px;
+  width: auto;
+  border: 0;
+  margin: 0;
+  top: auto;
+}
+
+@media (max-width: 40.0625em) {
+  .govuk-header__homepage-link .govuk-header__logotype {
+    height: 20px;
+  }
+}
+
+// Prototype footer utilities sit below the OGL licence line
+.govuk-footer__licence-description .govuk-footer__inline-list {
+  display: block;
+  width: 100%;
+}
+
+.govuk-footer__link[data-clear-session-data] {
+  display: inline-block;
+  padding: 8px 12px;
+}
+
 //  Interuption card styles // 
 
 .govuk-panel-card {
@@ -808,6 +858,22 @@ tr .govuk-error-message {
 	margin: 0 15px 30px;
 	padding: 5px 0 20px 0;
 	border-bottom: 4px solid #b1b4b6;
+  }
+
+  // Single card that needs room for a longer title (e.g. grasslands-v2 landing)
+  .gem-c-cards__list--single-wide {
+	grid-template-columns: 1fr;
+	max-width: 350px;
+
+	.gem-c-cards__list-item-variant {
+	  margin-left: 0;
+	  margin-right: 0;
+	  padding: 10px 0 25px;
+	}
+
+	.gem-c-cards__list-item-wrapper-variant {
+	  padding: 15px 25px 10px;
+	}
   }
   
   .gem-c-cards__list-item-wrapper {

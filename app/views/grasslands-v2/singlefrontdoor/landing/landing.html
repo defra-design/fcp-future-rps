@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% include "_common/sub-header-beta.html" %}
+  {{ super() }}
+  {% include "grasslands-v2/_includes/account-bar.html" %}
 
   {{ govukBackLink({
     text: "Back to your businesses",
@@ -51,15 +52,15 @@
 
        <div class="gem-c-cards card-page">
      
-            <ul class="gem-c-cards__list gem-c-cards__list-cards">
+            <ul class="gem-c-cards__list gem-c-cards__list-cards gem-c-cards__list--single-wide">
               <li class="gem-c-cards__list-item-variant">
 
                 <div class="gem-c-cards__list-item-wrapper-variant">
 
-                  <h3 class="govuk-heading-s">
-                   Grassland application
+                  <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+                   Apply for a Grasslands agreement
                   </h3>
-                  <a href="/grasslands-v2/task-list" class="govuk-link govuk-link--no-visited-state">
+                  <a href="/clear-session-data?returnUrl=/grasslands-v2/task-list" class="govuk-link govuk-link--no-visited-state">
                       Go to application
                   </a>
                 </div>

@@ -1,4 +1,103 @@
-{% set serviceName = "Farm and Land Service" %}
-{% set serviceUrl = "/grasslands-v2/singlefrontdoor/landing/landing" %}
-{% set signOutUrl = "/grasslands-v2/signed-out" %}
+{# Defaults for pre-application pages. Journey pages override serviceName / serviceUrl.
+   Use "or" so an empty global serviceName from config.json does not wipe the label. #}
+{% set serviceName = serviceName or "Farm and Land Service" %}
+{% if serviceUrl is not defined %}
+  {% set serviceUrl = "/grasslands-v2/singlefrontdoor/landing/landing" %}
+{% endif %}
+{% set signOutUrl = signOutUrl or "/grasslands-v2/signed-out" %}
 {% extends "layouts/day1-header.html" %}
+
+{# Match https://farm-and-land.service.defra.gov.uk/ header markup and spacing #}
+{% block header %}
+  {% if _showDesignSpec %}
+    {% include "_common/design-spec.html" %}
+  {% endif %}
+
+  <div class="govuk-header">
+    <div class="govuk-header__container govuk-width-container">
+      <div class="govuk-header__logo">
+        <a href="/index" class="govuk-header__homepage-link">
+          <img src="/public/images/brand.png" alt="Department for Environment, Food and Rural Affairs" class="govuk-header__logotype" height="30">
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {{ govukServiceNavigation({
+    rebrand: true,
+    serviceName: serviceName,
+    serviceUrl: serviceUrl,
+    navigation: navigation or []
+  }) }}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - you can <a class="govuk-link" href="mailto:ruralpayments@defra.gov.uk">help improve the service with your feedback (opens in new tab)</a>.'
+  }) }}
+{% endblock %}
+
+{% block footer %}
+  {% set footerItems = [
+    {
+      href: "/grasslands-v2/contact-us",
+      text: "Contact us"
+    },
+    {
+      href: "/grasslands-v2/cookies",
+      text: "Cookies"
+    },
+    {
+      href: "/grasslands-v2/accessibility-statement",
+      text: "Accessibility statement"
+    },
+    {
+      href: "https://www.gov.uk/government/organisations/rural-payments-agency/about/personal-information-charter",
+      text: "Personal Information Charter",
+      attributes: {
+        target: "_blank",
+        rel: "noopener noreferrer"
+      }
+    }
+  ] %}
+
+  {% set contentLicenceHtml %}
+    All content is available under the
+    <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+    {% if (GOVUKPrototypeKit.isDevelopment) %}
+      <ul class="govuk-footer__inline-list govuk-!-margin-top-4">
+        <li class="govuk-footer__inline-list-item">
+          <a class="govuk-footer__link" href="/manage-prototype">Manage your prototype</a>
+        </li>
+        <li class="govuk-footer__inline-list-item">
+          <a class="govuk-footer__link" href="/clear-session-data" data-clear-session-data>Clear data</a>
+        </li>
+      </ul>
+    {% endif %}
+  {% endset %}
+
+  {{ govukFooter({
+    rebrand: true,
+    meta: {
+      items: footerItems,
+      html: 'Built by the <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs">Department for Environment, Food &amp; Rural Affairs</a>',
+      visuallyHiddenTitle: "Support links"
+    },
+    contentLicence: {
+      html: contentLicenceHtml
+    }
+  }) }}
+
+  <script>
+    document.querySelectorAll('[data-clear-session-data], a[href="/manage-prototype/clear-data"], a[href="/clear-session-data"]').forEach(function (link) {
+      link.setAttribute('data-clear-session-data', '')
+      link.addEventListener('click', function (event) {
+        event.preventDefault()
+        window.location.href = '/clear-session-data?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash)
+      })
+    })
+  </script>
+{% endblock %}

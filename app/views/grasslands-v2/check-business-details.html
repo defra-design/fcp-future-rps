@@ -1,0 +1,111 @@
+{% set serviceName = "Apply for a Grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2/task-list" %}
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Check your details
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v2/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/grasslands-v2/task-list"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-full">
+
+      {% include "grasslands-v2/_includes/eligibility-error-summary.html" %}
+
+      <h1 class="govuk-heading-l">Check your details</h1>
+
+      <p class="govuk-body">
+        If your details are not correct you need to update them before you apply.
+      </p>
+
+      <h2 class="govuk-heading-m">Business contact details</h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Business name</dt>
+          <dd class="govuk-summary-list__value">Agile Farm Ltd</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Business address</dt>
+          <dd class="govuk-summary-list__value">
+            Canal Walk<br>
+            Newbury<br>
+            Berkshire
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Business phone numbers</dt>
+          <dd class="govuk-summary-list__value">Mobile: 01234 031670</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Business email address</dt>
+          <dd class="govuk-summary-list__value">alfred.waldron@agilefarm.co.uk</dd>
+        </div>
+      </dl>
+
+      <h2 class="govuk-heading-m">Reference numbers</h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Single Business Identifier (SBI)</dt>
+          <dd class="govuk-summary-list__value">123456789</dd>
+        </div>
+      </dl>
+
+      <h2 class="govuk-heading-m">Personal details</h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Full name</dt>
+          <dd class="govuk-summary-list__value">Mr Alfred Waldron</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Customer reference number</dt>
+          <dd class="govuk-summary-list__value">1106298365</dd>
+        </div>
+      </dl>
+
+      <form class="form" action="/grasslands-v2/check-business-details-answer" method="post">
+        {% include "grasslands-v2/_includes/eligibility-return-to.html" %}
+        <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="business-details-answer-error"{% endif %}>
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              Are these details correct?
+            </legend>
+            {% if eligibilityError %}
+              <p id="business-details-answer-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
+              </p>
+            {% endif %}
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="business-details-answer-yes" name="business-details-answer" type="radio" value="yes" {% if data['business-details-answer'] == "yes" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="business-details-answer-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="business-details-answer-no" name="business-details-answer" type="radio" value="no" {% if data['business-details-answer'] == "no" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="business-details-answer-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+
+    </div>
+  </div>
+{% endblock %}
