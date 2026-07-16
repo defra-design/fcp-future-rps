@@ -225,47 +225,36 @@ function getResolvedTaskStates (req) {
   var checkAnswersCompleted = checkAnswersStored === STATUS.COMPLETED
   var submitCompleted = submitStored === STATUS.COMPLETED
 
-  // 1a. Business details — always available
+  // Check before you start — available in any order
   var checkBusinessDetails = resolveCheckTask(
     businessStored,
     businessCompleted,
     '/grasslands-v2/check-business-details'
   )
 
-  // 1b. Land details — locked until business details completed
-  var checkLandDetails
-  if (!businessCompleted) {
-    checkLandDetails = {
-      key: STATUS.CANNOT_START,
-      status: statusViewCannotStart(),
-      href: null
-    }
-  } else {
-    checkLandDetails = resolveCheckTask(
-      landDetailsStored,
-      landDetailsCompleted,
-      '/grasslands-v2/check-land-details'
-    )
-  }
+  var checkLandDetails = resolveCheckTask(
+    landDetailsStored,
+    landDetailsCompleted,
+    '/grasslands-v2/check-land-details'
+  )
 
-  // 1c. Eligibility — locked until land details completed
   var confirmEligible
-  if (!landDetailsCompleted) {
-    confirmEligible = {
-      key: STATUS.CANNOT_START,
-      status: statusViewCannotStart(),
-      href: null
-    }
-  } else if (eligibleCompleted) {
+  if (eligibleCompleted) {
     confirmEligible = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
       href: '/grasslands-v2/management-control'
     }
-  } else {
+  } else if (eligibleStored === STATUS.INCOMPLETE || eligibleStored === STATUS.IN_PROGRESS) {
     confirmEligible = {
       key: STATUS.INCOMPLETE,
       status: statusViewIncomplete(),
+      href: '/grasslands-v2/management-control'
+    }
+  } else {
+    confirmEligible = {
+      key: STATUS.NOT_STARTED,
+      status: statusViewNotStarted(),
       href: '/grasslands-v2/management-control'
     }
   }

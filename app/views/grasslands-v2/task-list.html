@@ -1,9 +1,9 @@
-{% set serviceName = "Apply for a Grasslands agreement" %}
+{% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/grasslands-v2/task-list" %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
-  Apply for a Grasslands agreement
+  Apply for a grasslands agreement
 {% endblock %}
 
 {% block beforeContent %}
@@ -20,10 +20,11 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-full">
 
-      <h1 class="govuk-heading-l">Apply for a Grasslands agreement</h1>
+      <h1 class="govuk-heading-l">Apply for a grasslands agreement</h1>
 
 
       <h2 class="govuk-heading-m">Check before you start</h2>
+      <p class="govuk-body">You can do these in any order.</p>
 
       {{ govukTaskList({
         idPrefix: "check-before-you-start",

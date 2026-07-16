@@ -1,4 +1,4 @@
-{% set serviceName = "Apply for a Grasslands agreement" %}
+{% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/grasslands-v2/task-list" %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
@@ -3759,7 +3759,9 @@
         SOH1: ['CNUM3', 'CAHL1', 'BFS1', 'CIPM2', 'CNUM2', 'CIGL1', 'AHW3', 'CSAM3', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
         CIGL1: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'AHW3', 'CSAM3', 'PRF1', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
         AHW3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'CSAM3', 'PRF1', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
-        CSAM3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
+        // CLIG3 and CSAM3 cannot coexist: CSAM3 replaces grassland, CLIG3 protects it
+        CLIG3: ['CSAM3'],
+        CSAM3: ['CLIG3', 'CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
         PRF1: ['CNUM3', 'CAHL1', 'BFS1', 'CIPM2', 'CIGL1', 'AHW3', 'CHRW3', 'WBD3', 'GRH12'],
         CHRW3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1', 'WBD3', 'AHW5', 'GRH12'],
         WBD3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1', 'CHRW3', 'AHW5', 'GRH12'],

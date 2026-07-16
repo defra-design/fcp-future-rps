@@ -1155,6 +1155,37 @@ function getGrasslandsV2SessionData (req) {
   return req.session.data || {}
 }
 
+// Keep in sync with app/assets/javascripts/grasslands-v2-mvp-actions.js
+const GRASSLANDS_V2_MVP_ACTION_CODES = [
+  'CLIG3',
+  'GRH7',
+  'GRH8',
+  'GRH10',
+  'CSAM3',
+  'CHRW2',
+  'WBD2',
+  'HEF1',
+  'CNUM2',
+  'CIGL2',
+  'CIGL1',
+  'WBD1',
+  'SCR2',
+  'BND1',
+  'BND2',
+  'GRH12'
+]
+
+function getGrasslandsV2CompatibilityLocals (req) {
+  var compatibilityYear = getCompatibilityYearFromSession(getGrasslandsV2SessionData(req))
+
+  return {
+    compatibilityYear: compatibilityYear,
+    compatibilityClientConfig: JSON.stringify(
+      buildMatrixClientConfig(GRASSLANDS_V2_MVP_ACTION_CODES, compatibilityYear)
+    )
+  }
+}
+
 function clearGrasslandsV2ApplicationData (req) {
   var existingData = getGrasslandsV2SessionData(req)
   var preservedBusinessContext = {}
@@ -1284,9 +1315,9 @@ router.get('/grasslands-v2/eligible', function (req, res) {
 
 router.get('/grasslands-v2/select-land-map-fluid-find', function (req, res) {
   grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.selectLand)
-  res.render('grasslands-v2/select-land-map-fluid-find', {
+  res.render('grasslands-v2/select-land-map-fluid-find', Object.assign({
     data: getGrasslandsV2SessionData(req)
-  })
+  }, getGrasslandsV2CompatibilityLocals(req)))
 })
 
 router.get('/grasslands-v2/select-land', function (req, res) {
@@ -1299,11 +1330,11 @@ router.get('/grasslands-v2/select-land', function (req, res) {
     }
   }
 
-  res.render('grasslands-v2/select-land', {
+  res.render('grasslands-v2/select-land', Object.assign({
     data: getGrasslandsV2SessionData(req),
     draftParcel: grasslandsV2LandActions.getDraftParcel(req),
     applicationParcels: grasslandsV2LandActions.getApplicationParcels(req)
-  })
+  }, getGrasslandsV2CompatibilityLocals(req)))
 })
 
 router.post('/grasslands-v2/select-land', function (req, res) {
@@ -1339,14 +1370,14 @@ router.get('/grasslands-v2/select-actions', function (req, res) {
     delete sessionData.focusActionCode
   }
 
-  res.render('grasslands-v2/select-actions', {
+  res.render('grasslands-v2/select-actions', Object.assign({
     data: sessionData,
     draftParcel: draftParcel,
     draftActions: grasslandsV2LandActions.getDraftActions(req),
     applicationParcels: grasslandsV2LandActions.getApplicationParcels(req),
     focusActionCode: focusActionCode,
     returnToCheckYourAnswers: Boolean(sessionData.returnToCheckYourAnswers)
-  })
+  }, getGrasslandsV2CompatibilityLocals(req)))
 })
 
 router.post('/grasslands-v2/select-actions', function (req, res) {
@@ -1371,14 +1402,14 @@ router.post('/grasslands-v2/select-actions', function (req, res) {
   }
 
   if (!Array.isArray(draftActions) || draftActions.length === 0) {
-    return res.render('grasslands-v2/select-actions', {
+    return res.render('grasslands-v2/select-actions', Object.assign({
       data: getGrasslandsV2SessionData(req),
       draftParcel: draftParcel,
       draftActions: [],
       applicationParcels: grasslandsV2LandActions.getApplicationParcels(req),
       actionsError: true,
       actionsErrorMessage: 'Select at least one action'
-    })
+    }, getGrasslandsV2CompatibilityLocals(req)))
   }
 
   grasslandsV2LandActions.setDraftActions(req, draftActions)
@@ -1664,8 +1695,7 @@ router.post('/grasslands-v2/check-business-details-answer', function (req, res) 
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  // Continue straight to the next question
-  res.redirect('/grasslands-v2/check-land-details')
+  res.redirect('/grasslands-v2/task-list')
 })
 
 router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
@@ -1696,8 +1726,7 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  // Continue straight to the next eligibility question
-  res.redirect('/grasslands-v2/management-control')
+  res.redirect('/grasslands-v2/task-list')
 })
 
 router.get('/grasslands-v2/check-your-answers', function (req, res) {

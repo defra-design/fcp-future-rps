@@ -1,4 +1,6 @@
-{% extends "layouts/main-thread.html" %}
+{% set serviceName = "SFI prototypes" %}
+{% set serviceUrl = "/index" %}
+{% extends "layouts/grasslands-v2-header.html" %}
 
 {% set pageName="Manage land based actions" %}
 
@@ -6,7 +8,7 @@
   <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
     <ol class="govuk-breadcrumbs__list">
       <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" href="/index">SFI Reform prototypes</a>
+        <a class="govuk-breadcrumbs__link" href="/index">SFI prototypes</a>
       </li>
     </ol>
   </nav>
@@ -23,7 +25,7 @@
     </h1>
 
     <p class="govuk-body">
-      Private beta MVP with the 16 grasslands actions. Eligibility updated to match SPI 26.
+      Private beta MVP with the 16 grasslands actions. Eligibility updated to match SFI26.
     </p>
 
     <a class="govuk-button" href="/clear-session-data?returnUrl=/grasslands-v2/start">Start prototype</a>
