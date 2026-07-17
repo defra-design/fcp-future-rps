@@ -325,6 +325,15 @@
       line-height: 1.25;
     }
 
+    .app-action-consent-hint {
+      display: block;
+      margin-top: 5px;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
     .app-action-guidance-link {
       font-size: 16px;
       line-height: 1.25;
@@ -706,22 +715,22 @@
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
-              {% if draftParcel and draftParcel.parcelId == 'far-meadow' %}
-                <div class="govuk-inset-text" id="far-meadow-hefer-notice">
-                  You must
-                  <a class="govuk-link" href="https://www.gov.uk/guidance/agreement-holders-information-for-sfi24-and-re-opened-sfi24#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">
-                    get a HEFER (opens in new tab)</a>
-                  to do this action on this land parcel.
-                </div>
-              {% elif draftParcel and draftParcel.parcelId == 'gate-field' %}
-                <div class="govuk-inset-text" id="gate-field-consent-notice">
-                  You must
-                  <a class="govuk-link" href="https://www.gov.uk/guidance/sites-of-special-scientific-interest-managing-your-land-and-getting-consent-for-activities#:~:text=Check%20if%20you%20need%20consent,-There%20are%20certain&amp;text=Each%20SSSI%20has%20a%20list,additional%20permissions%20from%20other%20authorities" target="_blank" rel="noopener noreferrer">
-                    have SSSI consent (opens in new tab)</a>
-                  and
-                  <a class="govuk-link" href="https://www.gov.uk/guidance/agreement-holders-information-for-sfi24-and-re-opened-sfi24#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">
-                    get a HEFER (opens in new tab)</a>
-                  to do these actions on this land parcel.
+              {% if draftParcel and (draftParcel.parcelId == 'gate-field' or draftParcel.parcelId == 'far-meadow') %}
+                <div class="govuk-inset-text" id="parcel-consent-intro">
+                  {% if draftParcel.parcelId == 'far-meadow' %}
+                    Some actions on this parcel need an
+                    <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noopener noreferrer">
+                      SFI HEFER (opens in new tab)</a>.
+                    We’ll show this on those actions.
+                  {% else %}
+                    Some actions on this parcel need
+                    <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">
+                      SSSI consent (opens in new tab)</a>
+                    or an
+                    <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noopener noreferrer">
+                      SFI HEFER (opens in new tab)</a>.
+                    We’ll show this on those actions.
+                  {% endif %}
                 </div>
               {% endif %}
               <p id="actions-selection-error" class="govuk-body"{% if not actionsError %} hidden{% endif %}>
@@ -789,6 +798,17 @@
                     {% endif %}
                   </dd>
                 </div>
+                {% if draftParcel.parcelId == 'gate-field' %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Additional requirements</dt>
+                  <dd class="govuk-summary-list__value">SSSI consent and an SFI HEFER may apply to some actions</dd>
+                </div>
+                {% elif draftParcel.parcelId == 'far-meadow' %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Additional requirements</dt>
+                  <dd class="govuk-summary-list__value">An SFI HEFER may apply to some actions</dd>
+                </div>
+                {% endif %}
               </dl>
               <p class="govuk-body app-selected-parcel__change">
                 <a class="govuk-link" href="/grasslands-v2/select-land">Change parcel</a>
@@ -3799,6 +3819,74 @@
       return filtered;
     }, {});
 
+    // Prototype: which actions need which consents when the parcel has that constraint.
+    // Gate Field has SSSI + historic features; Far Meadow has historic features only.
+    var PARCEL_CONSENT_FLAGS = {
+      'gate-field': { sssi: true, hefer: true },
+      'far-meadow': { sssi: false, hefer: true }
+    };
+
+    var ACTION_CONSENT_REQUIREMENTS = {
+      // SSSI only
+      GRH7: { sssi: true, hefer: false },
+      GRH8: { sssi: true, hefer: false },
+      GRH10: { sssi: true, hefer: false },
+      // HEFER only
+      CSAM3: { sssi: false, hefer: true },
+      CNUM2: { sssi: false, hefer: true },
+      // Both
+      CLIG3: { sssi: true, hefer: true },
+      GRH12: { sssi: true, hefer: true }
+      // Remaining MVP actions: neither
+    };
+
+    function getCurrentDraftParcelId() {
+      try {
+        var draftParcelEl = document.getElementById('draft-parcel-json');
+        var draftParcel = draftParcelEl ? JSON.parse(draftParcelEl.textContent) : null;
+        return draftParcel && draftParcel.parcelId ? draftParcel.parcelId : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function getActionConsentHintText(actionCode, parcelIdOverride) {
+      var parcelId = parcelIdOverride || getCurrentDraftParcelId();
+      var parcelFlags = PARCEL_CONSENT_FLAGS[parcelId];
+      var actionReqs = ACTION_CONSENT_REQUIREMENTS[String(actionCode || '').toUpperCase()];
+
+      if (!parcelFlags || !actionReqs) {
+        return null;
+      }
+
+      var requiresSssi = Boolean(parcelFlags.sssi && actionReqs.sssi);
+      var requiresHefer = Boolean(parcelFlags.hefer && actionReqs.hefer);
+
+      if (requiresSssi && requiresHefer) {
+        return 'Requires SSSI consent and an SFI HEFER';
+      }
+      if (requiresSssi) {
+        return 'Requires SSSI consent';
+      }
+      if (requiresHefer) {
+        return 'Requires an SFI HEFER';
+      }
+      return null;
+    }
+
+    function buildActionConsentHint(actionCode, hintId) {
+      var text = getActionConsentHintText(actionCode);
+      if (!text) {
+        return null;
+      }
+
+      var hint = document.createElement('span');
+      hint.className = 'app-action-consent-hint';
+      hint.id = hintId;
+      hint.textContent = text;
+      return hint;
+    }
+
     function renderActionCheckboxes() {
       var container = document.getElementById('actions-checkboxes-container');
       if (!container) {
@@ -3810,6 +3898,7 @@
       ACTION_CATALOG.forEach(function(action) {
         var codeLower = action.code.toLowerCase();
         var hintId = 'action-hint-' + codeLower;
+        var consentHintId = 'action-consent-hint-' + codeLower;
 
         var item = document.createElement('div');
         item.className = 'govuk-checkboxes__item';
@@ -3821,7 +3910,6 @@
         input.type = 'checkbox';
         input.value = action.code;
         input.setAttribute('data-aria-controls', 'conditional-' + codeLower);
-        input.setAttribute('aria-describedby', hintId);
 
         var label = document.createElement('label');
         label.className = 'govuk-label govuk-checkboxes__label';
@@ -3845,6 +3933,14 @@
         hint.id = hintId;
         hint.textContent = 'Payment rate per year: ' + (action.rateText || '');
         label.appendChild(hint);
+
+        var consentHint = buildActionConsentHint(action.code, consentHintId);
+        var describedBy = hintId;
+        if (consentHint) {
+          label.appendChild(consentHint);
+          describedBy += ' ' + consentHintId;
+        }
+        input.setAttribute('aria-describedby', describedBy);
 
         item.appendChild(input);
         item.appendChild(label);
@@ -4090,6 +4186,56 @@
       parcelLayerEventsBound = true;
     }
 
+    function getParcelPopupAnchor(mapInstance, lngLat) {
+      if (!mapInstance || !lngLat || typeof mapInstance.project !== 'function') {
+        return 'bottom';
+      }
+
+      var point = mapInstance.project(lngLat);
+      var container = mapInstance.getContainer();
+      var width = container ? container.clientWidth : 0;
+      var height = container ? container.clientHeight : 0;
+
+      if (!width || !height) {
+        return 'bottom';
+      }
+
+      // Leave room for popups near map edges.
+      var edgePadX = 130;
+      var edgePadY = 180;
+      var nearTop = point.y < edgePadY;
+      var nearBottom = point.y > (height - edgePadY);
+      var nearLeft = point.x < edgePadX;
+      var nearRight = point.x > (width - edgePadX);
+
+      if (nearTop && nearLeft) {
+        return 'top-left';
+      }
+      if (nearTop && nearRight) {
+        return 'top-right';
+      }
+      if (nearTop) {
+        return 'top';
+      }
+      if (nearBottom && nearLeft) {
+        return 'bottom-left';
+      }
+      if (nearBottom && nearRight) {
+        return 'bottom-right';
+      }
+      if (nearBottom) {
+        return 'bottom';
+      }
+      if (nearLeft) {
+        return 'left';
+      }
+      if (nearRight) {
+        return 'right';
+      }
+
+      return 'bottom';
+    }
+
     function buildParcelPopupContent(parcelId, data) {
       var existingCount = (window.GrasslandsV2ExistingAgreements && typeof window.GrasslandsV2ExistingAgreements.count === 'function')
         ? window.GrasslandsV2ExistingAgreements.count(parcelId)
@@ -4179,8 +4325,16 @@
           if (popup) {
             popup.remove();
           }
-          popup = new maplibregl.Popup({ maxWidth: '216px' })
-            .setLngLat(toMapLibreLatLng(bounds.getCenter()))
+          var popupLngLat = toMapLibreLatLng(bounds.getCenter());
+          popup = new maplibregl.Popup({
+            maxWidth: '216px',
+            anchor: getParcelPopupAnchor(rawMap, popupLngLat),
+            offset: 12,
+            closeButton: true,
+            closeOnClick: false,
+            className: 'parcel-popup-selectable'
+          })
+            .setLngLat(popupLngLat)
             .setHTML(popupContent)
             .addTo(rawMap);
 
@@ -4316,6 +4470,9 @@
               console.log('Set quantity for:', action.code, 'to:', action.quantity);
             }
           }
+
+          // Sync GOV.UK conditional behaviour, compatibility and area hints
+          $checkbox.trigger('change');
         } else {
           console.log('Checkbox not found for:', action.code);
         }
@@ -4842,6 +4999,25 @@
         var draftActions = draftActionsEl ? JSON.parse(draftActionsEl.textContent) : [];
 
         if (draftParcel && draftParcel.parcelId) {
+          // Editing removes the parcel from saved selections. Re-seed it here so
+          // selectParcel → restoreParcelState can re-check the draft actions.
+          if (Array.isArray(draftActions) && draftActions.length) {
+            parcelSelections[draftParcel.parcelId] = {
+              actions: draftActions.map(function(action) {
+                return {
+                  code: String((action && action.code) || '').toUpperCase(),
+                  name: action && action.name,
+                  quantity: action && action.quantity,
+                  unit: action && action.unit,
+                  paymentRate: action && action.paymentRate,
+                  yearlyPayment: action && action.yearlyPayment
+                };
+              }).filter(function(action) {
+                return Boolean(action.code);
+              })
+            };
+          }
+
           updatePreviousAgreementsSummary(draftParcel.parcelId);
           setTimeout(function() {
             selectParcelById(draftParcel.parcelId);
@@ -4850,18 +5026,11 @@
 
             if (Array.isArray(draftActions) && draftActions.length) {
               setTimeout(function() {
-                draftActions.forEach(function(action) {
-                  var code = (action.code || '').toUpperCase();
-                  var $cb = $('input[name="actions"][value="' + code + '"]');
-                  if ($cb.length) {
-                    $cb.prop('checked', true).trigger('change');
-                    if (action.quantity != null) {
-                      $('#quantity-' + code.toLowerCase()).val(action.quantity).trigger('input');
-                    }
-                  }
-                });
+                if (currentSelectedParcel === draftParcel.parcelId) {
+                  restoreParcelState(draftParcel.parcelId);
+                }
                 refreshContinueFromActionSelection();
-              }, 250);
+              }, 300);
             } else {
               refreshContinueFromActionSelection();
             }
@@ -5037,7 +5206,15 @@
             
             parcelSelection.actions.forEach(function(action) {
               var $actionRow = $('<div class="govuk-summary-list__row"></div>');
-              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.name + ' (' + action.code + ')');
+              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>');
+              $actionKey.append(document.createTextNode(action.name + ' (' + action.code + ')'));
+              var consentHintText = getActionConsentHintText(action.code, parcelId);
+              if (consentHintText) {
+                $actionKey.append(
+                  $('<div class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-1 govuk-!-margin-bottom-0"></div>')
+                    .text(consentHintText)
+                );
+              }
               var $actionValue = $('<dd class="govuk-summary-list__value"></dd>');
               
               var payment = null;

@@ -219,6 +219,10 @@
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
               <dt class="govuk-summary-list__key">
                 {{ actionName }}: {{ action.code }}
+                {% set consentHint = consentHintsByParcel[parcelId][action.code] if consentHintsByParcel and consentHintsByParcel[parcelId] and consentHintsByParcel[parcelId][action.code] else none %}
+                {% if consentHint %}
+                  <div class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-1 govuk-!-margin-bottom-0">{{ consentHint }}</div>
+                {% endif %}
               </dt>
               <dd class="govuk-summary-list__value">
                 {% if action.quantity %}

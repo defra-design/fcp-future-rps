@@ -2,9 +2,13 @@
 {% set serviceUrl = "/grasslands-v2/task-list" %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
+{% set interruptionType = interruptionType or 'sssi-hefer' %}
+
 {% block pageTitle %}
-  {% if interruptionType == 'hefer' %}
-    You must get an SFI Historic Environment Farm Environment Record (SFI HEFER) from Historic England
+  {% if interruptionType == 'sssi' %}
+    You must get SSSI consent
+  {% elif interruptionType == 'hefer' %}
+    You must get an SFI HEFER
   {% else %}
     You must get consent to do your actions
   {% endif %}
@@ -16,45 +20,67 @@
 
   {{ govukBackLink({
     text: "Back",
-    href: "/grasslands-v2/select-actions"
+    href: "/grasslands-v2/confirm-land-and-actions"
   }) }}
 {% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
-        {% if interruptionType == 'hefer' %}
-          <h1 class="govuk-heading-l">You must get an SFI Historic Environment Farm Environment Record (SFI HEFER) from Historic England</h1>
+
+      {# 1. SSSI only #}
+      {% if interruptionType == 'sssi' %}
+        <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
+          <h1 class="govuk-heading-l">You must get SSSI consent</h1>
           <p class="govuk-body">
-            This is because you are applying for actions on land with historic or archaeological features. You must do this before you do your selected SFI actions on this land.
+            You are applying for actions on land that’s a site of special scientific interest (SSSI).
+            Before you do these actions, you must get SSSI consent from Natural England.
           </p>
           <p class="govuk-body">
-            Read the guidance on
-            <a class="govuk-link" href="https://www.gov.uk/guidance/agreement-holders-information-for-sfi24-and-re-opened-sfi24#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">
-              land with historic or archaeological features (opens in new tab)</a>
-            to find out what a HEFER is and how to request one.
+            Read the SFI26 scheme information on
+            <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">
+              SSSI consent and how to get it (opens in new tab)</a>.
           </p>
-        {% else %}
+        </div>
+
+      {# 2. HEFER only #}
+      {% elif interruptionType == 'hefer' %}
+        <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
+          <h1 class="govuk-heading-l">You must get an SFI HEFER</h1>
+          <p class="govuk-body">
+            You are applying for actions on land with historic or archaeological features.
+            Before you do these actions, you must get an SFI HEFER from Historic England.
+          </p>
+          <p class="govuk-body">
+            Read the SFI26 scheme information on
+            <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noopener noreferrer">
+              SFI HEFERs and how to get one (opens in new tab)</a>.
+          </p>
+        </div>
+
+      {# 3. SSSI and HEFER #}
+      {% else %}
+        <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
           <h1 class="govuk-heading-l">You must get consent to do your actions</h1>
           <p class="govuk-body">
-            You are applying for actions on land that's a site of special scientific interest (SSSI) and land with historic or archaeological features. Before starting your actions, you must get:
+            You are applying for actions on land that’s a site of special scientific interest (SSSI) and land with historic or archaeological features that require an SFI HEFER.
+            Before you start your selected actions, you must get:
           </p>
           <ul class="govuk-list govuk-list--bullet">
             <li>
-              an
-              <a class="govuk-link" href="https://www.gov.uk/guidance/agreement-holders-information-for-sfi24-and-re-opened-sfi24#:~:text=If%20you%20apply%20for%20SFI,not%20requested%20a%20HEFER%20before." target="_blank" rel="noopener noreferrer">
-                SFI Historic Environment Farm Environment Record (SFI HEFER) (opens in new tab)</a>
-              from Historic England
-            </li>
-            <li>
-              <a class="govuk-link" href="https://www.gov.uk/guidance/sites-of-special-scientific-interest-managing-your-land-and-getting-consent-for-activities#:~:text=Check%20if%20you%20need%20consent,-There%20are%20certain&amp;text=Each%20SSSI%20has%20a%20list,additional%20permissions%20from%20other%20authorities" target="_blank" rel="noopener noreferrer">
+              <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">
                 SSSI consent (opens in new tab)</a>
               from Natural England
             </li>
+            <li>
+              an
+              <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noopener noreferrer">
+                SFI HEFER (opens in new tab)</a>
+              from Historic England
+            </li>
           </ul>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
 
       <form action="/grasslands-v2/consent-interruption" method="post" class="govuk-!-margin-top-6">
         <button type="submit" class="govuk-button" data-module="govuk-button">

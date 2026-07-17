@@ -572,6 +572,16 @@
           <dt class="govuk-summary-list__key">Land cover</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-land-cover">{{ draftLandCoverText }}</dd>
         </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
+          <dt class="govuk-summary-list__key">Additional requirements</dt>
+          <dd class="govuk-summary-list__value" id="summary-parcel-requirements">
+            {% if hasDraftParcel and draftParcel.parcelId == 'gate-field' %}
+              SSSI consent and an SFI HEFER may apply to some actions
+            {% elif hasDraftParcel and draftParcel.parcelId == 'far-meadow' %}
+              An SFI HEFER may apply to some actions
+            {% endif %}
+          </dd>
+        </div>
       </dl>
 
       <div id="previous-agreements-section" class="govuk-!-margin-top-2" hidden>
@@ -3893,6 +3903,56 @@
       parcelLayerEventsBound = true;
     }
 
+    function getParcelPopupAnchor(mapInstance, lngLat) {
+      if (!mapInstance || !lngLat || typeof mapInstance.project !== 'function') {
+        return 'bottom';
+      }
+
+      var point = mapInstance.project(lngLat);
+      var container = mapInstance.getContainer();
+      var width = container ? container.clientWidth : 0;
+      var height = container ? container.clientHeight : 0;
+
+      if (!width || !height) {
+        return 'bottom';
+      }
+
+      // Leave room for popups near map edges.
+      var edgePadX = 130;
+      var edgePadY = 180;
+      var nearTop = point.y < edgePadY;
+      var nearBottom = point.y > (height - edgePadY);
+      var nearLeft = point.x < edgePadX;
+      var nearRight = point.x > (width - edgePadX);
+
+      if (nearTop && nearLeft) {
+        return 'top-left';
+      }
+      if (nearTop && nearRight) {
+        return 'top-right';
+      }
+      if (nearTop) {
+        return 'top';
+      }
+      if (nearBottom && nearLeft) {
+        return 'bottom-left';
+      }
+      if (nearBottom && nearRight) {
+        return 'bottom-right';
+      }
+      if (nearBottom) {
+        return 'bottom';
+      }
+      if (nearLeft) {
+        return 'left';
+      }
+      if (nearRight) {
+        return 'right';
+      }
+
+      return 'bottom';
+    }
+
     function buildParcelPopupContent(parcelId, data) {
       var existingCount = (window.GrasslandsV2ExistingAgreements && typeof window.GrasslandsV2ExistingAgreements.count === 'function')
         ? window.GrasslandsV2ExistingAgreements.count(parcelId)
@@ -3982,15 +4042,16 @@
           if (popup) {
             popup.remove();
           }
+          var popupLngLat = toMapLibreLatLng(bounds.getCenter());
           popup = new maplibregl.Popup({
             maxWidth: '216px',
-            anchor: 'bottom',
+            anchor: getParcelPopupAnchor(rawMap, popupLngLat),
             offset: 12,
             closeButton: true,
             closeOnClick: false,
             className: 'parcel-popup-selectable'
           })
-            .setLngLat(toMapLibreLatLng(bounds.getCenter()))
+            .setLngLat(popupLngLat)
             .setHTML(popupContent)
             .addTo(rawMap);
 
@@ -4415,6 +4476,21 @@
         landCoverEl.appendChild(document.createTextNode(cover));
       });
 
+      var requirementsRow = document.getElementById('summary-parcel-requirements-row');
+      var requirementsEl = document.getElementById('summary-parcel-requirements');
+      if (requirementsRow && requirementsEl) {
+        if (parcelId === 'gate-field') {
+          requirementsEl.textContent = 'SSSI consent and an SFI HEFER may apply to some actions';
+          requirementsRow.classList.remove('govuk-!-display-none');
+        } else if (parcelId === 'far-meadow') {
+          requirementsEl.textContent = 'An SFI HEFER may apply to some actions';
+          requirementsRow.classList.remove('govuk-!-display-none');
+        } else {
+          requirementsEl.textContent = '';
+          requirementsRow.classList.add('govuk-!-display-none');
+        }
+      }
+
       document.getElementById('selectedParcelId').value = parcelId || '';
       document.getElementById('selectedParcelName').value = parcel.name || '';
       document.getElementById('selectedParcelOsRef').value = osRef || '';
@@ -4453,6 +4529,15 @@
           el.value = '';
         }
       });
+
+      var requirementsRow = document.getElementById('summary-parcel-requirements-row');
+      var requirementsEl = document.getElementById('summary-parcel-requirements');
+      if (requirementsRow) {
+        requirementsRow.classList.add('govuk-!-display-none');
+      }
+      if (requirementsEl) {
+        requirementsEl.textContent = '';
+      }
 
       Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
         panel.style.display = '';

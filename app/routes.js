@@ -10,6 +10,7 @@ const actionCodeNames = require('./data/sfi24-codes-names.json')
 const sessionDataDefaults = require('./data/session-data-defaults')
 const grasslandsV2Tasks = require('./grasslands-v2-tasks')
 const grasslandsV2LandActions = require('./grasslands-v2-land-actions')
+const grasslandsV2Consent = require('./grasslands-v2-consent')
 const {
   areActionsCompatible,
   findIncompatibilities,
@@ -1210,6 +1211,7 @@ router.get('/grasslands-v2/before-you-start', function (req, res) {
 })
 
 router.get('/grasslands-v2/task-list', function (req, res) {
+  setCheckBeforeYouStartLinearFlow(req, false)
   grasslandsV2Tasks.ensureTasks(req)
 
   var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
@@ -1246,6 +1248,34 @@ function clearEligibilityReturnTo (req) {
   }
 }
 
+function setCheckBeforeYouStartLinearFlow (req, enabled) {
+  req.session.data = req.session.data || {}
+  if (enabled) {
+    req.session.data.checkBeforeYouStartLinearFlow = true
+  } else {
+    delete req.session.data.checkBeforeYouStartLinearFlow
+  }
+}
+
+function isCheckBeforeYouStartLinearFlow (req) {
+  return Boolean(getGrasslandsV2SessionData(req).checkBeforeYouStartLinearFlow)
+}
+
+function getNextCheckBeforeYouStartPath (req) {
+  grasslandsV2Tasks.syncFromSessionAnswers(req, {})
+  var states = grasslandsV2Tasks.getResolvedTaskStates(req)
+
+  if (states.checkLandDetails.key !== grasslandsV2Tasks.STATUS.COMPLETED) {
+    return '/grasslands-v2/check-land-details'
+  }
+
+  if (states.confirmEligible.key !== grasslandsV2Tasks.STATUS.COMPLETED) {
+    return '/grasslands-v2/management-control'
+  }
+
+  return '/grasslands-v2/task-list'
+}
+
 function renderGrasslandsV2EligibilityPage (req, res, view, options) {
   var opts = options || {}
 
@@ -1271,6 +1301,9 @@ function saveGrasslandsV2Answer (req, fieldName, value) {
 
 router.get('/grasslands-v2/check-business-details', function (req, res) {
   grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
+  if (req.query.from !== 'check-your-answers') {
+    setCheckBeforeYouStartLinearFlow(req, true)
+  }
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-business-details')
 })
 
@@ -1282,6 +1315,9 @@ router.get('/grasslands-v2/update-business-details', function (req, res) {
 
 router.get('/grasslands-v2/check-land-details', function (req, res) {
   grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkLandDetails)
+  if (req.query.from !== 'check-your-answers') {
+    setCheckBeforeYouStartLinearFlow(req, true)
+  }
   renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-land-details')
 })
 
@@ -1414,32 +1450,56 @@ router.post('/grasslands-v2/select-actions', function (req, res) {
 
   grasslandsV2LandActions.setDraftActions(req, draftActions)
 
-  // Consent interruptions before confirm: Gate Field (SSSI + HEFER), Far Meadow (HEFER)
-  if (draftParcel.parcelId === 'gate-field' || draftParcel.parcelId === 'far-meadow') {
-    return res.redirect('/grasslands-v2/consent-interruption')
-  }
-
   res.redirect('/grasslands-v2/confirm-land-and-actions')
 })
 
 router.get('/grasslands-v2/consent-interruption', function (req, res) {
-  var draftParcel = grasslandsV2LandActions.getDraftParcel(req)
-  if (!draftParcel || (draftParcel.parcelId !== 'gate-field' && draftParcel.parcelId !== 'far-meadow')) {
-    return res.redirect('/grasslands-v2/confirm-land-and-actions')
+  var sessionData = getGrasslandsV2SessionData(req)
+  var previewType = req.query.preview
+  var allowedPreviewTypes = ['sssi', 'hefer', 'sssi-hefer']
+
+  if (previewType && allowedPreviewTypes.indexOf(previewType) !== -1) {
+    return res.render('grasslands-v2/consent-interruption', {
+      data: sessionData,
+      interruptionType: previewType,
+      requiresSssi: previewType === 'sssi' || previewType === 'sssi-hefer',
+      requiresHefer: previewType === 'hefer' || previewType === 'sssi-hefer'
+    })
+  }
+
+  var consent = grasslandsV2Consent.getConsentRequirementsForParcels(
+    grasslandsV2LandActions.buildBasketParcels(req)
+  )
+
+  if (!consent.requiresConsent) {
+    return res.redirect(sessionData.afterConsentRedirect || '/grasslands-v2/confirm-land-and-actions')
   }
 
   res.render('grasslands-v2/consent-interruption', {
-    data: getGrasslandsV2SessionData(req),
-    interruptionType: draftParcel.parcelId === 'far-meadow' ? 'hefer' : 'sssi-hefer'
+    data: sessionData,
+    interruptionType: consent.interruptionType,
+    requiresSssi: consent.requiresSssi,
+    requiresHefer: consent.requiresHefer
   })
 })
 
 router.post('/grasslands-v2/consent-interruption', function (req, res) {
-  res.redirect('/grasslands-v2/confirm-land-and-actions')
+  var sessionData = getGrasslandsV2SessionData(req)
+  var redirectTo = sessionData.afterConsentRedirect || '/grasslands-v2/task-list'
+  delete sessionData.afterConsentRedirect
+  res.redirect(redirectTo)
 })
 
 router.get('/grasslands-v2/confirm-land-and-actions', function (req, res) {
-  var basketParcels = grasslandsV2LandActions.buildBasketParcels(req)
+  var basketParcels = grasslandsV2LandActions.buildBasketParcels(req).map(function (parcel) {
+    return Object.assign({}, parcel, {
+      actions: (parcel.actions || []).map(function (action) {
+        return Object.assign({}, action, {
+          consentHint: grasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+        })
+      })
+    })
+  })
   var basketSummary = grasslandsV2LandActions.summariseBasket(basketParcels)
   var sessionData = getGrasslandsV2SessionData(req)
   var flashMessage = sessionData.confirmLandFlash || null
@@ -1491,7 +1551,24 @@ router.post('/grasslands-v2/confirm-land-and-actions', function (req, res) {
     return res.redirect('/grasslands-v2/select-land?addAnother=1')
   }
 
-  if (action === 'returnToCya' || req.body.from === 'check-your-answers' || sessionData.returnToCheckYourAnswers) {
+  var consent = grasslandsV2Consent.getConsentRequirementsForParcels(
+    grasslandsV2LandActions.buildBasketParcels(req)
+  )
+  var goingToCya = action === 'returnToCya' ||
+    req.body.from === 'check-your-answers' ||
+    sessionData.returnToCheckYourAnswers
+
+  if (consent.requiresConsent) {
+    if (goingToCya) {
+      delete sessionData.returnToCheckYourAnswers
+      sessionData.afterConsentRedirect = '/grasslands-v2/check-your-answers'
+    } else {
+      sessionData.afterConsentRedirect = '/grasslands-v2/task-list'
+    }
+    return res.redirect('/grasslands-v2/consent-interruption')
+  }
+
+  if (goingToCya) {
     delete sessionData.returnToCheckYourAnswers
     return res.redirect('/grasslands-v2/check-your-answers')
   }
@@ -1580,22 +1657,13 @@ router.post('/grasslands-v2/submit-application', function (req, res) {
 })
 
 function getGrasslandsV2ConfirmationNotices (req) {
-  var parcels = grasslandsV2LandActions.getApplicationParcels(req) || []
-  var draftParcel = grasslandsV2LandActions.getDraftParcel(req)
-  var parcelIds = parcels.map(function (parcel) {
-    return parcel && parcel.parcelId
-  }).filter(Boolean)
-
-  if (draftParcel && draftParcel.parcelId && parcelIds.indexOf(draftParcel.parcelId) === -1) {
-    parcelIds.push(draftParcel.parcelId)
-  }
-
-  var hasGateField = parcelIds.indexOf('gate-field') !== -1
-  var hasFarMeadow = parcelIds.indexOf('far-meadow') !== -1
+  var consent = grasslandsV2Consent.getConsentRequirementsForParcels(
+    grasslandsV2LandActions.buildBasketParcels(req)
+  )
 
   return {
-    showHeferNotice: hasGateField || hasFarMeadow,
-    showSssiNotice: hasGateField
+    showHeferNotice: consent.requiresHefer,
+    showSssiNotice: consent.requiresSssi
   }
 }
 
@@ -1642,6 +1710,7 @@ router.post('/grasslands-v2/management-control-answer', function (req, res) {
 
   if (managementControlAnswer === 'no') {
     clearEligibilityReturnTo(req)
+    setCheckBeforeYouStartLinearFlow(req, false)
     grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.confirmEligible)
     return res.redirect('/grasslands-v2/ineligible')
   }
@@ -1650,10 +1719,12 @@ router.post('/grasslands-v2/management-control-answer', function (req, res) {
 
   if (returnTo === 'check-your-answers') {
     clearEligibilityReturnTo(req)
+    setCheckBeforeYouStartLinearFlow(req, false)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
   clearEligibilityReturnTo(req)
+  setCheckBeforeYouStartLinearFlow(req, false)
   res.redirect('/grasslands-v2/task-list')
 })
 
@@ -1684,6 +1755,7 @@ router.post('/grasslands-v2/check-business-details-answer', function (req, res) 
 
   if (businessDetailsAnswer === 'no') {
     clearEligibilityReturnTo(req)
+    setCheckBeforeYouStartLinearFlow(req, false)
     grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
     return res.redirect('/grasslands-v2/update-business-details')
   }
@@ -1692,10 +1764,12 @@ router.post('/grasslands-v2/check-business-details-answer', function (req, res) 
 
   if (returnTo === 'check-your-answers') {
     clearEligibilityReturnTo(req)
+    setCheckBeforeYouStartLinearFlow(req, false)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  res.redirect('/grasslands-v2/task-list')
+  setCheckBeforeYouStartLinearFlow(req, true)
+  res.redirect(getNextCheckBeforeYouStartPath(req))
 })
 
 router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
@@ -1715,6 +1789,7 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
 
   if (landDetailsAnswer === 'no') {
     clearEligibilityReturnTo(req)
+    setCheckBeforeYouStartLinearFlow(req, false)
     grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkLandDetails)
     return res.redirect('/grasslands-v2/update-land-details')
   }
@@ -1723,14 +1798,36 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
 
   if (returnTo === 'check-your-answers') {
     clearEligibilityReturnTo(req)
+    setCheckBeforeYouStartLinearFlow(req, false)
     return res.redirect('/grasslands-v2/check-your-answers')
   }
 
-  res.redirect('/grasslands-v2/task-list')
+  setCheckBeforeYouStartLinearFlow(req, true)
+  res.redirect(getNextCheckBeforeYouStartPath(req))
 })
 
 router.get('/grasslands-v2/check-your-answers', function (req, res) {
   var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+  var basketParcels = grasslandsV2LandActions.buildBasketParcels(req)
+  var consentHintsByParcel = {}
+
+  basketParcels.forEach(function (parcel) {
+    if (!parcel || !parcel.parcelId) {
+      return
+    }
+
+    var hints = {}
+    ;(parcel.actions || []).forEach(function (action) {
+      var hint = grasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+      if (hint) {
+        hints[action.code] = hint
+      }
+    })
+
+    if (Object.keys(hints).length > 0) {
+      consentHintsByParcel[parcel.parcelId] = hints
+    }
+  })
 
   if (actionsSummary.rows && actionsSummary.rows.length > 0) {
     grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.selectLand)
@@ -1741,7 +1838,8 @@ router.get('/grasslands-v2/check-your-answers', function (req, res) {
   res.render('grasslands-v2/check-your-answers', {
     data: Object.assign({}, req.session.data),
     actionsSummaryRows: actionsSummary.rows,
-    actionsSummaryTotal: actionsSummary.total
+    actionsSummaryTotal: actionsSummary.total,
+    consentHintsByParcel: consentHintsByParcel
   })
 })
 

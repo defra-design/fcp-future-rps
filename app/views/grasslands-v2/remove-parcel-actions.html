@@ -3,7 +3,7 @@
 {% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
-  Remove all actions from {{ parcel.parcelName }}?
+  Remove this land parcel?
 {% endblock %}
 
 {% block beforeContent %}
@@ -19,7 +19,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Remove all actions from {{ parcel.parcelName }}?</h1>
+      <h1 class="govuk-heading-l">Remove this land parcel?</h1>
 
       <p class="govuk-body">
         This will remove {{ parcel.parcelName }}{% if parcel.osReference %} ({{ parcel.osReference }}){% endif %} and all actions added to it from your application.
@@ -29,7 +29,7 @@
         <input type="hidden" name="confirmRemove" value="yes">
         <div class="govuk-button-group">
           <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
-            Remove all actions
+            Remove this land parcel
           </button>
           <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions">Cancel</a>
         </div>
