@@ -715,6 +715,15 @@
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
+              <div id="actions-compatibility-status" class="actions-compatibility-status" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <div class="actions-compatibility-status__inner">
+                  <span class="actions-compatibility-status__spinner" aria-hidden="true"></span>
+                  <div>
+                    <p class="govuk-body govuk-!-margin-bottom-1">Checking which actions can be used together…</p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">This may take a few seconds.</p>
+                  </div>
+                </div>
+              </div>
               {% if draftParcel and (draftParcel.parcelId == 'gate-field' or draftParcel.parcelId == 'far-meadow') %}
                 <div class="govuk-inset-text" id="parcel-consent-intro">
                   {% if draftParcel.parcelId == 'far-meadow' %}
@@ -1223,6 +1232,7 @@
   <script src="/public/javascripts/sfi-scheme-2026.js"></script>
   <script src="/public/javascripts/grasslands-v2-mvp-actions.js"></script>
   <script src="/public/javascripts/grasslands-v2-existing-agreements.js"></script>
+  <script src="/public/javascripts/grasslands-v2-actions-compatibility-loading.js"></script>
 
   <!-- Pass server data to JavaScript -->
   {% if data['parcelSelectionsData'] %}
@@ -4443,40 +4453,51 @@
       }
       
       console.log('Restoring actions:', savedSelections.actions);
-      
-      // Restore each saved action
-      savedSelections.actions.forEach(function(action) {
-        console.log('Restoring action:', action.code, 'quantity:', action.quantity);
-        
-        // Check the checkbox
-        var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
-        if ($checkbox.length > 0) {
-          $checkbox.prop('checked', true);
-          $checkbox.attr('aria-expanded', 'true');
-          
-          // Show the conditional content by removing the hidden class
-          var conditionalId = 'conditional-' + action.code.toLowerCase();
-          var $conditional = $('#' + conditionalId);
-          if ($conditional.length > 0) {
-            $conditional.removeClass('govuk-checkboxes__conditional--hidden');
-            console.log('Showed conditional for:', action.code);
-          }
-          
-          // Restore the quantity if it exists
-          if (action.quantity) {
-            var $quantityInput = $('#quantity-' + action.code.toLowerCase());
-            if ($quantityInput.length > 0) {
-              $quantityInput.val(action.quantity);
-              console.log('Set quantity for:', action.code, 'to:', action.quantity);
-            }
-          }
 
-          // Sync GOV.UK conditional behaviour, compatibility and area hints
-          $checkbox.trigger('change');
-        } else {
-          console.log('Checkbox not found for:', action.code);
+      // Skip the fake compatibility API while restoring saved checkbox state
+      if (window.GrasslandsV2ActionsCompatibilityLoading) {
+        window.GrasslandsV2ActionsCompatibilityLoading.setSuspended(true);
+      }
+
+      try {
+        // Restore each saved action
+        savedSelections.actions.forEach(function(action) {
+          console.log('Restoring action:', action.code, 'quantity:', action.quantity);
+          
+          // Check the checkbox
+          var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
+          if ($checkbox.length > 0) {
+            $checkbox.prop('checked', true);
+            $checkbox.attr('aria-expanded', 'true');
+            
+            // Show the conditional content by removing the hidden class
+            var conditionalId = 'conditional-' + action.code.toLowerCase();
+            var $conditional = $('#' + conditionalId);
+            if ($conditional.length > 0) {
+              $conditional.removeClass('govuk-checkboxes__conditional--hidden');
+              console.log('Showed conditional for:', action.code);
+            }
+            
+            // Restore the quantity if it exists
+            if (action.quantity) {
+              var $quantityInput = $('#quantity-' + action.code.toLowerCase());
+              if ($quantityInput.length > 0) {
+                $quantityInput.val(action.quantity);
+                console.log('Set quantity for:', action.code, 'to:', action.quantity);
+              }
+            }
+
+            // Sync GOV.UK conditional behaviour, compatibility and area hints
+            $checkbox.trigger('change');
+          } else {
+            console.log('Checkbox not found for:', action.code);
+          }
+        });
+      } finally {
+        if (window.GrasslandsV2ActionsCompatibilityLoading) {
+          window.GrasslandsV2ActionsCompatibilityLoading.setSuspended(false);
         }
-      });
+      }
       
       var hasQueuedActionFocus = Boolean(pendingActionFocusCode);
 
@@ -5363,7 +5384,8 @@
       applyActionFilters();
       
       // Function to update available quantities based on what's been entered
-      function updateAvailableQuantities() {
+      function updateAvailableQuantities(options) {
+        options = options || {};
         if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) return;
 
         var parcel = parcelData[currentSelectedParcel];
@@ -5416,8 +5438,10 @@
           refreshQuantityFieldDisplay($input);
         });
 
-        // Check if all available area is used (but not exceeded)
-        if (remainingHa === 0 && !isOverLimit) {
+        // Check if all available area is used (but not exceeded).
+        // Only lock other options while something is still selected.
+        var hasCheckedActions = $('input[name="actions"]:checked').length > 0;
+        if (hasCheckedActions && remainingHa === 0 && !isOverLimit) {
           // Disable all unchecked, compatible (non-disabled) checkboxes
           $('input[name="actions"]').each(function() {
             var $cb = $(this);
@@ -5450,7 +5474,11 @@
           });
         }
 
-        updateCompatibilityState();
+        // Compatibility is rebuilt separately after the simulated API call.
+        // Skip here so area-full hints are not wiped by a second full reset.
+        if (!options.skipCompatibilityUpdate) {
+          updateCompatibilityState();
+        }
       }
 
       function validateBeforeSave() {
@@ -5522,6 +5550,10 @@
       // Update quantities when parcel changes
       var originalSelectParcel = selectParcel;
       selectParcel = function(parcelId) {
+        if (window.GrasslandsV2ActionsCompatibilityLoading) {
+          window.GrasslandsV2ActionsCompatibilityLoading.reset();
+        }
+
         hideQuantityErrorSummary();
         resetActionSelectionUiState();
 
@@ -5701,8 +5733,9 @@
         if (!codeA || !codeB) {
           return false;
         }
+        // Same action is compatible with itself (matches server matrix rules).
         if (codeA === codeB) {
-          return true;
+          return false;
         }
         var incompatibleWithA = compatibilityConfig.incompatibleByCode[codeA] || [];
         var incompatibleWithB = compatibilityConfig.incompatibleByCode[codeB] || [];
@@ -5733,6 +5766,10 @@
         var existingActions = window.GrasslandsV2ExistingAgreements.get(parcelId);
         for (var i = 0; i < existingActions.length; i++) {
           var existingAction = existingActions[i];
+          // Same code already on the parcel is fine — do not block selecting it again
+          if (existingAction.code === candidateCode) {
+            continue;
+          }
           if (actionsAreIncompatible(existingAction.code, candidateCode)) {
             return existingAction;
           }
@@ -5740,56 +5777,51 @@
         return null;
       }
 
-      function clearCompatibilityState($input) {
-        var $item = $input.closest('.govuk-checkboxes__item');
-        if ($input.attr('data-disabled-reason') === 'compatibility') {
-          $input.prop('disabled', false);
-          $input.removeAttr('data-disabled-reason');
-        }
-        $item.css('opacity', '1').removeClass('sfi-compatibility-disabled');
-        $item.find('.compatibility-hint, .sfi-compatibility-option-hint').remove();
-        $input.removeAttr('aria-disabled');
-
-        var codeLower = (getActionCode($input) || '').toLowerCase();
-        var compatibilityHintId = 'compatibility-hint-' + codeLower;
-        var describedBy = ($input.attr('aria-describedby') || '').split(/\s+/).filter(function(id) {
-          return id && id !== compatibilityHintId;
-        });
-        if (describedBy.length) {
-          $input.attr('aria-describedby', describedBy.join(' '));
-        }
-      }
-
+      /**
+       * Rebuild compatibility from a clean slate using currently checked actions.
+       * Prefer the shared loading helper when available.
+       */
       function updateCompatibilityState() {
-        var selectedCodes = getSelectedActionCodes();
+        var loading = window.GrasslandsV2ActionsCompatibilityLoading;
+        if (
+          loading &&
+          typeof loading.resetCompatibilityState === 'function' &&
+          typeof loading.calculateCompatibility === 'function' &&
+          typeof loading.applyCompatibility === 'function'
+        ) {
+          loading.resetCompatibilityState();
+          loading.applyCompatibility(
+            loading.calculateCompatibility(loading.getSelectedActions())
+          );
+          return;
+        }
 
-        $('input[name="actions"]').each(function() {
-          clearCompatibilityState($(this));
-        });
+        // Fallback if the helper script failed to load
+        var selectedCodes = getSelectedActionCodes();
 
         $('input[name="actions"]').each(function() {
           var $input = $(this);
           var $item = $input.closest('.govuk-checkboxes__item');
+          $input.prop('disabled', false);
+          $input.removeAttr('disabled');
+          $input.removeAttr('data-disabled-reason');
+          $input.removeAttr('aria-disabled');
+          $item.css('opacity', '1').removeClass('sfi-compatibility-disabled actions-api-loading-disabled');
+          $item.find('.compatibility-hint, .sfi-compatibility-option-hint, .area-full-hint').remove();
+        });
 
+        if (!selectedCodes.length) {
+          return;
+        }
+
+        $('input[name="actions"]').each(function() {
+          var $input = $(this);
           if ($input.is(':checked')) {
             return;
           }
 
-          if ($input.attr('data-disabled-reason') === 'area-full') {
-            return;
-          }
-
           var candidateCode = getActionCode($input);
-          var existingConflict = findExistingAgreementConflict(candidateCode);
-          if (existingConflict) {
-            $input.prop('disabled', true);
-            $input.attr('data-disabled-reason', 'compatibility');
-            addCompatibilityHint($input, existingConflict, { fromExistingAgreement: true });
-            return;
-          }
-
           var conflictWithCode = null;
-
           for (var i = 0; i < selectedCodes.length; i++) {
             var selectedCode = selectedCodes[i];
             if (actionsAreIncompatible(selectedCode, candidateCode)) {
@@ -5806,9 +5838,25 @@
         });
       }
 
+      if (window.GrasslandsV2ActionsCompatibilityLoading) {
+        window.GrasslandsV2ActionsCompatibilityLoading.init({
+          delayMs: 2500,
+          areActionsIncompatible: actionsAreIncompatible,
+          getActionCode: function(checkbox) {
+            return getActionCode($(checkbox));
+          },
+          getActionName: getActionName,
+          onAfterApply: function() {
+            updateAvailableQuantities({ skipCompatibilityUpdate: true });
+          }
+        });
+      }
+
       $(document).on('change', 'input[name="actions"]', function() {
-        if (!$(this).is(':checked')) {
-          var actionCode = ($(this).val() || '').toString().toLowerCase();
+        var changedCheckbox = this;
+
+        if (!$(changedCheckbox).is(':checked')) {
+          var actionCode = ($(changedCheckbox).val() || '').toString().toLowerCase();
           var $quantityInput = $('#quantity-' + actionCode);
           if ($quantityInput.length) {
             $quantityInput.val('');
@@ -5816,8 +5864,17 @@
           }
         }
 
+        // Prototype: simulated compatibility API, then full rebuild from checked actions
+        if (
+          window.GrasslandsV2ActionsCompatibilityLoading &&
+          typeof window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility === 'function'
+        ) {
+          window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility(changedCheckbox);
+          return;
+        }
+
         updateCompatibilityState();
-        updateAvailableQuantities();
+        updateAvailableQuantities({ skipCompatibilityUpdate: true });
       });
 
       function focusFarmByKey(farmKey) {

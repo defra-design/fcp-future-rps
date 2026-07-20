@@ -1091,3 +1091,37 @@ img.design-history {
   padding: 10px 10px 10px 36px;
   text-decoration: none;
 }
+
+// grasslands-v2: simulated compatibility API loading state on select-actions
+.actions-compatibility-status {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.actions-compatibility-status__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.actions-compatibility-status__spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  border: 3px solid #b1b4b6;
+  border-top-color: #1d70b8;
+  border-radius: 50%;
+  animation: actions-compatibility-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes actions-compatibility-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.govuk-checkboxes__item.actions-api-loading-disabled {
+  opacity: 0.5;
+}
