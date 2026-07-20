@@ -17,7 +17,10 @@
     checkboxSelector: 'input[name="actions"]',
     continueButtonId: 'continue-button',
     statusId: 'actions-compatibility-status',
+    statusSentinelId: 'actions-compatibility-status-sentinel',
     fieldsetSelector: '#actions-form-group fieldset',
+    stuckClassName: 'actions-compatibility-status--stuck',
+    stuckObserver: null,
     areActionsIncompatible: null,
     getActionCode: null,
     getActionName: null,
@@ -39,8 +42,54 @@
     return document.getElementById(state.statusId)
   }
 
+  function getStatusSentinelEl () {
+    return document.getElementById(state.statusSentinelId)
+  }
+
   function getFieldset () {
     return document.querySelector(state.fieldsetSelector)
+  }
+
+  function setStuck (isStuck) {
+    var statusEl = getStatusEl()
+    if (!statusEl) {
+      return
+    }
+    if (isStuck) {
+      statusEl.classList.add(state.stuckClassName)
+    } else {
+      statusEl.classList.remove(state.stuckClassName)
+    }
+  }
+
+  function stopStuckObserver () {
+    if (state.stuckObserver) {
+      state.stuckObserver.disconnect()
+      state.stuckObserver = null
+    }
+    setStuck(false)
+  }
+
+  // Detect when sticky status has engaged so we can show the bottom border only then
+  function startStuckObserver () {
+    var statusEl = getStatusEl()
+    var sentinelEl = getStatusSentinelEl()
+
+    stopStuckObserver()
+
+    if (!statusEl || !sentinelEl || typeof window.IntersectionObserver !== 'function') {
+      return
+    }
+
+    state.stuckObserver = new window.IntersectionObserver(function (entries) {
+      var entry = entries[0]
+      // When the sentinel scrolls out of view, the status is stuck
+      setStuck(entry && !entry.isIntersecting)
+    }, {
+      threshold: [0, 1]
+    })
+
+    state.stuckObserver.observe(sentinelEl)
   }
 
   function showLoading () {
@@ -52,11 +101,13 @@
     if (fieldset) {
       fieldset.setAttribute('aria-busy', 'true')
     }
+    startStuckObserver()
   }
 
   function hideLoading () {
     var statusEl = getStatusEl()
     var fieldset = getFieldset()
+    stopStuckObserver()
     if (statusEl) {
       statusEl.hidden = true
     }

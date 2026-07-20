@@ -1093,6 +1093,13 @@ img.design-history {
 }
 
 // grasslands-v2: simulated compatibility API loading state on select-actions
+.actions-compatibility-status-sentinel {
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
 .actions-compatibility-status {
   margin-top: 15px;
   margin-bottom: 20px;
@@ -1107,7 +1114,13 @@ img.design-history {
   margin-bottom: 15px;
   padding-top: 15px;
   padding-bottom: 15px;
-  background-color: #f3f2f1;
+  background-color: #ffffff;
+  border-bottom: 1px solid transparent;
+}
+
+// Border only once the message is stuck to the top of the viewport
+.actions-compatibility-status--stuck:not([hidden]) {
+  border-bottom-color: #f3f2f1;
 }
 
 .actions-compatibility-status__inner {
