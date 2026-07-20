@@ -1098,6 +1098,18 @@ img.design-history {
   margin-bottom: 20px;
 }
 
+// Stay visible while the user scrolls the long actions list
+.actions-compatibility-status:not([hidden]) {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: #f3f2f1;
+}
+
 .actions-compatibility-status__inner {
   display: flex;
   align-items: flex-start;
