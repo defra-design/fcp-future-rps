@@ -67,44 +67,42 @@
   {% set contentLicenceHtml %}
     All content is available under the
     <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
-    {% if (GOVUKPrototypeKit.isDevelopment) %}
-      <div class="app-footer-prototype-tools">
-        {% if showFooterPrototypeToggles %}
-          <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details" id="prototype-toggles">
-            <summary class="govuk-details__summary">
-              <span class="govuk-details__summary-text">Feature toggles</span>
-            </summary>
-            <div class="govuk-details__text app-footer-prototype-toggles">
-              <div class="app-prototype-switch app-prototype-switch--footer" id="prototype-compatibility-delay-toggle">
-                <label class="app-prototype-switch__label" for="simulate-compatibility-api-delay">
-                  <span class="app-prototype-switch__control">
-                    <input class="app-prototype-switch__input" id="simulate-compatibility-api-delay" name="simulateCompatibilityApiDelay" type="checkbox" value="true" role="switch">
-                    <span class="app-prototype-switch__slider" aria-hidden="true"></span>
-                  </span>
-                  <span class="app-prototype-switch__text">
-                    <span class="app-prototype-switch__title">Simulate API delay (3 seconds)</span>
-                  </span>
-                </label>
-              </div>
-              <div class="app-prototype-switch app-prototype-switch--footer" id="prototype-grey-out-cnum2-toggle">
-                <label class="app-prototype-switch__label" for="grey-out-cnum2">
-                  <span class="app-prototype-switch__control">
-                    <input class="app-prototype-switch__input" id="grey-out-cnum2" name="greyOutCnum2" type="checkbox" value="true" role="switch">
-                    <span class="app-prototype-switch__slider" aria-hidden="true"></span>
-                  </span>
-                  <span class="app-prototype-switch__text">
-                    <span class="app-prototype-switch__title">CNUM2 unavailable (0 available hectares)</span>
-                  </span>
-                </label>
-              </div>
+    <div class="app-footer-prototype-tools">
+      {% if showFooterPrototypeToggles %}
+        <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details" id="prototype-toggles">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">Feature toggles</span>
+          </summary>
+          <div class="govuk-details__text app-footer-prototype-toggles">
+            <div class="app-prototype-switch app-prototype-switch--footer" id="prototype-compatibility-delay-toggle">
+              <label class="app-prototype-switch__label" for="simulate-compatibility-api-delay">
+                <span class="app-prototype-switch__control">
+                  <input class="app-prototype-switch__input" id="simulate-compatibility-api-delay" name="simulateCompatibilityApiDelay" type="checkbox" value="true" role="switch">
+                  <span class="app-prototype-switch__slider" aria-hidden="true"></span>
+                </span>
+                <span class="app-prototype-switch__text">
+                  <span class="app-prototype-switch__title">Simulate API delay (3 seconds)</span>
+                </span>
+              </label>
             </div>
-          </details>
-        {% endif %}
-        <p class="govuk-body-s govuk-!-margin-top-4 govuk-!-margin-bottom-0">
-          <a class="govuk-footer__link" href="/clear-session-data" data-clear-session-data>Clear data</a>
-        </p>
-      </div>
-    {% endif %}
+            <div class="app-prototype-switch app-prototype-switch--footer" id="prototype-grey-out-cnum2-toggle">
+              <label class="app-prototype-switch__label" for="grey-out-cnum2">
+                <span class="app-prototype-switch__control">
+                  <input class="app-prototype-switch__input" id="grey-out-cnum2" name="greyOutCnum2" type="checkbox" value="true" role="switch">
+                  <span class="app-prototype-switch__slider" aria-hidden="true"></span>
+                </span>
+                <span class="app-prototype-switch__text">
+                  <span class="app-prototype-switch__title">CNUM2 unavailable (0 available hectares)</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </details>
+      {% endif %}
+      <p class="govuk-body-s govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+        <a class="govuk-footer__link" href="/clear-session-data" data-clear-session-data>Clear data</a>
+      </p>
+    </div>
   {% endset %}
 
   {{ govukFooter({
