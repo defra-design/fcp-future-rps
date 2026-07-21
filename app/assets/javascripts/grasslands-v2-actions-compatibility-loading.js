@@ -6,11 +6,13 @@
  * same showLoading → lock → reset → calculate → apply → unlock flow.
  */
 (function (window) {
-  var DEFAULT_DELAY_MS = 2500
+  var DEFAULT_DELAY_MS = 3000
 
   var state = {
     busy: false,
     suspended: false,
+    // Prototype: off by default — turn on via setSimulateDelay(true) or the page toggle
+    simulateDelay: false,
     timerId: null,
     requestId: 0,
     delayMs: DEFAULT_DELAY_MS,
@@ -92,12 +94,36 @@
     state.stuckObserver.observe(sentinelEl)
   }
 
-  function showLoading () {
+  function getScrollY () {
+    return window.scrollY || window.pageYOffset || 0
+  }
+
+  function preserveScrollAroundLayoutChange (changeFn) {
+    var scrollBefore = getScrollY()
     var statusEl = getStatusEl()
-    var fieldset = getFieldset()
-    if (statusEl) {
-      statusEl.hidden = false
+    var heightBefore = statusEl && !statusEl.hidden ? statusEl.offsetHeight : 0
+
+    changeFn()
+
+    var heightAfter = statusEl && !statusEl.hidden ? statusEl.offsetHeight : 0
+    var heightDelta = heightAfter - heightBefore
+
+    // Keep the same content on screen when the sticky banner opens or closes above it
+    if (heightDelta !== 0 && scrollBefore > 0) {
+      window.scrollTo(0, Math.max(0, scrollBefore + heightDelta))
     }
+  }
+
+  function showLoading () {
+    var fieldset = getFieldset()
+
+    preserveScrollAroundLayoutChange(function () {
+      var statusEl = getStatusEl()
+      if (statusEl) {
+        statusEl.hidden = false
+      }
+    })
+
     if (fieldset) {
       fieldset.setAttribute('aria-busy', 'true')
     }
@@ -105,12 +131,16 @@
   }
 
   function hideLoading () {
-    var statusEl = getStatusEl()
     var fieldset = getFieldset()
     stopStuckObserver()
-    if (statusEl) {
-      statusEl.hidden = true
-    }
+
+    preserveScrollAroundLayoutChange(function () {
+      var statusEl = getStatusEl()
+      if (statusEl) {
+        statusEl.hidden = true
+      }
+    })
+
     if (fieldset) {
       fieldset.setAttribute('aria-busy', 'false')
     }
@@ -378,14 +408,32 @@
 
   /**
    * Core flow: lock → wait → full reset → recalculate from checked actions → unlock.
+   * When simulateDelay is off, rebuild immediately with no loading UI.
    */
-  function updateCompatibility (changedCheckbox) {
-    if (state.suspended) {
-      resetCompatibilityState()
-      applyCompatibility(calculateCompatibility(getSelectedActions()))
-      if (typeof state.onAfterApply === 'function') {
-        state.onAfterApply()
+  function applyCompatibilityResult (changedCheckbox) {
+    resetCompatibilityState()
+
+    var selectedActions = getSelectedActions()
+    var result = calculateCompatibility(selectedActions)
+
+    applyCompatibility(result)
+
+    if (typeof state.onAfterApply === 'function') {
+      state.onAfterApply()
+    }
+
+    if (changedCheckbox && typeof changedCheckbox.focus === 'function') {
+      try {
+        changedCheckbox.focus()
+      } catch (error) {
+        // Ignore focus errors if the element was removed.
       }
+    }
+  }
+
+  function updateCompatibility (changedCheckbox) {
+    if (state.suspended || !state.simulateDelay) {
+      applyCompatibilityResult(changedCheckbox)
       return Promise.resolve()
     }
 
@@ -396,34 +444,44 @@
     showLoading()
     lockInteraction()
 
+    // Prototype only: fake network delay when the toggle is on.
+    // Replace simulateApiCall with a real API call later.
     return simulateApiCall(state.delayMs).then(function () {
       if (requestId !== state.requestId) {
         return
       }
 
-      // Always rebuild from a clean slate using currently checked boxes only.
-      resetCompatibilityState()
-
-      var selectedActions = getSelectedActions()
-      var result = calculateCompatibility(selectedActions)
-
-      applyCompatibility(result)
-
-      if (typeof state.onAfterApply === 'function') {
-        state.onAfterApply()
-      }
-
+      applyCompatibilityResult(changedCheckbox)
       unlockInteraction()
       hideLoading()
-
-      if (changedCheckbox && typeof changedCheckbox.focus === 'function') {
-        try {
-          changedCheckbox.focus()
-        } catch (error) {
-          // Ignore focus errors if the element was removed.
-        }
-      }
     })
+  }
+
+  function setSimulateDelay (enabled) {
+    state.simulateDelay = Boolean(enabled)
+    if (!state.simulateDelay) {
+      cancelPendingRequest()
+      if (state.busy) {
+        hideLoading()
+        state.busy = false
+        var continueButton = getContinueButton()
+        if (continueButton) {
+          continueButton.disabled = false
+        }
+        getCheckboxes().forEach(function (checkbox) {
+          var item = checkbox.closest('.govuk-checkboxes__item')
+          if (item) {
+            item.classList.remove('actions-api-loading-disabled')
+          }
+        })
+        applyCompatibilityResult(null)
+      }
+    }
+    return state.simulateDelay
+  }
+
+  function isSimulateDelayEnabled () {
+    return state.simulateDelay
   }
 
   function setSuspended (isSuspended) {
@@ -480,6 +538,9 @@
     if (Number.isFinite(options.delayMs)) {
       state.delayMs = options.delayMs
     }
+    if (typeof options.simulateDelay === 'boolean') {
+      state.simulateDelay = options.simulateDelay
+    }
     if (typeof options.areActionsIncompatible === 'function') {
       state.areActionsIncompatible = options.areActionsIncompatible
     }
@@ -510,6 +571,8 @@
     getSelectedActions: getSelectedActions,
     calculateCompatibility: calculateCompatibility,
     applyCompatibility: applyCompatibility,
+    setSimulateDelay: setSimulateDelay,
+    isSimulateDelayEnabled: isSimulateDelayEnabled,
     setSuspended: setSuspended,
     reset: reset,
     isBusy: function () {

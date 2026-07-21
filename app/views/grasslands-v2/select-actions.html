@@ -836,6 +836,19 @@
               </details>
             </div>
           {% endif %}
+            <div class="govuk-!-margin-top-4" id="prototype-compatibility-delay-toggle">
+              <div class="app-prototype-switch">
+                <label class="app-prototype-switch__label" for="simulate-compatibility-api-delay">
+                  <span class="app-prototype-switch__text">
+                    <span class="app-prototype-switch__title">Simulate API delay (3 seconds)</span>
+                  </span>
+                  <span class="app-prototype-switch__control">
+                    <input class="app-prototype-switch__input" id="simulate-compatibility-api-delay" name="simulateCompatibilityApiDelay" type="checkbox" value="true" role="switch">
+                    <span class="app-prototype-switch__slider" aria-hidden="true"></span>
+                  </span>
+                </label>
+              </div>
+            </div>
         </div>
 
         {# Kept for existing parcel-selection JS #}
@@ -5842,8 +5855,25 @@
       }
 
       if (window.GrasslandsV2ActionsCompatibilityLoading) {
+        var simulateDelayStorageKey = 'grasslandsV2SimulateCompatibilityApiDelay';
+        var simulateDelayFromQuery = false;
+        try {
+          simulateDelayFromQuery = new URLSearchParams(window.location.search).get('apiDelay') === '1';
+        } catch (error) {
+          simulateDelayFromQuery = false;
+        }
+        var simulateDelayStored = false;
+        try {
+          simulateDelayStored = window.sessionStorage.getItem(simulateDelayStorageKey) === '1';
+        } catch (error) {
+          simulateDelayStored = false;
+        }
+        // Off by default; enable with the page toggle, sessionStorage, or ?apiDelay=1
+        var simulateDelayEnabled = simulateDelayFromQuery || simulateDelayStored;
+
         window.GrasslandsV2ActionsCompatibilityLoading.init({
-          delayMs: 2500,
+          delayMs: 3000,
+          simulateDelay: simulateDelayEnabled,
           areActionsIncompatible: actionsAreIncompatible,
           getActionCode: function(checkbox) {
             return getActionCode($(checkbox));
@@ -5853,6 +5883,24 @@
             updateAvailableQuantities({ skipCompatibilityUpdate: true });
           }
         });
+
+        var simulateDelayToggle = document.getElementById('simulate-compatibility-api-delay');
+        if (simulateDelayToggle) {
+          simulateDelayToggle.checked = simulateDelayEnabled;
+          simulateDelayToggle.addEventListener('change', function() {
+            var enabled = Boolean(simulateDelayToggle.checked);
+            window.GrasslandsV2ActionsCompatibilityLoading.setSimulateDelay(enabled);
+            try {
+              if (enabled) {
+                window.sessionStorage.setItem(simulateDelayStorageKey, '1');
+              } else {
+                window.sessionStorage.removeItem(simulateDelayStorageKey);
+              }
+            } catch (error) {
+              // Ignore storage errors in private browsing.
+            }
+          });
+        }
       }
 
       $(document).on('change', 'input[name="actions"]', function() {
