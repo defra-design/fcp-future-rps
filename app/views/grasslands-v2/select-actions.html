@@ -2821,23 +2821,35 @@
       CHRW1: true,
       CHRW2: true,
       CHRW3: true,
-      HEF1: true,
       WBD2: true
+    };
+
+    var SQUARE_METRE_ACTION_CODES = {
+      HEF1: true
     };
 
     function getQuantityUnitForAction(actionCode) {
       var normalizedCode = String(actionCode || '').toUpperCase();
+      if (SQUARE_METRE_ACTION_CODES[normalizedCode]) {
+        return 'm²';
+      }
       return LINEAR_ACTION_CODES[normalizedCode] ? 'm' : 'ha';
+    }
+
+    function isMetreBasedUnit(unit) {
+      return unit === 'm' || unit === 'm²';
     }
 
     function getAvailableHintText(actionCode, availableAmount) {
       var unit = getQuantityUnitForAction(actionCode);
       var numericAmount = Number(availableAmount);
-      if (unit === 'm') {
+      if (isMetreBasedUnit(unit)) {
         var metresValue = Number.isFinite(numericAmount)
           ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
           : '0';
-        return metresValue + ' metres available';
+        return unit === 'm²'
+          ? metresValue + ' square metres available'
+          : metresValue + ' metres available';
       }
 
       if (Number.isFinite(numericAmount)) {
@@ -2856,6 +2868,16 @@
       // Estimate boundary length from area using a square-equivalent perimeter.
       var areaSqM = areaHa * 10000;
       return 4 * Math.sqrt(areaSqM);
+    }
+
+    function getBuildingSquareMetresAvailable(parcel) {
+      var areaHa = Number(parcel && parcel.availableArea);
+      if (!Number.isFinite(areaHa) || areaHa <= 0) {
+        return 0;
+      }
+
+      // Prototype: modest traditional building footprint for HEF1.
+      return Math.max(50, Math.round(areaHa * 25));
     }
 
     function parseQuantityInput(rawValue) {
@@ -2900,6 +2922,10 @@
 
       if (unit === 'm') {
         return 'Enter a number of metres, for example 100 or 250';
+      }
+
+      if (unit === 'm²') {
+        return 'Enter a number of square metres, for example 50 or 120';
       }
 
       return 'Enter a number of hectares, for example 12.5 or 100';
@@ -3000,7 +3026,7 @@
     }
 
     function calculateParcelQuantityTotals() {
-      var totals = { ha: 0, m: 0 };
+      var totals = { ha: 0, m: 0, m2: 0 };
 
       $('input[name="actions"]:checked').each(function() {
         var actionCode = ($(this).val() || '').toString().toLowerCase();
@@ -3021,6 +3047,8 @@
           totals.ha += parsed.value;
         } else if (suffix === 'm') {
           totals.m += parsed.value;
+        } else if (suffix === 'm²') {
+          totals.m2 += parsed.value;
         }
       });
 
@@ -3984,7 +4012,10 @@
         // Must include govuk-checkboxes__hint — updateAvailableQuantities / selectParcel
         // find this node with `.govuk-hint.govuk-checkboxes__hint`.
         qtyHint.className = 'govuk-hint govuk-checkboxes__hint';
-        qtyHint.textContent = getAvailableHintText(action.code, getQuantityUnitForAction(action.code) === 'm' ? 0 : '0.0000');
+        qtyHint.textContent = getAvailableHintText(
+          action.code,
+          getQuantityUnitForAction(action.code) === 'ha' ? '0.0000' : 0
+        );
 
         var wrapper = document.createElement('div');
         wrapper.className = 'govuk-input__wrapper';
@@ -5258,7 +5289,7 @@
               if (Number.isFinite(quantityValue) && quantityValue > 0) {
                 payment = calculateActionYearlyPayment(action.code, quantityValue);
 
-                var quantityDisplay = quantityUnit === 'm'
+                var quantityDisplay = isMetreBasedUnit(quantityUnit)
                   ? Math.round(quantityValue).toLocaleString('en-GB')
                   : quantityValue.toFixed(4);
 
@@ -5403,12 +5434,15 @@
         var parcel = parcelData[currentSelectedParcel];
         var totalAreaHa = parseFloat(parcel.availableArea);
         var totalAreaM = getLinearAvailableMetres(parcel);
+        var totalAreaM2 = getBuildingSquareMetresAvailable(parcel);
         var totals = calculateParcelQuantityTotals();
         var remainingHa = Math.max(0, totalAreaHa - totals.ha);
         var remainingM = Math.max(0, totalAreaM - totals.m);
+        var remainingM2 = Math.max(0, totalAreaM2 - (totals.m2 || 0));
         var isOverLimitHa = totals.ha > totalAreaHa;
         var isOverLimitM = totals.m > totalAreaM;
-        var isOverLimit = isOverLimitHa || isOverLimitM;
+        var isOverLimitM2 = (totals.m2 || 0) > totalAreaM2;
+        var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2;
 
         // Update all quantity hints
         $('.govuk-checkboxes__conditional').each(function() {
@@ -5426,6 +5460,8 @@
             $hint.text(remainingHa.toFixed(4) + ' hectares available');
           } else if ($suffix.text() === 'm') {
             $hint.text(getAvailableHintText(actionCode, remainingM));
+          } else if ($suffix.text() === 'm²') {
+            $hint.text(getAvailableHintText(actionCode, remainingM2));
           }
         });
 
@@ -5445,10 +5481,12 @@
           var parsed = parseQuantityInput($input.val());
 
           if (isOverLimit && parsed.valid) {
-            if ((suffix === 'ha' && isOverLimitHa) || (suffix === 'm' && isOverLimitM)) {
-              errors.overLimit = suffix === 'm'
-                ? 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel'
-                : 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
+            if (suffix === 'ha' && isOverLimitHa) {
+              errors.overLimit = 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
+            } else if (suffix === 'm' && isOverLimitM) {
+              errors.overLimit = 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel';
+            } else if (suffix === 'm²' && isOverLimitM2) {
+              errors.overLimit = 'Total square metres exceeds ' + Math.max(0, Math.round(totalAreaM2)).toLocaleString('en-GB') + ' available on this parcel';
             }
           }
 
@@ -5602,6 +5640,8 @@
               $hint.text(getAvailableHintText(actionCode, parcel.availableArea));
             } else if ($suffix.text() === 'm') {
               $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel)));
+            } else if ($suffix.text() === 'm²') {
+              $hint.text(getAvailableHintText(actionCode, getBuildingSquareMetresAvailable(parcel)));
             } else if ($suffix.text() === 'pond') {
               $hint.text('3 ponds available');
             }
