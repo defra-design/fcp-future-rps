@@ -2726,7 +2726,11 @@
         return (numericQuantity / 100) * rateAmount;
       }
 
-      if (lowerRateText.indexOf('/m') !== -1) {
+      // HEF1 is £/sq m; other metre actions may be £/m
+      if (
+        lowerRateText.indexOf('sq m') !== -1 ||
+        lowerRateText.indexOf('/m') !== -1
+      ) {
         return numericQuantity * rateAmount;
       }
 
@@ -2777,7 +2781,9 @@
       BND2: true,
       CHRW1: true,
       CHRW2: true,
-      CHRW3: true
+      CHRW3: true,
+      HEF1: true,
+      WBD2: true
     };
 
     function getQuantityUnitForAction(actionCode) {
