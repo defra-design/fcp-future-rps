@@ -1,5 +1,6 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/grasslands-v2/task-list" %}
+{% set showFooterPrototypeToggles = true %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
@@ -836,19 +837,6 @@
               </details>
             </div>
           {% endif %}
-            <div class="govuk-!-margin-top-4" id="prototype-compatibility-delay-toggle">
-              <div class="app-prototype-switch">
-                <label class="app-prototype-switch__label" for="simulate-compatibility-api-delay">
-                  <span class="app-prototype-switch__text">
-                    <span class="app-prototype-switch__title">Simulate API delay (3 seconds)</span>
-                  </span>
-                  <span class="app-prototype-switch__control">
-                    <input class="app-prototype-switch__input" id="simulate-compatibility-api-delay" name="simulateCompatibilityApiDelay" type="checkbox" value="true" role="switch">
-                    <span class="app-prototype-switch__slider" aria-hidden="true"></span>
-                  </span>
-                </label>
-              </div>
-            </div>
         </div>
 
         {# Kept for existing parcel-selection JS #}
@@ -2821,6 +2809,8 @@
     // Object to store all parcel selections
     var parcelSelections = {};
     var currentAvailableActions = [];
+    // Prototype feature toggle: CNUM2 has 0 ha left (used by a previous agreement)
+    var greyOutCnum2Enabled = false;
     var LINEAR_ACTION_CODES = {
       BND1: true,
       BND2: true,
@@ -5421,6 +5411,11 @@
           var $suffix = $conditional.find('.govuk-input__suffix');
           var actionCode = $conditional.attr('id').replace('conditional-', '').toUpperCase();
 
+          if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
+            $hint.text('0.0000 hectares available');
+            return;
+          }
+
           if ($suffix.text() === 'ha') {
             $hint.text(remainingHa.toFixed(4) + ' hectares available');
           } else if ($suffix.text() === 'm') {
@@ -5467,7 +5462,7 @@
             if (!$cb.is(':checked') && $item.css('display') !== 'none' && !$cb.prop('disabled')) {
               $cb.prop('disabled', true);
               $cb.attr('data-disabled-reason', 'area-full');
-              $item.css('opacity', '0.5');
+              $item.css('opacity', '');
 
               var $label = $cb.siblings('.govuk-checkboxes__label');
               if (!$label.find('.area-full-hint').length) {
@@ -5484,7 +5479,7 @@
               $cb.removeAttr('data-disabled-reason');
 
               var $item = $cb.closest('.govuk-checkboxes__item');
-              $item.css('opacity', '1');
+              $item.css('opacity', '');
               $cb.siblings('.govuk-checkboxes__label').find('.area-full-hint').remove();
             }
           });
@@ -5595,7 +5590,9 @@
             var $suffix = $conditional.find('.govuk-input__suffix');
             var actionCode = $conditional.attr('id').replace('conditional-', '').toUpperCase();
             
-            if ($suffix.text() === 'ha') {
+            if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
+              $hint.text('0.0000 hectares available');
+            } else if ($suffix.text() === 'ha') {
               $hint.text(getAvailableHintText(actionCode, parcel.availableArea));
             } else if ($suffix.text() === 'm') {
               $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel)));
@@ -5608,6 +5605,7 @@
         applyActionFilters();
         updateCompatibilityState();
         updateAvailableQuantities();
+        applyGreyOutCnum2();
       };
       
 
@@ -5809,6 +5807,7 @@
           loading.applyCompatibility(
             loading.calculateCompatibility(loading.getSelectedActions())
           );
+          applyGreyOutCnum2();
           return;
         }
 
@@ -5823,10 +5822,11 @@
           $input.removeAttr('data-disabled-reason');
           $input.removeAttr('aria-disabled');
           $item.css('opacity', '1').removeClass('sfi-compatibility-disabled actions-api-loading-disabled');
-          $item.find('.compatibility-hint, .sfi-compatibility-option-hint, .area-full-hint').remove();
+          $item.find('.compatibility-hint, .sfi-compatibility-option-hint, .area-full-hint, .previous-agreement-area-hint').remove();
         });
 
         if (!selectedCodes.length) {
+          applyGreyOutCnum2();
           return;
         }
 
@@ -5852,6 +5852,131 @@
             addCompatibilityHint($input, conflictWithCode);
           }
         });
+
+        applyGreyOutCnum2();
+      }
+
+      function isCnum2UnavailableToggleOn() {
+        var toggle = document.getElementById('grey-out-cnum2');
+        if (toggle) {
+          return Boolean(toggle.checked);
+        }
+        return Boolean(greyOutCnum2Enabled);
+      }
+
+      function clearGreyOutCnum2() {
+        // Always strip this prototype hint — it must only exist while the toggle is on
+        $('.previous-agreement-area-hint').remove();
+
+        var $input = $('input[name="actions"][value="CNUM2"]');
+        if (!$input.length) {
+          return;
+        }
+
+        var $item = $input.closest('.govuk-checkboxes__item');
+        if ($input.attr('data-disabled-reason') === 'previous-agreement-area') {
+          $input.prop('disabled', false);
+          $input.removeAttr('disabled');
+          $input.removeAttr('data-disabled-reason');
+          $input.removeAttr('aria-disabled');
+          $item.css('opacity', '');
+          $item.removeClass('sfi-compatibility-disabled');
+        }
+
+        var hintId = 'previous-agreement-area-hint-cnum2';
+        var describedBy = ($input.attr('aria-describedby') || '')
+          .split(/\s+/)
+          .filter(function(id) {
+            return id && id !== hintId;
+          });
+
+        if (describedBy.length) {
+          $input.attr('aria-describedby', describedBy.join(' '));
+        } else {
+          $input.removeAttr('aria-describedby');
+        }
+      }
+
+      function applyGreyOutCnum2() {
+        clearGreyOutCnum2();
+
+        greyOutCnum2Enabled = isCnum2UnavailableToggleOn();
+        if (!greyOutCnum2Enabled) {
+          return;
+        }
+
+        var $input = $('input[name="actions"][value="CNUM2"]');
+        if (!$input.length || $input.closest('.govuk-checkboxes__item').css('display') === 'none') {
+          return;
+        }
+
+        var $item = $input.closest('.govuk-checkboxes__item');
+        var $label = $input.siblings('.govuk-checkboxes__label');
+        var $conditional = $('#conditional-cnum2');
+        var hintId = 'previous-agreement-area-hint-cnum2';
+
+        if ($input.is(':checked')) {
+          $input.prop('checked', false);
+          var $quantityInput = $('#quantity-cnum2');
+          if ($quantityInput.length) {
+            $quantityInput.val('');
+            clearQuantityFieldValidation($quantityInput);
+          }
+          $conditional.addClass('govuk-checkboxes__conditional--hidden');
+        }
+
+        $input.prop('disabled', true);
+        $input.attr('data-disabled-reason', 'previous-agreement-area');
+        $input.attr('aria-disabled', 'true');
+        $item.css('opacity', '');
+
+        $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0.0000 hectares available');
+
+        $label.append(
+          '<span class="previous-agreement-area-hint" id="' + hintId + '" style="display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;">All eligible land for this action is already included in an existing agreement.</span>'
+        );
+
+        var describedBy = ($input.attr('aria-describedby') || '')
+          .split(/\s+/)
+          .filter(Boolean);
+        if (describedBy.indexOf(hintId) === -1) {
+          describedBy.push(hintId);
+          $input.attr('aria-describedby', describedBy.join(' '));
+        }
+      }
+
+      function wireCnum2UnavailableToggle() {
+        var greyOutCnum2StorageKey = 'grasslandsV2GreyOutCnum2';
+        var greyOutCnum2Toggle = document.getElementById('grey-out-cnum2');
+        var greyOutCnum2Stored = false;
+
+        try {
+          greyOutCnum2Stored = window.sessionStorage.getItem(greyOutCnum2StorageKey) === '1';
+        } catch (error) {
+          greyOutCnum2Stored = false;
+        }
+
+        greyOutCnum2Enabled = greyOutCnum2Stored;
+
+        if (greyOutCnum2Toggle) {
+          greyOutCnum2Toggle.checked = greyOutCnum2Enabled;
+          greyOutCnum2Toggle.addEventListener('change', function() {
+            greyOutCnum2Enabled = Boolean(greyOutCnum2Toggle.checked);
+            try {
+              if (greyOutCnum2Enabled) {
+                window.sessionStorage.setItem(greyOutCnum2StorageKey, '1');
+              } else {
+                window.sessionStorage.removeItem(greyOutCnum2StorageKey);
+              }
+            } catch (error) {
+              // Ignore storage errors in private browsing.
+            }
+            applyGreyOutCnum2();
+            updateAvailableQuantities({ skipCompatibilityUpdate: true });
+          });
+        }
+
+        applyGreyOutCnum2();
       }
 
       if (window.GrasslandsV2ActionsCompatibilityLoading) {
@@ -5881,6 +6006,7 @@
           getActionName: getActionName,
           onAfterApply: function() {
             updateAvailableQuantities({ skipCompatibilityUpdate: true });
+            applyGreyOutCnum2();
           }
         });
 
@@ -5902,6 +6028,8 @@
           });
         }
       }
+
+      wireCnum2UnavailableToggle();
 
       $(document).on('change', 'input[name="actions"]', function() {
         var changedCheckbox = this;

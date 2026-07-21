@@ -1260,3 +1260,48 @@ img.design-history {
   outline: 3px solid transparent;
   box-shadow: 0 0 0 3px #ffdd00;
 }
+
+.app-prototype-switch--footer {
+  max-width: 100%;
+}
+
+.app-prototype-switch--footer .app-prototype-switch__label {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.app-prototype-switch--footer .app-prototype-switch__title {
+  font-weight: 400;
+}
+
+.app-prototype-switch--footer .app-prototype-switch__control {
+  margin-top: 0;
+}
+
+.app-footer-prototype-tools {
+  // Sit under the OGL line but line up with the logo (41px + 10px gap)
+  display: block;
+  margin-top: 16px;
+  margin-left: -51px;
+}
+
+.app-footer-prototype-tools .govuk-details__summary {
+  color: #0b0c0c;
+  margin-top: 0;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-footer-prototype-tools .govuk-details__summary:hover {
+  color: #0b0c0c;
+}
+
+.app-footer-prototype-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-footer-prototype-toggles .app-prototype-switch + .app-prototype-switch {
+  margin-top: 0;
+}

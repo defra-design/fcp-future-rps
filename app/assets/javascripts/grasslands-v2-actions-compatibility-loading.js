@@ -207,7 +207,7 @@
         item.style.opacity = ''
 
         Array.prototype.slice.call(
-          item.querySelectorAll('.compatibility-hint, .sfi-compatibility-option-hint, .area-full-hint')
+          item.querySelectorAll('.compatibility-hint, .sfi-compatibility-option-hint, .area-full-hint, .previous-agreement-area-hint')
         ).forEach(function (hint) {
           if (hint.parentNode) {
             hint.parentNode.removeChild(hint)
