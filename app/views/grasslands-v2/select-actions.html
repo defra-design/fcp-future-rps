@@ -5856,6 +5856,72 @@
         applyGreyOutCnum2();
       }
 
+      function getFeatureToggleQueryFlag(paramName) {
+        try {
+          return new URLSearchParams(window.location.search).get(paramName) === '1';
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function setSessionFlag(storageKey, enabled) {
+        try {
+          if (enabled) {
+            window.sessionStorage.setItem(storageKey, '1');
+          } else {
+            window.sessionStorage.removeItem(storageKey);
+          }
+        } catch (error) {
+          // Ignore storage errors in private browsing.
+        }
+      }
+
+      function getSessionFlag(storageKey) {
+        try {
+          return window.sessionStorage.getItem(storageKey) === '1';
+        } catch (error) {
+          return false;
+        }
+      }
+
+      // Keep shareable feature-toggle state in the URL, e.g.
+      // ?apiDelay=1&cnum2Unavailable=1
+      function syncFeatureToggleQueryParams() {
+        try {
+          var url = new URL(window.location.href);
+          var changed = false;
+          var apiDelayToggle = document.getElementById('simulate-compatibility-api-delay');
+          var cnum2Toggle = document.getElementById('grey-out-cnum2');
+          var apiDelayOn = apiDelayToggle
+            ? Boolean(apiDelayToggle.checked)
+            : getFeatureToggleQueryFlag('apiDelay');
+          var cnum2On = cnum2Toggle
+            ? Boolean(cnum2Toggle.checked)
+            : getFeatureToggleQueryFlag('cnum2Unavailable');
+
+          function setOrClear(paramName, enabled) {
+            if (enabled) {
+              if (url.searchParams.get(paramName) !== '1') {
+                url.searchParams.set(paramName, '1');
+                changed = true;
+              }
+            } else if (url.searchParams.has(paramName)) {
+              url.searchParams.delete(paramName);
+              changed = true;
+            }
+          }
+
+          setOrClear('apiDelay', apiDelayOn);
+          setOrClear('cnum2Unavailable', cnum2On);
+
+          if (changed) {
+            window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+          }
+        } catch (error) {
+          // Ignore URL parsing issues in older browsers.
+        }
+      }
+
       function isCnum2UnavailableToggleOn() {
         var toggle = document.getElementById('grey-out-cnum2');
         if (toggle) {
@@ -5948,29 +6014,19 @@
       function wireCnum2UnavailableToggle() {
         var greyOutCnum2StorageKey = 'grasslandsV2GreyOutCnum2';
         var greyOutCnum2Toggle = document.getElementById('grey-out-cnum2');
-        var greyOutCnum2Stored = false;
+        var greyOutCnum2FromQuery = getFeatureToggleQueryFlag('cnum2Unavailable');
+        var greyOutCnum2Stored = getSessionFlag(greyOutCnum2StorageKey);
 
-        try {
-          greyOutCnum2Stored = window.sessionStorage.getItem(greyOutCnum2StorageKey) === '1';
-        } catch (error) {
-          greyOutCnum2Stored = false;
-        }
-
-        greyOutCnum2Enabled = greyOutCnum2Stored;
+        // Query wins so shared links always open with the intended state
+        greyOutCnum2Enabled = greyOutCnum2FromQuery || greyOutCnum2Stored;
+        setSessionFlag(greyOutCnum2StorageKey, greyOutCnum2Enabled);
 
         if (greyOutCnum2Toggle) {
           greyOutCnum2Toggle.checked = greyOutCnum2Enabled;
           greyOutCnum2Toggle.addEventListener('change', function() {
             greyOutCnum2Enabled = Boolean(greyOutCnum2Toggle.checked);
-            try {
-              if (greyOutCnum2Enabled) {
-                window.sessionStorage.setItem(greyOutCnum2StorageKey, '1');
-              } else {
-                window.sessionStorage.removeItem(greyOutCnum2StorageKey);
-              }
-            } catch (error) {
-              // Ignore storage errors in private browsing.
-            }
+            setSessionFlag(greyOutCnum2StorageKey, greyOutCnum2Enabled);
+            syncFeatureToggleQueryParams();
             applyGreyOutCnum2();
             updateAvailableQuantities({ skipCompatibilityUpdate: true });
           });
@@ -5981,20 +6037,11 @@
 
       if (window.GrasslandsV2ActionsCompatibilityLoading) {
         var simulateDelayStorageKey = 'grasslandsV2SimulateCompatibilityApiDelay';
-        var simulateDelayFromQuery = false;
-        try {
-          simulateDelayFromQuery = new URLSearchParams(window.location.search).get('apiDelay') === '1';
-        } catch (error) {
-          simulateDelayFromQuery = false;
-        }
-        var simulateDelayStored = false;
-        try {
-          simulateDelayStored = window.sessionStorage.getItem(simulateDelayStorageKey) === '1';
-        } catch (error) {
-          simulateDelayStored = false;
-        }
+        var simulateDelayFromQuery = getFeatureToggleQueryFlag('apiDelay');
+        var simulateDelayStored = getSessionFlag(simulateDelayStorageKey);
         // Off by default; enable with the page toggle, sessionStorage, or ?apiDelay=1
         var simulateDelayEnabled = simulateDelayFromQuery || simulateDelayStored;
+        setSessionFlag(simulateDelayStorageKey, simulateDelayEnabled);
 
         window.GrasslandsV2ActionsCompatibilityLoading.init({
           delayMs: 3000,
@@ -6016,20 +6063,14 @@
           simulateDelayToggle.addEventListener('change', function() {
             var enabled = Boolean(simulateDelayToggle.checked);
             window.GrasslandsV2ActionsCompatibilityLoading.setSimulateDelay(enabled);
-            try {
-              if (enabled) {
-                window.sessionStorage.setItem(simulateDelayStorageKey, '1');
-              } else {
-                window.sessionStorage.removeItem(simulateDelayStorageKey);
-              }
-            } catch (error) {
-              // Ignore storage errors in private browsing.
-            }
+            setSessionFlag(simulateDelayStorageKey, enabled);
+            syncFeatureToggleQueryParams();
           });
         }
       }
 
       wireCnum2UnavailableToggle();
+      syncFeatureToggleQueryParams();
 
       $(document).on('change', 'input[name="actions"]', function() {
         var changedCheckbox = this;
