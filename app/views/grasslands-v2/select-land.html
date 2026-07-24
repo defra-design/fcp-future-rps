@@ -1553,13 +1553,29 @@
         rawMap.easeTo({ center: toMapLibreLatLng(latLng) });
       },
       fitBounds: function(bounds, options) {
-        if (!rawMap) {
+        if (!rawMap || !bounds || typeof bounds.toMapLibreBounds !== 'function') {
           return;
         }
-        rawMap.fitBounds(bounds.toMapLibreBounds(), {
-          padding: normalizePadding(options && options.padding),
-          maxZoom: options && options.maxZoom
-        });
+        var mlBounds = bounds.toMapLibreBounds();
+        if (
+          !mlBounds ||
+          !mlBounds[0] ||
+          !mlBounds[1] ||
+          !Number.isFinite(mlBounds[0][0]) ||
+          !Number.isFinite(mlBounds[0][1]) ||
+          !Number.isFinite(mlBounds[1][0]) ||
+          !Number.isFinite(mlBounds[1][1])
+        ) {
+          return;
+        }
+        try {
+          rawMap.fitBounds(mlBounds, {
+            padding: normalizePadding(options && options.padding),
+            maxZoom: options && options.maxZoom
+          });
+        } catch (error) {
+          console.warn('Map fitBounds failed', error);
+        }
       },
       getZoom: function() {
         return rawMap ? rawMap.getZoom() : 8;
@@ -5859,7 +5875,8 @@
         document.getElementById('selected-parcel-text').style.display = 'none';
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
-        document.getElementById('page-heading').textContent = 'Select land for your actions';
+        // Keep the canonical land-page heading (do not flash a shorter title)
+        document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
 
         var parcelInfoContainer = document.getElementById('parcel-info-container');
         if (parcelInfoContainer) {
@@ -5993,7 +6010,7 @@
           document.getElementById('parcels-list-section').style.display = 'none';
           
           // Reset page heading
-          document.getElementById('page-heading').textContent = "Select land";
+          document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
           document.getElementById('select-parcel-text').style.display = 'block';
           document.getElementById('choose-parcel-text').style.display = 'none';
           document.getElementById('selected-parcel-text').style.display = 'none';

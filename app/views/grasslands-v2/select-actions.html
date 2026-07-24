@@ -1719,13 +1719,29 @@
         rawMap.easeTo({ center: toMapLibreLatLng(latLng) });
       },
       fitBounds: function(bounds, options) {
-        if (!rawMap) {
+        if (!rawMap || !bounds || typeof bounds.toMapLibreBounds !== 'function') {
           return;
         }
-        rawMap.fitBounds(bounds.toMapLibreBounds(), {
-          padding: normalizePadding(options && options.padding),
-          maxZoom: options && options.maxZoom
-        });
+        var mlBounds = bounds.toMapLibreBounds();
+        if (
+          !mlBounds ||
+          !mlBounds[0] ||
+          !mlBounds[1] ||
+          !Number.isFinite(mlBounds[0][0]) ||
+          !Number.isFinite(mlBounds[0][1]) ||
+          !Number.isFinite(mlBounds[1][0]) ||
+          !Number.isFinite(mlBounds[1][1])
+        ) {
+          return;
+        }
+        try {
+          rawMap.fitBounds(mlBounds, {
+            padding: normalizePadding(options && options.padding),
+            maxZoom: options && options.maxZoom
+          });
+        } catch (error) {
+          console.warn('Map fitBounds failed', error);
+        }
       },
       getZoom: function() {
         return rawMap ? rawMap.getZoom() : 8;
@@ -7183,22 +7199,15 @@
         document.getElementById('selected-parcel-text').style.display = 'none';
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
-        document.getElementById('page-heading').textContent = 'Select land for your actions';
+        // Keep the actions-page heading — do not swap to the land-selection title
+        document.getElementById('page-heading').textContent = 'Select actions for this land parcel';
 
         var parcelInfoContainer = document.getElementById('parcel-info-container');
         if (parcelInfoContainer) {
           parcelInfoContainer.style.display = 'none';
         }
 
-        var actionsSection = document.getElementById('actions-section');
-        if (actionsSection) {
-          actionsSection.style.display = 'none';
-        }
-
-        var actionToolsPanel = document.getElementById('action-tools-panel');
-        if (actionToolsPanel) {
-          actionToolsPanel.style.display = 'none';
-        }
+        // Do not hide #actions-section / tools on this page — farm focus is map-only here
 
         resetActionSelectionUiState();
 
@@ -7293,7 +7302,7 @@
           document.getElementById('parcels-list-section').style.display = 'none';
           
           // Reset page heading
-          document.getElementById('page-heading').textContent = "Select land";
+          document.getElementById('page-heading').textContent = 'Select actions for this land parcel';
           document.getElementById('select-parcel-text').style.display = 'block';
           document.getElementById('choose-parcel-text').style.display = 'none';
           document.getElementById('selected-parcel-text').style.display = 'none';
@@ -7340,7 +7349,16 @@
         });
 
         onMapReady(function() {
-          focusFarmByKey('blackberry');
+          // Only frame the farm on the map. Do not call focusFarmByKey here —
+          // it hides #actions-section and overwrites the actions page heading,
+          // often after draft parcel restore has already shown the actions list.
+          var farmConfig = FARM_VIEW_CONFIG.blackberry;
+          if (farmConfig) {
+            setFarmMapMarkerVisibility('blackberry');
+            if (typeof map !== 'undefined' && map && typeof map.setView === 'function') {
+              map.setView(farmConfig.center, farmConfig.zoom || 15);
+            }
+          }
         });
       });
     });
