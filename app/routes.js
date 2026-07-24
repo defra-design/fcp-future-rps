@@ -1616,7 +1616,7 @@ router.post('/grasslands-v2/remove-parcel-actions/:parcelId', function (req, res
   var parcelId = req.params.parcelId
   var parcel = grasslandsV2LandActions.findBasketParcel(req, parcelId)
   var parcelLabel = parcel
-    ? (parcel.parcelName || 'This land parcel')
+    ? (grasslandsV2LandActions.getParcelDisplayReference(parcel) || 'This land parcel')
     : 'This land parcel'
 
   if (req.body && req.body.confirmRemove === 'yes') {

@@ -1,6 +1,5 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/grasslands-v2/task-list" %}
-{% set showFooterPrototypeToggles = true %}
 {% extends "layouts/grasslands-v2-header.html" %}
 
 {% block pageTitle %}
@@ -507,6 +506,182 @@
       line-height: 1.25;
     }
 
+    /* AAC: GOV.UK summary card above Available actions */
+    .app-aac-parcel-summary {
+      margin-top: 8px;
+      margin-bottom: 24px;
+      max-width: 40rem;
+    }
+
+    .app-aac-parcel-summary[hidden] {
+      display: none;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-card {
+      margin-bottom: 0;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-card__title-wrapper {
+      padding: 10px 15px;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-card__title {
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-card__action,
+    .app-aac-parcel-summary .govuk-summary-card__action .govuk-link {
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-card__content {
+      padding: 10px 15px;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-list {
+      margin-bottom: 0;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-list__row {
+      margin-bottom: 0;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-list__key,
+    .app-aac-parcel-summary .govuk-summary-list__value {
+      font-size: 14px;
+      line-height: 1.25;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .app-aac-parcel-summary__notice {
+      margin-top: 16px;
+      margin-bottom: 16px;
+      padding: 12px 15px;
+      border-left: 4px solid #1d70b8;
+      background: #f3f2f1;
+    }
+
+    .app-aac-parcel-summary__notice p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .app-aac-parcel-summary .govuk-details {
+      margin-bottom: 0;
+    }
+
+    .app-aac-parcel-summary .govuk-details__summary,
+    .app-aac-parcel-summary .govuk-details__summary-text {
+      font-size: 16px;
+    }
+
+    /* Keep GOV.UK details reveal: grey vertical bar + inset text */
+    .app-aac-parcel-summary .govuk-details__text {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      padding-left: 20px;
+      border-left: 5px solid #b1b4b6;
+    }
+
+    .app-aac-parcel-summary .govuk-summary-list__row--available .govuk-summary-list__key,
+    .app-aac-parcel-summary .govuk-summary-list__row--available .govuk-summary-list__value {
+      font-weight: 700;
+    }
+
+    .app-aac-parcel-summary #aac-parcel-area-breakdown-list .govuk-summary-list__key,
+    .app-aac-parcel-summary #aac-parcel-area-breakdown-list .govuk-summary-list__value {
+      color: #0b0c0c;
+      font-size: 16px;
+      line-height: 1.25;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .app-aac-parcel-summary #aac-parcel-area-breakdown-list.govuk-summary-list--no-border .govuk-summary-list__row {
+      border-bottom: none;
+    }
+
+    /* Use GOV.UK summary-list border colour for calculation rules */
+    .app-aac-parcel-summary__rule-row {
+      border-bottom: 2px solid #b1b4b6 !important;
+    }
+
+    .app-aac-parcel-summary__total-row {
+      border-top: 2px solid #b1b4b6 !important;
+      border-bottom: 2px solid #b1b4b6 !important;
+    }
+
+    .app-aac-parcel-summary__total-row .govuk-summary-list__key,
+    .app-aac-parcel-summary__total-row .govuk-summary-list__value,
+    .app-aac-parcel-summary__rule-row .govuk-summary-list__key,
+    .app-aac-parcel-summary__rule-row .govuk-summary-list__value {
+      font-weight: 700;
+    }
+
+    .app-aac-parcel-summary #aac-parcel-area-breakdown-list .govuk-summary-list__value {
+      text-align: right;
+    }
+
+    .app-aac-parcel-summary #aac-parcel-area-details[hidden],
+    .app-aac-parcel-summary #aac-parcel-action-notice[hidden] {
+      display: none !important;
+    }
+
+    .app-aac-parcel-summary__previous-details-row {
+      display: block;
+    }
+
+    .app-aac-parcel-summary__previous-details-row .govuk-summary-list__key {
+      width: 100%;
+      max-width: none;
+      float: none;
+      padding-top: 0;
+      padding-right: 0;
+      padding-bottom: 8px;
+    }
+
+    .app-aac-parcel-summary__previous-details-row .govuk-summary-list__value {
+      display: none;
+    }
+
+    .app-aac-parcel-summary__hint {
+      display: block;
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+      margin: 0 0 4px;
+      padding: 0;
+      color: #505a5f;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .app-aac-parcel-summary__hint:last-child {
+      margin-bottom: 0;
+    }
+
+    /* AAC on: single column — no side parcel / previous-agreements panel */
+    .app-bottom-panels--aac {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "actions";
+    }
+
+    .app-bottom-panels--aac .app-bottom-panels__parcel {
+      display: none !important;
+    }
+
+    #actions-section #actions-checkboxes-container > .govuk-checkboxes__item[data-available-for-parcel="false"],
+    #actions-section #actions-checkboxes-container > .govuk-checkboxes__item[hidden] {
+      display: none !important;
+    }
+
     /* Padding above each action; keep the absolute checkbox graphic aligned
        with the label by shifting :before / :after by the same amount. */
     #actions-section #actions-checkboxes-container > .govuk-checkboxes__item {
@@ -621,8 +796,10 @@
 
     <h1 class="govuk-heading-l" id="page-heading">Select actions for this land parcel</h1>
     <div id="select-parcel-text">
-      <p class="govuk-body">Only actions that can be used together on this parcel are available.</p>
-      <p class="govuk-body">Incompatible actions are shown but cannot be selected.</p>
+      <div id="actions-mode-intro">
+        <p class="govuk-body" id="actions-mode-intro-primary">Only actions that can be used together on this parcel are available.</p>
+        <p class="govuk-body" id="actions-mode-intro-secondary">Incompatible actions are shown but cannot be selected.</p>
+      </div>
     </div>
     <p id="choose-parcel-text" style="display: none;"></p>
     <p id="selected-parcel-text" style="display: none;"></p>
@@ -659,7 +836,7 @@
             <table class="govuk-table">
               <tbody class="govuk-table__body" id="parcel-info">
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Ordnance Survey reference</td>
+                  <td class="govuk-table__cell">Parcel reference</td>
                   <td class="govuk-table__cell" id="os-ref">-</td>
                 </tr>
                 <tr class="govuk-table__row">
@@ -711,11 +888,69 @@
         </div>
 
         <div id="actions-section" style="display: {% if draftParcel %}block{% else %}none{% endif %};">
+
+          {# AAC only: summary card above Available actions #}
+          <div id="aac-parcel-summary" class="app-aac-parcel-summary" hidden>
+            <div class="govuk-summary-card">
+              <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">Selected land parcel</h2>
+                <ul class="govuk-summary-card__actions">
+                  <li class="govuk-summary-card__action">
+                    <a class="govuk-link" href="/grasslands-v2/select-land">Change<span class="govuk-visually-hidden" id="aac-parcel-change-hidden"> land parcel</span></a>
+                  </li>
+                </ul>
+              </div>
+              <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Parcel reference</dt>
+                    <dd class="govuk-summary-list__value" id="aac-parcel-reference">—</dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Land cover</dt>
+                    <dd class="govuk-summary-list__value" id="aac-parcel-land-cover">—</dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Available area</dt>
+                    <dd class="govuk-summary-list__value">
+                      <span id="aac-actions-available-area">—</span> hectares
+                    </dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Total area</dt>
+                    <dd class="govuk-summary-list__value">
+                      <span id="aac-actions-total-area">—</span> hectares
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <div class="app-aac-parcel-summary__notice" id="aac-parcel-action-notice" hidden>
+              <p>The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.</p>
+            </div>
+
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details" id="aac-parcel-area-details" hidden>
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">How the parcel area is calculated</span>
+              </summary>
+              <div class="govuk-details__text">
+                <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0" id="aac-parcel-area-breakdown-list"></dl>
+              </div>
+            </details>
+          </div>
+
           <div class="govuk-form-group govuk-!-margin-top-2{% if actionsError %} govuk-form-group--error{% endif %}" id="actions-form-group">
             <fieldset class="govuk-fieldset"{% if actionsError %} aria-describedby="actions-selection-error"{% endif %}>
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
+
+              {# AAC only: short guidance under the list heading #}
+              <p class="govuk-body" id="aac-actions-intro" hidden>
+                Enter how much land you want for each action. Actions with no land left are shown but cannot be selected.
+              </p>
+
               {% if draftParcel and (draftParcel.parcelId == 'gate-field' or draftParcel.parcelId == 'far-meadow') %}
                 <div class="govuk-inset-text" id="parcel-consent-intro">
                   {% if draftParcel.parcelId == 'far-meadow' %}
@@ -789,15 +1024,13 @@
           {% if draftParcel %}
             <div class="app-selected-parcel" id="selected-land-parcel-banner">
               <span class="govuk-caption-m app-selected-parcel__caption">Selected land parcel</span>
-              <h2 class="govuk-heading-m app-selected-parcel__name">{{ draftParcel.parcelName }}</h2>
+              <h2 class="govuk-heading-m app-selected-parcel__name">{{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}</h2>
               <dl class="govuk-summary-list govuk-summary-list--no-border app-selected-parcel__list">
                 <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Ordnance Survey reference</dt>
-                  <dd class="govuk-summary-list__value">{{ draftParcel.osReference }}</dd>
-                </div>
-                <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Total area</dt>
-                  <dd class="govuk-summary-list__value">{{ draftParcel.totalArea }} hectares</dd>
+                  <dd class="govuk-summary-list__value">
+                    <span id="selected-parcel-total-area">{{ draftParcel.totalArea }} hectares</span>
+                  </dd>
                 </div>
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Land cover</dt>
@@ -897,7 +1130,7 @@
               {# <p class="govuk-body">These parcels have actions from previous agreements</p> #}
               
               <div id="oak-tree-existing-actions" style="display: none;">
-              <h2 class="govuk-heading-s" id="existing-woods-view">Woods View - SP 480 436</h2>
+              <h2 class="govuk-heading-s" id="existing-woods-view">SO3757 3183</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -919,7 +1152,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-long-meadow">Long Meadow - SP 474 430</h2>
+              <h2 class="govuk-heading-s" id="existing-long-meadow">SO3757 3170</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -941,7 +1174,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-willow-grove">Willow Grove - SP 471 434</h2>
+              <h2 class="govuk-heading-s" id="existing-willow-grove">SO3757 3182</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -963,7 +1196,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-valley-pasture">Valley Pasture - SP 469 444</h2>
+              <h2 class="govuk-heading-s" id="existing-valley-pasture">SO3757 3181</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -985,7 +1218,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-gate-pasture">Gate Pasture</h2>
+              <h2 class="govuk-heading-s" id="existing-gate-pasture">SO3757 3167</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1007,7 +1240,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-chalk-field">Chalk Field</h2>
+              <h2 class="govuk-heading-s" id="existing-chalk-field">SO3757 3162</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1031,7 +1264,7 @@
               </div>
               
               <div id="blackberry-existing-actions">
-              <h2 class="govuk-heading-s" id="existing-spring-pasture">Spring Pasture - SP 898 528</h2>
+              <h2 class="govuk-heading-s" id="existing-spring-pasture">SO3757 3205</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1053,7 +1286,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-brook-field">Brook Field</h2>
+              <h2 class="govuk-heading-s" id="existing-brook-field">SO3757 3188</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1075,7 +1308,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-valley-bottom">Valley Bottom</h2>
+              <h2 class="govuk-heading-s" id="existing-valley-bottom">SO3757 3208</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1098,7 +1331,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-upper-slope">Upper Slope</h2>
+              <h2 class="govuk-heading-s" id="existing-upper-slope">SO3757 3207</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1120,7 +1353,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-lane-meadow">Lane Meadow - SP 893 527</h2>
+              <h2 class="govuk-heading-s" id="existing-lane-meadow">SO3757 3196</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1142,7 +1375,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-stone-bridge">Stone Bridge - SP 877 521</h2>
+              <h2 class="govuk-heading-s" id="existing-stone-bridge">SO3757 3206</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1164,7 +1397,7 @@
                 </div>
               </dl>
 
-              <h2 class="govuk-heading-s" id="existing-far-meadow">Far Meadow - SP 909 531</h2>
+              <h2 class="govuk-heading-s" id="existing-far-meadow">SO3757 3193</h2>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
@@ -1181,14 +1414,14 @@
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Existing actions</dt>
                   <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Low input grassland (CAHL1)</li>
+                      <li>Herbal leys (CSAM3)</li>
                     </ul></dd>
                 </div>
               </dl>
               <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
+                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
                 </div>
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Agreement end date</dt>
@@ -1201,7 +1434,7 @@
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Existing actions</dt>
                   <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>12m to 24m watercourse buffer strip on cultivated land (BFS1)</li>
+                      <li>Grassland field corners (CIGL1)</li>
                     </ul></dd>
                 </div>
               </dl>
@@ -1235,8 +1468,10 @@
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
   <script src="/public/javascripts/sfi-scheme-2026.js"></script>
   <script src="/public/javascripts/grasslands-v2-mvp-actions.js"></script>
+  <script src="/public/javascripts/grasslands-v2-parcel-reference.js"></script>
   <script src="/public/javascripts/grasslands-v2-existing-agreements.js"></script>
   <script src="/public/javascripts/grasslands-v2-actions-compatibility-loading.js"></script>
+  <script src="/public/javascripts/grasslands-v2-aac.js"></script>
 
   <!-- Pass server data to JavaScript -->
   {% if data['parcelSelectionsData'] %}
@@ -2615,6 +2850,12 @@
       }
     });
 
+    if (window.GrasslandsV2ParcelReference &&
+        typeof window.GrasslandsV2ParcelReference.applyToParcelData === 'function') {
+      window.GrasslandsV2ParcelReference.applyToParcelData(parcelData);
+    }
+
+
     var ACTION_CATALOG =
       window.SFI_SCHEME_2026 && Array.isArray(window.SFI_SCHEME_2026.actions)
         ? window.SFI_SCHEME_2026.actions.slice()
@@ -2815,12 +3056,15 @@
     var currentAvailableActions = [];
     // Prototype feature toggle: CNUM2 has 0 ha left (used by a previous agreement)
     var greyOutCnum2Enabled = false;
+    // Prototype feature toggle: show every MVP action, ignoring land cover / feature gates
+    var showAllMvpActionsEnabled = false;
     var LINEAR_ACTION_CODES = {
       BND1: true,
       BND2: true,
       CHRW1: true,
       CHRW2: true,
       CHRW3: true,
+      WBD1: true,
       WBD2: true
     };
 
@@ -2887,11 +3131,14 @@
         return { valid: false, reason: 'empty' };
       }
 
-      if (!/^\d+(\.\d{1,4})?$/.test(trimmed)) {
+      // Allow pasted en-GB values like "1,071" or "1 071" (thousand separators)
+      var normalised = trimmed.replace(/,/g, '').replace(/\s/g, '');
+
+      if (!/^\d+(\.\d{1,4})?$/.test(normalised)) {
         return { valid: false, reason: 'format' };
       }
 
-      var value = parseFloat(trimmed);
+      var value = parseFloat(normalised);
 
       if (!Number.isFinite(value) || value <= 0) {
         return { valid: false, reason: 'zero' };
@@ -2907,7 +3154,9 @@
         return false;
       }
 
-      if (/[^\d.]/.test(trimmed)) {
+      // Commas/spaces are allowed as thousand separators; anything else is clearly invalid
+      var withoutSeparators = trimmed.replace(/,/g, '').replace(/\s/g, '');
+      if (/[^\d.]/.test(withoutSeparators)) {
         return true;
       }
 
@@ -3116,6 +3365,32 @@
       return 'View ' + agreementCount + ' previous agreement actions';
     }
 
+    function isActionCodeOnThisPage(code) {
+      var normalized = String(code || '').toUpperCase();
+      if (!normalized) {
+        return false;
+      }
+      var mvpSet = window.GRASSLANDS_V2_MVP_ACTIONS && window.GRASSLANDS_V2_MVP_ACTIONS.codeSet;
+      if (mvpSet) {
+        return Boolean(mvpSet[normalized]);
+      }
+      return Boolean(document.querySelector(
+        '#actions-checkboxes-container input[name="actions"][value="' + normalized + '"]'
+      ));
+    }
+
+    function extractCodeFromPreviousAgreementLabel(label) {
+      var match = String(label || '').match(/\(([A-Z][A-Z0-9]*)\)\s*$/i);
+      return match ? match[1].toUpperCase() : null;
+    }
+
+    function filterPreviousAgreementLabelsToPageActions(labels) {
+      return (labels || []).filter(function(label) {
+        var code = extractCodeFromPreviousAgreementLabel(label);
+        return code && isActionCodeOnThisPage(code);
+      });
+    }
+
     function updatePreviousAgreementsSummary(parcelId) {
       var sectionEl = document.getElementById('previous-agreements-section');
       var summaryEl = document.getElementById('previous-agreements-summary');
@@ -3165,7 +3440,15 @@
         }
       }
 
-      agreements = agreements.filter(function(agreement) {
+      // Only keep previous-agreement actions that also appear in this page’s action list
+      agreements = agreements.map(function(agreement) {
+        return {
+          scheme: agreement.scheme,
+          endDate: agreement.endDate,
+          availableArea: agreement.availableArea,
+          actionLabels: filterPreviousAgreementLabelsToPageActions(agreement.actionLabels)
+        };
+      }).filter(function(agreement) {
         return agreement.actionLabels && agreement.actionLabels.length > 0;
       });
 
@@ -3180,18 +3463,11 @@
       sectionEl.hidden = false;
 
       agreements.forEach(function(agreement, index) {
-        if (agreements.length > 1) {
-          var agreementHeading = document.createElement('h3');
-          agreementHeading.className = 'govuk-heading-s';
-          if (index > 0) {
-            agreementHeading.className += ' govuk-!-margin-top-4';
-          }
-          agreementHeading.textContent = agreement.scheme || ('Previous agreement ' + (index + 1));
-          detailEl.appendChild(agreementHeading);
-        }
-
         var list = document.createElement('dl');
         list.className = 'govuk-summary-list';
+        if (index > 0) {
+          list.className += ' govuk-!-margin-top-4';
+        }
 
         if (agreement.scheme) {
           appendPreviousAgreementSummaryRow(list, 'Scheme', agreement.scheme);
@@ -3585,15 +3861,13 @@
     }
 
     function formatParcelReference(parcel) {
+      if (window.GrasslandsV2ParcelReference && typeof window.GrasslandsV2ParcelReference.format === 'function') {
+        return window.GrasslandsV2ParcelReference.format(parcel)
+      }
       if (!parcel) {
-        return '';
+        return ''
       }
-
-      if (parcel.name && parcel.osRef) {
-        return parcel.name + ' - ' + parcel.osRef;
-      }
-
-      return parcel.name || parcel.osRef || '';
+      return parcel.parcelReference || parcel.osRef || parcel.name || ''
     }
 
     var ACTION_FEATURE_REQUIREMENTS = {
@@ -3755,10 +4029,6 @@
       return Object.keys(eligibleByCode);
     }
 
-    var sharedParcelActionCodes = ACTION_CATALOG.map(function(action) {
-      return action.code;
-    });
-
     Object.keys(parcelData).forEach(function(parcelId) {
       var assignedLandCover = PARCEL_LAND_COVERS[parcelId];
       if (assignedLandCover) {
@@ -3770,50 +4040,9 @@
       }
 
       var parcelFeatures = getParcelFeatureFlags(parcelId, parcelData[parcelId]);
-      var eligibleActions = getEligibleActionsForLandCover(parcelData[parcelId].landCover).filter(function(code) {
+      parcelData[parcelId].actions = getEligibleActionsForLandCover(parcelData[parcelId].landCover).filter(function(code) {
         return supportsActionFeatureRequirements(code, parcelFeatures);
       });
-      parcelData[parcelId].actions = eligibleActions.length > 0 ? eligibleActions : sharedParcelActionCodes.slice();
-    });
-
-    // Keep full SFI coverage while using stricter parcel-level feature gates.
-    var representedActionCodes = {};
-    Object.keys(parcelData).forEach(function(parcelId) {
-      parcelData[parcelId].actions.forEach(function(code) {
-        representedActionCodes[code] = true;
-      });
-    });
-
-    var missingActionCodes = sharedParcelActionCodes.filter(function(code) {
-      return !representedActionCodes[code];
-    });
-
-    missingActionCodes.forEach(function(code) {
-      var targetParcelId = null;
-
-      Object.keys(parcelData).some(function(parcelId) {
-        var parcel = parcelData[parcelId];
-        var eligibleByLandCover = getEligibleActionsForLandCover(parcel.landCover).indexOf(code) !== -1;
-        if (!eligibleByLandCover) {
-          return false;
-        }
-
-        var parcelFeatures = getParcelFeatureFlags(parcelId, parcel);
-        if (!supportsActionFeatureRequirements(code, parcelFeatures)) {
-          return false;
-        }
-
-        targetParcelId = parcelId;
-        return true;
-      });
-
-      if (!targetParcelId) {
-        targetParcelId = Object.keys(parcelData)[0];
-      }
-
-      if (parcelData[targetParcelId].actions.indexOf(code) === -1) {
-        parcelData[targetParcelId].actions.push(code);
-      }
     });
 
     var compatibilityConfig = {
@@ -4294,7 +4523,7 @@
         ? window.GrasslandsV2ExistingAgreements.count(parcelId)
         : (data && data.numActions) || 0;
 
-      return '<h3>' + data.name + '</h3>' +
+      return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
         '<p>Actions from previous agreements: ' + existingCount + '</p>' +
         '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>';
     }
@@ -4538,7 +4767,13 @@
         });
       } finally {
         if (window.GrasslandsV2ActionsCompatibilityLoading) {
-          window.GrasslandsV2ActionsCompatibilityLoading.setSuspended(false);
+          // Keep suspended if AAC mode is on — AAC owns availability while enabled
+          if (!(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled())) {
+            window.GrasslandsV2ActionsCompatibilityLoading.setSuspended(false);
+          }
+        }
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          window.GrasslandsV2Aac.render();
         }
       }
       
@@ -4614,7 +4849,7 @@
       document.getElementById('selected-parcel-text').style.display = 'none';
       var osRefEl = document.getElementById('os-ref');
       if (osRefEl) {
-        osRefEl.textContent = parcel.osRef;
+        osRefEl.textContent = formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, parcel));
       }
       var totalAreaEl = document.getElementById('total-area');
       if (totalAreaEl) {
@@ -4687,7 +4922,9 @@
       });
 
       // Update actions list
-      updateActionsList(parcel.actions);
+      updateActionsList(getParcelAvailableActions(parcel));
+      syncAacForCurrentParcel();
+      updatePreviousAgreementsSummary(parcelId);
 
       // If there is no saved state to restore, still move focus to the queued action.
       if (pendingActionFocusCode && !(parcelSelections[parcelId] && parcelSelections[parcelId].actions && parcelSelections[parcelId].actions.length > 0)) {
@@ -4884,6 +5121,11 @@
       var sortedCodes = sortActionCodes(currentAvailableActions, 'alpha-asc');
       reorderActionOptions(sortedCodes);
 
+      var availableLookup = {};
+      currentAvailableActions.forEach(function(code) {
+        availableLookup[code] = true;
+      });
+
       var visibleCount = 0;
 
       $('input[name="actions"]').each(function() {
@@ -4891,13 +5133,19 @@
         var $item = $(checkbox).closest('.govuk-checkboxes__item');
         var actionCode = checkbox.value;
         var conditional = $item.next('.govuk-checkboxes__conditional');
-        var isAvailableForParcel = currentAvailableActions.indexOf(actionCode) > -1;
+        var isAvailableForParcel = Boolean(availableLookup[actionCode]);
 
         if (isAvailableForParcel) {
+          $item.attr('data-available-for-parcel', 'true');
           $item.show();
+          $item[0].hidden = false;
+          $item[0].style.display = '';
           visibleCount++;
         } else {
+          $item.attr('data-available-for-parcel', 'false');
           $item.hide();
+          $item[0].hidden = true;
+          $item[0].style.display = 'none';
           if (conditional.length) {
             conditional.addClass('govuk-checkboxes__conditional--hidden');
           }
@@ -4916,6 +5164,10 @@
         $('#no-results-message').show();
       } else {
         $('#no-results-message').hide();
+      }
+
+      if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+        window.GrasslandsV2Aac.render();
       }
     }
 
@@ -4967,6 +5219,403 @@
     }
 
     // Function to update actions list
+    function getAllMvpActionCodes() {
+      if (window.GRASSLANDS_V2_MVP_ACTIONS && Array.isArray(window.GRASSLANDS_V2_MVP_ACTIONS.codes)) {
+        return window.GRASSLANDS_V2_MVP_ACTIONS.codes.slice();
+      }
+      return ACTION_CATALOG.map(function(action) {
+        return action.code;
+      });
+    }
+
+    function isShowAllMvpActionsToggleOn() {
+      return Boolean(showAllMvpActionsEnabled);
+    }
+
+    function getLandCoverEligibleActionCodes(parcel) {
+      if (!parcel) {
+        return [];
+      }
+
+      var parcelId = null;
+      Object.keys(parcelData).some(function(id) {
+        if (parcelData[id] === parcel) {
+          parcelId = id;
+          return true;
+        }
+        return false;
+      });
+
+      var landCover = parcel.landCover || DEFAULT_LAND_COVER;
+      var features = getParcelFeatureFlags(parcelId || currentSelectedParcel, parcel);
+      return getEligibleActionsForLandCover(landCover).filter(function(code) {
+        return supportsActionFeatureRequirements(code, features);
+      });
+    }
+
+    function getPreviousAgreementActionCodes(parcelId) {
+      if (!parcelId || !window.GrasslandsV2ExistingAgreements ||
+          typeof window.GrasslandsV2ExistingAgreements.get !== 'function') {
+        return [];
+      }
+      return (window.GrasslandsV2ExistingAgreements.get(parcelId) || []).map(function(action) {
+        return action.code;
+      }).filter(function(code) {
+        // Only grey out actions that are actually offered on this page
+        return isActionCodeOnThisPage(code);
+      });
+    }
+
+    function getParcelAvailableActions(parcel) {
+      // Default: land-cover (+ feature) eligible actions only.
+      // “Show all 16 MVP actions” is the explicit override.
+      // Previous-agreement actions stay in the list but are greyed out separately.
+      if (isShowAllMvpActionsToggleOn()) {
+        return getAllMvpActionCodes();
+      }
+      return getLandCoverEligibleActionCodes(parcel);
+    }
+
+    function refreshAvailableActionsForCurrentParcel() {
+      if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) {
+        currentAvailableActions = [];
+        applyActionFilters();
+        syncAacForCurrentParcel();
+        return;
+      }
+
+      currentAvailableActions = getParcelAvailableActions(parcelData[currentSelectedParcel]);
+
+      // If we leave “show all”, drop selections that are no longer eligible for the parcel
+      $('input[name="actions"]').each(function() {
+        var $input = $(this);
+        var actionCode = $input.val();
+        if (currentAvailableActions.indexOf(actionCode) !== -1) {
+          return;
+        }
+
+        if ($input.is(':checked')) {
+          var codeLower = String(actionCode || '').toLowerCase();
+          var $quantityInput = $('#quantity-' + codeLower);
+          var $conditional = $('#conditional-' + codeLower);
+          $input.prop('checked', false);
+          $input.attr('aria-expanded', 'false');
+          if ($quantityInput.length) {
+            clearQuantityFieldValidation($quantityInput);
+            $quantityInput.val('');
+          }
+          if ($conditional.length) {
+            $conditional.addClass('govuk-checkboxes__conditional--hidden');
+          }
+        }
+      });
+
+      applyActionFilters();
+      syncAacForCurrentParcel();
+      if (typeof window.__grasslandsApplyPreviousAgreementGreyOut === 'function') {
+        window.__grasslandsApplyPreviousAgreementGreyOut();
+      }
+    }
+
+    function syncAacForCurrentParcel() {
+      if (!window.GrasslandsV2Aac) {
+        return;
+      }
+
+      if (!window.GrasslandsV2Aac.isEnabled()) {
+        window.GrasslandsV2Aac.setParcel(null, null, []);
+        updateAacParcelAreaBreakdown();
+        return;
+      }
+
+      if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) {
+        window.GrasslandsV2Aac.setParcel(null, null, []);
+        updateAacParcelAreaBreakdown();
+        return;
+      }
+
+      // Only calculate for land-cover eligible actions currently shown for this parcel
+      var actionCodes = currentAvailableActions.length
+        ? currentAvailableActions
+        : getParcelAvailableActions(parcelData[currentSelectedParcel]);
+
+      window.GrasslandsV2Aac.setParcel(
+        currentSelectedParcel,
+        parcelData[currentSelectedParcel],
+        actionCodes
+      );
+      updateAacParcelAreaBreakdown();
+    }
+
+    function formatBreakdownHa(value) {
+      var numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return '—';
+      }
+      return numeric.toFixed(4) + ' ha';
+    }
+
+    function formatBreakdownNumber(value) {
+      var numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return '—';
+      }
+      return numeric.toFixed(4);
+    }
+
+    function findRestrictionHa(restrictions, matcher) {
+      var list = restrictions || [];
+      for (var i = 0; i < list.length; i++) {
+        if (matcher(list[i].label || '') && list[i].ha != null && Number.isFinite(Number(list[i].ha))) {
+          return Number(list[i].ha);
+        }
+      }
+      return 0;
+    }
+
+    function isHeferRestrictionLabel(label) {
+      return /hefer|historic/i.test(String(label || ''));
+    }
+
+    function updateAacParcelAreaBreakdown() {
+      var container = document.getElementById('aac-parcel-summary');
+      var listEl = document.getElementById('aac-parcel-area-breakdown-list');
+      var totalEl = document.getElementById('aac-actions-total-area');
+      var availableEl = document.getElementById('aac-actions-available-area');
+      var referenceEl = document.getElementById('aac-parcel-reference');
+      var landCoverEl = document.getElementById('aac-parcel-land-cover');
+      var bottomPanels = document.querySelector('.app-bottom-panels');
+      if (!container || !listEl) {
+        return;
+      }
+
+      var aacOn = window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled();
+      if (bottomPanels) {
+        bottomPanels.classList.toggle('app-bottom-panels--aac', Boolean(aacOn));
+      }
+
+      var detailsEl = document.getElementById('aac-parcel-area-details');
+      var noticeEl = document.getElementById('aac-parcel-action-notice');
+      if (!aacOn || !currentSelectedParcel || !parcelData[currentSelectedParcel]) {
+        container.hidden = true;
+        listEl.innerHTML = '';
+        if (detailsEl) {
+          detailsEl.hidden = true;
+          detailsEl.open = false;
+        }
+        if (noticeEl) {
+          noticeEl.hidden = true;
+        }
+        if (totalEl) {
+          totalEl.textContent = '—';
+        }
+        if (availableEl) {
+          availableEl.textContent = '—';
+        }
+        if (referenceEl) {
+          referenceEl.textContent = '—';
+        }
+        if (landCoverEl) {
+          landCoverEl.textContent = '—';
+        }
+        return;
+      }
+
+      if (typeof window.GrasslandsV2Aac.getParcelAreaBreakdown !== 'function') {
+        container.hidden = true;
+        return;
+      }
+
+      var parcel = parcelData[currentSelectedParcel];
+      var breakdown = window.GrasslandsV2Aac.getParcelAreaBreakdown(
+        currentSelectedParcel,
+        parcel
+      );
+
+      var sssiHa = findRestrictionHa(breakdown.restrictions, function(label) {
+        return /sssi/i.test(label);
+      });
+      var previousDeductions = [];
+      if (window.GrasslandsV2ExistingAgreements &&
+          typeof window.GrasslandsV2ExistingAgreements.getDeductions === 'function') {
+        previousDeductions = window.GrasslandsV2ExistingAgreements.getDeductions(currentSelectedParcel) || [];
+      }
+      var previousHa = previousDeductions.reduce(function(sum, action) {
+        return Math.round((sum + Number(action.ha || 0)) * 10000) / 10000;
+      }, 0);
+      if (previousHa <= 0) {
+        previousHa = findRestrictionHa(breakdown.restrictions, function(label) {
+          return /previous agreement/i.test(label);
+        });
+      }
+
+      var areaDeductionHa = 0;
+      if (sssiHa > 0) {
+        areaDeductionHa += sssiHa;
+      }
+      if (previousHa > 0) {
+        areaDeductionHa += previousHa;
+      }
+      (breakdown.restrictions || []).forEach(function(item) {
+        var label = item.label || '';
+        if (/sssi/i.test(label) || /previous agreement/i.test(label) || isHeferRestrictionLabel(label)) {
+          return;
+        }
+        if (item.ha != null && Number.isFinite(Number(item.ha)) && Number(item.ha) > 0) {
+          areaDeductionHa += Number(item.ha);
+        }
+      });
+      areaDeductionHa = Math.round(areaDeductionHa * 10000) / 10000;
+      var availableHa = Math.max(
+        0,
+        Math.round((Number(breakdown.totalHa) - areaDeductionHa) * 10000) / 10000
+      );
+
+      var parcelReference = formatParcelReference(
+        Object.assign({ id: currentSelectedParcel, parcelId: currentSelectedParcel }, parcel)
+      );
+      if (referenceEl) {
+        referenceEl.textContent = parcelReference;
+      }
+      var changeHiddenEl = document.getElementById('aac-parcel-change-hidden');
+      if (changeHiddenEl) {
+        changeHiddenEl.textContent = parcelReference
+          ? (' land parcel ' + parcelReference)
+          : ' land parcel';
+      }
+      var landCovers = breakdown.landCovers || [];
+      if (landCoverEl) {
+        var coverNames = landCovers.length
+          ? landCovers.map(function(cover) { return cover.name; }).filter(Boolean)
+          : getParcelLandCovers(parcel.landCover);
+        landCoverEl.textContent = coverNames.join(', ') || '—';
+      }
+      if (totalEl) {
+        totalEl.textContent = formatBreakdownNumber(breakdown.totalHa);
+      }
+      if (availableEl) {
+        availableEl.textContent = formatBreakdownNumber(availableHa);
+      }
+
+      var rows = [];
+
+      // Land-cover composition (when the parcel has more than one cover)
+      if (landCovers.length > 1) {
+        landCovers.forEach(function(cover) {
+          rows.push(
+            '<div class="govuk-summary-list__row">' +
+              '<dt class="govuk-summary-list__key">' + escapeHtmlText(cover.name) + '</dt>' +
+              '<dd class="govuk-summary-list__value">' + escapeHtmlText(formatBreakdownHa(cover.ha)) + '</dd>' +
+            '</div>'
+          );
+        });
+      }
+
+      rows.push(
+        '<div class="govuk-summary-list__row app-aac-parcel-summary__rule-row">' +
+          '<dt class="govuk-summary-list__key">Parcel base total</dt>' +
+          '<dd class="govuk-summary-list__value">' + escapeHtmlText(formatBreakdownHa(breakdown.totalHa)) + '</dd>' +
+        '</div>'
+      );
+
+      if (sssiHa > 0) {
+        rows.push(
+          '<div class="govuk-summary-list__row">' +
+            '<dt class="govuk-summary-list__key">SSSI restriction</dt>' +
+            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(sssiHa)) + '</dd>' +
+          '</div>'
+        );
+      }
+
+      if (previousDeductions.length) {
+        var previousTotalHa = previousDeductions.reduce(function(sum, action) {
+          return Math.round((sum + Number(action.ha || 0)) * 10000) / 10000;
+        }, 0);
+        var previousHints = previousDeductions.map(function(action) {
+          var deductionLabel = window.GrasslandsV2ExistingAgreements.formatDeductionLabel
+            ? window.GrasslandsV2ExistingAgreements.formatDeductionLabel(action)
+            : ((action.code || '') + ' – ' + (action.name || ''));
+          return (
+            '<p class="govuk-hint app-aac-parcel-summary__hint">' +
+              escapeHtmlText(deductionLabel + ' (−' + formatBreakdownHa(action.ha) + ')') +
+            '</p>'
+          );
+        }).join('');
+
+        rows.push(
+          '<div class="govuk-summary-list__row">' +
+            '<dt class="govuk-summary-list__key">Previous agreements</dt>' +
+            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(previousTotalHa)) + '</dd>' +
+          '</div>' +
+          '<div class="govuk-summary-list__row app-aac-parcel-summary__previous-details-row">' +
+            '<dt class="govuk-summary-list__key">' +
+              previousHints +
+            '</dt>' +
+            '<dd class="govuk-summary-list__value">' +
+              '<span class="govuk-visually-hidden">Action deductions</span>' +
+            '</dd>' +
+          '</div>'
+        );
+      } else if (previousHa > 0) {
+        rows.push(
+          '<div class="govuk-summary-list__row">' +
+            '<dt class="govuk-summary-list__key">Previous agreements</dt>' +
+            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(previousHa)) + '</dd>' +
+          '</div>'
+        );
+      }
+
+      (breakdown.restrictions || []).forEach(function(item) {
+        var label = item.label || '';
+        if (/sssi/i.test(label) || /previous agreement/i.test(label) || isHeferRestrictionLabel(label)) {
+          return;
+        }
+        if (item.ha == null || !Number.isFinite(Number(item.ha)) || Number(item.ha) <= 0) {
+          return;
+        }
+        rows.push(
+          '<div class="govuk-summary-list__row">' +
+            '<dt class="govuk-summary-list__key">' + escapeHtmlText(label) + '</dt>' +
+            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(item.ha)) + '</dd>' +
+          '</div>'
+        );
+      });
+
+      rows.push(
+        '<div class="govuk-summary-list__row app-aac-parcel-summary__total-row">' +
+          '<dt class="govuk-summary-list__key">Available area</dt>' +
+          '<dd class="govuk-summary-list__value">' + escapeHtmlText(formatBreakdownHa(availableHa)) + '</dd>' +
+        '</div>'
+      );
+
+      listEl.innerHTML = rows.join('');
+      container.hidden = false;
+
+      // Hide calculation extras when the summary card shows the same Total and Available
+      var totalDisplay = formatBreakdownNumber(breakdown.totalHa);
+      var availableDisplay = formatBreakdownNumber(availableHa);
+      var totalsMatch = totalDisplay !== '—' && totalDisplay === availableDisplay;
+
+      if (detailsEl) {
+        detailsEl.hidden = totalsMatch;
+        detailsEl.open = false;
+        if (totalsMatch) {
+          listEl.innerHTML = '';
+        }
+      }
+      if (noticeEl) {
+        noticeEl.hidden = totalsMatch;
+      }
+    }
+
+    function escapeHtmlText(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
     function updateActionsList(availableActions) {
       currentAvailableActions = Array.isArray(availableActions) ? availableActions.slice() : [];
 
@@ -5055,54 +5704,8 @@
         $('#return-to-cya-link').hide();
       }
 
-      // Auto-select draft parcel so actions filter correctly
-      try {
-        var draftParcelEl = document.getElementById('draft-parcel-json');
-        var draftParcel = draftParcelEl ? JSON.parse(draftParcelEl.textContent) : null;
-        var draftActionsEl = document.getElementById('draft-actions-json');
-        var draftActions = draftActionsEl ? JSON.parse(draftActionsEl.textContent) : [];
-
-        if (draftParcel && draftParcel.parcelId) {
-          // Editing removes the parcel from saved selections. Re-seed it here so
-          // selectParcel → restoreParcelState can re-check the draft actions.
-          if (Array.isArray(draftActions) && draftActions.length) {
-            parcelSelections[draftParcel.parcelId] = {
-              actions: draftActions.map(function(action) {
-                return {
-                  code: String((action && action.code) || '').toUpperCase(),
-                  name: action && action.name,
-                  quantity: action && action.quantity,
-                  unit: action && action.unit,
-                  paymentRate: action && action.paymentRate,
-                  yearlyPayment: action && action.yearlyPayment
-                };
-              }).filter(function(action) {
-                return Boolean(action.code);
-              })
-            };
-          }
-
-          updatePreviousAgreementsSummary(draftParcel.parcelId);
-          setTimeout(function() {
-            selectParcelById(draftParcel.parcelId);
-            document.getElementById('actions-section').style.display = 'block';
-            document.getElementById('action-tools-panel').style.display = 'block';
-
-            if (Array.isArray(draftActions) && draftActions.length) {
-              setTimeout(function() {
-                if (currentSelectedParcel === draftParcel.parcelId) {
-                  restoreParcelState(draftParcel.parcelId);
-                }
-                refreshContinueFromActionSelection();
-              }, 300);
-            } else {
-              refreshContinueFromActionSelection();
-            }
-          }, 400);
-        }
-      } catch (draftErr) {
-        console.warn('Could not restore draft parcel/actions', draftErr);
-      }
+      // Draft parcel restore runs after feature toggles (including AAC) are wired —
+      // see restoreDraftParcelAfterToggles() below. Scheduling it here raced AAC init.
 
 
       // Handle click on "Apply actions to this parcel" link in map popups
@@ -5407,8 +6010,9 @@
         if (actions.length > 0) {
           parcelSelections[currentSelectedParcel] = {
             parcelId: currentSelectedParcel,
-            parcelName: parcelData[currentSelectedParcel].name,
-            osRef: parcelData[currentSelectedParcel].osRef,
+            parcelName: formatParcelReference(Object.assign({ id: currentSelectedParcel, parcelId: currentSelectedParcel }, parcelData[currentSelectedParcel])),
+            osRef: formatParcelReference(Object.assign({ id: currentSelectedParcel, parcelId: currentSelectedParcel }, parcelData[currentSelectedParcel])),
+            parcelReference: formatParcelReference(Object.assign({ id: currentSelectedParcel, parcelId: currentSelectedParcel }, parcelData[currentSelectedParcel])),
             actions: actions
           };
         } else {
@@ -5430,6 +6034,11 @@
       function updateAvailableQuantities(options) {
         options = options || {};
         if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) return;
+
+        // AAC mode owns available-area hints and which actions stay visible
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          return;
+        }
 
         var parcel = parcelData[currentSelectedParcel];
         var totalAreaHa = parseFloat(parcel.availableArea);
@@ -5537,16 +6146,30 @@
       }
 
       function validateBeforeSave() {
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled() && window.GrasslandsV2Aac.isBusy()) {
+          return false;
+        }
+
         hideQuantityErrorSummary();
 
-        $('input[name="actions"]:checked').each(function() {
-          var actionCode = ($(this).val() || '').toString();
-          var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
-          $quantityInput.data('blurred', true);
-          updateQuantityFormatErrors($quantityInput);
-        });
-
-        updateAvailableQuantities();
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          // AAC: format (invalid characters) + over-limit against remaining available
+          $('input[name="actions"]:checked').each(function() {
+            var actionCode = ($(this).val() || '').toString();
+            var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
+            $quantityInput.data('blurred', true);
+            updateQuantityFormatErrors($quantityInput);
+          });
+          updateAacQuantityOverLimitErrors();
+        } else {
+          $('input[name="actions"]:checked').each(function() {
+            var actionCode = ($(this).val() || '').toString();
+            var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
+            $quantityInput.data('blurred', true);
+            updateQuantityFormatErrors($quantityInput);
+          });
+          updateAvailableQuantities();
+        }
 
         var summaryErrors = [];
 
@@ -5580,8 +6203,20 @@
       }
 
       // Tier 1: live over-limit updates; show format errors for clearly invalid input
+      // AAC mode: only show format errors for invalid characters (e.g. "d") — not over-limit here.
       $(document).on('input', 'input[id^="quantity-"]', function() {
         var $input = $(this);
+
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          if (hasClearlyInvalidQuantityInput($input.val())) {
+            updateQuantityFormatErrors($input);
+          } else {
+            var aacErrors = getQuantityErrorsStore($input);
+            aacErrors.format = null;
+            refreshQuantityFieldDisplay($input);
+          }
+          return;
+        }
 
         if ($input.data('blurred') || hasClearlyInvalidQuantityInput($input.val())) {
           updateQuantityFormatErrors($input);
@@ -5594,8 +6229,12 @@
         updateAvailableQuantities();
       });
 
-      // Tier 2: format validation when the user leaves the field
+      // Tier 2: format validation when the user leaves the field (default / non-AAC only)
       $(document).on('blur', 'input[id^="quantity-"]', function() {
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          return;
+        }
+
         var $input = $(this);
         $input.data('blurred', true);
         updateQuantityFormatErrors($input);
@@ -5622,11 +6261,14 @@
           $(this).prop('disabled', false);
           $(this).removeAttr('data-disabled-reason');
           $(this).closest('.govuk-checkboxes__item').css('opacity', '1').removeClass('sfi-compatibility-disabled');
-          $(this).siblings('.govuk-checkboxes__label').find('.compatibility-hint, .area-full-hint, .sfi-compatibility-option-hint').remove();
+          $(this).siblings('.govuk-checkboxes__label').find(
+            '.compatibility-hint, .area-full-hint, .sfi-compatibility-option-hint, .previous-agreement-area-hint'
+          ).remove();
         });
         
-        // Reset hints to show total available
-        if (parcelData[parcelId]) {
+        // Reset hints to show total available (default mode only —
+        // AAC owns quantity copy when the AAC toggle is on)
+        if (parcelData[parcelId] && !(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled())) {
           var parcel = parcelData[parcelId];
           $('.govuk-checkboxes__conditional').each(function() {
             var $conditional = $(this);
@@ -5642,16 +6284,31 @@
               $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel)));
             } else if ($suffix.text() === 'm²') {
               $hint.text(getAvailableHintText(actionCode, getBuildingSquareMetresAvailable(parcel)));
-            } else if ($suffix.text() === 'pond') {
-              $hint.text('3 ponds available');
             }
           });
         }
 
         applyActionFilters();
-        updateCompatibilityState();
-        updateAvailableQuantities();
+
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          // AAC owns availability — do not re-apply the full compatibility matrix
+          if (window.GrasslandsV2ActionsCompatibilityLoading) {
+            if (typeof window.GrasslandsV2ActionsCompatibilityLoading.setSuspended === 'function') {
+              window.GrasslandsV2ActionsCompatibilityLoading.setSuspended(true);
+            }
+            if (typeof window.GrasslandsV2ActionsCompatibilityLoading.resetCompatibilityState === 'function') {
+              window.GrasslandsV2ActionsCompatibilityLoading.resetCompatibilityState();
+            }
+          }
+          syncAacForCurrentParcel();
+        } else {
+          updateCompatibilityState();
+          updateAvailableQuantities();
+        }
+
+        // After AAC / compatibility, lock actions already used in a previous agreement
         applyGreyOutCnum2();
+        updatePreviousAgreementsSummary(parcelId);
       };
       
 
@@ -5930,20 +6587,19 @@
         }
       }
 
-      // Keep shareable feature-toggle state in the URL, e.g.
-      // ?apiDelay=1&cnum2Unavailable=1
+      // Keep shareable feature-toggle state in the URL, e.g. ?allActions=1&aac=1
       function syncFeatureToggleQueryParams() {
         try {
           var url = new URL(window.location.href);
           var changed = false;
-          var apiDelayToggle = document.getElementById('simulate-compatibility-api-delay');
-          var cnum2Toggle = document.getElementById('grey-out-cnum2');
-          var apiDelayOn = apiDelayToggle
-            ? Boolean(apiDelayToggle.checked)
-            : getFeatureToggleQueryFlag('apiDelay');
-          var cnum2On = cnum2Toggle
-            ? Boolean(cnum2Toggle.checked)
-            : getFeatureToggleQueryFlag('cnum2Unavailable');
+          var allActionsToggle = document.getElementById('show-all-mvp-actions');
+          var aacToggle = document.getElementById('use-aac');
+          var allActionsOn = allActionsToggle
+            ? Boolean(allActionsToggle.checked)
+            : getFeatureToggleQueryFlag('allActions');
+          var aacOn = aacToggle
+            ? Boolean(aacToggle.checked)
+            : getFeatureToggleQueryFlag('aac');
 
           function setOrClear(paramName, enabled) {
             if (enabled) {
@@ -5957,8 +6613,12 @@
             }
           }
 
-          setOrClear('apiDelay', apiDelayOn);
-          setOrClear('cnum2Unavailable', cnum2On);
+          // Removed toggles — drop stale share links
+          setOrClear('apiDelay', false);
+          setOrClear('cnum2Unavailable', false);
+          setOrClear('aacDebug', false);
+          setOrClear('allActions', allActionsOn);
+          setOrClear('aac', aacOn);
 
           if (changed) {
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
@@ -5968,68 +6628,166 @@
         }
       }
 
-      function isCnum2UnavailableToggleOn() {
-        var toggle = document.getElementById('grey-out-cnum2');
-        if (toggle) {
-          return Boolean(toggle.checked);
+      function updateActionsModeIntro(aacEnabled) {
+        var pageIntro = document.getElementById('actions-mode-intro');
+        var aacIntro = document.getElementById('aac-actions-intro');
+
+        // AAC: hint sits under Available actions. Compatibility: stays under the page H1.
+        if (pageIntro) {
+          pageIntro.hidden = Boolean(aacEnabled);
         }
-        return Boolean(greyOutCnum2Enabled);
+        if (aacIntro) {
+          aacIntro.hidden = !aacEnabled;
+        }
       }
 
-      function clearGreyOutCnum2() {
-        // Always strip this prototype hint — it must only exist while the toggle is on
-        $('.previous-agreement-area-hint').remove();
-
-        var $input = $('input[name="actions"][value="CNUM2"]');
-        if (!$input.length) {
+      function setAacModeEnabled(enabled) {
+        if (!window.GrasslandsV2Aac) {
           return;
         }
 
-        var $item = $input.closest('.govuk-checkboxes__item');
-        if ($input.attr('data-disabled-reason') === 'previous-agreement-area') {
+        window.GrasslandsV2Aac.setEnabled(enabled);
+        updateActionsModeIntro(enabled);
+
+        if (window.GrasslandsV2ActionsCompatibilityLoading &&
+            typeof window.GrasslandsV2ActionsCompatibilityLoading.setSuspended === 'function') {
+          window.GrasslandsV2ActionsCompatibilityLoading.setSuspended(enabled);
+        }
+
+        if (enabled) {
+          // Re-apply land-cover filtered list when turning AAC on
+          refreshAvailableActionsForCurrentParcel();
+          syncAacForCurrentParcel();
+          updateAacParcelAreaBreakdown();
+          applyGreyOutCnum2();
+        } else {
+          // Avoid re-entering AAC sync while turning AAC off
+          if (window.GrasslandsV2Aac) {
+            window.GrasslandsV2Aac.setParcel(null, null, []);
+          }
+          updateAacParcelAreaBreakdown();
+          refreshAvailableActionsForCurrentParcel();
+          applyGreyOutCnum2();
+          updateAvailableQuantities({ skipCompatibilityUpdate: true });
+          if (
+            window.GrasslandsV2ActionsCompatibilityLoading &&
+            typeof window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility === 'function'
+          ) {
+            window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility(null);
+          } else {
+            updateCompatibilityState();
+          }
+        }
+      }
+
+      function wireAacToggles() {
+        if (!window.GrasslandsV2Aac) {
+          return;
+        }
+
+        var aacStorageKey = 'grasslandsV2UseAac';
+        var aacToggle = document.getElementById('use-aac');
+        var aacEnabled = getFeatureToggleQueryFlag('aac') || getSessionFlag(aacStorageKey);
+
+        setSessionFlag(aacStorageKey, aacEnabled);
+        setSessionFlag('grasslandsV2AacDebug', false);
+
+        window.GrasslandsV2Aac.init({
+          enabled: aacEnabled,
+          debug: false,
+          // AAC exploration: only genuine policy conflicts — not the full matrix.
+          // Area sharing is handled by remaining eligible area, not binary disable.
+          incompatibleByCode: {
+            CLIG3: ['CSAM3'],
+            CSAM3: ['CLIG3'],
+            GRH7: ['GRH8', 'GRH10'],
+            GRH8: ['GRH7', 'GRH10'],
+            GRH10: ['GRH7', 'GRH8']
+          },
+          getContinueButton: function() {
+            return document.getElementById('continue-button');
+          },
+          onAfterRecalculate: function() {
+            applyGreyOutCnum2();
+            updateAacQuantityOverLimitErrors();
+            refreshContinueFromActionSelection();
+            captureCurrentParcelState();
+          }
+        });
+
+        if (aacToggle) {
+          aacToggle.checked = aacEnabled;
+          aacToggle.addEventListener('change', function() {
+            aacEnabled = Boolean(aacToggle.checked);
+            setSessionFlag(aacStorageKey, aacEnabled);
+            syncFeatureToggleQueryParams();
+            setAacModeEnabled(aacEnabled);
+          });
+        }
+
+        if (aacEnabled) {
+          setAacModeEnabled(true);
+        } else {
+          updateActionsModeIntro(false);
+          updateAacParcelAreaBreakdown();
+        }
+      }
+
+      function isCnum2UnavailableToggleOn() {
+        return false;
+      }
+
+      function clearGreyOutCnum2() {
+        // Strip previous-agreement locks so they can be re-applied cleanly
+        $('.previous-agreement-area-hint').remove();
+
+        $('input[name="actions"]').each(function() {
+          var $input = $(this);
+          if ($input.attr('data-disabled-reason') !== 'previous-agreement-area') {
+            return;
+          }
+
+          var $item = $input.closest('.govuk-checkboxes__item');
           $input.prop('disabled', false);
           $input.removeAttr('disabled');
           $input.removeAttr('data-disabled-reason');
           $input.removeAttr('aria-disabled');
           $item.css('opacity', '');
           $item.removeClass('sfi-compatibility-disabled');
-        }
 
-        var hintId = 'previous-agreement-area-hint-cnum2';
-        var describedBy = ($input.attr('aria-describedby') || '')
-          .split(/\s+/)
-          .filter(function(id) {
-            return id && id !== hintId;
-          });
-
-        if (describedBy.length) {
-          $input.attr('aria-describedby', describedBy.join(' '));
-        } else {
-          $input.removeAttr('aria-describedby');
-        }
+          var describedBy = ($input.attr('aria-describedby') || '')
+            .split(/\s+/)
+            .filter(function(id) {
+              return id && id.indexOf('previous-agreement-area-hint-') !== 0;
+            });
+          if (describedBy.length) {
+            $input.attr('aria-describedby', describedBy.join(' '));
+          } else {
+            $input.removeAttr('aria-describedby');
+          }
+        });
       }
 
-      function applyGreyOutCnum2() {
-        clearGreyOutCnum2();
-
-        greyOutCnum2Enabled = isCnum2UnavailableToggleOn();
-        if (!greyOutCnum2Enabled) {
+      function greyOutPreviousAgreementAction(actionCode) {
+        var code = String(actionCode || '').toUpperCase();
+        if (!code) {
           return;
         }
 
-        var $input = $('input[name="actions"][value="CNUM2"]');
-        if (!$input.length || $input.closest('.govuk-checkboxes__item').css('display') === 'none') {
-          return;
-        }
-
+        var $input = $('input[name="actions"][value="' + code + '"]');
         var $item = $input.closest('.govuk-checkboxes__item');
+        if (!$input.length || $item.attr('data-available-for-parcel') === 'false' || $item.is('[hidden]')) {
+          return;
+        }
+
+        var codeLower = code.toLowerCase();
         var $label = $input.siblings('.govuk-checkboxes__label');
-        var $conditional = $('#conditional-cnum2');
-        var hintId = 'previous-agreement-area-hint-cnum2';
+        var $conditional = $('#conditional-' + codeLower);
+        var hintId = 'previous-agreement-area-hint-' + codeLower;
 
         if ($input.is(':checked')) {
           $input.prop('checked', false);
-          var $quantityInput = $('#quantity-cnum2');
+          var $quantityInput = $('#quantity-' + codeLower);
           if ($quantityInput.length) {
             $quantityInput.val('');
             clearQuantityFieldValidation($quantityInput);
@@ -6040,13 +6798,27 @@
         $input.prop('disabled', true);
         $input.attr('data-disabled-reason', 'previous-agreement-area');
         $input.attr('aria-disabled', 'true');
+        $item.addClass('sfi-compatibility-disabled');
         $item.css('opacity', '');
 
-        $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0.0000 hectares available');
+        if ($conditional.length) {
+          var unit = getQuantityUnitForAction(code);
+          if (unit === 'ha') {
+            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0.0000 hectares available');
+          } else if (unit === 'm') {
+            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 metres available');
+          } else if (unit === 'm²') {
+            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 square metres available');
+          } else {
+            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 available');
+          }
+        }
 
-        $label.append(
-          '<span class="previous-agreement-area-hint" id="' + hintId + '" style="display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;">All eligible land for this action is already included in an existing agreement.</span>'
-        );
+        if (!$label.find('#' + hintId).length) {
+          $label.append(
+            '<span class="previous-agreement-area-hint" id="' + hintId + '" style="display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;">All eligible land for this action is already included in an existing agreement.</span>'
+          );
+        }
 
         var describedBy = ($input.attr('aria-describedby') || '')
           .split(/\s+/)
@@ -6057,41 +6829,75 @@
         }
       }
 
-      function wireCnum2UnavailableToggle() {
-        var greyOutCnum2StorageKey = 'grasslandsV2GreyOutCnum2';
-        var greyOutCnum2Toggle = document.getElementById('grey-out-cnum2');
-        var greyOutCnum2FromQuery = getFeatureToggleQueryFlag('cnum2Unavailable');
-        var greyOutCnum2Stored = getSessionFlag(greyOutCnum2StorageKey);
+      function applyGreyOutCnum2() {
+        clearGreyOutCnum2();
 
-        // Query wins so shared links always open with the intended state
-        greyOutCnum2Enabled = greyOutCnum2FromQuery || greyOutCnum2Stored;
-        setSessionFlag(greyOutCnum2StorageKey, greyOutCnum2Enabled);
+        // Grey out actions already used on this parcel in a previous agreement
+        var usedCodes = getPreviousAgreementActionCodes(currentSelectedParcel);
+        usedCodes.forEach(function(code) {
+          greyOutPreviousAgreementAction(code);
+        });
 
-        if (greyOutCnum2Toggle) {
-          greyOutCnum2Toggle.checked = greyOutCnum2Enabled;
-          greyOutCnum2Toggle.addEventListener('change', function() {
-            greyOutCnum2Enabled = Boolean(greyOutCnum2Toggle.checked);
-            setSessionFlag(greyOutCnum2StorageKey, greyOutCnum2Enabled);
+        // Prototype toggle: force CNUM2 unavailable even without parcel previous-agreement data
+        greyOutCnum2Enabled = isCnum2UnavailableToggleOn();
+        if (!greyOutCnum2Enabled) {
+          return;
+        }
+
+        greyOutPreviousAgreementAction('CNUM2');
+      }
+
+      window.__grasslandsApplyPreviousAgreementGreyOut = applyGreyOutCnum2;
+
+      function wireShowAllMvpActionsToggle() {
+        var showAllMvpActionsStorageKey = 'grasslandsV2ShowAllMvpActions';
+        var showAllMvpActionsToggle = document.getElementById('show-all-mvp-actions');
+        // URL is the shareable override. Do not revive a stale session flag when the
+        // toggle is off — default behaviour must stay land-cover filtered.
+        var showAllMvpActionsFromQuery = getFeatureToggleQueryFlag('allActions');
+
+        showAllMvpActionsEnabled = showAllMvpActionsFromQuery;
+        setSessionFlag(showAllMvpActionsStorageKey, showAllMvpActionsEnabled);
+
+        if (showAllMvpActionsToggle) {
+          showAllMvpActionsToggle.checked = showAllMvpActionsEnabled;
+          showAllMvpActionsToggle.addEventListener('change', function() {
+            showAllMvpActionsEnabled = Boolean(showAllMvpActionsToggle.checked);
+            setSessionFlag(showAllMvpActionsStorageKey, showAllMvpActionsEnabled);
             syncFeatureToggleQueryParams();
+            refreshAvailableActionsForCurrentParcel();
             applyGreyOutCnum2();
             updateAvailableQuantities({ skipCompatibilityUpdate: true });
+            if (
+              window.GrasslandsV2ActionsCompatibilityLoading &&
+              typeof window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility === 'function'
+            ) {
+              window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility(null);
+            } else {
+              updateCompatibilityState();
+            }
           });
         }
 
+        // Always re-apply after toggles are wired so draft parcel restore uses
+        // the final land-cover filter (not a stale “show all” session state).
+        if (currentSelectedParcel) {
+          refreshAvailableActionsForCurrentParcel();
+        }
+      }
+
+      function wireCnum2UnavailableToggle() {
+        greyOutCnum2Enabled = false;
+        setSessionFlag('grasslandsV2GreyOutCnum2', false);
         applyGreyOutCnum2();
       }
 
       if (window.GrasslandsV2ActionsCompatibilityLoading) {
-        var simulateDelayStorageKey = 'grasslandsV2SimulateCompatibilityApiDelay';
-        var simulateDelayFromQuery = getFeatureToggleQueryFlag('apiDelay');
-        var simulateDelayStored = getSessionFlag(simulateDelayStorageKey);
-        // Off by default; enable with the page toggle, sessionStorage, or ?apiDelay=1
-        var simulateDelayEnabled = simulateDelayFromQuery || simulateDelayStored;
-        setSessionFlag(simulateDelayStorageKey, simulateDelayEnabled);
+        // Compatibility updates are immediate — no simulated API delay
+        setSessionFlag('grasslandsV2SimulateCompatibilityApiDelay', false);
 
         window.GrasslandsV2ActionsCompatibilityLoading.init({
-          delayMs: 3000,
-          simulateDelay: simulateDelayEnabled,
+          simulateDelay: false,
           areActionsIncompatible: actionsAreIncompatible,
           getActionCode: function(checkbox) {
             return getActionCode($(checkbox));
@@ -6102,32 +6908,108 @@
             applyGreyOutCnum2();
           }
         });
-
-        var simulateDelayToggle = document.getElementById('simulate-compatibility-api-delay');
-        if (simulateDelayToggle) {
-          simulateDelayToggle.checked = simulateDelayEnabled;
-          simulateDelayToggle.addEventListener('change', function() {
-            var enabled = Boolean(simulateDelayToggle.checked);
-            window.GrasslandsV2ActionsCompatibilityLoading.setSimulateDelay(enabled);
-            setSessionFlag(simulateDelayStorageKey, enabled);
-            syncFeatureToggleQueryParams();
-          });
-        }
       }
 
       wireCnum2UnavailableToggle();
+      wireShowAllMvpActionsToggle();
+      wireAacToggles();
       syncFeatureToggleQueryParams();
+
+      // Restore draft after AAC / feature toggles are wired so the first paint
+      // uses the same path as flipping the AAC toggle (not the matrix path).
+      (function restoreDraftParcelAfterToggles() {
+        try {
+          var draftParcelEl = document.getElementById('draft-parcel-json');
+          var draftParcel = draftParcelEl ? JSON.parse(draftParcelEl.textContent) : null;
+          var draftActionsEl = document.getElementById('draft-actions-json');
+          var draftActions = draftActionsEl ? JSON.parse(draftActionsEl.textContent) : [];
+
+          if (!draftParcel || !draftParcel.parcelId) {
+            return;
+          }
+
+          // Keep map/JS parcel areas aligned with the saved draft
+          if (parcelData[draftParcel.parcelId]) {
+            if (draftParcel.totalArea != null && draftParcel.totalArea !== '') {
+              parcelData[draftParcel.parcelId].totalArea = String(draftParcel.totalArea);
+            }
+            if (draftParcel.availableArea != null && draftParcel.availableArea !== '') {
+              parcelData[draftParcel.parcelId].availableArea = String(draftParcel.availableArea);
+            }
+            if (draftParcel.landCover != null) {
+              parcelData[draftParcel.parcelId].landCover = draftParcel.landCover;
+            }
+          }
+
+          // Editing removes the parcel from saved selections. Re-seed it here so
+          // selectParcel → restoreParcelState can re-check the draft actions.
+          if (Array.isArray(draftActions) && draftActions.length) {
+            parcelSelections[draftParcel.parcelId] = {
+              actions: draftActions.map(function(action) {
+                return {
+                  code: String((action && action.code) || '').toUpperCase(),
+                  name: action && action.name,
+                  quantity: action && action.quantity,
+                  unit: action && action.unit,
+                  paymentRate: action && action.paymentRate,
+                  yearlyPayment: action && action.yearlyPayment
+                };
+              }).filter(function(action) {
+                return Boolean(action.code);
+              })
+            };
+          }
+
+          updatePreviousAgreementsSummary(draftParcel.parcelId);
+          setTimeout(function() {
+            selectParcelById(draftParcel.parcelId);
+            document.getElementById('actions-section').style.display = 'block';
+            document.getElementById('action-tools-panel').style.display = 'block';
+
+            function finishAacAfterRestore() {
+              if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+                syncAacForCurrentParcel();
+                updateAacParcelAreaBreakdown();
+                applyGreyOutCnum2();
+              }
+              refreshContinueFromActionSelection();
+            }
+
+            if (Array.isArray(draftActions) && draftActions.length) {
+              setTimeout(function() {
+                if (currentSelectedParcel === draftParcel.parcelId) {
+                  restoreParcelState(draftParcel.parcelId);
+                }
+                finishAacAfterRestore();
+              }, 300);
+            } else {
+              finishAacAfterRestore();
+            }
+          }, 50);
+        } catch (draftErr) {
+          console.warn('Could not restore draft parcel/actions', draftErr);
+        }
+      })();
 
       $(document).on('change', 'input[name="actions"]', function() {
         var changedCheckbox = this;
+        var actionCode = ($(changedCheckbox).val() || '').toString().toUpperCase();
 
         if (!$(changedCheckbox).is(':checked')) {
-          var actionCode = ($(changedCheckbox).val() || '').toString().toLowerCase();
-          var $quantityInput = $('#quantity-' + actionCode);
+          var actionCodeLower = actionCode.toLowerCase();
+          var $quantityInput = $('#quantity-' + actionCodeLower);
           if ($quantityInput.length) {
             $quantityInput.val('');
             clearQuantityFieldValidation($quantityInput);
           }
+        }
+
+        // AAC mode: checking a box is instant — only quantity entry simulates the API wait
+        if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          window.GrasslandsV2Aac.render();
+          applyGreyOutCnum2();
+          refreshContinueFromActionSelection();
+          return;
         }
 
         // Prototype: simulated compatibility API, then full rebuild from checked actions
@@ -6141,6 +7023,131 @@
 
         updateCompatibilityState();
         updateAvailableQuantities({ skipCompatibilityUpdate: true });
+      });
+
+      function updateAacQuantityOverLimitErrors(options) {
+        options = options || {};
+        if (!(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled())) {
+          return;
+        }
+
+        window.GrasslandsV2Aac.syncSelectionsFromDom();
+        var calculation = window.GrasslandsV2Aac.recalculate();
+        var byCode = {};
+        (calculation.actions || []).forEach(function(action) {
+          byCode[action.code] = action;
+        });
+
+        var onlyCode = options.actionCode
+          ? String(options.actionCode).toUpperCase()
+          : null;
+
+        $('input[id^="quantity-"]').each(function() {
+          var $input = $(this);
+          var actionCode = ($input.attr('id') || '').replace('quantity-', '').toUpperCase();
+          if (onlyCode && actionCode !== onlyCode) {
+            return;
+          }
+
+          var $checkbox = getQuantityCheckbox($input);
+          var errors = getQuantityErrorsStore($input);
+          // Keep format errors (e.g. letter "d"); only manage over-limit here
+          errors.overLimit = null;
+
+          if (!$checkbox.is(':checked')) {
+            refreshQuantityFieldDisplay($input);
+            return;
+          }
+
+          // Don't stack over-limit on top of an invalid format
+          if (errors.format) {
+            refreshQuantityFieldDisplay($input);
+            return;
+          }
+
+          var action = byCode[actionCode];
+          var parsed = parseQuantityInput($input.val());
+
+          if (!action || !parsed.valid) {
+            refreshQuantityFieldDisplay($input);
+            return;
+          }
+
+          // maxAvailable = amount left for this action after other actions' entries
+          var maxAllowed = Number(action.maxAvailable);
+          if (!Number.isFinite(maxAllowed)) {
+            maxAllowed = 0;
+          }
+
+          if (parsed.value > maxAllowed + 0.0001) {
+            if (action.unit === 'm') {
+              errors.overLimit = 'Enter up to ' +
+                Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
+                ' metres';
+            } else if (action.unit === 'm²') {
+              errors.overLimit = 'Enter up to ' +
+                Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
+                ' square metres';
+            } else {
+              errors.overLimit = 'Enter up to ' + Number(maxAllowed).toFixed(4) + ' hectares';
+            }
+          }
+
+          refreshQuantityFieldDisplay($input);
+        });
+      }
+
+      function triggerAacQuantityUpdate(inputEl) {
+        if (!(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) || !inputEl) {
+          return;
+        }
+
+        var inputId = inputEl.id || '';
+        var actionCode = inputId.replace('quantity-', '').toUpperCase();
+        if (!actionCode) {
+          return;
+        }
+
+        var $input = $(inputEl);
+        $input.data('blurred', true);
+        updateQuantityFormatErrors($input);
+
+        var rawValue = String(inputEl.value || '').trim();
+        var $checkbox = $('input[name="actions"][value="' + actionCode + '"]');
+        if ($checkbox.length && rawValue && !$checkbox.is(':checked')) {
+          $checkbox.prop('checked', true);
+          $checkbox.attr('aria-expanded', 'true');
+          $('#conditional-' + actionCode.toLowerCase()).removeClass('govuk-checkboxes__conditional--hidden');
+        }
+
+        // Invalid characters (e.g. "d") — show format error only, skip AAC recalculation
+        var errors = getQuantityErrorsStore($input);
+        if (errors.format) {
+          errors.overLimit = null;
+          refreshQuantityFieldDisplay($input);
+          refreshContinueFromActionSelection();
+          return;
+        }
+
+        updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+
+        if (rawValue) {
+          // 2.5s simulated API + inline “Updating…” — then refresh shared-pool hints
+          window.GrasslandsV2Aac.runUpdate(actionCode);
+        } else {
+          window.GrasslandsV2Aac.render();
+          applyGreyOutCnum2();
+          updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+          captureCurrentParcelState();
+        }
+        refreshContinueFromActionSelection();
+      }
+
+      $(document).on('blur', 'input[id^="quantity-"]', function() {
+        if (!(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled())) {
+          return;
+        }
+        triggerAacQuantityUpdate(this);
       });
 
       function focusFarmByKey(farmKey) {
@@ -6308,6 +7315,11 @@
         });
 
         $('#continue-form').on('submit', function(e) {
+          if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled() && window.GrasslandsV2Aac.isBusy()) {
+            e.preventDefault();
+            return false;
+          }
+
           var draftActionsPayload = buildDraftLandActionsPayload();
           if (!draftActionsPayload.length) {
             e.preventDefault();

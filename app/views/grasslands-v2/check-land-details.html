@@ -57,19 +57,10 @@
             {% endif %}
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="land-details-answer-yes" name="land-details-answer" type="radio" value="yes" data-aria-controls="conditional-land-uses-notice" {% if data['land-details-answer'] == "yes" %}checked{% endif %}>
+                <input class="govuk-radios__input" id="land-details-answer-yes" name="land-details-answer" type="radio" value="yes" {% if data['land-details-answer'] == "yes" %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="land-details-answer-yes">
                   Yes
                 </label>
-              </div>
-              <div class="govuk-radios__conditional{% if data['land-details-answer'] != "yes" %} govuk-radios__conditional--hidden{% endif %}" id="conditional-land-uses-notice">
-                <div class="govuk-warning-text">
-                  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                  <strong class="govuk-warning-text__text">
-                    <span class="govuk-visually-hidden">Warning</span>
-                    You may also need to update land uses. We'll tell you if this is the case when you select land parcels in this application.
-                  </strong>
-                </div>
               </div>
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="land-details-answer-no" name="land-details-answer" type="radio" value="no" {% if data['land-details-answer'] == "no" %}checked{% endif %}>

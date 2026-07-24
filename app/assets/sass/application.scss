@@ -1305,3 +1305,129 @@ img.design-history {
 .app-footer-prototype-toggles .app-prototype-switch + .app-prototype-switch {
   margin-top: 0;
 }
+
+// AAC exploration cards
+.app-aac-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.app-aac-card {
+  border: 1px solid #b1b4b6;
+  background: #ffffff;
+  padding: 20px;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.app-aac-card--unavailable {
+  background: #f3f2f1;
+  border-color: #b1b4b6;
+}
+
+.app-aac-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+// AAC exploration — updating state on the edited action
+.app-aac-updating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  background: #f3f2f1;
+  border-left: 4px solid #1d70b8;
+}
+
+.app-aac-updating .actions-compatibility-status__spinner {
+  margin-top: 0;
+}
+
+.app-aac-card__available {
+  color: #0b0c0c;
+}
+
+.app-aac-card__spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #b1b4b6;
+  border-top-color: #1d70b8;
+  border-radius: 50%;
+  animation: actions-compatibility-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.app-aac-why {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-aac-why__item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: #0b0c0c;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-aac-why__mark {
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.app-aac-why__item--yes .app-aac-why__mark {
+  color: #00703c;
+}
+
+.app-aac-why__item--no .app-aac-why__mark {
+  color: #d4351c;
+}
+
+.app-aac-allocation {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.app-aac-allocation__bar {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  background: #f3f2f1;
+  border: 1px solid #b1b4b6;
+}
+
+.app-aac-allocation__allocated {
+  display: block;
+  height: 100%;
+  background: #1d70b8;
+  transition: width 0.35s ease;
+}
+
+.app-aac-allocation__remaining {
+  display: block;
+  height: 100%;
+  background: #85994b;
+  transition: width 0.35s ease;
+}
+
+.app-aac-debug {
+  margin-top: 16px;
+  margin-bottom: 0;
+  padding: 12px;
+  background: #0b0c0c;
+  color: #ffffff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}

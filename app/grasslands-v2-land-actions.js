@@ -2,6 +2,8 @@
  * Session helpers for the grasslands-v2 multi-step land and actions journey.
  */
 
+var parcelReference = require('./grasslands-v2-parcel-reference')
+
 function getSessionData (req) {
   req.session.data = req.session.data || {}
   return req.session.data
@@ -74,6 +76,21 @@ function formatLandCover (landCover) {
   return [String(landCover)]
 }
 
+function getParcelDisplayReference (parcel) {
+  if (!parcel) {
+    return ''
+  }
+  if (parcel.parcelReference) {
+    return String(parcel.parcelReference)
+  }
+  var fromId = parcelReference.format(parcel.parcelId || parcel)
+  if (fromId) {
+    return fromId
+  }
+  // Legacy sessions may still have name / OS grid ref
+  return parcel.osReference || parcel.osRef || parcel.parcelName || ''
+}
+
 function upsertApplicationParcel (req, parcelEntry) {
   var parcels = getApplicationParcels(req)
   var existingIndex = parcels.findIndex(function (parcel) {
@@ -97,8 +114,9 @@ function buildParcelSelectionsDataFromApplication (req) {
   parcels.forEach(function (parcel) {
     selections[parcel.parcelId] = {
       parcelId: parcel.parcelId,
-      parcelName: parcel.parcelName,
-      osRef: parcel.osReference,
+      parcelName: getParcelDisplayReference(parcel),
+      osRef: getParcelDisplayReference(parcel),
+      parcelReference: getParcelDisplayReference(parcel),
       actions: (parcel.actions || []).map(function (action) {
         return {
           code: action.code,
@@ -243,13 +261,11 @@ function buildBasketParcels (req) {
     })
     .map(function (parcel) {
       var summary = summariseParcelActions(parcel)
-      var heading = parcel.parcelName || 'Land parcel'
-      if (parcel.osReference) {
-        heading += ' - ' + parcel.osReference
-      }
+      var heading = getParcelDisplayReference(parcel) || 'Land parcel'
 
       return Object.assign({}, parcel, summary, {
-        heading: heading
+        heading: heading,
+        parcelReference: heading
       })
     })
 }
@@ -300,8 +316,9 @@ function loadParcelIntoDraftForEdit (req, parcelId) {
 
   setDraftParcel(req, {
     parcelId: parcel.parcelId,
-    parcelName: parcel.parcelName,
-    osReference: parcel.osReference,
+    parcelName: getParcelDisplayReference(parcel),
+    osReference: getParcelDisplayReference(parcel),
+    parcelReference: getParcelDisplayReference(parcel),
     totalArea: parcel.totalArea,
     landCover: formatLandCover(parcel.landCover),
     availableArea: parcel.availableArea
@@ -363,10 +380,16 @@ function saveDraftParcelFromBody (req, body) {
     }
   }
 
+  var displayReference = body.selectedParcelReference ||
+    body.selectedParcelOsRef ||
+    body.selectedParcelName ||
+    parcelReference.format(body.selectedParcelId)
+
   return setDraftParcel(req, {
     parcelId: body.selectedParcelId,
-    parcelName: body.selectedParcelName,
-    osReference: body.selectedParcelOsRef,
+    parcelName: displayReference,
+    osReference: displayReference,
+    parcelReference: displayReference,
     totalArea: body.selectedParcelTotalArea,
     landCover: landCover,
     availableArea: body.selectedParcelAvailableArea
@@ -381,10 +404,13 @@ function commitDraftToApplication (req) {
     return getApplicationParcels(req)
   }
 
+  var displayReference = getParcelDisplayReference(draftParcel)
+
   upsertApplicationParcel(req, {
     parcelId: draftParcel.parcelId,
-    parcelName: draftParcel.parcelName,
-    osReference: draftParcel.osReference,
+    parcelName: displayReference,
+    osReference: displayReference,
+    parcelReference: displayReference,
     totalArea: draftParcel.totalArea,
     landCover: formatLandCover(draftParcel.landCover),
     availableArea: draftParcel.availableArea,
@@ -404,6 +430,7 @@ module.exports = {
   setDraftActions: setDraftActions,
   clearDraft: clearDraft,
   formatLandCover: formatLandCover,
+  getParcelDisplayReference: getParcelDisplayReference,
   upsertApplicationParcel: upsertApplicationParcel,
   syncParcelSelectionsData: syncParcelSelectionsData,
   hasSavedLandAndActions: hasSavedLandAndActions,

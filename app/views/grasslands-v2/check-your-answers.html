@@ -206,8 +206,8 @@
       {% for parcelId, parcel in parcels %}
         <!-- {{ parcel.parcelName }} -->
         <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <h3 class="govuk-heading-s" style="margin-bottom: 15px;">{{ parcel.parcelName }}{% if parcel.osRef %} - {{ parcel.osRef }}{% endif %}</h3>
-          <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions?from=check-your-answers#parcel-{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> {{ parcel.parcelName }} land and actions</span></a>
+          <h3 class="govuk-heading-s" style="margin-bottom: 15px;">{{ parcel.parcelReference or parcel.parcelName }}</h3>
+          <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions?from=check-your-answers#parcel-{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> land and actions for {{ parcel.parcelReference or parcel.parcelName }}</span></a>
         </div>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
           {% set parcelPayment = 0 %}

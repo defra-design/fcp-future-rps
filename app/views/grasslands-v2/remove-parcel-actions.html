@@ -22,7 +22,7 @@
       <h1 class="govuk-heading-l">Remove this land parcel?</h1>
 
       <p class="govuk-body">
-        This will remove {{ parcel.parcelName }}{% if parcel.osReference %} ({{ parcel.osReference }}){% endif %} and all actions added to it from your application.
+        This will remove land parcel {{ parcel.parcelReference or parcel.heading or parcel.parcelName }} and all actions added to it from your application.
       </p>
 
       <form action="/grasslands-v2/remove-parcel-actions/{{ parcel.parcelId }}" method="post">
