@@ -1667,8 +1667,41 @@ function getGrasslandsV2ConfirmationNotices (req) {
   }
 }
 
-router.get('/grasslands-v2/confirmation', function (req, res) {
+function formatGrasslandsV2SubmittedAt (date) {
+  var submittedAt = date instanceof Date ? date : new Date(date)
+  if (isNaN(submittedAt.getTime())) {
+    submittedAt = new Date()
+  }
+
+  var datePart = submittedAt.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  })
+  var timePart = submittedAt
+    .toLocaleTimeString('en-GB', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    })
+    .toLowerCase()
+    .replace(' ', '')
+
+  return datePart + ' at ' + timePart
+}
+
+function recordGrasslandsV2ApplicationSubmitted (req) {
   grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  req.session.data = req.session.data || {}
+  req.session.data.grasslandsV2ApplicationSubmitted = true
+  req.session.data.grasslandsV2ApplicationInProgress = false
+  if (!req.session.data.grasslandsV2ApplicationSubmittedAt) {
+    req.session.data.grasslandsV2ApplicationSubmittedAt = new Date().toISOString()
+  }
+}
+
+router.get('/grasslands-v2/confirmation', function (req, res) {
+  recordGrasslandsV2ApplicationSubmitted(req)
   var notices = getGrasslandsV2ConfirmationNotices(req)
   res.render('grasslands-v2/confirmation', {
     data: getGrasslandsV2SessionData(req),
@@ -1677,9 +1710,103 @@ router.get('/grasslands-v2/confirmation', function (req, res) {
   })
 })
 
+function getGrasslandsV2ReviewApplicationData (req) {
+  var basketParcels = grasslandsV2LandActions.buildBasketParcels(req).map(function (parcel) {
+    return Object.assign({}, parcel, {
+      landCover: parcel.landCover || parcel.landCoverLabel || 'Permanent grassland',
+      actions: (parcel.actions || []).map(function (action) {
+        return Object.assign({}, action)
+      })
+    })
+  })
+  var basketSummary = grasslandsV2LandActions.summariseBasket(basketParcels)
+
+  if (!basketSummary.isEmpty) {
+    return {
+      reviewParcels: basketParcels,
+      reviewSummary: basketSummary,
+      usedMockData: false
+    }
+  }
+
+  // Prototype fallback when nothing has been saved in this session
+  var mockParcels = [
+    {
+      parcelId: 'far-meadow',
+      heading: 'Land parcel SO3757 3193',
+      parcelReference: 'SO3757 3193',
+      totalAreaFormatted: '12.4500 hectares',
+      landCover: 'Permanent grassland',
+      yearlyPaymentFormatted: '£2,012.70',
+      actions: [
+        {
+          code: 'CLIG3',
+          name: 'Manage grassland with very low nutrient inputs',
+          valueDisplay: '8.2000 ha (£1,238.20)'
+        },
+        {
+          code: 'GRH7',
+          name: 'Haymaking supplement',
+          valueDisplay: '4.2500 ha (£667.25)'
+        }
+      ]
+    },
+    {
+      parcelId: 'pond-close',
+      heading: 'Land parcel SO3757 3203',
+      parcelReference: 'SO3757 3203',
+      totalAreaFormatted: '29.3214 hectares',
+      landCover: 'Temporary grass',
+      yearlyPaymentFormatted: '£3,145.60',
+      actions: [
+        {
+          code: 'CNUM2',
+          name: 'Legumes on improved grassland',
+          valueDisplay: '10.0000 ha (£1,020.00)'
+        },
+        {
+          code: 'CSAM3',
+          name: 'Herbal leys',
+          valueDisplay: '9.4900 ha (£2,125.60)'
+        }
+      ]
+    }
+  ]
+
+  return {
+    reviewParcels: mockParcels,
+    reviewSummary: {
+      totalYearlyPaymentFormatted: '£5,158.30',
+      isEmpty: false
+    },
+    usedMockData: true
+  }
+}
+
+router.get('/grasslands-v2/view-application', function (req, res) {
+  var review = getGrasslandsV2ReviewApplicationData(req)
+  var fromLanding = req.query.from === 'landing'
+  var sessionData = getGrasslandsV2SessionData(req)
+  var submittedAt = sessionData.grasslandsV2ApplicationSubmittedAt || new Date().toISOString()
+
+  res.render('grasslands-v2/view-application', {
+    data: sessionData,
+    reviewParcels: review.reviewParcels,
+    reviewSummary: review.reviewSummary,
+    applicationReference: 'HDJ2123F',
+    applicationSubmittedAtFormatted: formatGrasslandsV2SubmittedAt(submittedAt),
+    backHref: fromLanding
+      ? '/grasslands-v2/singlefrontdoor/landing/landing'
+      : '/grasslands-v2/confirmation',
+    backButtonText: fromLanding
+      ? 'Back to Farm and Land Service'
+      : 'Back to confirmation'
+  })
+})
+
 router.post('/grasslands-v2/confirmation', function (req, res) {
   req.session.data = Object.assign(req.session.data || {}, req.body || {})
-  grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.submitApplication)
+  recordGrasslandsV2ApplicationSubmitted(req)
   var notices = getGrasslandsV2ConfirmationNotices(req)
   res.render('grasslands-v2/confirmation', {
     data: getGrasslandsV2SessionData(req),
@@ -1757,7 +1884,9 @@ router.post('/grasslands-v2/check-business-details-answer', function (req, res) 
     clearEligibilityReturnTo(req)
     setCheckBeforeYouStartLinearFlow(req, false)
     grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
-    return res.redirect('/grasslands-v2/update-business-details')
+    req.session.data = req.session.data || {}
+    req.session.data.grasslandsV2ApplicationInProgress = true
+    return res.redirect('/grasslands-v2/singlefrontdoor/landing/landing')
   }
 
   grasslandsV2Tasks.markCompleted(req, grasslandsV2Tasks.TASK_IDS.checkBusinessDetails)

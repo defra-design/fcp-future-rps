@@ -408,6 +408,14 @@ function getTaskStatusesForView (req) {
   }
 }
 
+function isApplicationStarted (req) {
+  var tasks = ensureTasks(req)
+  return Object.keys(DEFAULT_TASKS).some(function (taskId) {
+    var status = tasks[taskId]
+    return status && status !== STATUS.NOT_STARTED && status !== STATUS.CANNOT_START
+  })
+}
+
 module.exports = {
   TASK_IDS: TASK_IDS,
   STATUS: STATUS,
@@ -422,5 +430,6 @@ module.exports = {
   syncFromSessionAnswers: syncFromSessionAnswers,
   getResolvedTaskStates: getResolvedTaskStates,
   getTaskListPageData: getTaskListPageData,
-  getTaskStatusesForView: getTaskStatusesForView
+  getTaskStatusesForView: getTaskStatusesForView,
+  isApplicationStarted: isApplicationStarted
 }

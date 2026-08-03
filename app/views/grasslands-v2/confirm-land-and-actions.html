@@ -50,10 +50,13 @@
       {% else %}
         {% for parcel in parcels %}
           <div class="govuk-!-margin-bottom-9" id="parcel-{{ parcel.parcelId }}">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px;">
-              <h2 class="govuk-heading-m" style="margin: 0;">{{ parcel.heading }}</h2>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+              <div>
+                {% set parcelHeadingStyle = 'margin: 0;' %}
+                {% include "grasslands-v2/_includes/parcel-heading.html" %}
+              </div>
               <a class="govuk-link" href="/grasslands-v2/remove-parcel-actions/{{ parcel.parcelId }}" style="font-size: 19px; line-height: 1.31579; white-space: nowrap;">
-                Remove this land parcel<span class="govuk-visually-hidden"> {{ parcel.heading }}</span>
+                Remove this land parcel<span class="govuk-visually-hidden"> {{ parcel.parcelReference or parcel.heading }}</span>
               </a>
             </div>
 

@@ -1,0 +1,85 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2/task-list" %}
+{% extends "layouts/grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  View your application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v2/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: backHref or "/grasslands-v2/confirmation"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  {% set parcels = reviewParcels if reviewParcels else [] %}
+  {% set summary = reviewSummary if reviewSummary else { totalYearlyPaymentFormatted: '£0.00' } %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-full">
+
+      <span class="govuk-caption-l">Apply for a grasslands agreement</span>
+      <h1 class="govuk-heading-l">View your application</h1>
+
+      {% if applicationSubmittedAtFormatted %}
+        <p class="govuk-body">
+          Submitted on {{ applicationSubmittedAtFormatted }}
+        </p>
+      {% endif %}
+
+      {% if applicationReference %}
+        <p class="govuk-body">
+          Reference number: <strong>{{ applicationReference }}</strong>
+        </p>
+      {% endif %}
+
+      {% for parcel in parcels %}
+        <div class="govuk-!-margin-bottom-9">
+          {% include "grasslands-v2/_includes/parcel-heading.html" %}
+
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Total area</dt>
+              <dd class="govuk-summary-list__value">{{ parcel.totalAreaFormatted }}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Land cover</dt>
+              <dd class="govuk-summary-list__value">{{ parcel.landCover }}</dd>
+            </div>
+
+            {% for action in parcel.actions %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  {{ action.name }} ({{ action.code }})
+                </dt>
+                <dd class="govuk-summary-list__value">{{ action.valueDisplay }}</dd>
+              </div>
+            {% endfor %}
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Yearly payment for this parcel</dt>
+              <dd class="govuk-summary-list__value"><strong>{{ parcel.yearlyPaymentFormatted }}</strong></dd>
+            </div>
+          </dl>
+        </div>
+      {% endfor %}
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Total yearly payment</dt>
+          <dd class="govuk-summary-list__value"><strong>{{ summary.totalYearlyPaymentFormatted }}</strong></dd>
+        </div>
+      </dl>
+
+      <a href="{{ backHref or '/grasslands-v2/confirmation' }}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        {{ backButtonText or 'Back to confirmation' }}
+      </a>
+
+    </div>
+  </div>
+{% endblock %}

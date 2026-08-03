@@ -1,0 +1,6 @@
+{# Expects parcel.parcelReference (OS map ref). Falls back to stripping "Land parcel " from heading. #}
+{% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Land parcel ', '')) or parcel.parcelName or '' %}
+{% set parcelHeadingTag = parcelHeadingTag | default('h2') %}
+{% set parcelHeadingClass = parcelHeadingClass | default('govuk-heading-m') %}
+<span class="govuk-caption-m">Land parcel</span>
+<{{ parcelHeadingTag }} class="{{ parcelHeadingClass }}"{% if parcelHeadingStyle %} style="{{ parcelHeadingStyle }}"{% endif %}>{{ parcelRef }}</{{ parcelHeadingTag }}>

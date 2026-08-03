@@ -863,16 +863,23 @@ tr .govuk-error-message {
   // Single card that needs room for a longer title (e.g. grasslands-v2 landing)
   .gem-c-cards__list--single-wide {
 	grid-template-columns: 1fr;
-	max-width: 350px;
+	max-width: 22rem;
+	width: fit-content;
+	margin-left: 0;
+	margin-right: 0;
 
 	.gem-c-cards__list-item-variant {
 	  margin-left: 0;
 	  margin-right: 0;
-	  padding: 10px 0 25px;
+	  padding: 0;
 	}
 
 	.gem-c-cards__list-item-wrapper-variant {
-	  padding: 15px 25px 10px;
+	  padding: 20px;
+	}
+
+	.govuk-tag {
+	  display: inline-block;
 	}
   }
   
@@ -924,7 +931,7 @@ tr .govuk-error-message {
   .gem-c-cards__description {
 	margin: 0 -30px 0 0;
   }
-  
+
   @media print {
 	.gem-c-cards__list {
 	  display: block;

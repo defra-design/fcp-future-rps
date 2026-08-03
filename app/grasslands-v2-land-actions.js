@@ -261,11 +261,11 @@ function buildBasketParcels (req) {
     })
     .map(function (parcel) {
       var summary = summariseParcelActions(parcel)
-      var heading = getParcelDisplayReference(parcel) || 'Land parcel'
+      var reference = getParcelDisplayReference(parcel) || 'Unknown parcel'
 
       return Object.assign({}, parcel, summary, {
-        heading: heading,
-        parcelReference: heading
+        heading: 'Land parcel ' + reference,
+        parcelReference: reference
       })
     })
 }
