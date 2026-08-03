@@ -373,12 +373,18 @@
       case 'BND1':
       case 'BND2':
       case 'CHRW2':
-      case 'WBD1':
       case 'WBD2':
         unit = 'm'
         // Reflect parcel available hectares, but keep the action measurement in metres
         baseEligible = metresFromAvailableHa(profile.availableHa != null ? profile.availableHa : profile.totalHa)
         eligibleLand.push({ label: 'Estimated eligible length from available area', ha: baseEligible, unit: 'm' })
+        break
+
+      case 'WBD1':
+        // Official guidance: available area is not applicable — enter number of ponds.
+        // Do not invent an available pond count (users treat it as a known maximum).
+        unit = 'pond'
+        baseEligible = Number.POSITIVE_INFINITY
         break
 
       case 'HEF1':
@@ -403,14 +409,14 @@
         break
     }
 
-    if (!absoluteBlock && baseEligible <= 0 && eligibleLand.length === 0) {
+    if (unit !== 'pond' && !absoluteBlock && baseEligible <= 0 && eligibleLand.length === 0) {
       absoluteBlock = 'No eligible land remains for this action.'
     }
 
     return {
       code: code,
       unit: unit,
-      baseEligible: roundHa(baseEligible),
+      baseEligible: unit === 'pond' ? baseEligible : roundHa(baseEligible),
       eligibleLand: eligibleLand,
       exclusions: exclusions,
       absoluteBlock: absoluteBlock
@@ -486,24 +492,33 @@
       var allocationNote = null
 
       // Shared pool by unit: ha actions share hectares; metre actions share length; etc.
-      available = Math.max(0, base.baseEligible - usedByOthers)
-      if (base.unit === 'ha') {
-        available = roundHa(available)
+      // Pond count is user-declared — no shared available pool.
+      if (base.unit === 'pond') {
+        available = Number.POSITIVE_INFINITY
+        usedByOthers = 0
+        allocationNote = null
       } else {
-        available = Math.max(0, Math.round(available))
-      }
+        available = Math.max(0, base.baseEligible - usedByOthers)
+        if (base.unit === 'ha') {
+          available = roundHa(available)
+        } else {
+          available = Math.max(0, Math.round(available))
+        }
 
-      if (usedByOthers > 0) {
-        allocationNote = {
-          label: 'Used by your other selected actions',
-          ha: base.unit === 'ha' ? Math.min(usedByOthers, base.baseEligible) : usedByOthers,
-          unit: base.unit
+        if (usedByOthers > 0) {
+          allocationNote = {
+            label: 'Used by your other selected actions',
+            ha: base.unit === 'ha' ? Math.min(usedByOthers, base.baseEligible) : usedByOthers,
+            unit: base.unit
+          }
         }
       }
 
       // Show remaining capacity after this action’s own entered quantity
       var remainingForInput = available
-      if (selectedQuantity > 0) {
+      if (base.unit === 'pond') {
+        remainingForInput = Number.POSITIVE_INFINITY
+      } else if (selectedQuantity > 0) {
         remainingForInput = Math.max(0, available - selectedQuantity)
         if (base.unit === 'ha') {
           remainingForInput = roundHa(remainingForInput)
@@ -530,6 +545,12 @@
         statusText = 'Unavailable'
         summaryReason = base.absoluteBlock
         remainingForInput = 0
+      } else if (base.unit === 'pond') {
+        status = 'available'
+        statusText = 'Available for this action'
+        summaryReason = selectedQuantity > 0
+          ? 'You have entered ' + formatQuantity(selectedQuantity, base.unit) + '.'
+          : 'Enter the number of eligible ponds on this parcel.'
       } else if (remainingForInput <= 0 && selectedQuantity <= 0) {
         status = 'unavailable'
         statusText = 'Unavailable'
@@ -593,6 +614,10 @@
       var sqLabel = sq === 1 ? ' square metre' : ' square metres'
       return sq.toLocaleString('en-GB') + sqLabel
     }
+    if (unit === 'pond') {
+      var ponds = Math.round(value)
+      return ponds === 1 ? '1 pond' : ponds.toLocaleString('en-GB') + ' ponds'
+    }
     var ha = formatHa(value)
     var singular = Number(ha) === 1 || ha === '1' || ha === '1.0'
     return ha + (singular ? ' hectare' : ' hectares')
@@ -614,7 +639,7 @@
       lines.push((item.label || 'Excluded') + '  -' + formatHa(item.ha) + ' ha')
     })
     if (allocationNote) {
-      var noteAmount = allocationNote.unit === 'm' || allocationNote.unit === 'm²'
+      var noteAmount = allocationNote.unit === 'm' || allocationNote.unit === 'm²' || allocationNote.unit === 'pond'
         ? formatQuantity(allocationNote.ha, allocationNote.unit)
         : (formatHa(allocationNote.ha) + ' ha')
       lines.push(allocationNote.label + '  -' + noteAmount)
@@ -762,6 +787,10 @@
   }
 
   function formatAvailableHint (available, unit) {
+    // Pond count is user-declared — never show an available quantity
+    if (unit === 'pond') {
+      return ''
+    }
     var amount = Number(available)
     if (unit === 'm') {
       var metres = Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0
@@ -788,6 +817,10 @@
 
   function buildHintText (action) {
     // Match default (AAC off) quantity copy: "X metres available" / "X.XXXX hectares available"
+    // Pond actions intentionally have no available-quantity hint.
+    if (!action || action.unit === 'pond') {
+      return ''
+    }
     var amount = action.status === 'unavailable' ? 0 : action.available
     return formatAvailableHint(amount, action.unit)
   }
@@ -927,6 +960,11 @@
         }
         if (hint) {
           hint.textContent = buildHintText(action)
+          if (action.unit === 'pond') {
+            hint.hidden = true
+          } else {
+            hint.hidden = false
+          }
         }
         if (label) {
           var unavailableHint = document.createElement('span')
@@ -950,6 +988,11 @@
 
       if (hint) {
         hint.textContent = buildHintText(action)
+        if (action.unit === 'pond') {
+          hint.hidden = true
+        } else {
+          hint.hidden = false
+        }
       }
 
       applyDebug(conditional, action)

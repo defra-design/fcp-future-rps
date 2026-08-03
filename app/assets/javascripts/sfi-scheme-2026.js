@@ -61,7 +61,7 @@
     { code: 'SCR2', name: 'Manage scrub and open habitat mosaics', theme: 'Species Recovery/Management', rateText: '£350/ha' },
     { code: 'SPM3', name: 'Keep native breeds on grazed habitats supplement (more than 80%)', theme: 'Species Recovery/Management', rateText: '£146/ha' },
     { code: 'SPM5', name: 'Keep native breeds on extensively managed habitats supplement (more than 80%)', theme: 'Species Recovery/Management', rateText: '£11/ha' },
-    { code: 'WBD1', name: 'Manage ponds', theme: 'Waterbodies', rateText: '£257/pond' },
+    { code: 'WBD1', name: 'Manage ponds', theme: 'Waterbodies', rateText: '£257/pond (max 3 ponds/ha)' },
     { code: 'WBD2', name: 'Manage ditches', theme: 'Waterbodies', rateText: '£4/100m (both sides)' },
     { code: 'WBD3', name: 'In-field grass strips', theme: 'Waterbodies', rateText: '£765/ha' },
     { code: 'WBD4', name: 'Arable reversion to grassland with low fertiliser input', theme: 'Waterbodies', rateText: '£489/ha' },

@@ -28,6 +28,9 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
+      {% set journeySection = "Select land and actions" %}
+      {% include "grasslands-v2/_includes/journey-caption.html" %}
+
       {# 1. SSSI only #}
       {% if interruptionType == 'sssi' %}
         <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">

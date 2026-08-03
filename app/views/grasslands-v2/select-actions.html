@@ -522,23 +522,15 @@
     }
 
     .app-aac-parcel-summary .govuk-summary-card__title-wrapper {
-      padding: 10px 15px;
+      padding: 15px 20px;
     }
 
     .app-aac-parcel-summary .govuk-summary-card__title {
-      font-size: 16px;
-      line-height: 1.25;
       font-weight: 700;
     }
 
-    .app-aac-parcel-summary .govuk-summary-card__action,
-    .app-aac-parcel-summary .govuk-summary-card__action .govuk-link {
-      font-size: 14px;
-      line-height: 1.25;
-    }
-
     .app-aac-parcel-summary .govuk-summary-card__content {
-      padding: 10px 15px;
+      padding: 15px 20px;
     }
 
     .app-aac-parcel-summary .govuk-summary-list {
@@ -551,32 +543,32 @@
 
     .app-aac-parcel-summary .govuk-summary-list__key,
     .app-aac-parcel-summary .govuk-summary-list__value {
-      font-size: 14px;
-      line-height: 1.25;
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 10px;
+      padding-bottom: 10px;
     }
 
     .app-aac-parcel-summary__notice {
       margin-top: 16px;
       margin-bottom: 16px;
-      padding: 12px 15px;
-      border-left: 4px solid #1d70b8;
+      padding: 15px;
+      border-left: 5px solid #1d70b8;
       background: #f3f2f1;
     }
 
     .app-aac-parcel-summary__notice p {
       margin: 0;
-      font-size: 14px;
-      line-height: 1.25;
     }
 
     .app-aac-parcel-summary .govuk-details {
       margin-bottom: 0;
     }
 
-    .app-aac-parcel-summary .govuk-details__summary,
-    .app-aac-parcel-summary .govuk-details__summary-text {
+    /* WBD1 eligibility details under the quantity field */
+    #actions-section .app-pond-eligibility-details .govuk-details__summary,
+    #actions-section .app-pond-eligibility-details .govuk-details__summary-text,
+    #actions-section .app-pond-eligibility-details .govuk-details__text,
+    #actions-section .app-pond-eligibility-details .govuk-body,
+    #actions-section .app-pond-eligibility-details .govuk-list {
       font-size: 16px;
     }
 
@@ -596,10 +588,8 @@
     .app-aac-parcel-summary #aac-parcel-area-breakdown-list .govuk-summary-list__key,
     .app-aac-parcel-summary #aac-parcel-area-breakdown-list .govuk-summary-list__value {
       color: #0b0c0c;
-      font-size: 16px;
-      line-height: 1.25;
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 10px;
+      padding-bottom: 10px;
     }
 
     .app-aac-parcel-summary #aac-parcel-area-breakdown-list.govuk-summary-list--no-border .govuk-summary-list__row {
@@ -667,6 +657,15 @@
       margin-bottom: 0;
     }
 
+    /* CLIG3: stacked quantity — label, amount, then hint */
+    #actions-section [data-whole-remaining-area] .govuk-label {
+      font-weight: 700;
+    }
+
+    #actions-section [data-whole-remaining-area] .govuk-hint {
+      color: #505a5f;
+    }
+
     /* AAC on: single column — no side parcel / previous-agreements panel */
     .app-bottom-panels--aac {
       grid-template-columns: minmax(0, 1fr);
@@ -731,9 +730,7 @@
 
     #actions-section .govuk-checkboxes__conditional .govuk-label {
       margin-bottom: 4px;
-      font-size: 16px;
       font-weight: 400;
-      line-height: 1.25;
       color: #0b0c0c;
     }
 
@@ -741,15 +738,7 @@
       margin-top: 0;
       margin-bottom: 8px;
       padding-left: 0;
-      font-size: 16px;
-      line-height: 1.25;
       color: #505a5f;
-    }
-
-    #actions-section .govuk-checkboxes__conditional .govuk-input,
-    #actions-section .govuk-checkboxes__conditional .govuk-input__suffix {
-      font-size: 16px;
-      line-height: 1.25;
     }
 
     /* Hide conditional quantity panels even if GOV.UK JS has not added
@@ -794,6 +783,8 @@
       </div>
     </div>
 
+    {% set journeySection = "Select land and actions" %}
+    {% include "grasslands-v2/_includes/journey-caption.html" %}
     <h1 class="govuk-heading-l" id="page-heading">Select actions for this land parcel</h1>
     <div id="select-parcel-text">
       <div id="actions-mode-intro">
@@ -2939,6 +2930,10 @@
         return text;
       }
 
+      if (lower.indexOf('/pond') !== -1) {
+        return amount + ' per pond each year';
+      }
+
       if (lower.indexOf('/ha') !== -1) {
         return amount + ' per hectare each year';
       }
@@ -2949,10 +2944,6 @@
 
       if (lower.indexOf('/m') !== -1 && lower.indexOf('/100m') === -1 && lower.indexOf('sq m') === -1) {
         return amount + ' per metre' + sideNote + ' each year';
-      }
-
-      if (lower.indexOf('/pond') !== -1) {
-        return amount + ' per pond each year';
       }
 
       if (lower.indexOf('/plot') !== -1) {
@@ -3010,6 +3001,10 @@
 
       if (!Number.isFinite(numericQuantity) || numericQuantity <= 0 || rateAmount === null) {
         return null;
+      }
+
+      if (lowerRateText.indexOf('/pond') !== -1) {
+        return numericQuantity * rateAmount;
       }
 
       if (lowerRateText.indexOf('/ha') !== -1) {
@@ -3080,7 +3075,6 @@
       CHRW1: true,
       CHRW2: true,
       CHRW3: true,
-      WBD1: true,
       WBD2: true
     };
 
@@ -3088,12 +3082,120 @@
       HEF1: true
     };
 
+    // WBD1 is paid per pond — users enter a count, not a length or area.
+    // Do not show an "X ponds available" hint: we cannot calculate that yet,
+    // and showing a number encourages users to enter the maximum.
+    var POND_ACTION_CODES = {
+      WBD1: true
+    };
+
     function getQuantityUnitForAction(actionCode) {
       var normalizedCode = String(actionCode || '').toUpperCase();
+      if (POND_ACTION_CODES[normalizedCode]) {
+        return 'pond';
+      }
       if (SQUARE_METRE_ACTION_CODES[normalizedCode]) {
         return 'm²';
       }
       return LINEAR_ACTION_CODES[normalizedCode] ? 'm' : 'ha';
+    }
+
+    function isPondUnit(unit) {
+      return unit === 'pond';
+    }
+
+    function formatPondCount(count) {
+      var n = Math.max(0, Math.round(Number(count) || 0));
+      return n === 1 ? '1 pond' : n.toLocaleString('en-GB') + ' ponds';
+    }
+
+    // CLIG3 always takes all remaining available hectares — no quantity input
+    function isWholeRemainingAreaAction(actionCode) {
+      return String(actionCode || '').toUpperCase() === 'CLIG3';
+    }
+
+    function getWholeRemainingAreaHa(actionCode) {
+      var code = String(actionCode || '').toUpperCase();
+      if (!isWholeRemainingAreaAction(code)) {
+        return 0;
+      }
+
+      if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled() &&
+          typeof window.GrasslandsV2Aac.recalculate === 'function') {
+        window.GrasslandsV2Aac.syncSelectionsFromDom();
+        // Exclude this action's own quantity so "remaining" is the pool it can take
+        var quantityInput = document.getElementById('quantity-' + code.toLowerCase());
+        var previousValue = quantityInput ? quantityInput.value : '';
+        if (quantityInput) {
+          quantityInput.value = '';
+        }
+        window.GrasslandsV2Aac.syncSelectionsFromDom();
+        var calculation = window.GrasslandsV2Aac.recalculate();
+        if (quantityInput) {
+          quantityInput.value = previousValue;
+        }
+        var match = (calculation.actions || []).filter(function(action) {
+          return action.code === code;
+        })[0];
+        return match && Number.isFinite(Number(match.available))
+          ? Math.max(0, Number(match.available))
+          : 0;
+      }
+
+      if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) {
+        return 0;
+      }
+      var parcel = parcelData[currentSelectedParcel];
+      var totalAreaHa = parseFloat(parcel.availableArea);
+      if (!Number.isFinite(totalAreaHa)) {
+        return 0;
+      }
+      var totals = calculateParcelQuantityTotals();
+      // totals.ha includes CLIG3 if already set — subtract it back
+      var clig3Value = 0;
+      var $clig3Qty = $('#quantity-clig3');
+      if ($clig3Qty.length) {
+        var parsed = parseQuantityInput($clig3Qty.val());
+        if (parsed.valid) {
+          clig3Value = parsed.value;
+        }
+      }
+      return Math.max(0, Math.round((totalAreaHa - (totals.ha - clig3Value)) * 10000) / 10000);
+    }
+
+    function syncWholeRemainingAreaAction(actionCode) {
+      var code = String(actionCode || '').toUpperCase();
+      if (!isWholeRemainingAreaAction(code)) {
+        return;
+      }
+
+      var codeLower = code.toLowerCase();
+      var $checkbox = $('input[name="actions"][value="' + code + '"]');
+      var $quantityInput = $('#quantity-' + codeLower);
+      var amountEl = document.getElementById('whole-remaining-amount-' + codeLower);
+      if (!$checkbox.length || !$quantityInput.length) {
+        return;
+      }
+
+      if (!$checkbox.is(':checked')) {
+        $quantityInput.val('');
+        if (amountEl) {
+          amountEl.textContent = '0.0000';
+        }
+        return;
+      }
+
+      var remainingHa = getWholeRemainingAreaHa(code);
+      $quantityInput.val(remainingHa.toFixed(4));
+      if (amountEl) {
+        amountEl.textContent = remainingHa.toFixed(4);
+      }
+    }
+
+    function syncAllWholeRemainingAreaActions() {
+      ['CLIG3'].forEach(function(code) {
+        syncWholeRemainingAreaAction(code);
+      });
     }
 
     function isMetreBasedUnit(unit) {
@@ -3103,6 +3205,10 @@
     function getAvailableHintText(actionCode, availableAmount) {
       var unit = getQuantityUnitForAction(actionCode);
       var numericAmount = Number(availableAmount);
+      // Pond count is user-declared — never show an available quantity
+      if (isPondUnit(unit)) {
+        return '';
+      }
       if (isMetreBasedUnit(unit)) {
         var metresValue = Number.isFinite(numericAmount)
           ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
@@ -3183,6 +3289,14 @@
     function getFormatErrorMessage(unit, reason) {
       if (reason === 'zero') {
         return 'Enter a number greater than 0';
+      }
+
+      if (reason === 'whole') {
+        return 'Enter a whole number of ponds, for example 1 or 2';
+      }
+
+      if (unit === 'pond') {
+        return 'Enter a number of ponds, for example 1 or 2';
       }
 
       if (unit === 'm') {
@@ -3285,13 +3399,15 @@
 
       if (!parsed.valid && parsed.reason !== 'empty') {
         errors.format = getFormatErrorMessage(unit, parsed.reason);
+      } else if (parsed.valid && isPondUnit(unit) && !Number.isInteger(parsed.value)) {
+        errors.format = getFormatErrorMessage(unit, 'whole');
       }
 
       refreshQuantityFieldDisplay($quantityInput);
     }
 
     function calculateParcelQuantityTotals() {
-      var totals = { ha: 0, m: 0, m2: 0 };
+      var totals = { ha: 0, m: 0, m2: 0, pond: 0 };
 
       $('input[name="actions"]:checked').each(function() {
         var actionCode = ($(this).val() || '').toString().toLowerCase();
@@ -3314,6 +3430,8 @@
           totals.m += parsed.value;
         } else if (suffix === 'm²') {
           totals.m2 += parsed.value;
+        } else if (suffix === 'pond') {
+          totals.pond += parsed.value;
         }
       });
 
@@ -4245,13 +4363,56 @@
         conditional.className = 'govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
         conditional.id = 'conditional-' + codeLower;
 
+        if (isWholeRemainingAreaAction(action.code)) {
+          conditional.setAttribute('data-whole-remaining-area', 'true');
+
+          var formGroup = document.createElement('div');
+          formGroup.className = 'govuk-form-group govuk-!-margin-bottom-0';
+
+          var qtyLabel = document.createElement('p');
+          qtyLabel.className = 'govuk-label govuk-!-margin-bottom-1';
+          qtyLabel.id = 'whole-remaining-label-' + codeLower;
+          qtyLabel.textContent = 'Quantity';
+
+          var amountText = document.createElement('p');
+          amountText.className = 'govuk-body govuk-!-margin-bottom-1';
+          amountText.id = 'whole-remaining-summary-' + codeLower;
+          amountText.setAttribute('aria-labelledby', qtyLabel.id);
+          amountText.innerHTML =
+            '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> hectares</strong>';
+
+          var qtyHint = document.createElement('p');
+          qtyHint.className = 'govuk-hint govuk-!-margin-bottom-0';
+          qtyHint.id = 'whole-remaining-hint-' + codeLower;
+          qtyHint.textContent = 'All remaining available area on this parcel';
+
+          amountText.setAttribute('aria-describedby', qtyHint.id);
+
+          var hiddenQty = document.createElement('input');
+          hiddenQty.type = 'hidden';
+          hiddenQty.id = 'quantity-' + codeLower;
+          hiddenQty.name = 'quantity-' + codeLower;
+          hiddenQty.value = '';
+          hiddenQty.setAttribute('data-whole-remaining-quantity', 'true');
+
+          formGroup.appendChild(qtyLabel);
+          formGroup.appendChild(amountText);
+          formGroup.appendChild(qtyHint);
+          formGroup.appendChild(hiddenQty);
+          conditional.appendChild(formGroup);
+          container.appendChild(conditional);
+          return;
+        }
+
         var formGroup = document.createElement('div');
         formGroup.className = 'govuk-form-group';
 
         var qtyLabel = document.createElement('label');
         qtyLabel.className = 'govuk-label';
         qtyLabel.setAttribute('for', 'quantity-' + codeLower);
-        qtyLabel.textContent = 'Quantity';
+        qtyLabel.textContent = isPondUnit(getQuantityUnitForAction(action.code))
+          ? 'Number of ponds'
+          : 'Quantity';
 
         var qtyHint = document.createElement('div');
         // Must include govuk-checkboxes__hint — updateAvailableQuantities / selectParcel
@@ -4261,6 +4422,9 @@
           action.code,
           getQuantityUnitForAction(action.code) === 'ha' ? '0.0000' : 0
         );
+        if (isPondUnit(getQuantityUnitForAction(action.code))) {
+          qtyHint.hidden = true;
+        }
 
         var wrapper = document.createElement('div');
         wrapper.className = 'govuk-input__wrapper';
@@ -4270,7 +4434,7 @@
         qtyInput.id = 'quantity-' + codeLower;
         qtyInput.name = 'quantity-' + codeLower;
         qtyInput.type = 'text';
-        qtyInput.inputMode = 'decimal';
+        qtyInput.inputMode = isPondUnit(getQuantityUnitForAction(action.code)) ? 'numeric' : 'decimal';
         qtyInput.spellcheck = false;
 
         var suffix = document.createElement('div');
@@ -4284,6 +4448,33 @@
         formGroup.appendChild(qtyHint);
         formGroup.appendChild(wrapper);
         conditional.appendChild(formGroup);
+
+        if (String(action.code || '').toUpperCase() === 'WBD1') {
+          var eligibilityDetails = document.createElement('details');
+          eligibilityDetails.className = 'govuk-details app-pond-eligibility-details govuk-!-margin-top-4 govuk-!-margin-bottom-0';
+          eligibilityDetails.setAttribute('data-module', 'govuk-details');
+
+          var eligibilitySummary = document.createElement('summary');
+          eligibilitySummary.className = 'govuk-details__summary';
+          eligibilitySummary.innerHTML =
+            '<span class="govuk-details__summary-text">Check your ponds are eligible</span>';
+
+          var eligibilityText = document.createElement('div');
+          eligibilityText.className = 'govuk-details__text';
+          eligibilityText.innerHTML =
+            '<p class="govuk-body">Each pond must:</p>' +
+            '<ul class="govuk-list govuk-list--bullet">' +
+            '<li>be larger than 25 square metres, up to a maximum of 2 hectares (at the time of application)</li>' +
+            '<li>be under your management control — including the surrounding water and the whole of the pond edge</li>' +
+            '</ul>' +
+            '<p class="govuk-body">Ponds used for wastewater, treated effluent discharge, or those that have been heavily modified for treatment are not eligible.</p>' +
+            '<p class="govuk-body govuk-!-margin-bottom-0">Payment is limited to a maximum of 3 ponds per hectare.</p>';
+
+          eligibilityDetails.appendChild(eligibilitySummary);
+          eligibilityDetails.appendChild(eligibilityText);
+          conditional.appendChild(eligibilityDetails);
+        }
+
         container.appendChild(conditional);
       });
     }
@@ -5908,20 +6099,25 @@
               if (Number.isFinite(quantityValue) && quantityValue > 0) {
                 payment = calculateActionYearlyPayment(action.code, quantityValue);
 
-                var quantityDisplay = isMetreBasedUnit(quantityUnit)
-                  ? Math.round(quantityValue).toLocaleString('en-GB')
-                  : quantityValue.toFixed(4);
+                var quantityDisplay;
+                if (isPondUnit(quantityUnit)) {
+                  quantityDisplay = formatPondCount(quantityValue);
+                } else if (isMetreBasedUnit(quantityUnit)) {
+                  quantityDisplay = Math.round(quantityValue).toLocaleString('en-GB') + ' ' + quantityUnit;
+                } else {
+                  quantityDisplay = quantityValue.toFixed(4) + ' ' + quantityUnit;
+                }
 
                 if (payment !== null) {
                   totalPayment += payment;
-                  valueText = quantityDisplay + ' ' + quantityUnit + ' (' + formatCurrencyGBP(payment) + ')';
+                  valueText = quantityDisplay + ' (' + formatCurrencyGBP(payment) + ')';
                 } else {
-                  valueText = quantityDisplay + ' ' + quantityUnit;
+                  valueText = quantityDisplay;
                 }
               } else if (action.quantity) {
                 valueText = String(action.quantity) + ' ' + quantityUnit;
               } else {
-                valueText = 'No area entered';
+                valueText = isPondUnit(quantityUnit) ? 'No ponds entered' : 'No area entered';
               }
               
               $actionValue.text(valueText);
@@ -6053,6 +6249,7 @@
 
         // AAC mode owns available-area hints and which actions stay visible
         if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
+          syncAllWholeRemainingAreaActions();
           return;
         }
 
@@ -6067,6 +6264,7 @@
         var isOverLimitHa = totals.ha > totalAreaHa;
         var isOverLimitM = totals.m > totalAreaM;
         var isOverLimitM2 = (totals.m2 || 0) > totalAreaM2;
+        // Pond count is not calculated — do not over-limit against a guessed available number
         var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2;
 
         // Update all quantity hints
@@ -6081,12 +6279,17 @@
             return;
           }
 
+          if ($suffix.text() === 'pond') {
+            $hint.text('').prop('hidden', true);
+            return;
+          }
+
           if ($suffix.text() === 'ha') {
-            $hint.text(remainingHa.toFixed(4) + ' hectares available');
+            $hint.text(remainingHa.toFixed(4) + ' hectares available').prop('hidden', false);
           } else if ($suffix.text() === 'm') {
-            $hint.text(getAvailableHintText(actionCode, remainingM));
+            $hint.text(getAvailableHintText(actionCode, remainingM)).prop('hidden', false);
           } else if ($suffix.text() === 'm²') {
-            $hint.text(getAvailableHintText(actionCode, remainingM2));
+            $hint.text(getAvailableHintText(actionCode, remainingM2)).prop('hidden', false);
           }
         });
 
@@ -6159,6 +6362,8 @@
         if (!options.skipCompatibilityUpdate) {
           updateCompatibilityState();
         }
+
+        syncAllWholeRemainingAreaActions();
       }
 
       function validateBeforeSave() {
@@ -6294,12 +6499,14 @@
             
             if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
               $hint.text('0.0000 hectares available');
+            } else if ($suffix.text() === 'pond') {
+              $hint.text('').prop('hidden', true);
             } else if ($suffix.text() === 'ha') {
-              $hint.text(getAvailableHintText(actionCode, parcel.availableArea));
+              $hint.text(getAvailableHintText(actionCode, parcel.availableArea)).prop('hidden', false);
             } else if ($suffix.text() === 'm') {
-              $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel)));
+              $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel))).prop('hidden', false);
             } else if ($suffix.text() === 'm²') {
-              $hint.text(getAvailableHintText(actionCode, getBuildingSquareMetresAvailable(parcel)));
+              $hint.text(getAvailableHintText(actionCode, getBuildingSquareMetresAvailable(parcel))).prop('hidden', false);
             }
           });
         }
@@ -6725,6 +6932,11 @@
           },
           onAfterRecalculate: function() {
             applyGreyOutCnum2();
+            var clig3Before = $('#quantity-clig3').val();
+            syncAllWholeRemainingAreaActions();
+            if ($('#quantity-clig3').val() !== clig3Before) {
+              window.GrasslandsV2Aac.render();
+            }
             updateAacQuantityOverLimitErrors();
             refreshContinueFromActionSelection();
             captureCurrentParcelState();
@@ -6825,6 +7037,8 @@
             $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 metres available');
           } else if (unit === 'm²') {
             $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 square metres available');
+          } else if (unit === 'pond') {
+            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('').prop('hidden', true);
           } else {
             $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 available');
           }
@@ -7018,12 +7232,24 @@
             $quantityInput.val('');
             clearQuantityFieldValidation($quantityInput);
           }
+          if (isWholeRemainingAreaAction(actionCode)) {
+            syncWholeRemainingAreaAction(actionCode);
+          }
+        } else if (isWholeRemainingAreaAction(actionCode)) {
+          // Commit all remaining area as soon as the box is ticked
+          syncWholeRemainingAreaAction(actionCode);
         }
 
         // AAC mode: checking a box is instant — only quantity entry simulates the API wait
+        // (CLIG3 commits quantity on check, so conflicts update immediately)
         if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
-          window.GrasslandsV2Aac.render();
+          if (isWholeRemainingAreaAction(actionCode) && $(changedCheckbox).is(':checked')) {
+            window.GrasslandsV2Aac.runUpdate(actionCode);
+          } else {
+            window.GrasslandsV2Aac.render();
+          }
           applyGreyOutCnum2();
+          syncAllWholeRemainingAreaActions();
           refreshContinueFromActionSelection();
           return;
         }
@@ -7034,11 +7260,13 @@
           typeof window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility === 'function'
         ) {
           window.GrasslandsV2ActionsCompatibilityLoading.updateCompatibility(changedCheckbox);
+          syncAllWholeRemainingAreaActions();
           return;
         }
 
         updateCompatibilityState();
         updateAvailableQuantities({ skipCompatibilityUpdate: true });
+        syncAllWholeRemainingAreaActions();
       });
 
       function updateAacQuantityOverLimitErrors(options) {
@@ -7096,6 +7324,11 @@
           }
 
           if (parsed.value > maxAllowed + 0.0001) {
+            if (action.unit === 'pond') {
+              // Pond count is user-declared — do not validate against a calculated available
+              refreshQuantityFieldDisplay($input);
+              return;
+            }
             if (action.unit === 'm') {
               errors.overLimit = 'Enter up to ' +
                 Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +

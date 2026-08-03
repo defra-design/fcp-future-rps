@@ -39,6 +39,8 @@
         </div>
       {% endif %}
 
+      {% set journeySection = "Select land and actions" %}
+      {% include "grasslands-v2/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">Your land and actions</h1>
       {% if summary.isEmpty %}
         <p class="govuk-body">You have not added any land parcels or actions yet.</p>
