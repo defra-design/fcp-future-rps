@@ -44,28 +44,17 @@
 {% endblock %}
 
 {% block footer %}
-  {% set footerItems = [
-    {
-      href: "/grasslands-v2/contact-us",
-      text: "Contact us"
-    },
-    {
-      href: "/grasslands-v2/cookies",
-      text: "Cookies"
-    },
-    {
-      href: "/grasslands-v2/accessibility-statement",
-      text: "Accessibility statement"
-    },
-    {
-      href: "https://www.gov.uk/government/organisations/rural-payments-agency/about/personal-information-charter",
-      text: "Personal Information Charter",
-      attributes: {
-        target: "_blank",
-        rel: "noopener noreferrer"
+  {# Application journey (task list onwards): Contact us only. Pre-journey FLS pages: no support links. #}
+  {% if serviceName == "Apply for a grasslands agreement" %}
+    {% set footerItems = [
+      {
+        href: "/grasslands-v2/contact-us",
+        text: "Contact us"
       }
-    }
-  ] %}
+    ] %}
+  {% else %}
+    {% set footerItems = [] %}
+  {% endif %}
 
   {% set contentLicenceHtml %}
     All content is available under the

@@ -1804,6 +1804,27 @@ router.get('/grasslands-v2/view-application', function (req, res) {
   })
 })
 
+router.get('/grasslands-v2/contact-us', function (req, res) {
+  var backHref = '/grasslands-v2/task-list'
+  var referer = req.get('Referrer') || req.get('Referer') || ''
+
+  try {
+    var refererUrl = new URL(referer, 'http://localhost:3000')
+    if (refererUrl.pathname.indexOf('/grasslands-v2/') === 0 &&
+        refererUrl.pathname.indexOf('/grasslands-v2/contact-us') !== 0) {
+      backHref = refererUrl.pathname + refererUrl.search
+    }
+  } catch (error) {
+    // Keep default back link
+  }
+
+  res.render('grasslands-v2/contact-us', {
+    data: getGrasslandsV2SessionData(req),
+    backHref: backHref,
+    serviceName: 'Apply for a grasslands agreement',
+    serviceUrl: '/grasslands-v2/task-list'
+  })
+})
 router.post('/grasslands-v2/confirmation', function (req, res) {
   req.session.data = Object.assign(req.session.data || {}, req.body || {})
   recordGrasslandsV2ApplicationSubmitted(req)
