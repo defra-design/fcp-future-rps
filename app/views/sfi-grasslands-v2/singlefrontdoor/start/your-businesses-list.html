@@ -1,0 +1,75 @@
+{% set serviceUrl = "" %}
+{% extends "layouts/sfi-grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Choose a business
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form method="post" action="../landing/landing">
+
+      {{ govukRadios({
+        name: "business",
+        fieldset: {
+          legend: {
+            text: "Choose a business",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+          text: "These are businesses registered to your rural payments account including their single business identifier (SBI)."
+        },
+        items: [
+          {
+            value: "agile-farm-ltd",
+            text: "Agile Farm Ltd - SBI 123456789",
+            checked: true
+          },
+          {
+            value: "dm-jones-partners",
+            text: "D M Jones & Partners - SBI 202736410"
+          },
+          {
+            value: "home-farm",
+            text: "Home Farm - SBI 64432221"
+          },
+          {
+            value: "meadow-farm-ltd",
+            text: "MEADOW FARM LTD - SBI 107297345"
+          },
+          {
+            value: "ronnies-farm",
+            text: "Ronnie's Farm - SBI 761132198"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+
+    </form>
+
+    <details class="govuk-details govuk-!-margin-top-6">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Need more help?
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body">Contact the Rural Payments Agency by email or phone if you cannot see the business you need.</p>
+        <p class="govuk-body">Email: <a class="govuk-link" href="mailto:farmpayments@rpa.gov.uk">farmpayments@rpa.gov.uk</a></p>
+        <p class="govuk-body">Telephone: 020 8026 2395</p>
+        <p class="govuk-body">Monday to Friday, 8:30am to 5pm, except bank holidays</p>
+      </div>
+    </details>
+
+  </div>
+</div>
+
+{% endblock %}

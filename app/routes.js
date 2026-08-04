@@ -11,6 +11,11 @@ const sessionDataDefaults = require('./data/session-data-defaults')
 const grasslandsV2Tasks = require('./grasslands-v2-tasks')
 const grasslandsV2LandActions = require('./grasslands-v2-land-actions')
 const grasslandsV2Consent = require('./grasslands-v2-consent')
+
+const sfiGrasslandsV2Tasks = require('./sfi-grasslands-v2-tasks')
+const sfiGrasslandsV2LandActions = require('./sfi-grasslands-v2-land-actions')
+const sfiGrasslandsV2Consent = require('./sfi-grasslands-v2-consent')
+
 const {
   areActionsCompatible,
   findIncompatibilities,
@@ -1999,6 +2004,866 @@ router.post('/grasslands-v2/check-your-answers', function (req, res) {
   grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkAnswers)
   res.redirect('/grasslands-v2/check-your-answers')
 })
+
+// --- sfi-grasslands-v2 (AAC always on) ---
+
+function getSfiGrasslandsV2SessionData (req) {
+  return req.session.data || {}
+}
+
+
+function buildSfiActionsSummaryFromSession (req) {
+  var data = getSfiGrasslandsV2SessionData(req)
+  return buildActionsSummaryFromSession(Object.assign({}, data, {
+    parcelSelectionsData: data.sfiParcelSelectionsData
+  }))
+}
+
+
+// Keep in sync with app/assets/javascripts/sfi-grasslands-v2-mvp-actions.js
+const SFI_GRASSLANDS_V2_MVP_ACTION_CODES = [
+  'CLIG3',
+  'GRH7',
+  'GRH8',
+  'GRH10',
+  'CSAM3',
+  'CHRW2',
+  'WBD2',
+  'HEF1',
+  'CNUM2',
+  'CIGL2',
+  'CIGL1',
+  'WBD1',
+  'SCR2',
+  'BND1',
+  'BND2',
+  'GRH12'
+]
+
+function getSfiGrasslandsV2CompatibilityLocals (req) {
+  var compatibilityYear = getCompatibilityYearFromSession(getSfiGrasslandsV2SessionData(req))
+
+  return {
+    compatibilityYear: compatibilityYear,
+    compatibilityClientConfig: JSON.stringify(
+      buildMatrixClientConfig(SFI_GRASSLANDS_V2_MVP_ACTION_CODES, compatibilityYear)
+    )
+  }
+}
+
+function clearSfiGrasslandsV2ApplicationData (req) {
+  var existingData = getSfiGrasslandsV2SessionData(req)
+  var preservedBusinessContext = {}
+
+  if (existingData.agileSFD) {
+    preservedBusinessContext.agileSFD = existingData.agileSFD
+  }
+
+  if (existingData.valleySFD) {
+    preservedBusinessContext.valleySFD = existingData.valleySFD
+  }
+
+  req.session.data = Object.assign({}, sessionDataDefaults, preservedBusinessContext)
+}
+
+router.get('/sfi-grasslands-v2/before-you-start', function (req, res) {
+  clearSfiGrasslandsV2ApplicationData(req)
+
+  res.render('sfi-grasslands-v2/before-you-start', {
+    data: getSfiGrasslandsV2SessionData(req)
+  })
+})
+
+router.get('/sfi-grasslands-v2/task-list', function (req, res) {
+  setSfiCheckBeforeYouStartLinearFlow(req, false)
+  sfiGrasslandsV2Tasks.ensureTasks(req)
+
+  var actionsSummary = buildSfiActionsSummaryFromSession(req)
+  sfiGrasslandsV2Tasks.syncFromSessionAnswers(req, {
+    hasSelectedLand: (actionsSummary.rows && actionsSummary.rows.length > 0) ||
+      sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
+  })
+
+  var taskListPage = sfiGrasslandsV2Tasks.getTaskListPageData(req)
+
+  res.render('sfi-grasslands-v2/task-list', Object.assign({
+    data: getSfiGrasslandsV2SessionData(req)
+  }, taskListPage))
+})
+
+function setSfiEligibilityReturnTo (req, returnTo) {
+  if (returnTo === 'check-your-answers') {
+    req.session.data = req.session.data || {}
+    req.session.data.sfiEligibilityReturnTo = returnTo
+  }
+}
+
+function getSfiEligibilityReturnTo (req, bodyReturnTo) {
+  if (bodyReturnTo) {
+    return bodyReturnTo
+  }
+
+  return getSfiGrasslandsV2SessionData(req).sfiEligibilityReturnTo || ''
+}
+
+function clearSfiEligibilityReturnTo (req) {
+  if (req.session.data) {
+    delete req.session.data.sfiEligibilityReturnTo
+  }
+}
+
+function setSfiCheckBeforeYouStartLinearFlow (req, enabled) {
+  req.session.data = req.session.data || {}
+  if (enabled) {
+    req.session.data.sfiCheckBeforeYouStartLinearFlow = true
+  } else {
+    delete req.session.data.sfiCheckBeforeYouStartLinearFlow
+  }
+}
+
+function isSfiCheckBeforeYouStartLinearFlow (req) {
+  return Boolean(getSfiGrasslandsV2SessionData(req).sfiCheckBeforeYouStartLinearFlow)
+}
+
+function getSfiNextCheckBeforeYouStartPath (req) {
+  sfiGrasslandsV2Tasks.syncFromSessionAnswers(req, {})
+  var states = sfiGrasslandsV2Tasks.getResolvedTaskStates(req)
+
+  if (states.checkLandDetails.key !== sfiGrasslandsV2Tasks.STATUS.COMPLETED) {
+    return '/sfi-grasslands-v2/check-land-details'
+  }
+
+  if (states.confirmEligible.key !== sfiGrasslandsV2Tasks.STATUS.COMPLETED) {
+    return '/sfi-grasslands-v2/management-control'
+  }
+
+  return '/sfi-grasslands-v2/task-list'
+}
+
+function renderSfiGrasslandsV2EligibilityPage (req, res, view, options) {
+  var opts = options || {}
+
+  if (req.query.from === 'check-your-answers') {
+    setSfiEligibilityReturnTo(req, 'check-your-answers')
+  }
+
+  var returnTo = opts.returnTo || req.query.from || req.body.returnTo || getSfiEligibilityReturnTo(req)
+
+  res.render(view, {
+    data: getSfiGrasslandsV2SessionData(req),
+    returnTo: returnTo,
+    eligibilityError: opts.eligibilityError || false,
+    eligibilityErrorMessage: opts.eligibilityErrorMessage || '',
+    eligibilityErrorFieldId: opts.eligibilityErrorFieldId || ''
+  })
+}
+
+function saveSfiGrasslandsV2Answer (req, fieldName, value) {
+  req.session.data = req.session.data || {}
+  req.session.data[fieldName] = value
+}
+
+router.get('/sfi-grasslands-v2/check-business-details', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
+  if (req.query.from !== 'check-your-answers') {
+    setSfiCheckBeforeYouStartLinearFlow(req, true)
+  }
+  renderSfiGrasslandsV2EligibilityPage(req, res, 'sfi-grasslands-v2/check-business-details')
+})
+
+router.get('/sfi-grasslands-v2/update-business-details', function (req, res) {
+  res.render('sfi-grasslands-v2/update-business-details', {
+    data: getSfiGrasslandsV2SessionData(req)
+  })
+})
+
+router.get('/sfi-grasslands-v2/check-land-details', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.checkLandDetails)
+  if (req.query.from !== 'check-your-answers') {
+    setSfiCheckBeforeYouStartLinearFlow(req, true)
+  }
+  renderSfiGrasslandsV2EligibilityPage(req, res, 'sfi-grasslands-v2/check-land-details')
+})
+
+router.get('/sfi-grasslands-v2/confirm-eligibility-details', function (req, res) {
+  // Alias kept; task list now uses management control directly
+  var query = req.query.from ? ('?from=' + encodeURIComponent(req.query.from)) : ''
+  res.redirect('/sfi-grasslands-v2/management-control' + query)
+})
+
+router.get('/sfi-grasslands-v2/management-control', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.confirmEligible)
+  renderSfiGrasslandsV2EligibilityPage(req, res, 'sfi-grasslands-v2/management-control')
+})
+
+router.get('/sfi-grasslands-v2/hefer', function (req, res) {
+  // Temporarily removed from the eligibility journey
+  res.redirect('/sfi-grasslands-v2/task-list')
+})
+
+router.get('/sfi-grasslands-v2/sssi', function (req, res) {
+  // Temporarily removed from the eligibility journey
+  res.redirect('/sfi-grasslands-v2/task-list')
+})
+
+router.get('/sfi-grasslands-v2/eligible', function (req, res) {
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.confirmEligible)
+  res.render('sfi-grasslands-v2/eligible', {
+    data: getSfiGrasslandsV2SessionData(req)
+  })
+})
+
+router.get('/sfi-grasslands-v2/select-land-map-fluid-find', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+  res.render('sfi-grasslands-v2/select-land-map-fluid-find', Object.assign({
+    data: getSfiGrasslandsV2SessionData(req)
+  }, getSfiGrasslandsV2CompatibilityLocals(req)))
+})
+
+router.get('/sfi-grasslands-v2/select-land', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+
+  if (req.query.addAnother === '1' || req.query.addAnother === 'true') {
+    sfiGrasslandsV2LandActions.commitDraftToApplication(req)
+    if (sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)) {
+      sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+    }
+  }
+
+  res.render('sfi-grasslands-v2/select-land', Object.assign({
+    data: getSfiGrasslandsV2SessionData(req),
+    draftParcel: sfiGrasslandsV2LandActions.getDraftParcel(req),
+    applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req)
+  }, getSfiGrasslandsV2CompatibilityLocals(req)))
+})
+
+router.post('/sfi-grasslands-v2/select-land', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+
+  if (!req.body.selectedParcelId) {
+    return res.redirect('/sfi-grasslands-v2/select-land')
+  }
+
+  var previousDraft = sfiGrasslandsV2LandActions.getDraftParcel(req)
+  var previousParcelId = previousDraft && previousDraft.parcelId
+  sfiGrasslandsV2LandActions.saveDraftParcelFromBody(req, req.body)
+
+  // Only clear draft actions when the parcel changes
+  if (previousParcelId !== req.body.selectedParcelId) {
+    sfiGrasslandsV2LandActions.setDraftActions(req, [])
+  }
+
+  res.redirect('/sfi-grasslands-v2/select-actions')
+})
+
+router.get('/sfi-grasslands-v2/select-actions', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+
+  var draftParcel = sfiGrasslandsV2LandActions.getDraftParcel(req)
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/sfi-grasslands-v2/select-land')
+  }
+
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+  var focusActionCode = sessionData.focusActionCode || null
+  if (sessionData.focusActionCode) {
+    delete sessionData.focusActionCode
+  }
+
+  res.render('sfi-grasslands-v2/select-actions', Object.assign({
+    data: sessionData,
+    draftParcel: draftParcel,
+    draftActions: sfiGrasslandsV2LandActions.getDraftActions(req),
+    applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req),
+    focusActionCode: focusActionCode,
+    returnToCheckYourAnswers: Boolean(sessionData.returnToCheckYourAnswers)
+  }, getSfiGrasslandsV2CompatibilityLocals(req)))
+})
+
+router.post('/sfi-grasslands-v2/select-actions', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+
+  var draftParcel = sfiGrasslandsV2LandActions.getDraftParcel(req)
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/sfi-grasslands-v2/select-land')
+  }
+
+  var draftActions = sfiGrasslandsV2LandActions.getDraftActions(req)
+  if (req.body.draftLandActions) {
+    draftActions = typeof req.body.draftLandActions === 'string'
+      ? (function () {
+        try {
+          return JSON.parse(req.body.draftLandActions)
+        } catch (error) {
+          return []
+        }
+      })()
+      : req.body.draftLandActions
+  }
+
+  if (!Array.isArray(draftActions) || draftActions.length === 0) {
+    return res.render('sfi-grasslands-v2/select-actions', Object.assign({
+      data: getSfiGrasslandsV2SessionData(req),
+      draftParcel: draftParcel,
+      draftActions: [],
+      applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req),
+      actionsError: true,
+      actionsErrorMessage: 'Select at least one action'
+    }, getSfiGrasslandsV2CompatibilityLocals(req)))
+  }
+
+  sfiGrasslandsV2LandActions.setDraftActions(req, draftActions)
+
+  res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+})
+
+router.get('/sfi-grasslands-v2/consent-interruption', function (req, res) {
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+  var previewType = req.query.preview
+  var allowedPreviewTypes = ['sssi', 'hefer', 'sssi-hefer']
+
+  if (previewType && allowedPreviewTypes.indexOf(previewType) !== -1) {
+    return res.render('sfi-grasslands-v2/consent-interruption', {
+      data: sessionData,
+      interruptionType: previewType,
+      requiresSssi: previewType === 'sssi' || previewType === 'sssi-hefer',
+      requiresHefer: previewType === 'hefer' || previewType === 'sssi-hefer'
+    })
+  }
+
+  var consent = sfiGrasslandsV2Consent.getConsentRequirementsForParcels(
+    sfiGrasslandsV2LandActions.buildBasketParcels(req)
+  )
+
+  if (!consent.requiresConsent) {
+    return res.redirect(sessionData.afterConsentRedirect || '/sfi-grasslands-v2/confirm-land-and-actions')
+  }
+
+  res.render('sfi-grasslands-v2/consent-interruption', {
+    data: sessionData,
+    interruptionType: consent.interruptionType,
+    requiresSssi: consent.requiresSssi,
+    requiresHefer: consent.requiresHefer
+  })
+})
+
+router.post('/sfi-grasslands-v2/consent-interruption', function (req, res) {
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+  var redirectTo = sessionData.afterConsentRedirect || '/sfi-grasslands-v2/task-list'
+  delete sessionData.afterConsentRedirect
+  res.redirect(redirectTo)
+})
+
+router.get('/sfi-grasslands-v2/confirm-land-and-actions', function (req, res) {
+  var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req).map(function (parcel) {
+    return Object.assign({}, parcel, {
+      actions: (parcel.actions || []).map(function (action) {
+        return Object.assign({}, action, {
+          consentHint: sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+        })
+      })
+    })
+  })
+  var basketSummary = sfiGrasslandsV2LandActions.summariseBasket(basketParcels)
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+  var flashMessage = sessionData.confirmLandFlash || null
+
+  if (req.query.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  delete sessionData.confirmLandFlash
+
+  if (!basketSummary.isEmpty) {
+    sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+  }
+
+  res.render('sfi-grasslands-v2/confirm-land-and-actions', {
+    data: sessionData,
+    basketParcels: basketParcels,
+    basketSummary: basketSummary,
+    flashMessage: flashMessage
+  })
+})
+
+router.post('/sfi-grasslands-v2/confirm-land-and-actions', function (req, res) {
+  var action = req.body && req.body.confirmAction
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+
+  sfiGrasslandsV2LandActions.commitDraftToApplication(req)
+
+  if (sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)) {
+    sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+  } else if (
+    sfiGrasslandsV2LandActions.getDraftParcel(req) ||
+    sfiGrasslandsV2LandActions.buildBasketParcels(req).length
+  ) {
+    sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+  } else {
+    sfiGrasslandsV2Tasks.setTaskStatus(
+      req,
+      sfiGrasslandsV2Tasks.TASK_IDS.selectLand,
+      sfiGrasslandsV2Tasks.STATUS.NOT_STARTED
+    )
+  }
+
+  if (action === 'addAnother') {
+    // Keep returnToCheckYourAnswers so after adding they still return to CYA
+    if (req.body.from === 'check-your-answers') {
+      sessionData.returnToCheckYourAnswers = true
+    }
+    return res.redirect('/sfi-grasslands-v2/select-land?addAnother=1')
+  }
+
+  var consent = sfiGrasslandsV2Consent.getConsentRequirementsForParcels(
+    sfiGrasslandsV2LandActions.buildBasketParcels(req)
+  )
+  var goingToCya = action === 'returnToCya' ||
+    req.body.from === 'check-your-answers' ||
+    sessionData.returnToCheckYourAnswers
+
+  if (consent.requiresConsent) {
+    if (goingToCya) {
+      delete sessionData.returnToCheckYourAnswers
+      sessionData.afterConsentRedirect = '/sfi-grasslands-v2/check-your-answers'
+    } else {
+      sessionData.afterConsentRedirect = '/sfi-grasslands-v2/task-list'
+    }
+    return res.redirect('/sfi-grasslands-v2/consent-interruption')
+  }
+
+  if (goingToCya) {
+    delete sessionData.returnToCheckYourAnswers
+    return res.redirect('/sfi-grasslands-v2/check-your-answers')
+  }
+
+  res.redirect('/sfi-grasslands-v2/task-list')
+})
+
+router.get('/sfi-grasslands-v2/confirm-land-and-actions/change/:parcelId', function (req, res) {
+  var parcelId = req.params.parcelId
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+  var loaded = sfiGrasslandsV2LandActions.loadParcelIntoDraftForEdit(req, parcelId)
+
+  if (!loaded) {
+    var draftParcel = sfiGrasslandsV2LandActions.getDraftParcel(req)
+    if (!draftParcel || draftParcel.parcelId !== parcelId) {
+      return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+    }
+  }
+
+  if (req.query.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  if (req.query.actionCode) {
+    sessionData.focusActionCode = String(req.query.actionCode).toUpperCase()
+  }
+
+  res.redirect('/sfi-grasslands-v2/select-actions')
+})
+
+router.get('/sfi-grasslands-v2/remove-parcel-actions/:parcelId', function (req, res) {
+  var parcel = sfiGrasslandsV2LandActions.findBasketParcel(req, req.params.parcelId)
+
+  if (!parcel) {
+    return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+  }
+
+  res.render('sfi-grasslands-v2/remove-parcel-actions', {
+    data: getSfiGrasslandsV2SessionData(req),
+    parcel: parcel
+  })
+})
+
+router.post('/sfi-grasslands-v2/remove-parcel-actions/:parcelId', function (req, res) {
+  var parcelId = req.params.parcelId
+  var parcel = sfiGrasslandsV2LandActions.findBasketParcel(req, parcelId)
+  var parcelLabel = parcel
+    ? (sfiGrasslandsV2LandActions.getParcelDisplayReference(parcel) || 'This land parcel')
+    : 'This land parcel'
+
+  if (req.body && req.body.confirmRemove === 'yes') {
+    sfiGrasslandsV2LandActions.removeParcelFromBasket(req, parcelId)
+
+    if (sfiGrasslandsV2LandActions.hasSavedLandAndActions(req) ||
+        (sfiGrasslandsV2LandActions.getDraftActions(req) || []).length > 0) {
+      sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+    } else {
+      sfiGrasslandsV2Tasks.setTaskStatus(
+        req,
+        sfiGrasslandsV2Tasks.TASK_IDS.selectLand,
+        sfiGrasslandsV2Tasks.STATUS.NOT_STARTED
+      )
+    }
+
+    req.session.data = req.session.data || {}
+    req.session.data.confirmLandFlash = parcelLabel + ' and its actions have been removed.'
+  }
+
+  res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+})
+
+router.get('/sfi-grasslands-v2/submit-application', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.submitApplication)
+  res.render('sfi-grasslands-v2/submit-application', {
+    data: getSfiGrasslandsV2SessionData(req)
+  })
+})
+
+router.post('/sfi-grasslands-v2/submit-application', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.checkAnswers)
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.submitApplication)
+  res.render('sfi-grasslands-v2/submit-application', {
+    data: getSfiGrasslandsV2SessionData(req)
+  })
+})
+
+function getSfiGrasslandsV2ConfirmationNotices (req) {
+  var consent = sfiGrasslandsV2Consent.getConsentRequirementsForParcels(
+    sfiGrasslandsV2LandActions.buildBasketParcels(req)
+  )
+
+  return {
+    showHeferNotice: consent.requiresHefer,
+    showSssiNotice: consent.requiresSssi
+  }
+}
+
+function formatSfiGrasslandsV2SubmittedAt (date) {
+  var submittedAt = date instanceof Date ? date : new Date(date)
+  if (isNaN(submittedAt.getTime())) {
+    submittedAt = new Date()
+  }
+
+  var datePart = submittedAt.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  })
+  var timePart = submittedAt
+    .toLocaleTimeString('en-GB', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    })
+    .toLowerCase()
+    .replace(' ', '')
+
+  return datePart + ' at ' + timePart
+}
+
+function recordSfiGrasslandsV2ApplicationSubmitted (req) {
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.submitApplication)
+  req.session.data = req.session.data || {}
+  req.session.data.sfiGrasslandsV2ApplicationSubmitted = true
+  req.session.data.sfiGrasslandsV2ApplicationInProgress = false
+  if (!req.session.data.sfiGrasslandsV2ApplicationSubmittedAt) {
+    req.session.data.sfiGrasslandsV2ApplicationSubmittedAt = new Date().toISOString()
+  }
+}
+
+router.get('/sfi-grasslands-v2/confirmation', function (req, res) {
+  recordSfiGrasslandsV2ApplicationSubmitted(req)
+  var notices = getSfiGrasslandsV2ConfirmationNotices(req)
+  res.render('sfi-grasslands-v2/confirmation', {
+    data: getSfiGrasslandsV2SessionData(req),
+    showHeferNotice: notices.showHeferNotice,
+    showSssiNotice: notices.showSssiNotice
+  })
+})
+
+function getSfiGrasslandsV2ReviewApplicationData (req) {
+  var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req).map(function (parcel) {
+    return Object.assign({}, parcel, {
+      landCover: parcel.landCover || parcel.landCoverLabel || 'Permanent grassland',
+      actions: (parcel.actions || []).map(function (action) {
+        return Object.assign({}, action)
+      })
+    })
+  })
+  var basketSummary = sfiGrasslandsV2LandActions.summariseBasket(basketParcels)
+
+  if (!basketSummary.isEmpty) {
+    return {
+      reviewParcels: basketParcels,
+      reviewSummary: basketSummary,
+      usedMockData: false
+    }
+  }
+
+  // Prototype fallback when nothing has been saved in this session
+  var mockParcels = [
+    {
+      parcelId: 'far-meadow',
+      heading: 'Land parcel SO3757 3193',
+      parcelReference: 'SO3757 3193',
+      totalAreaFormatted: '12.4500 hectares',
+      landCover: 'Permanent grassland',
+      yearlyPaymentFormatted: '£2,012.70',
+      actions: [
+        {
+          code: 'CLIG3',
+          name: 'Manage grassland with very low nutrient inputs',
+          valueDisplay: '8.2000 ha (£1,238.20)'
+        },
+        {
+          code: 'GRH7',
+          name: 'Haymaking supplement',
+          valueDisplay: '4.2500 ha (£667.25)'
+        }
+      ]
+    },
+    {
+      parcelId: 'pond-close',
+      heading: 'Land parcel SO3757 3203',
+      parcelReference: 'SO3757 3203',
+      totalAreaFormatted: '29.3214 hectares',
+      landCover: 'Temporary grass',
+      yearlyPaymentFormatted: '£3,145.60',
+      actions: [
+        {
+          code: 'CNUM2',
+          name: 'Legumes on improved grassland',
+          valueDisplay: '10.0000 ha (£1,020.00)'
+        },
+        {
+          code: 'CSAM3',
+          name: 'Herbal leys',
+          valueDisplay: '9.4900 ha (£2,125.60)'
+        }
+      ]
+    }
+  ]
+
+  return {
+    reviewParcels: mockParcels,
+    reviewSummary: {
+      totalYearlyPaymentFormatted: '£5,158.30',
+      isEmpty: false
+    },
+    usedMockData: true
+  }
+}
+
+router.get('/sfi-grasslands-v2/view-application', function (req, res) {
+  var review = getSfiGrasslandsV2ReviewApplicationData(req)
+  var fromLanding = req.query.from === 'landing'
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+  var submittedAt = sessionData.sfiGrasslandsV2ApplicationSubmittedAt || new Date().toISOString()
+
+  res.render('sfi-grasslands-v2/view-application', {
+    data: sessionData,
+    reviewParcels: review.reviewParcels,
+    reviewSummary: review.reviewSummary,
+    applicationReference: 'HDJ2123F',
+    applicationSubmittedAtFormatted: formatSfiGrasslandsV2SubmittedAt(submittedAt),
+    backHref: fromLanding
+      ? '/sfi-grasslands-v2/singlefrontdoor/landing/landing'
+      : '/sfi-grasslands-v2/confirmation',
+    backButtonText: fromLanding
+      ? 'Back to Farm and Land Service'
+      : 'Back to confirmation'
+  })
+})
+
+router.get('/sfi-grasslands-v2/contact-us', function (req, res) {
+  var backHref = '/sfi-grasslands-v2/task-list'
+  var referer = req.get('Referrer') || req.get('Referer') || ''
+
+  try {
+    var refererUrl = new URL(referer, 'http://localhost:3000')
+    if (refererUrl.pathname.indexOf('/sfi-grasslands-v2/') === 0 &&
+        refererUrl.pathname.indexOf('/sfi-grasslands-v2/contact-us') !== 0) {
+      backHref = refererUrl.pathname + refererUrl.search
+    }
+  } catch (error) {
+    // Keep default back link
+  }
+
+  res.render('sfi-grasslands-v2/contact-us', {
+    data: getSfiGrasslandsV2SessionData(req),
+    backHref: backHref,
+    serviceName: 'Apply for a grasslands agreement',
+    serviceUrl: '/sfi-grasslands-v2/task-list'
+  })
+})
+router.post('/sfi-grasslands-v2/confirmation', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  recordSfiGrasslandsV2ApplicationSubmitted(req)
+  var notices = getSfiGrasslandsV2ConfirmationNotices(req)
+  res.render('sfi-grasslands-v2/confirmation', {
+    data: getSfiGrasslandsV2SessionData(req),
+    showHeferNotice: notices.showHeferNotice,
+    showSssiNotice: notices.showSssiNotice
+  })
+})
+
+router.post('/sfi-grasslands-v2/management-control-answer', function (req, res) {
+  var managementControlAnswer = req.body['management-answer-v2']
+  var returnTo = getSfiEligibilityReturnTo(req, req.body.returnTo)
+
+  if (!managementControlAnswer) {
+    var referer = req.get('Referer') || ''
+    var managementView = referer.indexOf('/management-control') !== -1
+      ? 'sfi-grasslands-v2/management-control'
+      : 'sfi-grasslands-v2/confirm-eligibility-details'
+
+    return renderSfiGrasslandsV2EligibilityPage(req, res, managementView, {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if you will have the required management control of the land in this application',
+      eligibilityErrorFieldId: 'management-answer-v2-error'
+    })
+  }
+
+  saveSfiGrasslandsV2Answer(req, 'management-answer-v2', managementControlAnswer)
+
+  if (managementControlAnswer === 'no') {
+    clearSfiEligibilityReturnTo(req)
+    setSfiCheckBeforeYouStartLinearFlow(req, false)
+    sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.confirmEligible)
+    return res.redirect('/sfi-grasslands-v2/ineligible')
+  }
+
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.confirmEligible)
+
+  if (returnTo === 'check-your-answers') {
+    clearSfiEligibilityReturnTo(req)
+    setSfiCheckBeforeYouStartLinearFlow(req, false)
+    return res.redirect('/sfi-grasslands-v2/check-your-answers')
+  }
+
+  clearSfiEligibilityReturnTo(req)
+  setSfiCheckBeforeYouStartLinearFlow(req, false)
+  res.redirect('/sfi-grasslands-v2/task-list')
+})
+
+router.post('/sfi-grasslands-v2/hefer-answer', function (req, res) {
+  // HEFER step temporarily removed from grasslands-v2 journey
+  return res.redirect('/sfi-grasslands-v2/task-list')
+})
+
+router.post('/sfi-grasslands-v2/sssi-answer', function (req, res) {
+  // SSSI step temporarily removed from grasslands-v2 journey
+  return res.redirect('/sfi-grasslands-v2/task-list')
+})
+
+router.post('/sfi-grasslands-v2/check-business-details-answer', function (req, res) {
+  var businessDetailsAnswer = req.body['business-details-answer']
+  var returnTo = getSfiEligibilityReturnTo(req, req.body.returnTo)
+
+  if (!businessDetailsAnswer) {
+    return renderSfiGrasslandsV2EligibilityPage(req, res, 'sfi-grasslands-v2/check-business-details', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if these details are correct',
+      eligibilityErrorFieldId: 'business-details-answer-error'
+    })
+  }
+
+  saveSfiGrasslandsV2Answer(req, 'business-details-answer', businessDetailsAnswer)
+
+  if (businessDetailsAnswer === 'no') {
+    clearSfiEligibilityReturnTo(req)
+    setSfiCheckBeforeYouStartLinearFlow(req, false)
+    sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
+    req.session.data = req.session.data || {}
+    req.session.data.sfiGrasslandsV2ApplicationInProgress = true
+    return res.redirect('/sfi-grasslands-v2/singlefrontdoor/landing/landing')
+  }
+
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.checkBusinessDetails)
+
+  if (returnTo === 'check-your-answers') {
+    clearSfiEligibilityReturnTo(req)
+    setSfiCheckBeforeYouStartLinearFlow(req, false)
+    return res.redirect('/sfi-grasslands-v2/check-your-answers')
+  }
+
+  setSfiCheckBeforeYouStartLinearFlow(req, true)
+  res.redirect(getSfiNextCheckBeforeYouStartPath(req))
+})
+
+router.post('/sfi-grasslands-v2/check-land-details-answer', function (req, res) {
+  var landDetailsAnswer = req.body['land-details-answer']
+  var returnTo = getSfiEligibilityReturnTo(req, req.body.returnTo)
+
+  if (!landDetailsAnswer) {
+    return renderSfiGrasslandsV2EligibilityPage(req, res, 'sfi-grasslands-v2/check-land-details', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if your digital maps show the correct land details',
+      eligibilityErrorFieldId: 'land-details-answer-error'
+    })
+  }
+
+  saveSfiGrasslandsV2Answer(req, 'land-details-answer', landDetailsAnswer)
+
+  if (landDetailsAnswer === 'no') {
+    clearSfiEligibilityReturnTo(req)
+    setSfiCheckBeforeYouStartLinearFlow(req, false)
+    sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.checkLandDetails)
+    return res.redirect('/sfi-grasslands-v2/update-land-details')
+  }
+
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.checkLandDetails)
+
+  if (returnTo === 'check-your-answers') {
+    clearSfiEligibilityReturnTo(req)
+    setSfiCheckBeforeYouStartLinearFlow(req, false)
+    return res.redirect('/sfi-grasslands-v2/check-your-answers')
+  }
+
+  setSfiCheckBeforeYouStartLinearFlow(req, true)
+  res.redirect(getSfiNextCheckBeforeYouStartPath(req))
+})
+
+router.get('/sfi-grasslands-v2/check-your-answers', function (req, res) {
+  var actionsSummary = buildSfiActionsSummaryFromSession(req)
+  var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req)
+  var consentHintsByParcel = {}
+
+  basketParcels.forEach(function (parcel) {
+    if (!parcel || !parcel.parcelId) {
+      return
+    }
+
+    var hints = {}
+    ;(parcel.actions || []).forEach(function (action) {
+      var hint = sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+      if (hint) {
+        hints[action.code] = hint
+      }
+    })
+
+    if (Object.keys(hints).length > 0) {
+      consentHintsByParcel[parcel.parcelId] = hints
+    }
+  })
+
+  if (actionsSummary.rows && actionsSummary.rows.length > 0) {
+    sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+  }
+
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.checkAnswers)
+
+  res.render('sfi-grasslands-v2/check-your-answers', {
+    data: Object.assign({}, req.session.data),
+    actionsSummaryRows: actionsSummary.rows,
+    actionsSummaryTotal: actionsSummary.total,
+    consentHintsByParcel: consentHintsByParcel
+  })
+})
+
+router.post('/sfi-grasslands-v2/check-your-answers', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.checkAnswers)
+  res.redirect('/sfi-grasslands-v2/check-your-answers')
+})
+
 
 router.use(function (req, res, next) {
   var compatibilityYear = getCompatibilityYearFromSession((req.session && req.session.data) || {})

@@ -1,0 +1,41 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v2/task-list" %}
+{% extends "layouts/sfi-grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Update your business details
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v2/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v2/check-business-details"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      {% set journeySection = "Check before you start" %}
+      {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Update your business details</h1>
+
+      <p class="govuk-body">
+        You need to update your business details before you can continue with this application.
+      </p>
+
+      <p class="govuk-body">
+        Update your details in the Farm and Land Service, then return here to continue your application.
+      </p>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="/sfi-grasslands-v2/singlefrontdoor/landing/landing">
+          Go to Farm and Land Service
+        </a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

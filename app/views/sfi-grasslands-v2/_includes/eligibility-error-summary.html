@@ -1,0 +1,11 @@
+{% if eligibilityError %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: [
+      {
+        text: eligibilityErrorMessage,
+        href: "#" + eligibilityErrorFieldId
+      }
+    ]
+  }) }}
+{% endif %}

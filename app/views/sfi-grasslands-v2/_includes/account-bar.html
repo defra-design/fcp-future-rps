@@ -1,0 +1,17 @@
+{# Shown after sign-in when a business is selected #}
+<div class="govuk-grid-row" style="padding-top:16px;">
+  <div class="govuk-grid-column-two-thirds">
+    <h3 class="govuk-heading-s" style="margin-bottom: 4px;">Agile Farm Ltd</h3>
+    <p class="govuk-body-s" style="margin-bottom: 8px;">Single business identifier (SBI): 123456789</p>
+  </div>
+
+  <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Alfred Waldron</h3>
+    {% if signOutUrl %}
+      <p class="govuk-body-s govuk-!-margin-bottom-2">
+        <a class="govuk-link" href="{{ signOutUrl }}">Sign out</a>
+      </p>
+    {% endif %}
+  </div>
+</div>
+<hr>
