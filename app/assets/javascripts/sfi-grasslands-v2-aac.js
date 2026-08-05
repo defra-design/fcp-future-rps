@@ -717,6 +717,25 @@
     return conditional.querySelector('.govuk-hint.govuk-checkboxes__hint')
   }
 
+  function getActionAvailableHint (code) {
+    return document.getElementById('action-available-hint-' + String(code || '').toLowerCase())
+  }
+
+  function applyAvailableHint (code, action) {
+    var labelHint = getActionAvailableHint(code)
+    if (!labelHint) {
+      return
+    }
+    if (!action || action.unit === 'pond') {
+      labelHint.textContent = ''
+      labelHint.hidden = true
+      return
+    }
+    var text = buildHintText(action)
+    labelHint.textContent = text
+    labelHint.hidden = !text
+  }
+
   function setBusy (isBusy, editedCode) {
     state.busy = Boolean(isBusy)
     var continueButton = getContinueButton()
@@ -998,6 +1017,7 @@
             hint.hidden = false
           }
         }
+        applyAvailableHint(code, action)
         if (label) {
           var unavailableHint = document.createElement('span')
           unavailableHint.className = 'aac-unavailable-hint'
@@ -1026,6 +1046,7 @@
           hint.hidden = false
         }
       }
+      applyAvailableHint(code, action)
 
       applyDebug(conditional, action)
     })

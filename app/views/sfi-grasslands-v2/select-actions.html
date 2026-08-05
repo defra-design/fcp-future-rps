@@ -325,6 +325,17 @@
       line-height: 1.25;
     }
 
+    .app-action-available-hint {
+      display: block;
+      margin-top: 2px;
+      margin-bottom: 0;
+      padding: 0;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
     .app-action-consent-hint {
       display: block;
       margin-top: 5px;
@@ -3024,6 +3035,43 @@
       return availableAmount + ' hectares available';
     }
 
+    function getActionAvailableHintEl(actionCode) {
+      return document.getElementById('action-available-hint-' + String(actionCode || '').toLowerCase());
+    }
+
+    function setActionAvailableHint(actionCode, availableAmount) {
+      var hintEl = getActionAvailableHintEl(actionCode);
+      if (!hintEl) {
+        return;
+      }
+      var unit = getQuantityUnitForAction(actionCode);
+      if (isPondUnit(unit)) {
+        hintEl.textContent = '';
+        hintEl.hidden = true;
+        return;
+      }
+      var text = getAvailableHintText(actionCode, availableAmount);
+      hintEl.textContent = text;
+      hintEl.hidden = !text;
+    }
+
+    function createActionAvailableHint(actionCode) {
+      var codeLower = String(actionCode || '').toLowerCase();
+      var availableHint = document.createElement('span');
+      availableHint.className = 'app-action-available-hint';
+      availableHint.id = 'action-available-hint-' + codeLower;
+      availableHint.setAttribute('data-action-available-hint', String(actionCode || '').toUpperCase());
+      if (isPondUnit(getQuantityUnitForAction(actionCode))) {
+        availableHint.hidden = true;
+      } else {
+        availableHint.textContent = getAvailableHintText(
+          actionCode,
+          getQuantityUnitForAction(actionCode) === 'ha' ? '0.0000' : 0
+        );
+      }
+      return availableHint;
+    }
+
     function getLinearAvailableMetres(parcel) {
       var areaHa = Number(parcel && parcel.availableArea);
       if (!Number.isFinite(areaHa) || areaHa <= 0) {
@@ -4141,8 +4189,12 @@
       hint.textContent = 'Payment rate per year: ' + (action.rateText || '');
       label.appendChild(hint);
 
+      var availableHint = createActionAvailableHint(action.code);
+      var availableHintId = availableHint.id;
+      label.appendChild(availableHint);
+
       var consentHint = buildActionConsentHint(action.code, consentHintId);
-      var describedBy = hintId;
+      var describedBy = hintId + ' ' + availableHintId;
       if (consentHint) {
         label.appendChild(consentHint);
         describedBy += ' ' + consentHintId;
@@ -4363,7 +4415,10 @@
         hint.textContent = 'Payment rate per year: ' + (action.rateText || '');
         label.appendChild(hint);
 
-        radio.setAttribute('aria-describedby', hintId);
+        var availableHint = createActionAvailableHint(action.code);
+        label.appendChild(availableHint);
+
+        radio.setAttribute('aria-describedby', hintId + ' ' + availableHint.id);
         item.appendChild(radio);
         item.appendChild(label);
         radios.appendChild(item);
@@ -6359,22 +6414,30 @@
 
           if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
             $hint.text('0.0000 hectares available');
+            setActionAvailableHint(actionCode, 0);
             return;
           }
 
           if ($suffix.text() === 'pond') {
             $hint.text('').prop('hidden', true);
+            setActionAvailableHint(actionCode, null);
             return;
           }
 
           if ($suffix.text() === 'ha') {
             $hint.text(remainingHa.toFixed(4) + ' hectares available').prop('hidden', false);
+            setActionAvailableHint(actionCode, remainingHa);
           } else if ($suffix.text() === 'm') {
             $hint.text(getAvailableHintText(actionCode, remainingM)).prop('hidden', false);
+            setActionAvailableHint(actionCode, remainingM);
           } else if ($suffix.text() === 'm²') {
             $hint.text(getAvailableHintText(actionCode, remainingM2)).prop('hidden', false);
+            setActionAvailableHint(actionCode, remainingM2);
           }
         });
+
+        // CLIG3 has no quantity hint field — still refresh the label available amount
+        setActionAvailableHint('CLIG3', remainingHa);
 
         // Tier 1: live over-limit validation
         $('input[id^="quantity-"]').each(function() {
