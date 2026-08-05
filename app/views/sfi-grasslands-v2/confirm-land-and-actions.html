@@ -49,31 +49,34 @@
         </p>
       {% else %}
         {% for parcel in parcels %}
+          {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Land parcel ', '')) or parcel.parcelName or '' %}
           <div class="govuk-!-margin-bottom-9" id="parcel-{{ parcel.parcelId }}">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
-              <div>
-                {% set parcelHeadingStyle = 'margin: 0;' %}
-                {% include "sfi-grasslands-v2/_includes/parcel-heading.html" %}
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Parcel reference</dt>
+                <dd class="govuk-summary-list__value">{{ parcelRef }}</dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/sfi-grasslands-v2/remove-parcel-actions/{{ parcel.parcelId }}">
+                    Remove parcel<span class="govuk-visually-hidden"> {{ parcelRef }}</span>
+                  </a>
+                </dd>
               </div>
-              <a class="govuk-link" href="/sfi-grasslands-v2/remove-parcel-actions/{{ parcel.parcelId }}" style="font-size: 19px; line-height: 1.31579; white-space: nowrap;">
-                Remove this land parcel<span class="govuk-visually-hidden"> {{ parcel.parcelReference or parcel.heading }}</span>
-              </a>
-            </div>
-
-            <dl class="govuk-summary-list govuk-!-margin-top-4 govuk-!-margin-bottom-0">
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Total area</dt>
                 <dd class="govuk-summary-list__value">{{ parcel.totalAreaFormatted }}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Area used for actions</dt>
-                <dd class="govuk-summary-list__value">{{ parcel.areaUsedFormatted }}</dd>
-                <dd class="govuk-summary-list__actions"></dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Available area left</dt>
-                <dd class="govuk-summary-list__value">{{ parcel.availableLeftFormatted }}</dd>
+                <dt class="govuk-summary-list__key">Land cover</dt>
+                <dd class="govuk-summary-list__value">
+                  {% if parcel.landCover is string %}
+                    {{ parcel.landCover }}
+                  {% elif parcel.landCover %}
+                    {{ parcel.landCover | join(', ') }}
+                  {% else %}
+                    Permanent grassland
+                  {% endif %}
+                </dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
 
@@ -95,14 +98,12 @@
               {% endfor %}
 
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Yearly payment for this parcel</dt>
-                <dd class="govuk-summary-list__value"><strong>{{ parcel.yearlyPaymentFormatted }}</strong></dd>
+                <dt class="govuk-summary-list__key">Yearly payment</dt>                <dd class="govuk-summary-list__value"><strong>{{ parcel.yearlyPaymentFormatted }}</strong></dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
             </dl>
           </div>
         {% endfor %}
-
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Total yearly payment</dt>

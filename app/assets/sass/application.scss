@@ -1438,3 +1438,28 @@ img.design-history {
   line-height: 1.4;
   white-space: pre-wrap;
 }
+// Print-friendly application summary: hide chrome, keep content
+@media print {
+  .govuk-header,
+  .govuk-service-navigation,
+  .govuk-phase-banner,
+  .govuk-back-link,
+  .govuk-footer,
+  .app-account-bar,
+  .app-footer-prototype-tools,
+  .govuk-\!-display-none-print {
+    display: none !important;
+  }
+
+  // Stop browsers appending URLs after links in print output
+  a[href]::after {
+    content: none !important;
+  }
+
+  .govuk-width-container,
+  .govuk-main-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+}

@@ -456,10 +456,38 @@
     return null
   }
 
+  // Supplements sit on a base action (SUPBAS) — they do not consume exclusive land.
+  var SUPPLEMENT_BASE_BY_CODE = {
+    GRH7: 'CLIG3',
+    GRH8: 'CLIG3',
+    GRH10: 'CLIG3'
+  }
+
+  function isSupplementAction (code) {
+    return Object.prototype.hasOwnProperty.call(SUPPLEMENT_BASE_BY_CODE, String(code || '').toUpperCase())
+  }
+
+  function getSupplementBaseCode (code) {
+    return SUPPLEMENT_BASE_BY_CODE[String(code || '').toUpperCase()] || null
+  }
+
+  function actionsShareStackingLand (codeA, codeB) {
+    var a = String(codeA || '').toUpperCase()
+    var b = String(codeB || '').toUpperCase()
+    if (!a || !b || a === b) {
+      return false
+    }
+    return getSupplementBaseCode(a) === b || getSupplementBaseCode(b) === a
+  }
+
   function getUsedByOtherUnitActions (code, unit) {
     var used = 0
     Object.keys(state.selections).forEach(function (selectedCode) {
       if (selectedCode === code) {
+        return
+      }
+      // Supplements stack on their base — neither side should reduce the other's exclusive pool.
+      if (isSupplementAction(selectedCode) || actionsShareStackingLand(code, selectedCode)) {
         return
       }
       var quantity = getSelectedQuantity(selectedCode)
@@ -493,6 +521,7 @@
 
       // Shared pool by unit: ha actions share hectares; metre actions share length; etc.
       // Pond count is user-declared — no shared available pool.
+      // Supplements stack on their base and do not compete for exclusive hectares.
       if (base.unit === 'pond') {
         available = Number.POSITIVE_INFINITY
         usedByOthers = 0
@@ -505,7 +534,21 @@
           available = Math.max(0, Math.round(available))
         }
 
-        if (usedByOthers > 0) {
+        // Cap supplement quantity by the base action already entered on this parcel.
+        var supplementBaseCode = getSupplementBaseCode(code)
+        if (supplementBaseCode) {
+          var baseQuantity = getSelectedQuantity(supplementBaseCode)
+          if (baseQuantity > 0) {
+            available = roundHa(Math.min(available, baseQuantity))
+            allocationNote = {
+              label: 'Limited to the area of ' + supplementBaseCode + ' on this parcel',
+              ha: available,
+              unit: 'ha'
+            }
+          }
+        }
+
+        if (!allocationNote && usedByOthers > 0) {
           allocationNote = {
             label: 'Used by your other selected actions',
             ha: base.unit === 'ha' ? Math.min(usedByOthers, base.baseEligible) : usedByOthers,
@@ -527,7 +570,8 @@
         }
       }
 
-      if (base.unit === 'ha' && selectedQuantity > 0) {
+      // Supplements stack on base land — do not double-count hectares used on the parcel.
+      if (base.unit === 'ha' && selectedQuantity > 0 && !isSupplementAction(code)) {
         haUsedBySelections = roundHa(haUsedBySelections + selectedQuantity)
       }
 
@@ -808,8 +852,14 @@
     if (action.hardConflict) {
       return 'This action cannot be used with ' + action.hardConflict + ' on the same land parcel.'
     }
-    if (action.allocationNote || /already being used by your other/i.test(action.summaryReason || '')) {
-      // Match default (AAC off) area-full copy
+    // Stacking / base-cap notes are not "area full" — only genuine exclusive-pool use.
+    if (
+      action.allocationNote &&
+      /Used by your other selected actions/i.test(action.allocationNote.label || '')
+    ) {
+      return 'All available area on land parcel used'
+    }
+    if (/already being used by your other/i.test(action.summaryReason || '')) {
       return 'All available area on land parcel used'
     }
     return action.summaryReason || 'All available area on land parcel used'
@@ -818,10 +868,12 @@
   function buildHintText (action) {
     // Match default (AAC off) quantity copy: "X metres available" / "X.XXXX hectares available"
     // Pond actions intentionally have no available-quantity hint.
+    // Use maxAvailable (capacity before this action's own entry), not remaining after it —
+    // otherwise entering the full amount wrongly reads as "0 available".
     if (!action || action.unit === 'pond') {
       return ''
     }
-    var amount = action.status === 'unavailable' ? 0 : action.available
+    var amount = action.status === 'unavailable' ? 0 : action.maxAvailable
     return formatAvailableHint(amount, action.unit)
   }
 

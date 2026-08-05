@@ -3314,7 +3314,8 @@
       'oak-grove': 'Perennial crops',
       'lower-pasture': 'Permanent grassland',
       'mill-meadow': 'Temporary grass',
-      'church-field': 'Permanent grassland',
+      // SO3757 3190 — multi-cover so all 16 MVP actions can appear (grassland, scrub, pond/ditch, historic)
+      'church-field': ['Permanent grassland', 'Scrub - ungrazeable', 'Pond'],
       'pond-close': 'Pond',
       'upper-slope': 'Land lying fallow',
       'boundary-field': 'Non-agricultural area',
@@ -4247,14 +4248,7 @@
       }
       var landCoverEl = document.getElementById('land-cover');
       if (landCoverEl) {
-        var landCoverLines = getParcelLandCovers(parcel.landCover);
-        landCoverEl.innerHTML = '';
-        landCoverLines.forEach(function(landCover, index) {
-          if (index > 0) {
-            landCoverEl.appendChild(document.createElement('br'));
-          }
-          landCoverEl.appendChild(document.createTextNode(landCover));
-        });
+        landCoverEl.textContent = getParcelLandCovers(parcel.landCover).join(', ') || '-';
       }
       document.getElementById('actions-heading').textContent = 'Available actions on ' + formatParcelReference(parcel);
 

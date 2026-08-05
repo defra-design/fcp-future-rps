@@ -156,32 +156,8 @@
         })
       }
 
+      // Prototype: do not deduct area for previous / existing agreements
       var previousAgreementHa = 0
-      if (
-        window.SfiGrasslandsV2ExistingAgreements &&
-        typeof window.SfiGrasslandsV2ExistingAgreements.getTotalHa === 'function'
-      ) {
-        previousAgreementHa = roundHa(window.SfiGrasslandsV2ExistingAgreements.getTotalHa(parcelId) || 0)
-      }
-      if (previousAgreementHa <= 0 && profile.restrictions && profile.restrictions.previousAgreementHa > 0) {
-        previousAgreementHa = roundHa(profile.restrictions.previousAgreementHa)
-      } else if (previousAgreementHa <= 0 && PREVIOUS_AGREEMENT_HA_BY_PARCEL[parcelId]) {
-        previousAgreementHa = roundHa(PREVIOUS_AGREEMENT_HA_BY_PARCEL[parcelId])
-      } else if (
-        previousAgreementHa <= 0 &&
-        window.SfiGrasslandsV2ExistingAgreements &&
-        typeof window.SfiGrasslandsV2ExistingAgreements.count === 'function' &&
-        window.SfiGrasslandsV2ExistingAgreements.count(parcelId) > 0
-      ) {
-        previousAgreementHa = roundHa(Math.min(1.5 * window.SfiGrasslandsV2ExistingAgreements.count(parcelId), totalHa * 0.2))
-      }
-
-      if (previousAgreementHa > 0) {
-        restrictions.push({
-          label: 'Already included in a previous agreement',
-          ha: previousAgreementHa
-        })
-      }
     }
 
     var previousAgreementTotal = 0
@@ -273,12 +249,23 @@
       covers.push({ name: 'Permanent grassland', ha: roundHa(totalHa) })
     }
 
+    // Align with HISTORIC_ASSET_PARCELS in select-land / select-actions (HEF1)
+    var historicFeatureParcels = {
+      'top-barn-field': true,
+      'barn-field': true,
+      'church-meadow': true,
+      'church-field': true,
+      'mill-field': true,
+      'mill-meadow': true,
+      'stone-bridge': true
+    }
+
     return {
       totalHa: roundHa(totalHa),
       landCovers: covers,
       restrictions: {
         sssiHa: 0,
-        historicFeature: false,
+        historicFeature: !!historicFeatureParcels[parcelId],
         scrubPresent: covers.some(function (cover) {
           return /scrub/i.test(cover.name)
         }),
@@ -347,14 +334,7 @@
             baseEligible = roundHa(baseEligible - habitatCut)
           }
         }
-        if (profile.restrictions.previousAgreementHa > 0 && baseEligible > 0) {
-          var previousCut = Math.min(profile.restrictions.previousAgreementHa, baseEligible)
-          exclusions.push({
-            label: 'Already included in a previous agreement',
-            ha: previousCut
-          })
-          baseEligible = roundHa(baseEligible - previousCut)
-        }
+        // Prototype: do not deduct for previous / existing agreements
         if (profile.availableHa != null) {
           baseEligible = roundHa(Math.min(baseEligible, profile.availableHa))
         }
@@ -456,10 +436,38 @@
     return null
   }
 
+  // Supplements sit on a base action (SUPBAS) — they do not consume exclusive land.
+  var SUPPLEMENT_BASE_BY_CODE = {
+    GRH7: 'CLIG3',
+    GRH8: 'CLIG3',
+    GRH10: 'CLIG3'
+  }
+
+  function isSupplementAction (code) {
+    return Object.prototype.hasOwnProperty.call(SUPPLEMENT_BASE_BY_CODE, String(code || '').toUpperCase())
+  }
+
+  function getSupplementBaseCode (code) {
+    return SUPPLEMENT_BASE_BY_CODE[String(code || '').toUpperCase()] || null
+  }
+
+  function actionsShareStackingLand (codeA, codeB) {
+    var a = String(codeA || '').toUpperCase()
+    var b = String(codeB || '').toUpperCase()
+    if (!a || !b || a === b) {
+      return false
+    }
+    return getSupplementBaseCode(a) === b || getSupplementBaseCode(b) === a
+  }
+
   function getUsedByOtherUnitActions (code, unit) {
     var used = 0
     Object.keys(state.selections).forEach(function (selectedCode) {
       if (selectedCode === code) {
+        return
+      }
+      // Supplements stack on their base — neither side should reduce the other's exclusive pool.
+      if (isSupplementAction(selectedCode) || actionsShareStackingLand(code, selectedCode)) {
         return
       }
       var quantity = getSelectedQuantity(selectedCode)
@@ -493,6 +501,7 @@
 
       // Shared pool by unit: ha actions share hectares; metre actions share length; etc.
       // Pond count is user-declared — no shared available pool.
+      // Supplements stack on their base and do not compete for exclusive hectares.
       if (base.unit === 'pond') {
         available = Number.POSITIVE_INFINITY
         usedByOthers = 0
@@ -505,7 +514,21 @@
           available = Math.max(0, Math.round(available))
         }
 
-        if (usedByOthers > 0) {
+        // Cap supplement quantity by the base action already entered on this parcel.
+        var supplementBaseCode = getSupplementBaseCode(code)
+        if (supplementBaseCode) {
+          var baseQuantity = getSelectedQuantity(supplementBaseCode)
+          if (baseQuantity > 0) {
+            available = roundHa(Math.min(available, baseQuantity))
+            allocationNote = {
+              label: 'Limited to the area of ' + supplementBaseCode + ' on this parcel',
+              ha: available,
+              unit: 'ha'
+            }
+          }
+        }
+
+        if (!allocationNote && usedByOthers > 0) {
           allocationNote = {
             label: 'Used by your other selected actions',
             ha: base.unit === 'ha' ? Math.min(usedByOthers, base.baseEligible) : usedByOthers,
@@ -527,7 +550,8 @@
         }
       }
 
-      if (base.unit === 'ha' && selectedQuantity > 0) {
+      // Supplements stack on base land — do not double-count hectares used on the parcel.
+      if (base.unit === 'ha' && selectedQuantity > 0 && !isSupplementAction(code)) {
         haUsedBySelections = roundHa(haUsedBySelections + selectedQuantity)
       }
 
@@ -808,8 +832,14 @@
     if (action.hardConflict) {
       return 'This action cannot be used with ' + action.hardConflict + ' on the same land parcel.'
     }
-    if (action.allocationNote || /already being used by your other/i.test(action.summaryReason || '')) {
-      // Match default (AAC off) area-full copy
+    // Stacking / base-cap notes are not "area full" — only genuine exclusive-pool use.
+    if (
+      action.allocationNote &&
+      /Used by your other selected actions/i.test(action.allocationNote.label || '')
+    ) {
+      return 'All available area on land parcel used'
+    }
+    if (/already being used by your other/i.test(action.summaryReason || '')) {
       return 'All available area on land parcel used'
     }
     return action.summaryReason || 'All available area on land parcel used'
@@ -818,10 +848,12 @@
   function buildHintText (action) {
     // Match default (AAC off) quantity copy: "X metres available" / "X.XXXX hectares available"
     // Pond actions intentionally have no available-quantity hint.
+    // Use maxAvailable (capacity before this action's own entry), not remaining after it —
+    // otherwise entering the full amount wrongly reads as "0 available".
     if (!action || action.unit === 'pond') {
       return ''
     }
-    var amount = action.status === 'unavailable' ? 0 : action.available
+    var amount = action.status === 'unavailable' ? 0 : action.maxAvailable
     return formatAvailableHint(amount, action.unit)
   }
 

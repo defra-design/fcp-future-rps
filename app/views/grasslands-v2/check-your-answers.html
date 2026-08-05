@@ -207,16 +207,19 @@
       
       {% for parcelId, parcel in parcels %}
         <!-- {{ parcel.parcelName }} -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            {% set parcelHeadingTag = 'h3' %}
-            {% set parcelHeadingClass = 'govuk-heading-s' %}
-            {% set parcelHeadingStyle = 'margin-bottom: 15px;' %}
-            {% include "grasslands-v2/_includes/parcel-heading.html" %}
-          </div>
-          <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions?from=check-your-answers#parcel-{{ parcelId }}" style="font-size: 19px;">Change<span class="govuk-visually-hidden"> land and actions for land parcel {{ parcel.parcelReference or parcel.parcelName }}</span></a>
-        </div>
+        {% set parcelRef = parcel.parcelReference or parcel.parcelName or '' %}
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Parcel reference</dt>
+            <dd class="govuk-summary-list__value">{{ parcelRef }}</dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="/grasslands-v2/confirm-land-and-actions?from=check-your-answers#parcel-{{ parcelId }}">Change<span class="govuk-visually-hidden"> land and actions for land parcel {{ parcelRef }}</span></a>
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+            <dt class="govuk-summary-list__key">Land cover</dt>
+            <dd class="govuk-summary-list__value">{{ parcel.landCover or 'Permanent grassland' }}</dd>
+          </div>
           {% set parcelPayment = 0 %}
           {% for action in parcel.actions %}
             {% set actionName = action.name or action.code %}
@@ -233,7 +236,13 @@
               </dt>
               <dd class="govuk-summary-list__value">
                 {% if action.quantity %}
-                  {% if quantityUnit == 'm' %}
+                  {% if quantityUnit == 'pond' %}
+                    {% if quantityValue == 1 %}
+                      1 pond
+                    {% else %}
+                      {{ quantityValue | round(0, 'floor') }} ponds
+                    {% endif %}
+                  {% elif quantityUnit == 'm' %}
                     {{ quantityValue | round(0, 'floor') }} {{ quantityUnit }}
                   {% else %}
                     {{ action.quantity }} {{ quantityUnit }}

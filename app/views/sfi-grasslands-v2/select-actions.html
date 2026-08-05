@@ -666,6 +666,35 @@
       color: #505a5f;
     }
 
+    /* Supplements nested under CLIG3 — radios (single choice) */
+    #actions-section .app-clig3-supplements {
+      margin-top: 24px;
+      padding-top: 8px;
+    }
+
+    #actions-section .app-clig3-supplements .govuk-fieldset__legend {
+      margin-bottom: 5px;
+    }
+
+    #actions-section .app-clig3-supplements .govuk-radios__item {
+      margin-bottom: 12px;
+    }
+
+    #actions-section .app-clig3-supplements .govuk-radios__conditional {
+      margin-bottom: 8px;
+    }
+
+    #actions-section .app-clig3-supplements .app-clig3-supplement-actions {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      border: 0;
+    }
+
     /* AAC on: single column — no side parcel / previous-agreements panel */
     .app-bottom-panels--aac {
       grid-template-columns: minmax(0, 1fr);
@@ -693,6 +722,26 @@
     #actions-section #actions-checkboxes-container > .govuk-checkboxes__conditional + .govuk-checkboxes__item {
       margin-top: 8px;
       border-top: 1px solid #f3f2f1;
+    }
+
+    #actions-section #actions-checkboxes-container > .app-action-list-group-heading {
+      margin-top: 24px;
+      margin-bottom: 8px;
+      padding-top: 8px;
+    }
+
+    #actions-section #actions-checkboxes-container > .app-action-list-group-heading:first-child {
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    #actions-section #actions-checkboxes-container > .app-action-list-group-heading[hidden] {
+      display: none !important;
+    }
+
+    #actions-section #actions-checkboxes-container > .app-action-list-group-heading + .govuk-checkboxes__item {
+      border-top: 0;
+      margin-top: 0;
     }
 
     #actions-section #actions-checkboxes-container > .govuk-checkboxes__item .govuk-checkboxes__label {
@@ -918,16 +967,16 @@
             </div>
 
             <div class="app-aac-parcel-summary__notice" id="aac-parcel-action-notice" hidden>
-              <p>The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.</p>
+              <p id="aac-parcel-action-notice-text">
+                The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.
+              </p>
             </div>
 
             <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details" id="aac-parcel-area-details" hidden>
               <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">How the parcel area is calculated</span>
+                <span class="govuk-details__summary-text">Previous agreements</span>
               </summary>
-              <div class="govuk-details__text">
-                <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0" id="aac-parcel-area-breakdown-list"></dl>
-              </div>
+              <div class="govuk-details__text" id="aac-parcel-area-breakdown-list"></div>
             </details>
           </div>
 
@@ -1051,15 +1100,6 @@
                 <a class="govuk-link" href="/sfi-grasslands-v2/select-land">Change parcel</a>
               </p>
             </div>
-            <div id="previous-agreements-section" class="app-previous-agreements" hidden>
-              <p class="govuk-visually-hidden" id="previous-agreements-summary"></p>
-              <details class="govuk-details" data-module="govuk-details" id="previous-agreements-details" hidden>
-                <summary class="govuk-details__summary">
-                  <span class="govuk-details__summary-text" id="previous-agreements-summary-text">View previous agreement actions</span>
-                </summary>
-                <div class="govuk-details__text" id="previous-agreements-detail"></div>
-              </details>
-            </div>
           {% endif %}
         </div>
 
@@ -1108,338 +1148,6 @@
      
           </div>
       
-            <!-- Existing parcels section -->
-          <div class="govuk-accordion__section">
-            <div class="govuk-accordion__section-header">
-              <h3 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-1">
-                  Actions from previous agreements
-                </span>
-              </h3>
-            </div>
-            <div id="application-summary-accordion-content-1" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-1">
-              {# <p class="govuk-body">These parcels have actions from previous agreements</p> #}
-              
-              <div id="oak-tree-existing-actions" style="display: none;">
-              <h2 class="govuk-heading-s" id="existing-woods-view">SO3757 3183</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 August 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">7.5000 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Multi-species winter cover crop (CSAM2)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-long-meadow">SO3757 3170</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">15 September 2028</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">4.4521 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Legumes on improved grassland (CNUM2)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-willow-grove">SO3757 3182</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">30 June 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">11.7654 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Enhanced overwinter stubble (AHW7)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-valley-pasture">SO3757 3181</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 October 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">13.2341 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Enhanced overwinter stubble (AHW7)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-gate-pasture">SO3757 3167</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">15 December 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">12.1098 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>12m to 24m watercourse buffer strip on cultivated land (BFS1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-chalk-field">SO3757 3162</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">28 February 2028</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">11.4521 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Multi-species winter cover crop (CSAM2)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-              </div>
-              
-              <div id="blackberry-existing-actions">
-              <h2 class="govuk-heading-s" id="existing-spring-pasture">SO3757 3205</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 November 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">44.3215 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Assess soil, produce soil management plan, test soil organic matter (SOH1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-brook-field">SO3757 3188</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">28 February 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">32.7841 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Herbal leys (CSAM3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-valley-bottom">SO3757 3208</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 November 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">60.9423 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Take grassland field corners or blocks out of management (CIGL1)</li>
-                      <li>Winter bird food on arable land (BFS1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-upper-slope">SO3757 3207</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">15 March 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">54.6789 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Herbal leys (CSAM3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-lane-meadow">SO3757 3196</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">30 April 2028</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">62.1098 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Beetle banks (AHW3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-stone-bridge">SO3757 3206</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">31 May 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">51.2341 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>12m to 24m watercourse buffer strip on cultivated land (BFS1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-far-meadow">SO3757 3193</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">30 September 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">56.3210 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Herbal leys (CSAM3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 November 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">56.3210 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Grassland field corners (CIGL1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-              </div>
-                <div class="back-to-top">
-                  <a class="govuk-link" href="#page-heading">
-                    <svg 
-                    role="presentation" focusable="false" class="back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                      <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                    </svg>Back to top
-                  </a>
-                </div>
-              </div>
-          </div>
 
       
 
@@ -3114,6 +2822,97 @@
       return String(actionCode || '').toUpperCase() === 'CLIG3';
     }
 
+    // Supplements that stack on CLIG3 (compatibility SUPBAS) — shown nested under the base
+    var CLIG3_SUPPLEMENT_CODES = {
+      GRH7: true,
+      GRH8: true,
+      GRH10: true
+    };
+
+    function isClig3Supplement(actionCode) {
+      return !!CLIG3_SUPPLEMENT_CODES[String(actionCode || '').toUpperCase()];
+    }
+
+    function getClig3SupplementActions() {
+      return ACTION_CATALOG.filter(function(action) {
+        return isClig3Supplement(action.code);
+      });
+    }
+
+    function clearClig3SupplementSelections() {
+      getClig3SupplementActions().forEach(function(action) {
+        var codeLower = String(action.code || '').toLowerCase();
+        var checkbox = document.getElementById('action-' + codeLower);
+        var quantityInput = document.getElementById('quantity-' + codeLower);
+        var conditional = document.getElementById('conditional-' + codeLower);
+        if (checkbox) {
+          checkbox.checked = false;
+          checkbox.setAttribute('aria-expanded', 'false');
+        }
+        if (quantityInput) {
+          quantityInput.value = '';
+        }
+        if (conditional) {
+          conditional.classList.add('govuk-radios__conditional--hidden');
+          conditional.classList.add('govuk-checkboxes__conditional--hidden');
+        }
+      });
+      var noneRadio = document.getElementById('clig3-supplement-none');
+      if (noneRadio) {
+        noneRadio.checked = true;
+      }
+    }
+
+    function syncClig3SupplementCheckboxesFromRadios() {
+      var selected = document.querySelector('input[name="clig3-supplement"]:checked');
+      var selectedCode = selected ? String(selected.value || '').toUpperCase() : '';
+
+      getClig3SupplementActions().forEach(function(action) {
+        var code = String(action.code || '').toUpperCase();
+        var codeLower = code.toLowerCase();
+        var checkbox = document.getElementById('action-' + codeLower);
+        var quantityInput = document.getElementById('quantity-' + codeLower);
+        var conditional = document.getElementById('conditional-' + codeLower);
+        var isSelected = selectedCode === code;
+
+        if (checkbox) {
+          checkbox.checked = isSelected;
+          checkbox.setAttribute('aria-expanded', isSelected ? 'true' : 'false');
+        }
+        if (!isSelected && quantityInput) {
+          quantityInput.value = '';
+        }
+        if (conditional) {
+          if (isSelected) {
+            conditional.classList.remove('govuk-radios__conditional--hidden');
+            conditional.classList.remove('govuk-checkboxes__conditional--hidden');
+          } else {
+            conditional.classList.add('govuk-radios__conditional--hidden');
+            conditional.classList.add('govuk-checkboxes__conditional--hidden');
+          }
+        }
+      });
+    }
+
+    function syncClig3SupplementRadiosFromCheckboxes() {
+      var selectedCode = '';
+      getClig3SupplementActions().forEach(function(action) {
+        var checkbox = document.getElementById('action-' + String(action.code || '').toLowerCase());
+        if (checkbox && checkbox.checked) {
+          selectedCode = String(action.code || '').toUpperCase();
+        }
+      });
+
+      var radioId = selectedCode
+        ? 'clig3-supplement-' + selectedCode.toLowerCase()
+        : 'clig3-supplement-none';
+      var radio = document.getElementById(radioId);
+      if (radio) {
+        radio.checked = true;
+      }
+      syncClig3SupplementCheckboxesFromRadios();
+    }
+
     function getWholeRemainingAreaHa(actionCode) {
       var code = String(actionCode || '').toUpperCase();
       if (!isWholeRemainingAreaAction(code)) {
@@ -3526,6 +3325,8 @@
     }
 
     function updatePreviousAgreementsSummary(parcelId) {
+      // Prototype: previous-agreement actions UI removed from this journey
+      return;
       var sectionEl = document.getElementById('previous-agreements-section');
       var summaryEl = document.getElementById('previous-agreements-summary');
       var summaryTextEl = document.getElementById('previous-agreements-summary-text');
@@ -3943,7 +3744,8 @@
       'oak-grove': 'Perennial crops',
       'lower-pasture': 'Permanent grassland',
       'mill-meadow': 'Temporary grass',
-      'church-field': 'Permanent grassland',
+      // SO3757 3190 — multi-cover so all 16 MVP actions can appear (grassland, scrub, pond/ditch, historic)
+      'church-field': ['Permanent grassland', 'Scrub - ungrazeable', 'Pond'],
       'pond-close': 'Pond',
       'upper-slope': 'Land lying fallow',
       'boundary-field': 'Non-agricultural area',
@@ -4300,33 +4102,243 @@
       return hint;
     }
 
-    function renderActionCheckboxes() {
-      var container = document.getElementById('actions-checkboxes-container');
-      if (!container) {
+    function createActionCheckboxElements(action) {
+      var codeLower = action.code.toLowerCase();
+      var hintId = 'action-hint-' + codeLower;
+      var consentHintId = 'action-consent-hint-' + codeLower;
+
+      var item = document.createElement('div');
+      item.className = 'govuk-checkboxes__item';
+
+      var input = document.createElement('input');
+      input.className = 'govuk-checkboxes__input';
+      input.id = 'action-' + codeLower;
+      input.name = 'actions';
+      input.type = 'checkbox';
+      input.value = action.code;
+      input.setAttribute('data-aria-controls', 'conditional-' + codeLower);
+
+      var label = document.createElement('label');
+      label.className = 'govuk-label govuk-checkboxes__label';
+      label.setAttribute('for', 'action-' + codeLower);
+      label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
+
+      var guidanceLink = document.createElement('a');
+      guidanceLink.className = 'govuk-link app-action-guidance-link';
+      guidanceLink.href = getActionGuidanceUrl(action);
+      guidanceLink.target = '_blank';
+      guidanceLink.rel = 'noopener noreferrer';
+      guidanceLink.textContent = 'read guidance';
+      guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
+      guidanceLink.addEventListener('click', function(event) {
+        event.stopPropagation();
+      });
+      label.appendChild(guidanceLink);
+
+      var hint = document.createElement('span');
+      hint.className = 'app-action-hint';
+      hint.id = hintId;
+      hint.textContent = 'Payment rate per year: ' + (action.rateText || '');
+      label.appendChild(hint);
+
+      var consentHint = buildActionConsentHint(action.code, consentHintId);
+      var describedBy = hintId;
+      if (consentHint) {
+        label.appendChild(consentHint);
+        describedBy += ' ' + consentHintId;
+      }
+      // Nested supplements already sit under a “supplements for CLIG3” legend —
+      // no need to repeat the relationship on every label.
+      input.setAttribute('aria-describedby', describedBy);
+
+      item.appendChild(input);
+      item.appendChild(label);
+
+      var conditional = document.createElement('div');
+      conditional.className = 'govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
+      conditional.id = 'conditional-' + codeLower;
+
+      if (isWholeRemainingAreaAction(action.code)) {
+        conditional.setAttribute('data-whole-remaining-area', 'true');
+
+        var formGroup = document.createElement('div');
+        formGroup.className = 'govuk-form-group govuk-!-margin-bottom-0';
+
+        var qtyLabel = document.createElement('p');
+        qtyLabel.className = 'govuk-label govuk-!-margin-bottom-1';
+        qtyLabel.id = 'whole-remaining-label-' + codeLower;
+        qtyLabel.textContent = 'Quantity';
+
+        var amountText = document.createElement('p');
+        amountText.className = 'govuk-body govuk-!-margin-bottom-1';
+        amountText.id = 'whole-remaining-summary-' + codeLower;
+        amountText.setAttribute('aria-labelledby', qtyLabel.id);
+        amountText.innerHTML =
+          '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> hectares</strong>';
+
+        var qtyHint = document.createElement('p');
+        qtyHint.className = 'govuk-hint govuk-!-margin-bottom-0';
+        qtyHint.id = 'whole-remaining-hint-' + codeLower;
+        qtyHint.textContent = 'All remaining available area on this parcel';
+
+        amountText.setAttribute('aria-describedby', qtyHint.id);
+
+        var hiddenQty = document.createElement('input');
+        hiddenQty.type = 'hidden';
+        hiddenQty.id = 'quantity-' + codeLower;
+        hiddenQty.name = 'quantity-' + codeLower;
+        hiddenQty.value = '';
+        hiddenQty.setAttribute('data-whole-remaining-quantity', 'true');
+
+        formGroup.appendChild(qtyLabel);
+        formGroup.appendChild(amountText);
+        formGroup.appendChild(qtyHint);
+        formGroup.appendChild(hiddenQty);
+        conditional.appendChild(formGroup);
+        return { item: item, conditional: conditional };
+      }
+
+      var quantityFormGroup = document.createElement('div');
+      quantityFormGroup.className = 'govuk-form-group';
+
+      var quantityLabel = document.createElement('label');
+      quantityLabel.className = 'govuk-label';
+      quantityLabel.setAttribute('for', 'quantity-' + codeLower);
+      quantityLabel.textContent = isPondUnit(getQuantityUnitForAction(action.code))
+        ? 'Number of ponds'
+        : 'Quantity';
+
+      var quantityHint = document.createElement('div');
+      // Must include govuk-checkboxes__hint — updateAvailableQuantities / selectParcel
+      // find this node with `.govuk-hint.govuk-checkboxes__hint`.
+      quantityHint.className = 'govuk-hint govuk-checkboxes__hint';
+      quantityHint.textContent = getAvailableHintText(
+        action.code,
+        getQuantityUnitForAction(action.code) === 'ha' ? '0.0000' : 0
+      );
+      if (isPondUnit(getQuantityUnitForAction(action.code))) {
+        quantityHint.hidden = true;
+      }
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'govuk-input__wrapper';
+
+      var qtyInput = document.createElement('input');
+      qtyInput.className = 'govuk-input govuk-input--width-5';
+      qtyInput.id = 'quantity-' + codeLower;
+      qtyInput.name = 'quantity-' + codeLower;
+      qtyInput.type = 'text';
+      qtyInput.inputMode = isPondUnit(getQuantityUnitForAction(action.code)) ? 'numeric' : 'decimal';
+      qtyInput.spellcheck = false;
+
+      var suffix = document.createElement('div');
+      suffix.className = 'govuk-input__suffix';
+      suffix.setAttribute('aria-hidden', 'true');
+      suffix.textContent = getQuantityUnitForAction(action.code);
+
+      wrapper.appendChild(qtyInput);
+      wrapper.appendChild(suffix);
+      quantityFormGroup.appendChild(quantityLabel);
+      quantityFormGroup.appendChild(quantityHint);
+      quantityFormGroup.appendChild(wrapper);
+      conditional.appendChild(quantityFormGroup);
+
+      if (String(action.code || '').toUpperCase() === 'WBD1') {
+        var eligibilityDetails = document.createElement('details');
+        eligibilityDetails.className = 'govuk-details app-pond-eligibility-details govuk-!-margin-top-4 govuk-!-margin-bottom-0';
+        eligibilityDetails.setAttribute('data-module', 'govuk-details');
+
+        var eligibilitySummary = document.createElement('summary');
+        eligibilitySummary.className = 'govuk-details__summary';
+        eligibilitySummary.innerHTML =
+          '<span class="govuk-details__summary-text">Check your ponds are eligible</span>';
+
+        var eligibilityText = document.createElement('div');
+        eligibilityText.className = 'govuk-details__text';
+        eligibilityText.innerHTML =
+          '<p class="govuk-body">Each pond must:</p>' +
+          '<ul class="govuk-list govuk-list--bullet">' +
+          '<li>be larger than 25 square metres, up to a maximum of 2 hectares (at the time of application)</li>' +
+          '<li>be under your management control — including the surrounding water and the whole of the pond edge</li>' +
+          '</ul>' +
+          '<p class="govuk-body">Ponds used for wastewater, treated effluent discharge, or those that have been heavily modified for treatment are not eligible.</p>' +
+          '<p class="govuk-body govuk-!-margin-bottom-0">Payment is limited to a maximum of 3 ponds per hectare.</p>';
+
+        eligibilityDetails.appendChild(eligibilitySummary);
+        eligibilityDetails.appendChild(eligibilityText);
+        conditional.appendChild(eligibilityDetails);
+      }
+
+      return { item: item, conditional: conditional };
+    }
+
+    function appendClig3Supplements(clig3Conditional) {
+      var supplements = getClig3SupplementActions();
+      if (!clig3Conditional || !supplements.length) {
         return;
       }
 
-      container.innerHTML = '';
+      var wrap = document.createElement('div');
+      wrap.className = 'app-clig3-supplements';
+      wrap.setAttribute('data-clig3-supplements', 'true');
 
-      ACTION_CATALOG.forEach(function(action) {
+      var fieldset = document.createElement('fieldset');
+      fieldset.className = 'govuk-fieldset';
+
+      var legend = document.createElement('legend');
+      legend.className = 'govuk-fieldset__legend govuk-fieldset__legend--s';
+      legend.textContent = 'You can also add one supplement';
+
+      var groupHint = document.createElement('div');
+      groupHint.className = 'govuk-hint';
+      groupHint.id = 'clig3-supplement-hint';
+      groupHint.textContent = 'Optional. Applied on the same land as CLIG3.';
+
+      var radios = document.createElement('div');
+      radios.className = 'govuk-radios';
+      radios.setAttribute('data-module', 'govuk-radios');
+      radios.setAttribute('aria-describedby', 'clig3-supplement-hint');
+
+      // Hidden action checkboxes so save / AAC keep using input[name="actions"]
+      var hiddenActions = document.createElement('div');
+      hiddenActions.className = 'app-clig3-supplement-actions';
+      hiddenActions.setAttribute('aria-hidden', 'true');
+
+      supplements.forEach(function(action) {
         var codeLower = action.code.toLowerCase();
         var hintId = 'action-hint-' + codeLower;
-        var consentHintId = 'action-consent-hint-' + codeLower;
+
+        var hiddenItem = document.createElement('div');
+        hiddenItem.className = 'govuk-checkboxes__item';
+        var hiddenCheckbox = document.createElement('input');
+        hiddenCheckbox.className = 'govuk-checkboxes__input';
+        hiddenCheckbox.type = 'checkbox';
+        hiddenCheckbox.name = 'actions';
+        hiddenCheckbox.id = 'action-' + codeLower;
+        hiddenCheckbox.value = action.code;
+        hiddenCheckbox.tabIndex = -1;
+        var hiddenLabel = document.createElement('label');
+        hiddenLabel.className = 'govuk-label govuk-checkboxes__label';
+        hiddenLabel.setAttribute('for', 'action-' + codeLower);
+        hiddenLabel.textContent = action.code;
+        hiddenItem.appendChild(hiddenCheckbox);
+        hiddenItem.appendChild(hiddenLabel);
+        hiddenActions.appendChild(hiddenItem);
 
         var item = document.createElement('div');
-        item.className = 'govuk-checkboxes__item';
+        item.className = 'govuk-radios__item';
 
-        var input = document.createElement('input');
-        input.className = 'govuk-checkboxes__input';
-        input.id = 'action-' + codeLower;
-        input.name = 'actions';
-        input.type = 'checkbox';
-        input.value = action.code;
-        input.setAttribute('data-aria-controls', 'conditional-' + codeLower);
+        var radio = document.createElement('input');
+        radio.className = 'govuk-radios__input';
+        radio.type = 'radio';
+        radio.name = 'clig3-supplement';
+        radio.id = 'clig3-supplement-' + codeLower;
+        radio.value = action.code;
+        radio.setAttribute('data-aria-controls', 'conditional-' + codeLower);
 
         var label = document.createElement('label');
-        label.className = 'govuk-label govuk-checkboxes__label';
-        label.setAttribute('for', 'action-' + codeLower);
+        label.className = 'govuk-label govuk-radios__label';
+        label.setAttribute('for', 'clig3-supplement-' + codeLower);
         label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
 
         var guidanceLink = document.createElement('a');
@@ -4344,87 +4356,33 @@
         var hint = document.createElement('span');
         hint.className = 'app-action-hint';
         hint.id = hintId;
+        hint.style.display = 'block';
+        hint.style.fontWeight = 'normal';
+        hint.style.color = '#505a5f';
+        hint.style.marginTop = '5px';
         hint.textContent = 'Payment rate per year: ' + (action.rateText || '');
         label.appendChild(hint);
 
-        var consentHint = buildActionConsentHint(action.code, consentHintId);
-        var describedBy = hintId;
-        if (consentHint) {
-          label.appendChild(consentHint);
-          describedBy += ' ' + consentHintId;
-        }
-        input.setAttribute('aria-describedby', describedBy);
-
-        item.appendChild(input);
+        radio.setAttribute('aria-describedby', hintId);
+        item.appendChild(radio);
         item.appendChild(label);
-        container.appendChild(item);
+        radios.appendChild(item);
 
         var conditional = document.createElement('div');
-        conditional.className = 'govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
+        conditional.className = 'govuk-radios__conditional govuk-radios__conditional--hidden govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
         conditional.id = 'conditional-' + codeLower;
 
-        if (isWholeRemainingAreaAction(action.code)) {
-          conditional.setAttribute('data-whole-remaining-area', 'true');
+        var quantityFormGroup = document.createElement('div');
+        quantityFormGroup.className = 'govuk-form-group';
 
-          var formGroup = document.createElement('div');
-          formGroup.className = 'govuk-form-group govuk-!-margin-bottom-0';
+        var quantityLabel = document.createElement('label');
+        quantityLabel.className = 'govuk-label';
+        quantityLabel.setAttribute('for', 'quantity-' + codeLower);
+        quantityLabel.textContent = 'Quantity';
 
-          var qtyLabel = document.createElement('p');
-          qtyLabel.className = 'govuk-label govuk-!-margin-bottom-1';
-          qtyLabel.id = 'whole-remaining-label-' + codeLower;
-          qtyLabel.textContent = 'Quantity';
-
-          var amountText = document.createElement('p');
-          amountText.className = 'govuk-body govuk-!-margin-bottom-1';
-          amountText.id = 'whole-remaining-summary-' + codeLower;
-          amountText.setAttribute('aria-labelledby', qtyLabel.id);
-          amountText.innerHTML =
-            '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> hectares</strong>';
-
-          var qtyHint = document.createElement('p');
-          qtyHint.className = 'govuk-hint govuk-!-margin-bottom-0';
-          qtyHint.id = 'whole-remaining-hint-' + codeLower;
-          qtyHint.textContent = 'All remaining available area on this parcel';
-
-          amountText.setAttribute('aria-describedby', qtyHint.id);
-
-          var hiddenQty = document.createElement('input');
-          hiddenQty.type = 'hidden';
-          hiddenQty.id = 'quantity-' + codeLower;
-          hiddenQty.name = 'quantity-' + codeLower;
-          hiddenQty.value = '';
-          hiddenQty.setAttribute('data-whole-remaining-quantity', 'true');
-
-          formGroup.appendChild(qtyLabel);
-          formGroup.appendChild(amountText);
-          formGroup.appendChild(qtyHint);
-          formGroup.appendChild(hiddenQty);
-          conditional.appendChild(formGroup);
-          container.appendChild(conditional);
-          return;
-        }
-
-        var formGroup = document.createElement('div');
-        formGroup.className = 'govuk-form-group';
-
-        var qtyLabel = document.createElement('label');
-        qtyLabel.className = 'govuk-label';
-        qtyLabel.setAttribute('for', 'quantity-' + codeLower);
-        qtyLabel.textContent = isPondUnit(getQuantityUnitForAction(action.code))
-          ? 'Number of ponds'
-          : 'Quantity';
-
-        var qtyHint = document.createElement('div');
-        // Must include govuk-checkboxes__hint — updateAvailableQuantities / selectParcel
-        // find this node with `.govuk-hint.govuk-checkboxes__hint`.
-        qtyHint.className = 'govuk-hint govuk-checkboxes__hint';
-        qtyHint.textContent = getAvailableHintText(
-          action.code,
-          getQuantityUnitForAction(action.code) === 'ha' ? '0.0000' : 0
-        );
-        if (isPondUnit(getQuantityUnitForAction(action.code))) {
-          qtyHint.hidden = true;
-        }
+        var quantityHint = document.createElement('div');
+        quantityHint.className = 'govuk-hint govuk-checkboxes__hint';
+        quantityHint.textContent = getAvailableHintText(action.code, '0.0000');
 
         var wrapper = document.createElement('div');
         wrapper.className = 'govuk-input__wrapper';
@@ -4434,48 +4392,91 @@
         qtyInput.id = 'quantity-' + codeLower;
         qtyInput.name = 'quantity-' + codeLower;
         qtyInput.type = 'text';
-        qtyInput.inputMode = isPondUnit(getQuantityUnitForAction(action.code)) ? 'numeric' : 'decimal';
+        qtyInput.inputMode = 'decimal';
         qtyInput.spellcheck = false;
 
         var suffix = document.createElement('div');
         suffix.className = 'govuk-input__suffix';
         suffix.setAttribute('aria-hidden', 'true');
-        suffix.textContent = getQuantityUnitForAction(action.code);
+        suffix.textContent = 'ha';
 
         wrapper.appendChild(qtyInput);
         wrapper.appendChild(suffix);
-        formGroup.appendChild(qtyLabel);
-        formGroup.appendChild(qtyHint);
-        formGroup.appendChild(wrapper);
-        conditional.appendChild(formGroup);
+        quantityFormGroup.appendChild(quantityLabel);
+        quantityFormGroup.appendChild(quantityHint);
+        quantityFormGroup.appendChild(wrapper);
+        conditional.appendChild(quantityFormGroup);
+        radios.appendChild(conditional);
+      });
 
-        if (String(action.code || '').toUpperCase() === 'WBD1') {
-          var eligibilityDetails = document.createElement('details');
-          eligibilityDetails.className = 'govuk-details app-pond-eligibility-details govuk-!-margin-top-4 govuk-!-margin-bottom-0';
-          eligibilityDetails.setAttribute('data-module', 'govuk-details');
+      var noneItem = document.createElement('div');
+      noneItem.className = 'govuk-radios__item';
+      var noneRadio = document.createElement('input');
+      noneRadio.className = 'govuk-radios__input';
+      noneRadio.type = 'radio';
+      noneRadio.name = 'clig3-supplement';
+      noneRadio.id = 'clig3-supplement-none';
+      noneRadio.value = '';
+      noneRadio.checked = true;
+      var noneLabel = document.createElement('label');
+      noneLabel.className = 'govuk-label govuk-radios__label';
+      noneLabel.setAttribute('for', 'clig3-supplement-none');
+      noneLabel.textContent = 'No supplement';
+      noneItem.appendChild(noneRadio);
+      noneItem.appendChild(noneLabel);
 
-          var eligibilitySummary = document.createElement('summary');
-          eligibilitySummary.className = 'govuk-details__summary';
-          eligibilitySummary.innerHTML =
-            '<span class="govuk-details__summary-text">Check your ponds are eligible</span>';
+      var divider = document.createElement('div');
+      divider.className = 'govuk-radios__divider';
+      divider.textContent = 'or';
+      radios.appendChild(divider);
+      radios.appendChild(noneItem);
 
-          var eligibilityText = document.createElement('div');
-          eligibilityText.className = 'govuk-details__text';
-          eligibilityText.innerHTML =
-            '<p class="govuk-body">Each pond must:</p>' +
-            '<ul class="govuk-list govuk-list--bullet">' +
-            '<li>be larger than 25 square metres, up to a maximum of 2 hectares (at the time of application)</li>' +
-            '<li>be under your management control — including the surrounding water and the whole of the pond edge</li>' +
-            '</ul>' +
-            '<p class="govuk-body">Ponds used for wastewater, treated effluent discharge, or those that have been heavily modified for treatment are not eligible.</p>' +
-            '<p class="govuk-body govuk-!-margin-bottom-0">Payment is limited to a maximum of 3 ponds per hectare.</p>';
+      radios.addEventListener('change', function(event) {
+        if (!event.target || event.target.name !== 'clig3-supplement') {
+          return;
+        }
+        syncClig3SupplementCheckboxesFromRadios();
+        var selectedCode = String(event.target.value || '').toUpperCase();
+        var $trigger = selectedCode
+          ? $('input[name="actions"][value="' + selectedCode + '"]')
+          : $('#action-clig3');
+        if ($trigger.length) {
+          $trigger.trigger('change');
+        } else if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+          window.SfiGrasslandsV2Aac.render();
+        }
+      });
 
-          eligibilityDetails.appendChild(eligibilitySummary);
-          eligibilityDetails.appendChild(eligibilityText);
-          conditional.appendChild(eligibilityDetails);
+      fieldset.appendChild(legend);
+      fieldset.appendChild(groupHint);
+      fieldset.appendChild(radios);
+      wrap.appendChild(fieldset);
+      wrap.appendChild(hiddenActions);
+      clig3Conditional.appendChild(wrap);
+    }
+
+    function renderActionCheckboxes() {
+      var container = document.getElementById('actions-checkboxes-container');
+      if (!container) {
+        return;
+      }
+
+      container.innerHTML = '';
+
+      ACTION_CATALOG.forEach(function(action) {
+        // Supplements are nested under CLIG3 — do not list them as peers
+        if (isClig3Supplement(action.code)) {
+          return;
         }
 
-        container.appendChild(conditional);
+        var parts = createActionCheckboxElements(action);
+        container.appendChild(parts.item);
+
+        if (isWholeRemainingAreaAction(action.code)) {
+          appendClig3Supplements(parts.conditional);
+        }
+
+        container.appendChild(parts.conditional);
       });
     }
 
@@ -4725,14 +4726,23 @@
       return 'bottom';
     }
 
-    function buildParcelPopupContent(parcelId, data) {
-      var existingCount = (window.SfiGrasslandsV2ExistingAgreements && typeof window.SfiGrasslandsV2ExistingAgreements.count === 'function')
-        ? window.SfiGrasslandsV2ExistingAgreements.count(parcelId)
-        : (data && data.numActions) || 0;
+    function formatAvailableActionsCountLabel(count) {
+      var n = Math.max(0, Math.round(Number(count) || 0));
+      return 'Actions available: ' + n;
+    }
 
+    function getParcelAvailableActionsCount(parcelId, data) {
+      var parcel = (data && data.actions) ? data : parcelData[parcelId];
+      if (parcel && Array.isArray(parcel.actions)) {
+        return parcel.actions.length;
+      }
+      return 0;
+    }
+
+    function buildParcelPopupContent(parcelId, data) {
       return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
-        '<p>Actions from previous agreements: ' + existingCount + '</p>' +
-        '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>';
+        '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
+        '<p>' + formatAvailableActionsCountLabel(getParcelAvailableActionsCount(parcelId, data)) + '</p>';
     }
 
     function createParcelOverlay(parcelId, data) {
@@ -4953,7 +4963,9 @@
             var conditionalId = 'conditional-' + action.code.toLowerCase();
             var $conditional = $('#' + conditionalId);
             if ($conditional.length > 0) {
-              $conditional.removeClass('govuk-checkboxes__conditional--hidden');
+              $conditional
+                .removeClass('govuk-checkboxes__conditional--hidden')
+                .removeClass('govuk-radios__conditional--hidden');
               console.log('Showed conditional for:', action.code);
             }
             
@@ -4979,6 +4991,7 @@
             window.SfiGrasslandsV2ActionsCompatibilityLoading.setSuspended(false);
           }
         }
+        syncClig3SupplementRadiosFromCheckboxes();
         if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
           window.SfiGrasslandsV2Aac.render();
         }
@@ -5068,14 +5081,7 @@
       }
       var landCoverEl = document.getElementById('land-cover');
       if (landCoverEl) {
-        var landCoverLines = getParcelLandCovers(parcel.landCover);
-        landCoverEl.innerHTML = '';
-        landCoverLines.forEach(function(landCover, index) {
-          if (index > 0) {
-            landCoverEl.appendChild(document.createElement('br'));
-          }
-          landCoverEl.appendChild(document.createTextNode(landCover));
-        });
+        landCoverEl.textContent = getParcelLandCovers(parcel.landCover).join(', ') || '-';
       }
       document.getElementById('actions-heading').textContent = 'Available actions';
 
@@ -5294,31 +5300,162 @@
       return codes.sort(compareByDefaultOrder);
     }
 
+    function getActionListGroups() {
+      return [
+        {
+          id: 'ha',
+          heading: 'Grassland and land area actions',
+          unit: 'ha'
+        },
+        {
+          id: 'm',
+          heading: 'Boundaries, hedgerows and ditches',
+          unit: 'm'
+        },
+        {
+          id: 'pond',
+          heading: 'Ponds',
+          unit: 'pond'
+        },
+        {
+          id: 'm2',
+          heading: 'Buildings',
+          unit: 'm²'
+        }
+      ];
+    }
+
+    function getActionListGroupId(actionCode) {
+      var unit = getQuantityUnitForAction(actionCode);
+      if (unit === 'm²') {
+        return 'm2';
+      }
+      if (unit === 'pond') {
+        return 'pond';
+      }
+      if (unit === 'm') {
+        return 'm';
+      }
+      return 'ha';
+    }
+
+    function clearActionListGroupHeadings(container) {
+      if (!container) {
+        return;
+      }
+      Array.prototype.forEach.call(
+        container.querySelectorAll('.app-action-list-group-heading'),
+        function(heading) {
+          if (heading.parentNode) {
+            heading.parentNode.removeChild(heading);
+          }
+        }
+      );
+    }
+
+    function updateActionListGroupHeadingVisibility() {
+      var container = document.getElementById('actions-checkboxes-container');
+      if (!container) {
+        return;
+      }
+
+      Array.prototype.forEach.call(
+        container.querySelectorAll('.app-action-list-group-heading'),
+        function(heading) {
+          var hasVisibleAction = false;
+          var sibling = heading.nextElementSibling;
+          while (sibling && !sibling.classList.contains('app-action-list-group-heading')) {
+            if (
+              sibling.classList.contains('govuk-checkboxes__item') &&
+              sibling.getAttribute('data-available-for-parcel') !== 'false' &&
+              !sibling.hidden &&
+              sibling.style.display !== 'none'
+            ) {
+              hasVisibleAction = true;
+              break;
+            }
+            sibling = sibling.nextElementSibling;
+          }
+          heading.hidden = !hasVisibleAction;
+        }
+      );
+    }
+
     function reorderActionOptions(sortedCodes) {
       var container = document.getElementById('actions-checkboxes-container');
       if (!container || !Array.isArray(sortedCodes) || sortedCodes.length === 0) {
         return;
       }
 
+      clearActionListGroupHeadings(container);
+
       var fragment = document.createDocumentFragment();
+      var groups = getActionListGroups();
+      var codesByGroup = {};
+      groups.forEach(function(group) {
+        codesByGroup[group.id] = [];
+      });
 
       sortedCodes.forEach(function(actionCode) {
-        var input = container.querySelector('input[name="actions"][value="' + actionCode + '"]');
-        if (!input) {
+        // Keep CLIG3 supplements nested under the base action
+        if (isClig3Supplement(actionCode)) {
+          return;
+        }
+        var groupId = getActionListGroupId(actionCode);
+        if (!codesByGroup[groupId]) {
+          codesByGroup[groupId] = [];
+        }
+        codesByGroup[groupId].push(actionCode);
+      });
+
+      function findTopLevelActionItem(actionCode) {
+        var item = null;
+        Array.prototype.some.call(container.children, function(child) {
+          if (!child.classList || !child.classList.contains('govuk-checkboxes__item')) {
+            return false;
+          }
+          var directInput = null;
+          Array.prototype.some.call(child.children, function(el) {
+            if (el.tagName === 'INPUT' && el.name === 'actions' && el.value === actionCode) {
+              directInput = el;
+              return true;
+            }
+            return false;
+          });
+          if (directInput) {
+            item = child;
+            return true;
+          }
+          return false;
+        });
+        return item;
+      }
+
+      groups.forEach(function(group) {
+        var codes = codesByGroup[group.id] || [];
+        if (!codes.length) {
           return;
         }
 
-        var item = input.closest('.govuk-checkboxes__item');
-        if (!item) {
-          return;
-        }
+        var heading = document.createElement('h3');
+        heading.className = 'govuk-heading-s app-action-list-group-heading';
+        heading.setAttribute('data-action-group', group.id);
+        heading.textContent = group.heading;
+        fragment.appendChild(heading);
 
-        var conditional = item.nextElementSibling;
-        fragment.appendChild(item);
+        codes.forEach(function(actionCode) {
+          var item = findTopLevelActionItem(actionCode);
+          if (!item) {
+            return;
+          }
 
-        if (conditional && conditional.classList && conditional.classList.contains('govuk-checkboxes__conditional')) {
-          fragment.appendChild(conditional);
-        }
+          var conditional = item.nextElementSibling;
+          fragment.appendChild(item);
+
+          if (conditional && conditional.classList && conditional.classList.contains('govuk-checkboxes__conditional')) {
+            fragment.appendChild(conditional);
+          }
+        });
       });
 
       container.appendChild(fragment);
@@ -5335,7 +5472,7 @@
 
       var visibleCount = 0;
 
-      $('input[name="actions"]').each(function() {
+      $('#actions-checkboxes-container > .govuk-checkboxes__item input[name="actions"]').each(function() {
         var checkbox = this;
         var $item = $(checkbox).closest('.govuk-checkboxes__item');
         var actionCode = checkbox.value;
@@ -5358,6 +5495,8 @@
           }
         }
       });
+
+      updateActionListGroupHeadingVisibility();
 
       if (currentSelectedParcel && visibleCount === 0) {
         var noResultsTitle = document.getElementById('no-results-title');
@@ -5461,22 +5600,13 @@
     }
 
     function getPreviousAgreementActionCodes(parcelId) {
-      if (!parcelId || !window.SfiGrasslandsV2ExistingAgreements ||
-          typeof window.SfiGrasslandsV2ExistingAgreements.get !== 'function') {
-        return [];
-      }
-      return (window.SfiGrasslandsV2ExistingAgreements.get(parcelId) || []).map(function(action) {
-        return action.code;
-      }).filter(function(code) {
-        // Only grey out actions that are actually offered on this page
-        return isActionCodeOnThisPage(code);
-      });
+      // Prototype: do not surface or lock actions from existing agreements
+      return [];
     }
 
     function getParcelAvailableActions(parcel) {
       // Default: land-cover (+ feature) eligible actions only.
       // “Show all 16 MVP actions” is the explicit override.
-      // Previous-agreement actions stay in the list but are greyed out separately.
       if (isShowAllMvpActionsToggleOn()) {
         return getAllMvpActionCodes();
       }
@@ -5642,26 +5772,27 @@
       var sssiHa = findRestrictionHa(breakdown.restrictions, function(label) {
         return /sssi/i.test(label);
       });
-      var previousDeductions = [];
+
+      var previousAgreements = [];
       if (window.SfiGrasslandsV2ExistingAgreements &&
-          typeof window.SfiGrasslandsV2ExistingAgreements.getDeductions === 'function') {
-        previousDeductions = window.SfiGrasslandsV2ExistingAgreements.getDeductions(currentSelectedParcel) || [];
-      }
-      var previousHa = previousDeductions.reduce(function(sum, action) {
-        return Math.round((sum + Number(action.ha || 0)) * 10000) / 10000;
-      }, 0);
-      if (previousHa <= 0) {
-        previousHa = findRestrictionHa(breakdown.restrictions, function(label) {
-          return /previous agreement/i.test(label);
-        });
+          typeof window.SfiGrasslandsV2ExistingAgreements.getAgreements === 'function') {
+        previousAgreements = window.SfiGrasslandsV2ExistingAgreements.getAgreements(currentSelectedParcel) || [];
+      } else if (window.SfiGrasslandsV2ExistingAgreements &&
+          typeof window.SfiGrasslandsV2ExistingAgreements.get === 'function') {
+        var flatActions = window.SfiGrasslandsV2ExistingAgreements.get(currentSelectedParcel) || [];
+        if (flatActions.length) {
+          previousAgreements = [{
+            scheme: 'Sustainable Farming Incentive',
+            endDate: '',
+            availableArea: '',
+            actions: flatActions
+          }];
+        }
       }
 
       var areaDeductionHa = 0;
       if (sssiHa > 0) {
         areaDeductionHa += sssiHa;
-      }
-      if (previousHa > 0) {
-        areaDeductionHa += previousHa;
       }
       (breakdown.restrictions || []).forEach(function(item) {
         var label = item.label || '';
@@ -5704,114 +5835,66 @@
         availableEl.textContent = formatBreakdownNumber(availableHa);
       }
 
-      var rows = [];
+      // Details panel: previous agreements as summary lists (same pattern as selected land parcel)
+      listEl.innerHTML = '';
+      previousAgreements.forEach(function(agreement, index) {
+        var list = document.createElement('dl');
+        list.className = 'govuk-summary-list' + (index < previousAgreements.length - 1 ? ' govuk-!-margin-bottom-6' : ' govuk-!-margin-bottom-0');
 
-      // Land-cover composition (when the parcel has more than one cover)
-      if (landCovers.length > 1) {
-        landCovers.forEach(function(cover) {
-          rows.push(
-            '<div class="govuk-summary-list__row">' +
-              '<dt class="govuk-summary-list__key">' + escapeHtmlText(cover.name) + '</dt>' +
-              '<dd class="govuk-summary-list__value">' + escapeHtmlText(formatBreakdownHa(cover.ha)) + '</dd>' +
-            '</div>'
-          );
+        if (agreement.scheme) {
+          appendPreviousAgreementSummaryRow(list, 'Scheme', agreement.scheme);
+        }
+        if (agreement.endDate) {
+          appendPreviousAgreementSummaryRow(list, 'Agreement end date', agreement.endDate);
+        }
+        if (agreement.availableArea) {
+          appendPreviousAgreementSummaryRow(list, 'Available area', agreement.availableArea);
+        }
+
+        var actionsRow = document.createElement('div');
+        actionsRow.className = 'govuk-summary-list__row';
+
+        var actionsKey = document.createElement('dt');
+        actionsKey.className = 'govuk-summary-list__key';
+        actionsKey.textContent = 'Existing actions';
+
+        var actionsValue = document.createElement('dd');
+        actionsValue.className = 'govuk-summary-list__value';
+
+        var actionsList = document.createElement('ul');
+        actionsList.className = 'govuk-list';
+        (agreement.actions || []).forEach(function(action) {
+          var item = document.createElement('li');
+          item.textContent = window.SfiGrasslandsV2ExistingAgreements.formatLabel
+            ? window.SfiGrasslandsV2ExistingAgreements.formatLabel(action)
+            : ((action.name || '') + (action.code ? ' (' + action.code + ')' : ''));
+          actionsList.appendChild(item);
         });
-      }
 
-      rows.push(
-        '<div class="govuk-summary-list__row app-aac-parcel-summary__rule-row">' +
-          '<dt class="govuk-summary-list__key">Parcel base total</dt>' +
-          '<dd class="govuk-summary-list__value">' + escapeHtmlText(formatBreakdownHa(breakdown.totalHa)) + '</dd>' +
-        '</div>'
-      );
-
-      if (sssiHa > 0) {
-        rows.push(
-          '<div class="govuk-summary-list__row">' +
-            '<dt class="govuk-summary-list__key">SSSI restriction</dt>' +
-            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(sssiHa)) + '</dd>' +
-          '</div>'
-        );
-      }
-
-      if (previousDeductions.length) {
-        var previousTotalHa = previousDeductions.reduce(function(sum, action) {
-          return Math.round((sum + Number(action.ha || 0)) * 10000) / 10000;
-        }, 0);
-        var previousHints = previousDeductions.map(function(action) {
-          var deductionLabel = window.SfiGrasslandsV2ExistingAgreements.formatDeductionLabel
-            ? window.SfiGrasslandsV2ExistingAgreements.formatDeductionLabel(action)
-            : ((action.code || '') + ' – ' + (action.name || ''));
-          return (
-            '<p class="govuk-hint app-aac-parcel-summary__hint">' +
-              escapeHtmlText(deductionLabel + ' (−' + formatBreakdownHa(action.ha) + ')') +
-            '</p>'
-          );
-        }).join('');
-
-        rows.push(
-          '<div class="govuk-summary-list__row">' +
-            '<dt class="govuk-summary-list__key">Previous agreements</dt>' +
-            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(previousTotalHa)) + '</dd>' +
-          '</div>' +
-          '<div class="govuk-summary-list__row app-aac-parcel-summary__previous-details-row">' +
-            '<dt class="govuk-summary-list__key">' +
-              previousHints +
-            '</dt>' +
-            '<dd class="govuk-summary-list__value">' +
-              '<span class="govuk-visually-hidden">Action deductions</span>' +
-            '</dd>' +
-          '</div>'
-        );
-      } else if (previousHa > 0) {
-        rows.push(
-          '<div class="govuk-summary-list__row">' +
-            '<dt class="govuk-summary-list__key">Previous agreements</dt>' +
-            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(previousHa)) + '</dd>' +
-          '</div>'
-        );
-      }
-
-      (breakdown.restrictions || []).forEach(function(item) {
-        var label = item.label || '';
-        if (/sssi/i.test(label) || /previous agreement/i.test(label) || isHeferRestrictionLabel(label)) {
-          return;
-        }
-        if (item.ha == null || !Number.isFinite(Number(item.ha)) || Number(item.ha) <= 0) {
-          return;
-        }
-        rows.push(
-          '<div class="govuk-summary-list__row">' +
-            '<dt class="govuk-summary-list__key">' + escapeHtmlText(label) + '</dt>' +
-            '<dd class="govuk-summary-list__value">' + escapeHtmlText('−' + formatBreakdownHa(item.ha)) + '</dd>' +
-          '</div>'
-        );
+        actionsValue.appendChild(actionsList);
+        actionsRow.appendChild(actionsKey);
+        actionsRow.appendChild(actionsValue);
+        list.appendChild(actionsRow);
+        listEl.appendChild(list);
       });
 
-      rows.push(
-        '<div class="govuk-summary-list__row app-aac-parcel-summary__total-row">' +
-          '<dt class="govuk-summary-list__key">Available area</dt>' +
-          '<dd class="govuk-summary-list__value">' + escapeHtmlText(formatBreakdownHa(availableHa)) + '</dd>' +
-        '</div>'
-      );
-
-      listEl.innerHTML = rows.join('');
       container.hidden = false;
 
-      // Hide calculation extras when the summary card shows the same Total and Available
-      var totalDisplay = formatBreakdownNumber(breakdown.totalHa);
-      var availableDisplay = formatBreakdownNumber(availableHa);
-      var totalsMatch = totalDisplay !== '—' && totalDisplay === availableDisplay;
-
       if (detailsEl) {
-        detailsEl.hidden = totalsMatch;
+        var hasPrevious = previousAgreements.length > 0;
+        detailsEl.hidden = !hasPrevious;
         detailsEl.open = false;
-        if (totalsMatch) {
+        if (!hasPrevious) {
           listEl.innerHTML = '';
         }
       }
       if (noticeEl) {
-        noticeEl.hidden = totalsMatch;
+        noticeEl.hidden = false;
+        var noticeTextEl = document.getElementById('aac-parcel-action-notice-text');
+        if (noticeTextEl) {
+          noticeTextEl.textContent =
+            'The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.';
+        }
       }
     }
 
@@ -6200,13 +6283,13 @@
           var actionCode = $checkbox.val();
           var actionName = getActionName(actionCode);
           
-          // Get quantity if entered
+          // Get quantity if entered (strip thousand separators like "2,166")
           var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
-          var quantity = $quantityInput.val() ? $quantityInput.val() : null;
-          var numericQuantity = Number(quantity);
+          var parsed = parseQuantityInput($quantityInput.val());
+          var quantity = parsed.valid ? String(parsed.value) : null;
           var quantityUnit = getQuantityUnitForAction(actionCode);
-          var annualPayment = (Number.isFinite(numericQuantity) && numericQuantity > 0)
-            ? calculateActionYearlyPayment(actionCode, numericQuantity)
+          var annualPayment = parsed.valid
+            ? calculateActionYearlyPayment(actionCode, parsed.value)
             : null;
           
           actions.push({
@@ -6542,24 +6625,25 @@
           var actionCode = $checkbox.val();
           var actionName = getActionName(actionCode);
           var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
-          var quantity = $quantityInput.val() ? $quantityInput.val() : null;
-          var numericQuantity = Number(quantity);
           var quantityUnit = getQuantityUnitForAction(actionCode);
           var paymentRate = paymentRates[String(actionCode || '').toUpperCase()] || null;
-          var yearlyPayment = (Number.isFinite(numericQuantity) && numericQuantity > 0)
-            ? calculateActionYearlyPayment(actionCode, numericQuantity)
-            : null;
+          var parsed = parseQuantityInput($quantityInput.val());
 
-          if (Number.isFinite(numericQuantity) && numericQuantity > 0) {
-            actions.push({
-              code: actionCode,
-              name: actionName,
-              quantity: quantity,
-              unit: quantityUnit,
-              paymentRate: paymentRate,
-              yearlyPayment: yearlyPayment
-            });
+          if (!parsed.valid) {
+            return;
           }
+
+          var quantity = String(parsed.value);
+          var yearlyPayment = calculateActionYearlyPayment(actionCode, parsed.value);
+
+          actions.push({
+            code: actionCode,
+            name: actionName,
+            quantity: quantity,
+            unit: quantityUnit,
+            paymentRate: paymentRate,
+            yearlyPayment: yearlyPayment
+          });
         });
         return actions;
       }
@@ -7212,6 +7296,7 @@
             clearQuantityFieldValidation($quantityInput);
           }
           if (isWholeRemainingAreaAction(actionCode)) {
+            clearClig3SupplementSelections();
             syncWholeRemainingAreaAction(actionCode);
           }
         } else if (isWholeRemainingAreaAction(actionCode)) {

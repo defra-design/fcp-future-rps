@@ -117,6 +117,8 @@ function buildParcelSelectionsDataFromApplication (req) {
       parcelName: getParcelDisplayReference(parcel),
       osRef: getParcelDisplayReference(parcel),
       parcelReference: getParcelDisplayReference(parcel),
+      landCover: formatLandCover(parcel.landCover).join(', ') || 'Permanent grassland',
+      totalArea: parcel.totalArea,
       actions: (parcel.actions || []).map(function (action) {
         return {
           code: action.code,
@@ -166,6 +168,13 @@ function formatHaShort (value) {
 function formatQuantityDisplay (action) {
   var unit = (action && action.unit) ? String(action.unit) : 'ha'
   var quantity = toNumber(action && action.quantity)
+
+  if (unit === 'pond') {
+    var pondCount = Math.round(quantity)
+    return pondCount === 1
+      ? '1 pond'
+      : pondCount.toLocaleString('en-GB') + ' ponds'
+  }
 
   if (unit === 'm') {
     return Math.round(quantity).toLocaleString('en-GB') + ' m'

@@ -6200,13 +6200,13 @@
           var actionCode = $checkbox.val();
           var actionName = getActionName(actionCode);
           
-          // Get quantity if entered
+          // Get quantity if entered (strip thousand separators like "2,166")
           var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
-          var quantity = $quantityInput.val() ? $quantityInput.val() : null;
-          var numericQuantity = Number(quantity);
+          var parsed = parseQuantityInput($quantityInput.val());
+          var quantity = parsed.valid ? String(parsed.value) : null;
           var quantityUnit = getQuantityUnitForAction(actionCode);
-          var annualPayment = (Number.isFinite(numericQuantity) && numericQuantity > 0)
-            ? calculateActionYearlyPayment(actionCode, numericQuantity)
+          var annualPayment = parsed.valid
+            ? calculateActionYearlyPayment(actionCode, parsed.value)
             : null;
           
           actions.push({
@@ -6542,24 +6542,25 @@
           var actionCode = $checkbox.val();
           var actionName = getActionName(actionCode);
           var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
-          var quantity = $quantityInput.val() ? $quantityInput.val() : null;
-          var numericQuantity = Number(quantity);
           var quantityUnit = getQuantityUnitForAction(actionCode);
           var paymentRate = paymentRates[String(actionCode || '').toUpperCase()] || null;
-          var yearlyPayment = (Number.isFinite(numericQuantity) && numericQuantity > 0)
-            ? calculateActionYearlyPayment(actionCode, numericQuantity)
-            : null;
+          var parsed = parseQuantityInput($quantityInput.val());
 
-          if (Number.isFinite(numericQuantity) && numericQuantity > 0) {
-            actions.push({
-              code: actionCode,
-              name: actionName,
-              quantity: quantity,
-              unit: quantityUnit,
-              paymentRate: paymentRate,
-              yearlyPayment: yearlyPayment
-            });
+          if (!parsed.valid) {
+            return;
           }
+
+          var quantity = String(parsed.value);
+          var yearlyPayment = calculateActionYearlyPayment(actionCode, parsed.value);
+
+          actions.push({
+            code: actionCode,
+            name: actionName,
+            quantity: quantity,
+            unit: quantityUnit,
+            paymentRate: paymentRate,
+            yearlyPayment: yearlyPayment
+          });
         });
         return actions;
       }

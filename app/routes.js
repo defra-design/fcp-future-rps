@@ -1962,6 +1962,7 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
 })
 
 router.get('/grasslands-v2/check-your-answers', function (req, res) {
+  grasslandsV2LandActions.syncParcelSelectionsData(req)
   var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
   var basketParcels = grasslandsV2LandActions.buildBasketParcels(req)
   var consentHintsByParcel = {}
@@ -2821,6 +2822,7 @@ router.post('/sfi-grasslands-v2/check-land-details-answer', function (req, res) 
 })
 
 router.get('/sfi-grasslands-v2/check-your-answers', function (req, res) {
+  sfiGrasslandsV2LandActions.syncParcelSelectionsData(req)
   var actionsSummary = buildSfiActionsSummaryFromSession(req)
   var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req)
   var consentHintsByParcel = {}
