@@ -8,6 +8,11 @@
       id: 'show-all-mvp-actions',
       storageKey: 'sfiGrasslandsV2ShowAllMvpActions',
       queryParam: 'allActions'
+    },
+    {
+      id: 'show-previous-agreements',
+      storageKey: 'sfiGrasslandsV2ShowPreviousAgreements',
+      queryParam: 'previousAgreements'
     }
   ]
 

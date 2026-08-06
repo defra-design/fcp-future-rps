@@ -558,18 +558,6 @@
       padding-bottom: 10px;
     }
 
-    .app-aac-parcel-summary__notice {
-      margin-top: 16px;
-      margin-bottom: 16px;
-      padding: 15px;
-      border-left: 5px solid #1d70b8;
-      background: #f3f2f1;
-    }
-
-    .app-aac-parcel-summary__notice p {
-      margin: 0;
-    }
-
     .app-aac-parcel-summary .govuk-details {
       margin-bottom: 0;
     }
@@ -891,12 +879,12 @@
                   <td class="govuk-table__cell" id="os-ref">-</td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Total area<br>(hectares)</td>
-                  <td class="govuk-table__cell" id="total-area">-</td>
-                </tr>
-                <tr class="govuk-table__row">
                   <td class="govuk-table__cell">Land cover</td>
                   <td class="govuk-table__cell" id="land-cover">-</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Total area<br>(hectares)</td>
+                  <td class="govuk-table__cell" id="total-area">-</td>
                 </tr>
               </tbody>
             </table>
@@ -977,10 +965,8 @@
               </div>
             </div>
 
-            <div class="app-aac-parcel-summary__notice" id="aac-parcel-action-notice" hidden>
-              <p id="aac-parcel-action-notice-text">
-                The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.
-              </p>
+            <div class="govuk-inset-text" id="aac-parcel-action-notice" hidden>
+              The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.
             </div>
 
             <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details" id="aac-parcel-area-details" hidden>
@@ -999,7 +985,7 @@
 
               {# AAC only: short guidance under the list heading #}
               <p class="govuk-body" id="aac-actions-intro" hidden>
-                Enter how much land you want for each action. Actions with no land left are shown but cannot be selected.
+                Enter the quantity you want for each action. Actions with nothing left are shown but cannot be selected.
               </p>
 
               {% if draftParcel and (draftParcel.parcelId == 'gate-field' or draftParcel.parcelId == 'far-meadow') %}
@@ -1078,12 +1064,6 @@
               <h2 class="govuk-heading-m app-selected-parcel__name">{{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}</h2>
               <dl class="govuk-summary-list govuk-summary-list--no-border app-selected-parcel__list">
                 <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Total area</dt>
-                  <dd class="govuk-summary-list__value">
-                    <span id="selected-parcel-total-area">{{ draftParcel.totalArea }} hectares</span>
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Land cover</dt>
                   <dd class="govuk-summary-list__value">
                     {% if draftParcel.landCover is string %}
@@ -1093,6 +1073,12 @@
                     {% else %}
                       -
                     {% endif %}
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Total area</dt>
+                  <dd class="govuk-summary-list__value">
+                    <span id="selected-parcel-total-area">{{ draftParcel.totalArea }} hectares</span>
                   </dd>
                 </div>
                 {% if draftParcel.parcelId == 'gate-field' %}
@@ -5769,6 +5755,21 @@
       return /hefer|historic/i.test(String(label || ''));
     }
 
+    function isPreviousAgreementsToggleOn() {
+      if (window.SfiGrasslandsV2FeatureToggles) {
+        return window.SfiGrasslandsV2FeatureToggles.getQueryFlag('previousAgreements') ||
+          window.SfiGrasslandsV2FeatureToggles.getSessionFlag('sfiGrasslandsV2ShowPreviousAgreements');
+      }
+      try {
+        if (new URLSearchParams(window.location.search).get('previousAgreements') === '1') {
+          return true;
+        }
+        return window.sessionStorage.getItem('sfiGrasslandsV2ShowPreviousAgreements') === '1';
+      } catch (error) {
+        return false;
+      }
+    }
+
     function updateAacParcelAreaBreakdown() {
       var container = document.getElementById('aac-parcel-summary');
       var listEl = document.getElementById('aac-parcel-area-breakdown-list');
@@ -5936,20 +5937,18 @@
       container.hidden = false;
 
       if (detailsEl) {
+        var showPreviousAgreements = isPreviousAgreementsToggleOn();
         var hasPrevious = previousAgreements.length > 0;
-        detailsEl.hidden = !hasPrevious;
+        detailsEl.hidden = !(showPreviousAgreements && hasPrevious);
         detailsEl.open = false;
-        if (!hasPrevious) {
+        if (!showPreviousAgreements || !hasPrevious) {
           listEl.innerHTML = '';
         }
       }
       if (noticeEl) {
         noticeEl.hidden = false;
-        var noticeTextEl = document.getElementById('aac-parcel-action-notice-text');
-        if (noticeTextEl) {
-          noticeTextEl.textContent =
-            'The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.';
-        }
+        noticeEl.textContent =
+          'The amount available for each action may be lower depending on land cover, previous agreements and other actions you select.';
       }
     }
 
@@ -6571,16 +6570,20 @@
 
       // Tier 1: live over-limit updates; show format errors for clearly invalid input
       // AAC mode: only show format errors for invalid characters (e.g. "d") — not over-limit here.
+      // Live available-hint updates are debounced (see scheduleAacQuantityLiveUpdate).
       $(document).on('input', 'input[id^="quantity-"]', function() {
         var $input = $(this);
+        var inputEl = this;
 
         if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
           if (hasClearlyInvalidQuantityInput($input.val())) {
+            clearQuantityAacDebounce();
             updateQuantityFormatErrors($input);
           } else {
             var aacErrors = getQuantityErrorsStore($input);
             aacErrors.format = null;
             refreshQuantityFieldDisplay($input);
+            scheduleAacQuantityLiveUpdate(inputEl);
           }
           return;
         }
@@ -6967,6 +6970,10 @@
           var allActionsOn = allActionsToggle
             ? Boolean(allActionsToggle.checked)
             : getFeatureToggleQueryFlag('allActions');
+          var previousAgreementsToggle = document.getElementById('show-previous-agreements');
+          var previousAgreementsOn = previousAgreementsToggle
+            ? Boolean(previousAgreementsToggle.checked)
+            : getFeatureToggleQueryFlag('previousAgreements');
 
           function setOrClear(paramName, enabled) {
             if (enabled) {
@@ -6986,6 +6993,7 @@
           setOrClear('aacDebug', false);
           setOrClear('aac', false);
           setOrClear('allActions', allActionsOn);
+          setOrClear('previousAgreements', previousAgreementsOn);
 
           if (changed) {
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
@@ -7188,11 +7196,13 @@
       function applyGreyOutCnum2() {
         clearGreyOutCnum2();
 
-        // Grey out actions already used on this parcel in a previous agreement
-        var usedCodes = getPreviousAgreementActionCodes(currentSelectedParcel);
-        usedCodes.forEach(function(code) {
-          greyOutPreviousAgreementAction(code);
-        });
+        // Only grey previous-agreement actions when that feature toggle is on
+        if (isPreviousAgreementsToggleOn()) {
+          var usedCodes = getPreviousAgreementActionCodes(currentSelectedParcel);
+          usedCodes.forEach(function(code) {
+            greyOutPreviousAgreementAction(code);
+          });
+        }
 
         // Prototype toggle: force CNUM2 unavailable even without parcel previous-agreement data
         greyOutCnum2Enabled = isCnum2UnavailableToggleOn();
@@ -7242,6 +7252,31 @@
         }
       }
 
+      function wirePreviousAgreementsToggle() {
+        var storageKey = 'sfiGrasslandsV2ShowPreviousAgreements';
+        var toggle = document.getElementById('show-previous-agreements');
+        var enabled = getFeatureToggleQueryFlag('previousAgreements') || getSessionFlag(storageKey);
+
+        setSessionFlag(storageKey, enabled);
+        if (toggle) {
+          toggle.checked = enabled;
+          toggle.addEventListener('change', function() {
+            var isOn = Boolean(toggle.checked);
+            setSessionFlag(storageKey, isOn);
+            syncFeatureToggleQueryParams();
+            updateAacParcelAreaBreakdown();
+            applyGreyOutCnum2();
+            if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+              window.SfiGrasslandsV2Aac.render();
+            }
+            updateAvailableQuantities({ skipCompatibilityUpdate: true });
+          });
+        }
+
+        updateAacParcelAreaBreakdown();
+        applyGreyOutCnum2();
+      }
+
       function wireCnum2UnavailableToggle() {
         greyOutCnum2Enabled = false;
         setSessionFlag('sfiGrasslandsV2GreyOutCnum2', false);
@@ -7268,6 +7303,7 @@
 
       wireCnum2UnavailableToggle();
       wireShowAllMvpActionsToggle();
+      wirePreviousAgreementsToggle();
       wireAacToggles();
       syncFeatureToggleQueryParams();
 
@@ -7519,10 +7555,35 @@
         refreshContinueFromActionSelection();
       }
 
+      // While typing: wait after the last keystroke, then run the same AAC path as blur
+      // (spinner + 2.5s simulated API). Blur cancels a pending debounce and commits immediately.
+      var QUANTITY_AAC_DEBOUNCE_MS = 800;
+      var quantityAacDebounceTimer = null;
+
+      function clearQuantityAacDebounce() {
+        if (quantityAacDebounceTimer !== null) {
+          window.clearTimeout(quantityAacDebounceTimer);
+          quantityAacDebounceTimer = null;
+        }
+      }
+
+      function scheduleAacQuantityLiveUpdate(inputEl) {
+        clearQuantityAacDebounce();
+        quantityAacDebounceTimer = window.setTimeout(function() {
+          quantityAacDebounceTimer = null;
+          if (!inputEl || !document.body.contains(inputEl)) {
+            return;
+          }
+          triggerAacQuantityUpdate(inputEl);
+        }, QUANTITY_AAC_DEBOUNCE_MS);
+      }
+
       $(document).on('blur', 'input[id^="quantity-"]', function() {
         if (!(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled())) {
           return;
         }
+        // Cancel pending debounced update — blur commits immediately with spinner
+        clearQuantityAacDebounce();
         triggerAacQuantityUpdate(this);
       });
 

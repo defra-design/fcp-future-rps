@@ -2600,7 +2600,9 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
       parcelId: 'far-meadow',
       heading: 'Land parcel SO3757 3193',
       parcelReference: 'SO3757 3193',
-      totalAreaFormatted: '12.4500 hectares',
+      totalAreaFormatted: '12.4500 ha',
+      areaUsedFormatted: '8.2000 ha',
+      availableLeftFormatted: '4.2500 ha',
       landCover: 'Permanent grassland',
       yearlyPaymentFormatted: '£2,012.70',
       actions: [
@@ -2620,7 +2622,9 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
       parcelId: 'pond-close',
       heading: 'Land parcel SO3757 3203',
       parcelReference: 'SO3757 3203',
-      totalAreaFormatted: '29.3214 hectares',
+      totalAreaFormatted: '29.3214 ha',
+      areaUsedFormatted: '19.4900 ha',
+      availableLeftFormatted: '9.8314 ha',
       landCover: 'Temporary grass',
       yearlyPaymentFormatted: '£3,145.60',
       actions: [
@@ -2825,6 +2829,7 @@ router.get('/sfi-grasslands-v2/check-your-answers', function (req, res) {
   sfiGrasslandsV2LandActions.syncParcelSelectionsData(req)
   var actionsSummary = buildSfiActionsSummaryFromSession(req)
   var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req)
+  var basketSummary = sfiGrasslandsV2LandActions.summariseBasket(basketParcels)
   var consentHintsByParcel = {}
 
   basketParcels.forEach(function (parcel) {
@@ -2837,6 +2842,7 @@ router.get('/sfi-grasslands-v2/check-your-answers', function (req, res) {
       var hint = sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
       if (hint) {
         hints[action.code] = hint
+        action.consentHint = hint
       }
     })
 
@@ -2855,7 +2861,9 @@ router.get('/sfi-grasslands-v2/check-your-answers', function (req, res) {
     data: Object.assign({}, req.session.data),
     actionsSummaryRows: actionsSummary.rows,
     actionsSummaryTotal: actionsSummary.total,
-    consentHintsByParcel: consentHintsByParcel
+    consentHintsByParcel: consentHintsByParcel,
+    basketParcels: basketParcels,
+    basketSummary: basketSummary
   })
 })
 
