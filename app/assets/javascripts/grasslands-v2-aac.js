@@ -156,32 +156,8 @@
         })
       }
 
+      // Prototype: do not deduct area for previous / existing agreements
       var previousAgreementHa = 0
-      if (
-        window.GrasslandsV2ExistingAgreements &&
-        typeof window.GrasslandsV2ExistingAgreements.getTotalHa === 'function'
-      ) {
-        previousAgreementHa = roundHa(window.GrasslandsV2ExistingAgreements.getTotalHa(parcelId) || 0)
-      }
-      if (previousAgreementHa <= 0 && profile.restrictions && profile.restrictions.previousAgreementHa > 0) {
-        previousAgreementHa = roundHa(profile.restrictions.previousAgreementHa)
-      } else if (previousAgreementHa <= 0 && PREVIOUS_AGREEMENT_HA_BY_PARCEL[parcelId]) {
-        previousAgreementHa = roundHa(PREVIOUS_AGREEMENT_HA_BY_PARCEL[parcelId])
-      } else if (
-        previousAgreementHa <= 0 &&
-        window.GrasslandsV2ExistingAgreements &&
-        typeof window.GrasslandsV2ExistingAgreements.count === 'function' &&
-        window.GrasslandsV2ExistingAgreements.count(parcelId) > 0
-      ) {
-        previousAgreementHa = roundHa(Math.min(1.5 * window.GrasslandsV2ExistingAgreements.count(parcelId), totalHa * 0.2))
-      }
-
-      if (previousAgreementHa > 0) {
-        restrictions.push({
-          label: 'Already included in a previous agreement',
-          ha: previousAgreementHa
-        })
-      }
     }
 
     var previousAgreementTotal = 0
@@ -273,12 +249,23 @@
       covers.push({ name: 'Permanent grassland', ha: roundHa(totalHa) })
     }
 
+    // Align with HISTORIC_ASSET_PARCELS in select-land / select-actions (HEF1)
+    var historicFeatureParcels = {
+      'top-barn-field': true,
+      'barn-field': true,
+      'church-meadow': true,
+      'church-field': true,
+      'mill-field': true,
+      'mill-meadow': true,
+      'stone-bridge': true
+    }
+
     return {
       totalHa: roundHa(totalHa),
       landCovers: covers,
       restrictions: {
         sssiHa: 0,
-        historicFeature: false,
+        historicFeature: !!historicFeatureParcels[parcelId],
         scrubPresent: covers.some(function (cover) {
           return /scrub/i.test(cover.name)
         }),
@@ -347,14 +334,7 @@
             baseEligible = roundHa(baseEligible - habitatCut)
           }
         }
-        if (profile.restrictions.previousAgreementHa > 0 && baseEligible > 0) {
-          var previousCut = Math.min(profile.restrictions.previousAgreementHa, baseEligible)
-          exclusions.push({
-            label: 'Already included in a previous agreement',
-            ha: previousCut
-          })
-          baseEligible = roundHa(baseEligible - previousCut)
-        }
+        // Prototype: do not deduct for previous / existing agreements
         if (profile.availableHa != null) {
           baseEligible = roundHa(Math.min(baseEligible, profile.availableHa))
         }
@@ -737,6 +717,25 @@
     return conditional.querySelector('.govuk-hint.govuk-checkboxes__hint')
   }
 
+  function getActionAvailableHint (code) {
+    return document.getElementById('action-available-hint-' + String(code || '').toLowerCase())
+  }
+
+  function applyAvailableHint (code, action) {
+    var labelHint = getActionAvailableHint(code)
+    if (!labelHint) {
+      return
+    }
+    if (!action || action.unit === 'pond') {
+      labelHint.textContent = ''
+      labelHint.hidden = true
+      return
+    }
+    var text = buildHintText(action)
+    labelHint.textContent = text
+    labelHint.hidden = !text
+  }
+
   function setBusy (isBusy, editedCode) {
     state.busy = Boolean(isBusy)
     var continueButton = getContinueButton()
@@ -1018,6 +1017,7 @@
             hint.hidden = false
           }
         }
+        applyAvailableHint(code, action)
         if (label) {
           var unavailableHint = document.createElement('span')
           unavailableHint.className = 'aac-unavailable-hint'
@@ -1046,6 +1046,7 @@
           hint.hidden = false
         }
       }
+      applyAvailableHint(code, action)
 
       applyDebug(conditional, action)
     })

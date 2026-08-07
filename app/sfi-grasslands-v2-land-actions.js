@@ -194,6 +194,45 @@ function formatActionValueDisplay (action) {
   return quantityText
 }
 
+var actionNamesByCode = null
+
+function getCatalogActionName (code) {
+  if (!actionNamesByCode) {
+    actionNamesByCode = {}
+    try {
+      require('./data/sfi24-codes-names.json').forEach(function (row) {
+        if (row && row.code) {
+          actionNamesByCode[String(row.code).toUpperCase()] = row.name
+        }
+      })
+    } catch (error) {
+      actionNamesByCode = {}
+    }
+  }
+  return actionNamesByCode[String(code || '').toUpperCase()] || ''
+}
+
+function resolveActionDisplayName (action) {
+  var code = String((action && action.code) || '').toUpperCase()
+  var name = String((action && action.name) || '').trim()
+  var catalogName = getCatalogActionName(code)
+  if (!name || name.toUpperCase() === code) {
+    return catalogName || name || code
+  }
+  return name
+}
+
+// Stacked on a base action (same land) — do not add to exclusive hectares used
+var STACKED_SUPPLEMENT_CODES = {
+  GRH7: true,
+  GRH8: true,
+  GRH10: true
+}
+
+function isStackedSupplementAction (code) {
+  return !!STACKED_SUPPLEMENT_CODES[String(code || '').toUpperCase()]
+}
+
 function summariseParcelActions (parcel) {
   var actions = Array.isArray(parcel && parcel.actions) ? parcel.actions : []
   var areaUsed = 0
@@ -201,7 +240,7 @@ function summariseParcelActions (parcel) {
 
   actions.forEach(function (action) {
     yearlyPayment += toNumber(action && action.yearlyPayment)
-    if (action && action.unit === 'ha') {
+    if (action && action.unit === 'ha' && !isStackedSupplementAction(action.code)) {
       areaUsed += toNumber(action.quantity)
     }
   })
@@ -222,6 +261,7 @@ function summariseParcelActions (parcel) {
     yearlyPaymentFormatted: formatMoney(yearlyPayment),
     actions: actions.map(function (action) {
       return Object.assign({}, action, {
+        name: resolveActionDisplayName(action),
         yearlyPaymentFormatted: formatMoney(action && action.yearlyPayment),
         quantityDisplay: formatQuantityDisplay(action),
         valueDisplay: formatActionValueDisplay(action)

@@ -1,0 +1,41 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2-previous/task-list" %}
+{% extends "layouts/grasslands-v2-previous-header.html" %}
+
+{% block pageTitle %}
+  Remove this land parcel?
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v2-previous/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/grasslands-v2-previous/confirm-land-and-actions"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% set journeySection = "Select land and actions" %}
+      {% include "grasslands-v2-previous/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Remove this land parcel?</h1>
+
+      <p class="govuk-body">
+        This will remove land parcel {{ parcel.parcelReference or parcel.heading or parcel.parcelName }} and all actions added to it from your application.
+      </p>
+
+      <form action="/grasslands-v2-previous/remove-parcel-actions/{{ parcel.parcelId }}" method="post">
+        <input type="hidden" name="confirmRemove" value="yes">
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+            Remove this land parcel
+          </button>
+          <a class="govuk-link" href="/grasslands-v2-previous/confirm-land-and-actions">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

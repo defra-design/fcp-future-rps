@@ -1,0 +1,147 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2-previous/task-list" %}
+{% extends "layouts/grasslands-v2-previous-header.html" %}
+
+{% block pageTitle %}
+  Your land and actions
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v2-previous/_includes/account-bar.html" %}
+  {% set parcels = basketParcels if basketParcels else [] %}
+  {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
+  {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: fromCheckYourAnswers and "/grasslands-v2-previous/check-your-answers" or (summary.isEmpty and "/grasslands-v2-previous/select-land" or "/grasslands-v2-previous/select-actions")
+  }) }}
+{% endblock %}
+
+{% block content %}
+  {% set parcels = basketParcels if basketParcels else [] %}
+  {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
+  {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% if flashMessage %}
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="confirm-land-success-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="confirm-land-success-title">
+              Success
+            </h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">{{ flashMessage }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% set journeySection = "Select land and actions" %}
+      {% include "grasslands-v2-previous/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Your land and actions</h1>
+      {% if summary.isEmpty %}
+        <p class="govuk-body">You have not added any land parcels or actions yet.</p>
+        <p class="govuk-body">
+          <a class="govuk-link" href="/grasslands-v2-previous/select-land">Select a land parcel and add actions</a>
+        </p>
+      {% else %}
+        {% for parcel in parcels %}
+          {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Land parcel ', '')) or parcel.parcelName or '' %}
+          <div class="govuk-!-margin-bottom-9" id="parcel-{{ parcel.parcelId }}">
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Parcel reference</dt>
+                <dd class="govuk-summary-list__value">{{ parcelRef }}</dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/grasslands-v2-previous/remove-parcel-actions/{{ parcel.parcelId }}">
+                    Remove parcel<span class="govuk-visually-hidden"> {{ parcelRef }}</span>
+                  </a>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Total area</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.totalAreaFormatted }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Land cover</dt>
+                <dd class="govuk-summary-list__value">
+                  {% if parcel.landCover is string %}
+                    {{ parcel.landCover }}
+                  {% elif parcel.landCover %}
+                    {{ parcel.landCover | join(', ') }}
+                  {% else %}
+                    Permanent grassland
+                  {% endif %}
+                </dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Area used for actions</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.areaUsedFormatted }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Available area left</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.availableLeftFormatted }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+
+              {% for action in parcel.actions %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    {{ action.name }} ({{ action.code }})
+                    {% if action.consentHint %}
+                      <div class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-1 govuk-!-margin-bottom-0">{{ action.consentHint }}</div>
+                    {% endif %}
+                  </dt>
+                  <dd class="govuk-summary-list__value">{{ action.valueDisplay }}</dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="/grasslands-v2-previous/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
+                      Change<span class="govuk-visually-hidden"> {{ action.name }} ({{ action.code }})</span>
+                    </a>
+                  </dd>
+                </div>
+              {% endfor %}
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Yearly payment</dt>                <dd class="govuk-summary-list__value"><strong>{{ parcel.yearlyPaymentFormatted }}</strong></dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+            </dl>
+          </div>
+        {% endfor %}
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Total yearly payment</dt>
+            <dd class="govuk-summary-list__value"><strong>{{ summary.totalYearlyPaymentFormatted }}</strong></dd>
+            <dd class="govuk-summary-list__actions"></dd>
+          </div>
+        </dl>
+
+        <form action="/grasslands-v2-previous/confirm-land-and-actions" method="post">
+          {% if fromCheckYourAnswers %}
+            <input type="hidden" name="from" value="check-your-answers">
+          {% endif %}
+          <div class="govuk-button-group">
+            {% if fromCheckYourAnswers %}
+              <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="returnToCya">
+                Save and continue
+              </button>
+            {% else %}
+              <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="save">
+                Save and continue
+              </button>
+            {% endif %}
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" name="confirmAction" value="addAnother">
+              Add another land parcel
+            </button>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -62,11 +62,6 @@
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Total area</dt>
-                <dd class="govuk-summary-list__value">{{ parcel.totalAreaFormatted }}</dd>
-                <dd class="govuk-summary-list__actions"></dd>
-              </div>
-              <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Land cover</dt>
                 <dd class="govuk-summary-list__value">
                   {% if parcel.landCover is string %}
@@ -77,6 +72,11 @@
                     Permanent grassland
                   {% endif %}
                 </dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Total area</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.totalAreaFormatted }}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
               <div class="govuk-summary-list__row">

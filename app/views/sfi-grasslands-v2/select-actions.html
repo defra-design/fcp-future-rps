@@ -2836,22 +2836,64 @@
       });
     }
 
+    function getClig3AppliedQuantityHa() {
+      var $clig3Qty = $('#quantity-clig3');
+      if (!$clig3Qty.length) {
+        return 0;
+      }
+      var parsed = parseQuantityInput($clig3Qty.val());
+      return parsed.valid ? parsed.value : 0;
+    }
+
+    function syncClig3SupplementQuantitiesFromBase() {
+      var appliedHa = getClig3AppliedQuantityHa();
+      var selected = document.querySelector('input[name="clig3-supplement"]:checked');
+      var selectedCode = selected ? String(selected.value || '').toUpperCase() : '';
+
+      getClig3SupplementActions().forEach(function(action) {
+        var code = String(action.code || '').toUpperCase();
+        var quantityInput = document.getElementById('quantity-' + code.toLowerCase());
+        if (!quantityInput) {
+          return;
+        }
+        if (selectedCode === code && appliedHa > 0) {
+          quantityInput.value = appliedHa.toFixed(4);
+        } else {
+          quantityInput.value = '';
+        }
+      });
+    }
+
+    function mirrorClig3SupplementAvailableHints() {
+      var clig3Hint = getActionAvailableHintEl('CLIG3');
+      var clig3Text = clig3Hint && !clig3Hint.hidden ? clig3Hint.textContent : '';
+      var appliedHa = getClig3AppliedQuantityHa();
+      var fallbackText = appliedHa > 0
+        ? getAvailableHintText('CLIG3', appliedHa)
+        : getAvailableHintText('CLIG3', '0.0000');
+      var text = clig3Text || fallbackText;
+
+      getClig3SupplementActions().forEach(function(action) {
+        var hintEl = getActionAvailableHintEl(action.code);
+        if (!hintEl) {
+          return;
+        }
+        hintEl.textContent = text;
+        hintEl.hidden = !text;
+      });
+    }
+
     function clearClig3SupplementSelections() {
       getClig3SupplementActions().forEach(function(action) {
         var codeLower = String(action.code || '').toLowerCase();
         var checkbox = document.getElementById('action-' + codeLower);
         var quantityInput = document.getElementById('quantity-' + codeLower);
-        var conditional = document.getElementById('conditional-' + codeLower);
         if (checkbox) {
           checkbox.checked = false;
           checkbox.setAttribute('aria-expanded', 'false');
         }
         if (quantityInput) {
           quantityInput.value = '';
-        }
-        if (conditional) {
-          conditional.classList.add('govuk-radios__conditional--hidden');
-          conditional.classList.add('govuk-checkboxes__conditional--hidden');
         }
       });
       var noneRadio = document.getElementById('clig3-supplement-none');
@@ -2868,27 +2910,15 @@
         var code = String(action.code || '').toUpperCase();
         var codeLower = code.toLowerCase();
         var checkbox = document.getElementById('action-' + codeLower);
-        var quantityInput = document.getElementById('quantity-' + codeLower);
-        var conditional = document.getElementById('conditional-' + codeLower);
         var isSelected = selectedCode === code;
 
         if (checkbox) {
           checkbox.checked = isSelected;
           checkbox.setAttribute('aria-expanded', isSelected ? 'true' : 'false');
         }
-        if (!isSelected && quantityInput) {
-          quantityInput.value = '';
-        }
-        if (conditional) {
-          if (isSelected) {
-            conditional.classList.remove('govuk-radios__conditional--hidden');
-            conditional.classList.remove('govuk-checkboxes__conditional--hidden');
-          } else {
-            conditional.classList.add('govuk-radios__conditional--hidden');
-            conditional.classList.add('govuk-checkboxes__conditional--hidden');
-          }
-        }
       });
+      syncClig3SupplementQuantitiesFromBase();
+      mirrorClig3SupplementAvailableHints();
     }
 
     function syncClig3SupplementRadiosFromCheckboxes() {
@@ -2992,6 +3022,8 @@
       ['CLIG3'].forEach(function(code) {
         syncWholeRemainingAreaAction(code);
       });
+      syncClig3SupplementQuantitiesFromBase();
+      mirrorClig3SupplementAvailableHints();
     }
 
     function isMetreBasedUnit(unit) {
@@ -3243,27 +3275,31 @@
       var totals = { ha: 0, m: 0, m2: 0, pond: 0 };
 
       $('input[name="actions"]:checked').each(function() {
-        var actionCode = ($(this).val() || '').toString().toLowerCase();
-        var $quantityInput = $('#quantity-' + actionCode);
+        var actionCode = ($(this).val() || '').toString();
+        // Stacked supplements use the base action's land — exclude from exclusive ha used
+        if (isClig3Supplement(actionCode)) {
+          return;
+        }
+        var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
 
         if (!$quantityInput.length) {
           return;
         }
 
-        var suffix = $quantityInput.siblings('.govuk-input__suffix').text();
+        var unit = getQuantityUnitForAction(actionCode);
         var parsed = parseQuantityInput($quantityInput.val());
 
         if (!parsed.valid) {
           return;
         }
 
-        if (suffix === 'ha') {
+        if (unit === 'ha') {
           totals.ha += parsed.value;
-        } else if (suffix === 'm') {
+        } else if (unit === 'm') {
           totals.m += parsed.value;
-        } else if (suffix === 'm²') {
+        } else if (unit === 'm²') {
           totals.m2 += parsed.value;
-        } else if (suffix === 'pond') {
+        } else if (unit === 'pond') {
           totals.pond += parsed.value;
         }
       });
@@ -4372,7 +4408,6 @@
         radio.name = 'clig3-supplement';
         radio.id = 'clig3-supplement-' + codeLower;
         radio.value = action.code;
-        radio.setAttribute('data-aria-controls', 'conditional-' + codeLower);
 
         var label = document.createElement('label');
         label.className = 'govuk-label govuk-radios__label';
@@ -4409,45 +4444,14 @@
         item.appendChild(label);
         radios.appendChild(item);
 
-        var conditional = document.createElement('div');
-        conditional.className = 'govuk-radios__conditional govuk-radios__conditional--hidden govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
-        conditional.id = 'conditional-' + codeLower;
-
-        var quantityFormGroup = document.createElement('div');
-        quantityFormGroup.className = 'govuk-form-group';
-
-        var quantityLabel = document.createElement('label');
-        quantityLabel.className = 'govuk-label';
-        quantityLabel.setAttribute('for', 'quantity-' + codeLower);
-        quantityLabel.textContent = 'Quantity';
-
-        var quantityHint = document.createElement('div');
-        quantityHint.className = 'govuk-hint govuk-checkboxes__hint';
-        quantityHint.textContent = getAvailableHintText(action.code, '0.0000');
-
-        var wrapper = document.createElement('div');
-        wrapper.className = 'govuk-input__wrapper';
-
+        // Quantity mirrors CLIG3 applied area — no user input
         var qtyInput = document.createElement('input');
-        qtyInput.className = 'govuk-input govuk-input--width-5';
+        qtyInput.type = 'hidden';
         qtyInput.id = 'quantity-' + codeLower;
         qtyInput.name = 'quantity-' + codeLower;
-        qtyInput.type = 'text';
-        qtyInput.inputMode = 'decimal';
-        qtyInput.spellcheck = false;
-
-        var suffix = document.createElement('div');
-        suffix.className = 'govuk-input__suffix';
-        suffix.setAttribute('aria-hidden', 'true');
-        suffix.textContent = 'ha';
-
-        wrapper.appendChild(qtyInput);
-        wrapper.appendChild(suffix);
-        quantityFormGroup.appendChild(quantityLabel);
-        quantityFormGroup.appendChild(quantityHint);
-        quantityFormGroup.appendChild(wrapper);
-        conditional.appendChild(quantityFormGroup);
-        radios.appendChild(conditional);
+        qtyInput.value = '';
+        qtyInput.setAttribute('data-clig3-supplement-quantity', 'true');
+        hiddenActions.appendChild(qtyInput);
       });
 
       var noneItem = document.createElement('div');
@@ -6188,9 +6192,14 @@
             $summaryList.append($totalAreaRow);
             
             // Calculate total area used by actions
+            // Supplements stack on the base (same land) — do not double-count hectares
             var totalUsedArea = 0;
             parcelSelection.actions.forEach(function(action) {
-              if (action.quantity && getQuantityUnitForAction(action.code) === 'ha') {
+              if (
+                action.quantity &&
+                getQuantityUnitForAction(action.code) === 'ha' &&
+                !isClig3Supplement(action.code)
+              ) {
                 totalUsedArea += parseFloat(action.quantity);
               }
             });
@@ -6312,17 +6321,22 @@
         }
       }
       
-      // Function to get action name from checkbox
+      // Prefer catalog name — supplement checkboxes only label with the code
       function getActionName(actionCode) {
+        var code = String(actionCode || '').toUpperCase();
+        if (actionNameByCode[code]) {
+          return actionNameByCode[code];
+        }
+
         var $checkbox = $('input[value="' + actionCode + '"]');
         var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
-        
+
         // Extract just the action name (before the colon and code)
         var parts = labelText.split(':');
         if (parts.length > 1) {
           return parts[0].trim();
         }
-        return labelText;
+        return labelText || code;
       }
       
       // Function to capture current parcel state
@@ -6437,6 +6451,7 @@
 
         // CLIG3 has no quantity hint field — still refresh the label available amount
         setActionAvailableHint('CLIG3', remainingHa);
+        mirrorClig3SupplementAvailableHints();
 
         // Tier 1: live over-limit validation
         $('input[id^="quantity-"]').each(function() {
@@ -7086,6 +7101,7 @@
             if ($('#quantity-clig3').val() !== clig3Before) {
               window.SfiGrasslandsV2Aac.render();
             }
+            mirrorClig3SupplementAvailableHints();
             updateAacQuantityOverLimitErrors();
             refreshContinueFromActionSelection();
             captureCurrentParcelState();

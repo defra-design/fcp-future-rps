@@ -543,14 +543,6 @@
 
     {# Restore saved draft parcel after Save and continue (Back / Change parcel) #}
     {% set hasDraftParcel = draftParcel and draftParcel.parcelId %}
-    {% set draftLandCoverText = '-' %}
-    {% if hasDraftParcel %}
-      {% if draftParcel.landCover is string %}
-        {% set draftLandCoverText = draftParcel.landCover %}
-      {% elif draftParcel.landCover %}
-        {% set draftLandCoverText = draftParcel.landCover | join(', ') %}
-      {% endif %}
-    {% endif %}
 
     <div id="selected-parcel-summary" class="govuk-!-margin-top-6"{% if not hasDraftParcel %} hidden{% endif %}>
       <h2 class="govuk-heading-m" id="selected-parcel-summary-heading">Selected land parcel</h2>
@@ -563,12 +555,16 @@
           </dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Total area</dt>
-          <dd class="govuk-summary-list__value" id="summary-parcel-total-area">{% if hasDraftParcel %}{{ draftParcel.totalArea }} hectares{% else %}-{% endif %}</dd>
+          <dt class="govuk-summary-list__key">Land cover</dt>
+          <dd class="govuk-summary-list__value" id="summary-parcel-land-cover">{% if hasDraftParcel %}{% if draftParcel.landCover is string %}{{ draftParcel.landCover }}{% elif draftParcel.landCover %}{{ draftParcel.landCover | join(', ') }}{% else %}-{% endif %}{% else %}-{% endif %}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Land cover</dt>
-          <dd class="govuk-summary-list__value" id="summary-parcel-land-cover">{{ draftLandCoverText }}</dd>
+          <dt class="govuk-summary-list__key">Available area</dt>
+          <dd class="govuk-summary-list__value" id="summary-parcel-available-area">{% if hasDraftParcel %}{{ draftParcel.availableArea or draftParcel.totalArea }} hectares{% else %}-{% endif %}</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">Total area</dt>
+          <dd class="govuk-summary-list__value" id="summary-parcel-total-area">{% if hasDraftParcel %}{{ draftParcel.totalArea }} hectares{% else %}-{% endif %}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
           <dt class="govuk-summary-list__key">Additional requirements</dt>
@@ -582,14 +578,9 @@
         </div>
       </dl>
 
-      <div id="previous-agreements-section" class="govuk-!-margin-top-2" hidden>
-        <p class="govuk-visually-hidden" id="previous-agreements-summary"></p>
-        <details class="govuk-details" data-module="govuk-details" id="previous-agreements-details" hidden>
-          <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text" id="previous-agreements-summary-text">View previous agreement actions</span>
-          </summary>
-          <div class="govuk-details__text" id="previous-agreements-detail"></div>
-        </details>
+      <div class="govuk-inset-text govuk-!-margin-top-6" id="no-actions-available-warning" hidden>
+        <p class="govuk-body">There are no actions available for this land parcel in this application.</p>
+        <p class="govuk-body govuk-!-margin-bottom-0">This may be because of the land cover on the parcel. Select another land parcel to continue.</p>
       </div>
     </div>
 
@@ -948,338 +939,6 @@
      
           </div>
       
-            <!-- Existing parcels section -->
-          <div class="govuk-accordion__section">
-            <div class="govuk-accordion__section-header">
-              <h3 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="application-summary-accordion-heading-1">
-                  Actions from previous agreements
-                </span>
-              </h3>
-            </div>
-            <div id="application-summary-accordion-content-1" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-1">
-              {# <p class="govuk-body">These parcels have actions from previous agreements</p> #}
-              
-              <div id="oak-tree-existing-actions" style="display: none;">
-              <h2 class="govuk-heading-s" id="existing-woods-view">SO3757 3183</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 August 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">7.5000 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Multi-species winter cover crop (CSAM2)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-long-meadow">SO3757 3170</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">15 September 2028</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">4.4521 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Legumes on improved grassland (CNUM2)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-willow-grove">SO3757 3182</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">30 June 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">11.7654 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Enhanced overwinter stubble (AHW7)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-valley-pasture">SO3757 3181</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 October 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">13.2341 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Enhanced overwinter stubble (AHW7)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-gate-pasture">SO3757 3167</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">15 December 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">12.1098 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>12m to 24m watercourse buffer strip on cultivated land (BFS1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-chalk-field">SO3757 3162</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">28 February 2028</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">11.4521 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Multi-species winter cover crop (CSAM2)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-              </div>
-              
-              <div id="blackberry-existing-actions">
-              <h2 class="govuk-heading-s" id="existing-spring-pasture">SO3757 3205</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 November 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">44.3215 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Assess soil, produce soil management plan, test soil organic matter (SOH1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-brook-field">SO3757 3188</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">28 February 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">32.7841 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Herbal leys (CSAM3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-valley-bottom">SO3757 3208</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 November 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">60.9423 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Take grassland field corners or blocks out of management (CIGL1)</li>
-                      <li>Winter bird food on arable land (BFS1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-upper-slope">SO3757 3207</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">15 March 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">54.6789 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Herbal leys (CSAM3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-lane-meadow">SO3757 3196</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Countryside Stewardship Higher Tier</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">30 April 2028</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">62.1098 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Beetle banks (AHW3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-stone-bridge">SO3757 3206</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">31 May 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">51.2341 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>12m to 24m watercourse buffer strip on cultivated land (BFS1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-
-              <h2 class="govuk-heading-s" id="existing-far-meadow">SO3757 3193</h2>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">30 September 2027</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">56.3210 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Herbal leys (CSAM3)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-              <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Scheme</dt>
-                  <dd class="govuk-summary-list__value">Sustainable Farming Incentive</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Agreement end date</dt>
-                  <dd class="govuk-summary-list__value">1 November 2026</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Available area</dt>
-                  <dd class="govuk-summary-list__value">56.3210 hectares</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Existing actions</dt>
-                  <dd class="govuk-summary-list__value"><ul class="govuk-list govuk-list--bullet">
-                      <li>Grassland field corners (CIGL1)</li>
-                    </ul></dd>
-                </div>
-              </dl>
-              </div>
-                <div class="back-to-top">
-                  <a class="govuk-link" href="#page-heading">
-                    <svg 
-                    role="presentation" focusable="false" class="back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                      <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                    </svg>Back to top
-                  </a>
-                </div>
-              </div>
-          </div>
 
       
 
@@ -3339,7 +2998,8 @@
       'oak-grove': 'Perennial crops',
       'lower-pasture': 'Permanent grassland',
       'mill-meadow': 'Temporary grass',
-      'church-field': 'Permanent grassland',
+      // SO3757 3190 — multi-cover so all 16 MVP actions can appear (grassland, scrub, pond/ditch, historic)
+      'church-field': ['Permanent grassland', 'Scrub - ungrazeable', 'Pond'],
       'pond-close': 'Pond',
       'upper-slope': 'Land lying fallow',
       'boundary-field': 'Non-agricultural area',
@@ -3966,14 +3626,23 @@
       return 'bottom';
     }
 
-    function buildParcelPopupContent(parcelId, data) {
-      var existingCount = (window.GrasslandsV2ExistingAgreements && typeof window.GrasslandsV2ExistingAgreements.count === 'function')
-        ? window.GrasslandsV2ExistingAgreements.count(parcelId)
-        : (data && data.numActions) || 0;
+    function formatAvailableActionsCountLabel(count) {
+      var n = Math.max(0, Math.round(Number(count) || 0));
+      return 'Actions available: ' + n;
+    }
 
+    function getParcelAvailableActionsCount(parcelId, data) {
+      var parcel = (data && data.actions) ? data : parcelData[parcelId];
+      if (parcel && Array.isArray(parcel.actions)) {
+        return parcel.actions.length;
+      }
+      return 0;
+    }
+
+    function buildParcelPopupContent(parcelId, data) {
       return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
-        '<p>Actions from previous agreements: ' + existingCount + '</p>' +
-        '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>';
+        '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
+        '<p>' + formatAvailableActionsCountLabel(getParcelAvailableActionsCount(parcelId, data)) + '</p>';
     }
 
     function createParcelOverlay(parcelId, data) {
@@ -4317,6 +3986,8 @@
     }
 
     function updatePreviousAgreementsSummary(parcelId) {
+      // Prototype: previous-agreement actions UI removed from this journey
+      return;
       var sectionEl = document.getElementById('previous-agreements-section');
       var summaryEl = document.getElementById('previous-agreements-summary');
       var summaryTextEl = document.getElementById('previous-agreements-summary-text');
@@ -4460,6 +4131,34 @@
       }
     }
 
+    function parcelHasAvailableActions(parcelId) {
+      var parcel = parcelData[parcelId];
+      if (!parcel) {
+        return false;
+      }
+      return Array.isArray(parcel.actions) && parcel.actions.length > 0;
+    }
+
+    function updateContinueForSelectedParcel(parcelId) {
+      var continueButton = document.getElementById('continue-button');
+      var continueForm = document.getElementById('continue-form');
+      var noticeEl = document.getElementById('no-actions-available-warning');
+      var hasParcel = Boolean(parcelId && parcelData[parcelId]);
+      var hasActions = hasParcel && parcelHasAvailableActions(parcelId);
+      var blockContinue = hasParcel && !hasActions;
+
+      if (noticeEl) {
+        noticeEl.hidden = !blockContinue;
+      }
+      if (continueForm) {
+        continueForm.hidden = blockContinue;
+      }
+      if (continueButton) {
+        continueButton.hidden = blockContinue;
+        continueButton.disabled = blockContinue;
+      }
+    }
+
     function updateSelectedParcelSummary(parcelId, parcel, osRefDisplay) {
       var summary = document.getElementById('selected-parcel-summary');
       if (!summary || !parcel) {
@@ -4477,14 +4176,14 @@
       }
       document.getElementById('summary-parcel-total-area').textContent = parcel.totalArea ? (parcel.totalArea + ' hectares') : '-';
 
+      var availableAreaEl = document.getElementById('summary-parcel-available-area');
+      if (availableAreaEl) {
+        var availableArea = parcel.availableArea || parcel.totalArea;
+        availableAreaEl.textContent = availableArea ? (availableArea + ' hectares') : '-';
+      }
+
       var landCoverEl = document.getElementById('summary-parcel-land-cover');
-      landCoverEl.innerHTML = '';
-      landCovers.forEach(function(cover, index) {
-        if (index > 0) {
-          landCoverEl.appendChild(document.createElement('br'));
-        }
-        landCoverEl.appendChild(document.createTextNode(cover));
-      });
+      landCoverEl.textContent = landCovers.join(', ') || '-';
 
       var requirementsRow = document.getElementById('summary-parcel-requirements-row');
       var requirementsEl = document.getElementById('summary-parcel-requirements');
@@ -4513,6 +4212,7 @@
       document.getElementById('selectedParcelAvailableArea').value = parcel.availableArea || '';
 
       updatePreviousAgreementsSummary(parcelId);
+      updateContinueForSelectedParcel(parcelId);
 
       summary.hidden = false;
       hideParcelSelectionError();
@@ -4552,6 +4252,8 @@
       if (requirementsEl) {
         requirementsEl.textContent = '';
       }
+
+      updateContinueForSelectedParcel(null);
 
       Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
         panel.style.display = '';
@@ -4684,14 +4386,7 @@
       }
       var landCoverEl = document.getElementById('land-cover');
       if (landCoverEl) {
-        var landCoverLines = getParcelLandCovers(parcel.landCover);
-        landCoverEl.innerHTML = '';
-        landCoverLines.forEach(function(landCover, index) {
-          if (index > 0) {
-            landCoverEl.appendChild(document.createElement('br'));
-          }
-          landCoverEl.appendChild(document.createTextNode(landCover));
-        });
+        landCoverEl.textContent = getParcelLandCovers(parcel.landCover).join(', ') || '-';
       }
       // Keep the farm overview visible; parcel details show below the map
       var osMapReferences = document.getElementById('os-map-references');
@@ -6034,9 +5729,20 @@
         // Validate parcel selection before continuing
         $('#continue-form').on('submit', function(e) {
           var parcelIdField = document.getElementById('selectedParcelId');
-          if (parcelIdField && !parcelIdField.value) {
+          var parcelId = parcelIdField && parcelIdField.value;
+          if (!parcelId) {
             e.preventDefault();
             showParcelSelectionError();
+            return false;
+          }
+          if (!parcelHasAvailableActions(parcelId)) {
+            e.preventDefault();
+            updateContinueForSelectedParcel(parcelId);
+            var warningEl = document.getElementById('no-actions-available-warning');
+            if (warningEl && typeof warningEl.focus === 'function') {
+              warningEl.setAttribute('tabindex', '-1');
+              warningEl.focus();
+            }
             return false;
           }
           hideParcelSelectionError();

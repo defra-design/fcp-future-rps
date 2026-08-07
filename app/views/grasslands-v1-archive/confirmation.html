@@ -1,0 +1,70 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v1-archive/task-list" %}
+{% extends "layouts/grasslands-v1-archive-header.html" %}
+
+{% block pageTitle %}
+  Application submitted
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v1-archive/_includes/account-bar.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Application submitted
+        </h1>
+        <div class="govuk-panel__body">
+          Your application number<br><strong>HDJ2123F</strong>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-m">
+        What happens next
+      </h2>
+
+      <p class="govuk-body">
+        Thank you for submitting your SFI application.
+      </p>
+
+      <p class="govuk-body">
+        We will notify you when your SFI agreement offer is available for you to check in the Rural Payments service.
+      </p>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="/grasslands-v1-archive/view-application">View your application</a>
+      </p>
+
+      {% if showHeferNotice %}
+        <h2 class="govuk-heading-m">
+          Request a SFI Historic Environment Farm Environment Record (HEFER)
+        </h2>
+
+        <p class="govuk-body">
+          You’ve applied for SFI actions on land with historic or archaeological features. This means you must request an SFI HEFER from Historic England before you do your SFI actions on this land. Read the SFI26 scheme information on <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noopener noreferrer">what a SFI HEFER is and how to get one</a>.
+        </p>
+      {% endif %}
+
+      {% if showSssiNotice %}
+        <h2 class="govuk-heading-m">
+          Get site of special scientific interest (SSSI) consent
+        </h2>
+
+        <p class="govuk-body">
+          You've applied for actions or items on land that's a site of special scientific interest. Once you've received and accepted your agreement offer, you must get SSSI consent from Natural England before you start your selected actions or items on this land. Read the SFI26 scheme information on <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">SSSI consent and how to get it</a>.
+        </p>
+      {% endif %}
+
+      <a href="/grasslands-v1-archive/singlefrontdoor/landing/landing" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Back to Farm and Land Service
+      </a>
+
+    </div>
+  </div>
+{% endblock %}

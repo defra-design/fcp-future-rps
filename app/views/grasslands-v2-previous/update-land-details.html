@@ -1,0 +1,36 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v2-previous/task-list" %}
+{% extends "layouts/grasslands-v2-previous-header.html" %}
+
+{% block pageTitle %}
+  Update your land details
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v2-previous/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "check-land-details"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set journeySection = "Check before you start" %}
+      {% include "grasslands-v2-previous/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Update your land details</h1>
+
+      <p class="govuk-body">
+        As your digital maps are not up to date, <a class="govuk-link" href="https://www.gov.uk/guidance/request-rural-land-changes" target="_blank" rel="noopener noreferrer">request rural land changes</a> or <a class="govuk-link" href="https://www.gov.uk/government/publications/rural-land-register-map-and-land-cover-form-rle1" target="_blank" rel="noopener noreferrer">submit an RLE1 form</a> to ask us to update them. You need to submit your mapping update request as soon as possible.
+      </p>
+
+    </div>
+  </div>
+
+{% endblock %}

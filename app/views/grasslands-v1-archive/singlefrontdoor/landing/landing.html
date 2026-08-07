@@ -1,0 +1,110 @@
+{% extends "layouts/grasslands-v1-archive-header.html" %}
+
+{% block pageTitle %}
+  Your businesses
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v1-archive/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Choose another business",
+    href: "../start/your-businesses-list"
+  }) }}
+{% endblock %}
+
+{% block content %}
+{% set applicationSubmitted = data.grasslandsV2ApplicationSubmitted or (data.grasslandsV2Tasks and data.grasslandsV2Tasks.submitApplication == 'completed') %}
+{% set applicationInProgress = (not applicationSubmitted) and (data.grasslandsV2ApplicationInProgress or (data.grasslandsV2Tasks and (
+  data.grasslandsV2Tasks.checkBusinessDetails == 'in-progress' or
+  data.grasslandsV2Tasks.checkBusinessDetails == 'completed' or
+  data.grasslandsV2Tasks.checkLandDetails == 'in-progress' or
+  data.grasslandsV2Tasks.checkLandDetails == 'completed' or
+  data.grasslandsV2Tasks.confirmEligible == 'in-progress' or
+  data.grasslandsV2Tasks.confirmEligible == 'completed' or
+  data.grasslandsV2Tasks.selectLand == 'incomplete' or
+  data.grasslandsV2Tasks.selectLand == 'completed'
+))) %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if data['valleySFD'] == 'True' %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l">Alfred Waldron</span>
+      Valley Farm
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 192846125</p>
+    {% elif data['agileSFD'] == 'True' %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l govuk-!-margin-bottom-2">Alfred Waldron</span>
+      Agile Farm Ltd
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
+    {% else %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l">Alfred Waldron</span>
+      Agile Farm Ltd
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
+    {% endif %}
+
+    <h2 class="govuk-heading-m">
+      Apply for schemes and grants
+    </h2>
+
+    <div class="gem-c-cards card-page govuk-!-margin-bottom-6">
+      <ul class="gem-c-cards__list gem-c-cards__list-cards gem-c-cards__list--single-wide">
+        <li class="gem-c-cards__list-item-variant">
+          <div class="gem-c-cards__list-item-wrapper-variant">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+              Apply for a grasslands agreement
+            </h3>
+            {% if applicationSubmitted %}
+              <strong class="govuk-tag govuk-tag--green govuk-!-margin-bottom-3">
+                Submitted
+              </strong>
+              <p class="govuk-body govuk-!-margin-bottom-0">
+                <a href="/grasslands-v1-archive/view-application?from=landing" class="govuk-link govuk-link--no-visited-state">
+                  View application
+                </a>
+              </p>
+            {% elif applicationInProgress %}
+              <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-3">
+                In progress
+              </strong>
+              <p class="govuk-body govuk-!-margin-bottom-0">
+                <a href="/grasslands-v1-archive/task-list" class="govuk-link govuk-link--no-visited-state">
+                  Continue application
+                </a>
+              </p>
+            {% else %}
+              <p class="govuk-body govuk-!-margin-bottom-0">
+                <a href="/clear-session-data?returnUrl=/grasslands-v1-archive/task-list" class="govuk-link govuk-link--no-visited-state">
+                  Go to application
+                </a>
+              </p>
+            {% endif %}
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <h2 class="govuk-heading-m">
+      Business details
+    </h2>
+    <p class="govuk-body">
+      <a class="govuk-link" href="#">View and update your business details</a>
+    </p>
+
+    <h2 class="govuk-heading-m">
+      Personal details
+    </h2>
+    <p class="govuk-body">
+      <a class="govuk-link" href="#">View and update your personal details</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %}

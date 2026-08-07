@@ -12,6 +12,10 @@ const grasslandsV2Tasks = require('./grasslands-v2-tasks')
 const grasslandsV2LandActions = require('./grasslands-v2-land-actions')
 const grasslandsV2Consent = require('./grasslands-v2-consent')
 
+const grasslandsV2PreviousTasks = require('./grasslands-v2-previous-tasks')
+const grasslandsV2PreviousLandActions = require('./grasslands-v2-previous-land-actions')
+const grasslandsV2PreviousConsent = require('./grasslands-v2-previous-consent')
+
 const sfiGrasslandsV2Tasks = require('./sfi-grasslands-v2-tasks')
 const sfiGrasslandsV2LandActions = require('./sfi-grasslands-v2-land-actions')
 const sfiGrasslandsV2Consent = require('./sfi-grasslands-v2-consent')
@@ -1157,9 +1161,888 @@ router.post('/grasslands/check-your-answers', function (req, res) {
   res.redirect('/grasslands/check-your-answers')
 })
 
+function getGrasslandsV2PreviousSessionData (req) {
+  return req.session.data || {}
+}
+
+
+function buildGrasslandsV2PreviousActionsSummaryFromSession (req) {
+  var data = getGrasslandsV2PreviousSessionData(req)
+  return buildActionsSummaryFromSession(Object.assign({}, data, {
+    parcelSelectionsData: data.previousParcelSelectionsData
+  }))
+}
+
+
+// Keep in sync with app/assets/javascripts/grasslands-v2-mvp-actions.js
+const GRASSLANDS_V2_PREVIOUS_MVP_ACTION_CODES = [
+  'CLIG3',
+  'GRH7',
+  'GRH8',
+  'GRH10',
+  'CSAM3',
+  'CHRW2',
+  'WBD2',
+  'HEF1',
+  'CNUM2',
+  'CIGL2',
+  'CIGL1',
+  'WBD1',
+  'SCR2',
+  'BND1',
+  'BND2',
+  'GRH12'
+]
+
+function getGrasslandsV2PreviousCompatibilityLocals (req) {
+  var compatibilityYear = getCompatibilityYearFromSession(getGrasslandsV2PreviousSessionData(req))
+
+  return {
+    compatibilityYear: compatibilityYear,
+    compatibilityClientConfig: JSON.stringify(
+      buildMatrixClientConfig(GRASSLANDS_V2_PREVIOUS_MVP_ACTION_CODES, compatibilityYear)
+    )
+  }
+}
+
+function clearGrasslandsV2PreviousApplicationData (req) {
+  var existingData = getGrasslandsV2PreviousSessionData(req)
+  var preservedBusinessContext = {}
+
+  if (existingData.agileSFD) {
+    preservedBusinessContext.agileSFD = existingData.agileSFD
+  }
+
+  if (existingData.valleySFD) {
+    preservedBusinessContext.valleySFD = existingData.valleySFD
+  }
+
+  req.session.data = Object.assign({}, sessionDataDefaults, preservedBusinessContext)
+}
+
+router.get('/grasslands-v1-archive/before-you-start', function (req, res) {
+  clearGrasslandsV2PreviousApplicationData(req)
+
+  res.render('grasslands-v1-archive/before-you-start', {
+    data: getGrasslandsV2PreviousSessionData(req)
+  })
+})
+
+router.get('/grasslands-v1-archive/task-list', function (req, res) {
+  setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+  grasslandsV2PreviousTasks.ensureTasks(req)
+
+  var actionsSummary = buildGrasslandsV2PreviousActionsSummaryFromSession(req)
+  grasslandsV2PreviousTasks.syncFromSessionAnswers(req, {
+    hasSelectedLand: (actionsSummary.rows && actionsSummary.rows.length > 0) ||
+      grasslandsV2PreviousLandActions.hasSavedLandAndActions(req)
+  })
+
+  var taskListPage = grasslandsV2PreviousTasks.getTaskListPageData(req)
+
+  res.render('grasslands-v1-archive/task-list', Object.assign({
+    data: getGrasslandsV2PreviousSessionData(req)
+  }, taskListPage))
+})
+
+function setEligibilityReturnTo (req, returnTo) {
+  if (returnTo === 'check-your-answers') {
+    req.session.data = req.session.data || {}
+    req.session.data.grasslandsV2PreviousEligibilityReturnTo = returnTo
+  }
+}
+
+function getEligibilityReturnTo (req, bodyReturnTo) {
+  if (bodyReturnTo) {
+    return bodyReturnTo
+  }
+
+  return getGrasslandsV2PreviousSessionData(req).grasslandsV2PreviousEligibilityReturnTo || ''
+}
+
+function clearGrasslandsV2PreviousEligibilityReturnTo (req) {
+  if (req.session.data) {
+    delete req.session.data.grasslandsV2PreviousEligibilityReturnTo
+  }
+}
+
+function setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow (req, enabled) {
+  req.session.data = req.session.data || {}
+  if (enabled) {
+    req.session.data.grasslandsV2PreviousCheckBeforeYouStartLinearFlow = true
+  } else {
+    delete req.session.data.grasslandsV2PreviousCheckBeforeYouStartLinearFlow
+  }
+}
+
+function isGrasslandsV2PreviousCheckBeforeYouStartLinearFlow (req) {
+  return Boolean(getGrasslandsV2PreviousSessionData(req).grasslandsV2PreviousCheckBeforeYouStartLinearFlow)
+}
+
+function getGrasslandsV2PreviousNextCheckBeforeYouStartPath (req) {
+  grasslandsV2PreviousTasks.syncFromSessionAnswers(req, {})
+  var states = grasslandsV2PreviousTasks.getResolvedTaskStates(req)
+
+  if (states.checkLandDetails.key !== grasslandsV2PreviousTasks.STATUS.COMPLETED) {
+    return '/grasslands-v1-archive/check-land-details'
+  }
+
+  if (states.confirmEligible.key !== grasslandsV2PreviousTasks.STATUS.COMPLETED) {
+    return '/grasslands-v1-archive/management-control'
+  }
+
+  return '/grasslands-v1-archive/task-list'
+}
+
+function renderGrasslandsV2PreviousEligibilityPage (req, res, view, options) {
+  var opts = options || {}
+
+  if (req.query.from === 'check-your-answers') {
+    setEligibilityReturnTo(req, 'check-your-answers')
+  }
+
+  var returnTo = opts.returnTo || req.query.from || req.body.returnTo || getEligibilityReturnTo(req)
+
+  res.render(view, {
+    data: getGrasslandsV2PreviousSessionData(req),
+    returnTo: returnTo,
+    eligibilityError: opts.eligibilityError || false,
+    eligibilityErrorMessage: opts.eligibilityErrorMessage || '',
+    eligibilityErrorFieldId: opts.eligibilityErrorFieldId || ''
+  })
+}
+
+function saveGrasslandsV2PreviousAnswer (req, fieldName, value) {
+  req.session.data = req.session.data || {}
+  req.session.data[fieldName] = value
+}
+
+router.get('/grasslands-v1-archive/check-business-details', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.checkBusinessDetails)
+  if (req.query.from !== 'check-your-answers') {
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, true)
+  }
+  renderGrasslandsV2PreviousEligibilityPage(req, res, 'grasslands-v1-archive/check-business-details')
+})
+
+router.get('/grasslands-v1-archive/update-business-details', function (req, res) {
+  res.render('grasslands-v1-archive/update-business-details', {
+    data: getGrasslandsV2PreviousSessionData(req)
+  })
+})
+
+router.get('/grasslands-v1-archive/check-land-details', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.checkLandDetails)
+  if (req.query.from !== 'check-your-answers') {
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, true)
+  }
+  renderGrasslandsV2PreviousEligibilityPage(req, res, 'grasslands-v1-archive/check-land-details')
+})
+
+router.get('/grasslands-v1-archive/confirm-eligibility-details', function (req, res) {
+  // Alias kept; task list now uses management control directly
+  var query = req.query.from ? ('?from=' + encodeURIComponent(req.query.from)) : ''
+  res.redirect('/grasslands-v1-archive/management-control' + query)
+})
+
+router.get('/grasslands-v1-archive/management-control', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.confirmEligible)
+  renderGrasslandsV2PreviousEligibilityPage(req, res, 'grasslands-v1-archive/management-control')
+})
+
+router.get('/grasslands-v1-archive/hefer', function (req, res) {
+  // Temporarily removed from the eligibility journey
+  res.redirect('/grasslands-v1-archive/task-list')
+})
+
+router.get('/grasslands-v1-archive/sssi', function (req, res) {
+  // Temporarily removed from the eligibility journey
+  res.redirect('/grasslands-v1-archive/task-list')
+})
+
+router.get('/grasslands-v1-archive/eligible', function (req, res) {
+  grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.confirmEligible)
+  res.render('grasslands-v1-archive/eligible', {
+    data: getGrasslandsV2PreviousSessionData(req)
+  })
+})
+
+router.get('/grasslands-v1-archive/select-land-map-fluid-find', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+  res.render('grasslands-v1-archive/select-land-map-fluid-find', Object.assign({
+    data: getGrasslandsV2PreviousSessionData(req)
+  }, getGrasslandsV2PreviousCompatibilityLocals(req)))
+})
+
+router.get('/grasslands-v1-archive/select-land', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+
+  if (req.query.addAnother === '1' || req.query.addAnother === 'true') {
+    grasslandsV2PreviousLandActions.commitDraftToApplication(req)
+    if (grasslandsV2PreviousLandActions.hasSavedLandAndActions(req)) {
+      grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+    }
+  }
+
+  res.render('grasslands-v1-archive/select-land', Object.assign({
+    data: getGrasslandsV2PreviousSessionData(req),
+    draftParcel: grasslandsV2PreviousLandActions.getDraftParcel(req),
+    applicationParcels: grasslandsV2PreviousLandActions.getApplicationParcels(req)
+  }, getGrasslandsV2PreviousCompatibilityLocals(req)))
+})
+
+router.post('/grasslands-v1-archive/select-land', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+
+  if (!req.body.selectedParcelId) {
+    return res.redirect('/grasslands-v1-archive/select-land')
+  }
+
+  var previousDraft = grasslandsV2PreviousLandActions.getDraftParcel(req)
+  var previousParcelId = previousDraft && previousDraft.parcelId
+  grasslandsV2PreviousLandActions.saveDraftParcelFromBody(req, req.body)
+
+  // Only clear draft actions when the parcel changes
+  if (previousParcelId !== req.body.selectedParcelId) {
+    grasslandsV2PreviousLandActions.setDraftActions(req, [])
+  }
+
+  res.redirect('/grasslands-v1-archive/select-actions')
+})
+
+router.get('/grasslands-v1-archive/select-actions', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+
+  var draftParcel = grasslandsV2PreviousLandActions.getDraftParcel(req)
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/grasslands-v1-archive/select-land')
+  }
+
+  var sessionData = getGrasslandsV2PreviousSessionData(req)
+  var focusActionCode = sessionData.focusActionCode || null
+  if (sessionData.focusActionCode) {
+    delete sessionData.focusActionCode
+  }
+
+  res.render('grasslands-v1-archive/select-actions', Object.assign({
+    data: sessionData,
+    draftParcel: draftParcel,
+    draftActions: grasslandsV2PreviousLandActions.getDraftActions(req),
+    applicationParcels: grasslandsV2PreviousLandActions.getApplicationParcels(req),
+    focusActionCode: focusActionCode,
+    returnToCheckYourAnswers: Boolean(sessionData.returnToCheckYourAnswers)
+  }, getGrasslandsV2PreviousCompatibilityLocals(req)))
+})
+
+router.post('/grasslands-v1-archive/select-actions', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+
+  var draftParcel = grasslandsV2PreviousLandActions.getDraftParcel(req)
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/grasslands-v1-archive/select-land')
+  }
+
+  var draftActions = grasslandsV2PreviousLandActions.getDraftActions(req)
+  if (req.body.draftLandActions) {
+    draftActions = typeof req.body.draftLandActions === 'string'
+      ? (function () {
+        try {
+          return JSON.parse(req.body.draftLandActions)
+        } catch (error) {
+          return []
+        }
+      })()
+      : req.body.draftLandActions
+  }
+
+  if (!Array.isArray(draftActions) || draftActions.length === 0) {
+    return res.render('grasslands-v1-archive/select-actions', Object.assign({
+      data: getGrasslandsV2PreviousSessionData(req),
+      draftParcel: draftParcel,
+      draftActions: [],
+      applicationParcels: grasslandsV2PreviousLandActions.getApplicationParcels(req),
+      actionsError: true,
+      actionsErrorMessage: 'Select at least one action'
+    }, getGrasslandsV2PreviousCompatibilityLocals(req)))
+  }
+
+  grasslandsV2PreviousLandActions.setDraftActions(req, draftActions)
+
+  res.redirect('/grasslands-v1-archive/confirm-land-and-actions')
+})
+
+router.get('/grasslands-v1-archive/consent-interruption', function (req, res) {
+  var sessionData = getGrasslandsV2PreviousSessionData(req)
+  var previewType = req.query.preview
+  var allowedPreviewTypes = ['sssi', 'hefer', 'sssi-hefer']
+
+  if (previewType && allowedPreviewTypes.indexOf(previewType) !== -1) {
+    return res.render('grasslands-v1-archive/consent-interruption', {
+      data: sessionData,
+      interruptionType: previewType,
+      requiresSssi: previewType === 'sssi' || previewType === 'sssi-hefer',
+      requiresHefer: previewType === 'hefer' || previewType === 'sssi-hefer'
+    })
+  }
+
+  var consent = grasslandsV2PreviousConsent.getConsentRequirementsForParcels(
+    grasslandsV2PreviousLandActions.buildBasketParcels(req)
+  )
+
+  if (!consent.requiresConsent) {
+    return res.redirect(sessionData.afterConsentRedirect || '/grasslands-v1-archive/confirm-land-and-actions')
+  }
+
+  res.render('grasslands-v1-archive/consent-interruption', {
+    data: sessionData,
+    interruptionType: consent.interruptionType,
+    requiresSssi: consent.requiresSssi,
+    requiresHefer: consent.requiresHefer
+  })
+})
+
+router.post('/grasslands-v1-archive/consent-interruption', function (req, res) {
+  var sessionData = getGrasslandsV2PreviousSessionData(req)
+  var redirectTo = sessionData.afterConsentRedirect || '/grasslands-v1-archive/task-list'
+  delete sessionData.afterConsentRedirect
+  res.redirect(redirectTo)
+})
+
+router.get('/grasslands-v1-archive/confirm-land-and-actions', function (req, res) {
+  var basketParcels = grasslandsV2PreviousLandActions.buildBasketParcels(req).map(function (parcel) {
+    return Object.assign({}, parcel, {
+      actions: (parcel.actions || []).map(function (action) {
+        return Object.assign({}, action, {
+          consentHint: grasslandsV2PreviousConsent.getActionConsentHint(parcel.parcelId, action.code)
+        })
+      })
+    })
+  })
+  var basketSummary = grasslandsV2PreviousLandActions.summariseBasket(basketParcels)
+  var sessionData = getGrasslandsV2PreviousSessionData(req)
+  var flashMessage = sessionData.confirmLandFlash || null
+
+  if (req.query.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  delete sessionData.confirmLandFlash
+
+  if (!basketSummary.isEmpty) {
+    grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+  }
+
+  res.render('grasslands-v1-archive/confirm-land-and-actions', {
+    data: sessionData,
+    basketParcels: basketParcels,
+    basketSummary: basketSummary,
+    flashMessage: flashMessage
+  })
+})
+
+router.post('/grasslands-v1-archive/confirm-land-and-actions', function (req, res) {
+  var action = req.body && req.body.confirmAction
+  var sessionData = getGrasslandsV2PreviousSessionData(req)
+
+  grasslandsV2PreviousLandActions.commitDraftToApplication(req)
+
+  if (grasslandsV2PreviousLandActions.hasSavedLandAndActions(req)) {
+    grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+  } else if (
+    grasslandsV2PreviousLandActions.getDraftParcel(req) ||
+    grasslandsV2PreviousLandActions.buildBasketParcels(req).length
+  ) {
+    grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+  } else {
+    grasslandsV2PreviousTasks.setTaskStatus(
+      req,
+      grasslandsV2PreviousTasks.TASK_IDS.selectLand,
+      grasslandsV2PreviousTasks.STATUS.NOT_STARTED
+    )
+  }
+
+  if (action === 'addAnother') {
+    // Keep returnToCheckYourAnswers so after adding they still return to CYA
+    if (req.body.from === 'check-your-answers') {
+      sessionData.returnToCheckYourAnswers = true
+    }
+    return res.redirect('/grasslands-v1-archive/select-land?addAnother=1')
+  }
+
+  var consent = grasslandsV2PreviousConsent.getConsentRequirementsForParcels(
+    grasslandsV2PreviousLandActions.buildBasketParcels(req)
+  )
+  var goingToCya = action === 'returnToCya' ||
+    req.body.from === 'check-your-answers' ||
+    sessionData.returnToCheckYourAnswers
+
+  if (consent.requiresConsent) {
+    if (goingToCya) {
+      delete sessionData.returnToCheckYourAnswers
+      sessionData.afterConsentRedirect = '/grasslands-v1-archive/check-your-answers'
+    } else {
+      sessionData.afterConsentRedirect = '/grasslands-v1-archive/task-list'
+    }
+    return res.redirect('/grasslands-v1-archive/consent-interruption')
+  }
+
+  if (goingToCya) {
+    delete sessionData.returnToCheckYourAnswers
+    return res.redirect('/grasslands-v1-archive/check-your-answers')
+  }
+
+  res.redirect('/grasslands-v1-archive/task-list')
+})
+
+router.get('/grasslands-v1-archive/confirm-land-and-actions/change/:parcelId', function (req, res) {
+  var parcelId = req.params.parcelId
+  var sessionData = getGrasslandsV2PreviousSessionData(req)
+  var loaded = grasslandsV2PreviousLandActions.loadParcelIntoDraftForEdit(req, parcelId)
+
+  if (!loaded) {
+    var draftParcel = grasslandsV2PreviousLandActions.getDraftParcel(req)
+    if (!draftParcel || draftParcel.parcelId !== parcelId) {
+      return res.redirect('/grasslands-v1-archive/confirm-land-and-actions')
+    }
+  }
+
+  if (req.query.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  if (req.query.actionCode) {
+    sessionData.focusActionCode = String(req.query.actionCode).toUpperCase()
+  }
+
+  res.redirect('/grasslands-v1-archive/select-actions')
+})
+
+router.get('/grasslands-v1-archive/remove-parcel-actions/:parcelId', function (req, res) {
+  var parcel = grasslandsV2PreviousLandActions.findBasketParcel(req, req.params.parcelId)
+
+  if (!parcel) {
+    return res.redirect('/grasslands-v1-archive/confirm-land-and-actions')
+  }
+
+  res.render('grasslands-v1-archive/remove-parcel-actions', {
+    data: getGrasslandsV2PreviousSessionData(req),
+    parcel: parcel
+  })
+})
+
+router.post('/grasslands-v1-archive/remove-parcel-actions/:parcelId', function (req, res) {
+  var parcelId = req.params.parcelId
+  var parcel = grasslandsV2PreviousLandActions.findBasketParcel(req, parcelId)
+  var parcelLabel = parcel
+    ? (grasslandsV2PreviousLandActions.getParcelDisplayReference(parcel) || 'This land parcel')
+    : 'This land parcel'
+
+  if (req.body && req.body.confirmRemove === 'yes') {
+    grasslandsV2PreviousLandActions.removeParcelFromBasket(req, parcelId)
+
+    if (grasslandsV2PreviousLandActions.hasSavedLandAndActions(req) ||
+        (grasslandsV2PreviousLandActions.getDraftActions(req) || []).length > 0) {
+      grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+    } else {
+      grasslandsV2PreviousTasks.setTaskStatus(
+        req,
+        grasslandsV2PreviousTasks.TASK_IDS.selectLand,
+        grasslandsV2PreviousTasks.STATUS.NOT_STARTED
+      )
+    }
+
+    req.session.data = req.session.data || {}
+    req.session.data.confirmLandFlash = parcelLabel + ' and its actions have been removed.'
+  }
+
+  res.redirect('/grasslands-v1-archive/confirm-land-and-actions')
+})
+
+router.get('/grasslands-v1-archive/submit-application', function (req, res) {
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.submitApplication)
+  res.render('grasslands-v1-archive/submit-application', {
+    data: getGrasslandsV2PreviousSessionData(req)
+  })
+})
+
+router.post('/grasslands-v1-archive/submit-application', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.checkAnswers)
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.submitApplication)
+  res.render('grasslands-v1-archive/submit-application', {
+    data: getGrasslandsV2PreviousSessionData(req)
+  })
+})
+
+function getGrasslandsV2PreviousConfirmationNotices (req) {
+  var consent = grasslandsV2PreviousConsent.getConsentRequirementsForParcels(
+    grasslandsV2PreviousLandActions.buildBasketParcels(req)
+  )
+
+  return {
+    showHeferNotice: consent.requiresHefer,
+    showSssiNotice: consent.requiresSssi
+  }
+}
+
+function formatGrasslandsV2PreviousSubmittedAt (date) {
+  var submittedAt = date instanceof Date ? date : new Date(date)
+  if (isNaN(submittedAt.getTime())) {
+    submittedAt = new Date()
+  }
+
+  var datePart = submittedAt.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  })
+  var timePart = submittedAt
+    .toLocaleTimeString('en-GB', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    })
+    .toLowerCase()
+    .replace(' ', '')
+
+  return datePart + ' at ' + timePart
+}
+
+function recordGrasslandsV2PreviousApplicationSubmitted (req) {
+  grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.submitApplication)
+  req.session.data = req.session.data || {}
+  req.session.data.grasslandsV2PreviousApplicationSubmitted = true
+  req.session.data.grasslandsV2PreviousApplicationInProgress = false
+  if (!req.session.data.grasslandsV2PreviousApplicationSubmittedAt) {
+    req.session.data.grasslandsV2PreviousApplicationSubmittedAt = new Date().toISOString()
+  }
+}
+
+router.get('/grasslands-v1-archive/confirmation', function (req, res) {
+  recordGrasslandsV2PreviousApplicationSubmitted(req)
+  var notices = getGrasslandsV2PreviousConfirmationNotices(req)
+  res.render('grasslands-v1-archive/confirmation', {
+    data: getGrasslandsV2PreviousSessionData(req),
+    showHeferNotice: notices.showHeferNotice,
+    showSssiNotice: notices.showSssiNotice
+  })
+})
+
+function getGrasslandsV2PreviousReviewApplicationData (req) {
+  var basketParcels = grasslandsV2PreviousLandActions.buildBasketParcels(req).map(function (parcel) {
+    return Object.assign({}, parcel, {
+      landCover: parcel.landCover || parcel.landCoverLabel || 'Permanent grassland',
+      actions: (parcel.actions || []).map(function (action) {
+        return Object.assign({}, action)
+      })
+    })
+  })
+  var basketSummary = grasslandsV2PreviousLandActions.summariseBasket(basketParcels)
+
+  if (!basketSummary.isEmpty) {
+    return {
+      reviewParcels: basketParcels,
+      reviewSummary: basketSummary,
+      usedMockData: false
+    }
+  }
+
+  // Prototype fallback when nothing has been saved in this session
+  var mockParcels = [
+    {
+      parcelId: 'far-meadow',
+      heading: 'Land parcel SO3757 3193',
+      parcelReference: 'SO3757 3193',
+      totalAreaFormatted: '12.4500 hectares',
+      landCover: 'Permanent grassland',
+      yearlyPaymentFormatted: '£2,012.70',
+      actions: [
+        {
+          code: 'CLIG3',
+          name: 'Manage grassland with very low nutrient inputs',
+          valueDisplay: '8.2000 ha (£1,238.20)'
+        },
+        {
+          code: 'GRH7',
+          name: 'Haymaking supplement',
+          valueDisplay: '4.2500 ha (£667.25)'
+        }
+      ]
+    },
+    {
+      parcelId: 'pond-close',
+      heading: 'Land parcel SO3757 3203',
+      parcelReference: 'SO3757 3203',
+      totalAreaFormatted: '29.3214 hectares',
+      landCover: 'Temporary grass',
+      yearlyPaymentFormatted: '£3,145.60',
+      actions: [
+        {
+          code: 'CNUM2',
+          name: 'Legumes on improved grassland',
+          valueDisplay: '10.0000 ha (£1,020.00)'
+        },
+        {
+          code: 'CSAM3',
+          name: 'Herbal leys',
+          valueDisplay: '9.4900 ha (£2,125.60)'
+        }
+      ]
+    }
+  ]
+
+  return {
+    reviewParcels: mockParcels,
+    reviewSummary: {
+      totalYearlyPaymentFormatted: '£5,158.30',
+      isEmpty: false
+    },
+    usedMockData: true
+  }
+}
+
+router.get('/grasslands-v1-archive/view-application', function (req, res) {
+  var review = getGrasslandsV2PreviousReviewApplicationData(req)
+  var fromLanding = req.query.from === 'landing'
+  var sessionData = getGrasslandsV2PreviousSessionData(req)
+  var submittedAt = sessionData.grasslandsV2PreviousApplicationSubmittedAt || new Date().toISOString()
+
+  res.render('grasslands-v1-archive/view-application', {
+    data: sessionData,
+    reviewParcels: review.reviewParcels,
+    reviewSummary: review.reviewSummary,
+    applicationReference: 'HDJ2123F',
+    applicationSubmittedAtFormatted: formatGrasslandsV2PreviousSubmittedAt(submittedAt),
+    backHref: fromLanding
+      ? '/grasslands-v1-archive/singlefrontdoor/landing/landing'
+      : '/grasslands-v1-archive/confirmation',
+    backButtonText: fromLanding
+      ? 'Back to Farm and Land Service'
+      : 'Back to confirmation'
+  })
+})
+
+router.get('/grasslands-v1-archive/contact-us', function (req, res) {
+  var backHref = '/grasslands-v1-archive/task-list'
+  var referer = req.get('Referrer') || req.get('Referer') || ''
+
+  try {
+    var refererUrl = new URL(referer, 'http://localhost:3000')
+    if (refererUrl.pathname.indexOf('/grasslands-v1-archive/') === 0 &&
+        refererUrl.pathname.indexOf('/grasslands-v1-archive/contact-us') !== 0) {
+      backHref = refererUrl.pathname + refererUrl.search
+    }
+  } catch (error) {
+    // Keep default back link
+  }
+
+  res.render('grasslands-v1-archive/contact-us', {
+    data: getGrasslandsV2PreviousSessionData(req),
+    backHref: backHref,
+    serviceName: 'Apply for a grasslands agreement',
+    serviceUrl: '/grasslands-v1-archive/task-list'
+  })
+})
+router.post('/grasslands-v1-archive/confirmation', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  recordGrasslandsV2PreviousApplicationSubmitted(req)
+  var notices = getGrasslandsV2PreviousConfirmationNotices(req)
+  res.render('grasslands-v1-archive/confirmation', {
+    data: getGrasslandsV2PreviousSessionData(req),
+    showHeferNotice: notices.showHeferNotice,
+    showSssiNotice: notices.showSssiNotice
+  })
+})
+
+router.post('/grasslands-v1-archive/management-control-answer', function (req, res) {
+  var managementControlAnswer = req.body['management-answer-v2']
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
+
+  if (!managementControlAnswer) {
+    var referer = req.get('Referer') || ''
+    var managementView = referer.indexOf('/management-control') !== -1
+      ? 'grasslands-v1-archive/management-control'
+      : 'grasslands-v1-archive/confirm-eligibility-details'
+
+    return renderGrasslandsV2PreviousEligibilityPage(req, res, managementView, {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if you will have the required management control of the land in this application',
+      eligibilityErrorFieldId: 'management-answer-v2-error'
+    })
+  }
+
+  saveGrasslandsV2PreviousAnswer(req, 'management-answer-v2', managementControlAnswer)
+
+  if (managementControlAnswer === 'no') {
+    clearGrasslandsV2PreviousEligibilityReturnTo(req)
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+    grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.confirmEligible)
+    return res.redirect('/grasslands-v1-archive/ineligible')
+  }
+
+  grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.confirmEligible)
+
+  if (returnTo === 'check-your-answers') {
+    clearGrasslandsV2PreviousEligibilityReturnTo(req)
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+    return res.redirect('/grasslands-v1-archive/check-your-answers')
+  }
+
+  clearGrasslandsV2PreviousEligibilityReturnTo(req)
+  setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+  res.redirect('/grasslands-v1-archive/task-list')
+})
+
+router.post('/grasslands-v1-archive/hefer-answer', function (req, res) {
+  // HEFER step temporarily removed from grasslands-v2 journey
+  return res.redirect('/grasslands-v1-archive/task-list')
+})
+
+router.post('/grasslands-v1-archive/sssi-answer', function (req, res) {
+  // SSSI step temporarily removed from grasslands-v2 journey
+  return res.redirect('/grasslands-v1-archive/task-list')
+})
+
+router.post('/grasslands-v1-archive/check-business-details-answer', function (req, res) {
+  var businessDetailsAnswer = req.body['business-details-answer']
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
+
+  if (!businessDetailsAnswer) {
+    return renderGrasslandsV2PreviousEligibilityPage(req, res, 'grasslands-v1-archive/check-business-details', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if these details are correct',
+      eligibilityErrorFieldId: 'business-details-answer-error'
+    })
+  }
+
+  saveGrasslandsV2PreviousAnswer(req, 'business-details-answer', businessDetailsAnswer)
+
+  if (businessDetailsAnswer === 'no') {
+    clearGrasslandsV2PreviousEligibilityReturnTo(req)
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+    grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.checkBusinessDetails)
+    req.session.data = req.session.data || {}
+    req.session.data.grasslandsV2PreviousApplicationInProgress = true
+    return res.redirect('/grasslands-v1-archive/singlefrontdoor/landing/landing')
+  }
+
+  grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.checkBusinessDetails)
+
+  if (returnTo === 'check-your-answers') {
+    clearGrasslandsV2PreviousEligibilityReturnTo(req)
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+    return res.redirect('/grasslands-v1-archive/check-your-answers')
+  }
+
+  setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, true)
+  res.redirect(getGrasslandsV2PreviousNextCheckBeforeYouStartPath(req))
+})
+
+router.post('/grasslands-v1-archive/check-land-details-answer', function (req, res) {
+  var landDetailsAnswer = req.body['land-details-answer']
+  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
+
+  if (!landDetailsAnswer) {
+    return renderGrasslandsV2PreviousEligibilityPage(req, res, 'grasslands-v1-archive/check-land-details', {
+      returnTo: returnTo,
+      eligibilityError: true,
+      eligibilityErrorMessage: 'Select if your digital maps show the correct land details',
+      eligibilityErrorFieldId: 'land-details-answer-error'
+    })
+  }
+
+  saveGrasslandsV2PreviousAnswer(req, 'land-details-answer', landDetailsAnswer)
+
+  if (landDetailsAnswer === 'no') {
+    clearGrasslandsV2PreviousEligibilityReturnTo(req)
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+    grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.checkLandDetails)
+    return res.redirect('/grasslands-v1-archive/update-land-details')
+  }
+
+  grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.checkLandDetails)
+
+  if (returnTo === 'check-your-answers') {
+    clearGrasslandsV2PreviousEligibilityReturnTo(req)
+    setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, false)
+    return res.redirect('/grasslands-v1-archive/check-your-answers')
+  }
+
+  setGrasslandsV2PreviousCheckBeforeYouStartLinearFlow(req, true)
+  res.redirect(getGrasslandsV2PreviousNextCheckBeforeYouStartPath(req))
+})
+
+router.get('/grasslands-v1-archive/check-your-answers', function (req, res) {
+  grasslandsV2PreviousLandActions.syncParcelSelectionsData(req)
+  var actionsSummary = buildGrasslandsV2PreviousActionsSummaryFromSession(req)
+  var basketParcels = grasslandsV2PreviousLandActions.buildBasketParcels(req)
+  var consentHintsByParcel = {}
+
+  basketParcels.forEach(function (parcel) {
+    if (!parcel || !parcel.parcelId) {
+      return
+    }
+
+    var hints = {}
+    ;(parcel.actions || []).forEach(function (action) {
+      var hint = grasslandsV2PreviousConsent.getActionConsentHint(parcel.parcelId, action.code)
+      if (hint) {
+        hints[action.code] = hint
+      }
+    })
+
+    if (Object.keys(hints).length > 0) {
+      consentHintsByParcel[parcel.parcelId] = hints
+    }
+  })
+
+  if (actionsSummary.rows && actionsSummary.rows.length > 0) {
+    grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+  }
+
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.checkAnswers)
+
+  res.render('grasslands-v1-archive/check-your-answers', {
+    data: Object.assign({}, req.session.data),
+    actionsSummaryRows: actionsSummary.rows,
+    actionsSummaryTotal: actionsSummary.total,
+    consentHintsByParcel: consentHintsByParcel
+  })
+})
+
+router.post('/grasslands-v1-archive/check-your-answers', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  grasslandsV2PreviousTasks.markCompleted(req, grasslandsV2PreviousTasks.TASK_IDS.selectLand)
+  grasslandsV2PreviousTasks.markInProgress(req, grasslandsV2PreviousTasks.TASK_IDS.checkAnswers)
+  res.redirect('/grasslands-v1-archive/check-your-answers')
+})
+
+
+// --- Legacy grasslands-v2-previous URLs → grasslands-v1-archive ---
+router.use('/grasslands-v2-previous', function (req, res) {
+  var target = '/grasslands-v1-archive' + (req.url || '/')
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    return res.redirect(target)
+  }
+  return res.redirect(307, target)
+})
+
+// --- grasslands-v2 (SFI Grasslands Version 1 — merged from Concept V2; archive at grasslands-v1-archive) ---
+
 function getGrasslandsV2SessionData (req) {
   return req.session.data || {}
 }
+
+
+function buildGrasslandsV2ActionsSummaryFromSession (req) {
+  var data = getGrasslandsV2SessionData(req)
+  return buildActionsSummaryFromSession(Object.assign({}, data, {
+    parcelSelectionsData: data.parcelSelectionsData
+  }))
+}
+
 
 // Keep in sync with app/assets/javascripts/grasslands-v2-mvp-actions.js
 const GRASSLANDS_V2_MVP_ACTION_CODES = [
@@ -1219,7 +2102,7 @@ router.get('/grasslands-v2/task-list', function (req, res) {
   setCheckBeforeYouStartLinearFlow(req, false)
   grasslandsV2Tasks.ensureTasks(req)
 
-  var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+  var actionsSummary = buildGrasslandsV2ActionsSummaryFromSession(req)
   grasslandsV2Tasks.syncFromSessionAnswers(req, {
     hasSelectedLand: (actionsSummary.rows && actionsSummary.rows.length > 0) ||
       grasslandsV2LandActions.hasSavedLandAndActions(req)
@@ -1232,14 +2115,14 @@ router.get('/grasslands-v2/task-list', function (req, res) {
   }, taskListPage))
 })
 
-function setEligibilityReturnTo (req, returnTo) {
+function setSfiEligibilityReturnTo (req, returnTo) {
   if (returnTo === 'check-your-answers') {
     req.session.data = req.session.data || {}
     req.session.data.eligibilityReturnTo = returnTo
   }
 }
 
-function getEligibilityReturnTo (req, bodyReturnTo) {
+function getSfiEligibilityReturnTo (req, bodyReturnTo) {
   if (bodyReturnTo) {
     return bodyReturnTo
   }
@@ -1285,10 +2168,10 @@ function renderGrasslandsV2EligibilityPage (req, res, view, options) {
   var opts = options || {}
 
   if (req.query.from === 'check-your-answers') {
-    setEligibilityReturnTo(req, 'check-your-answers')
+    setSfiEligibilityReturnTo(req, 'check-your-answers')
   }
 
-  var returnTo = opts.returnTo || req.query.from || req.body.returnTo || getEligibilityReturnTo(req)
+  var returnTo = opts.returnTo || req.query.from || req.body.returnTo || getSfiEligibilityReturnTo(req)
 
   res.render(view, {
     data: getGrasslandsV2SessionData(req),
@@ -1740,7 +2623,9 @@ function getGrasslandsV2ReviewApplicationData (req) {
       parcelId: 'far-meadow',
       heading: 'Land parcel SO3757 3193',
       parcelReference: 'SO3757 3193',
-      totalAreaFormatted: '12.4500 hectares',
+      totalAreaFormatted: '12.4500 ha',
+      areaUsedFormatted: '8.2000 ha',
+      availableLeftFormatted: '4.2500 ha',
       landCover: 'Permanent grassland',
       yearlyPaymentFormatted: '£2,012.70',
       actions: [
@@ -1760,7 +2645,9 @@ function getGrasslandsV2ReviewApplicationData (req) {
       parcelId: 'pond-close',
       heading: 'Land parcel SO3757 3203',
       parcelReference: 'SO3757 3203',
-      totalAreaFormatted: '29.3214 hectares',
+      totalAreaFormatted: '29.3214 ha',
+      areaUsedFormatted: '19.4900 ha',
+      availableLeftFormatted: '9.8314 ha',
       landCover: 'Temporary grass',
       yearlyPaymentFormatted: '£3,145.60',
       actions: [
@@ -1843,7 +2730,7 @@ router.post('/grasslands-v2/confirmation', function (req, res) {
 
 router.post('/grasslands-v2/management-control-answer', function (req, res) {
   var managementControlAnswer = req.body['management-answer-v2']
-  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
+  var returnTo = getSfiEligibilityReturnTo(req, req.body.returnTo)
 
   if (!managementControlAnswer) {
     var referer = req.get('Referer') || ''
@@ -1893,7 +2780,7 @@ router.post('/grasslands-v2/sssi-answer', function (req, res) {
 
 router.post('/grasslands-v2/check-business-details-answer', function (req, res) {
   var businessDetailsAnswer = req.body['business-details-answer']
-  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
+  var returnTo = getSfiEligibilityReturnTo(req, req.body.returnTo)
 
   if (!businessDetailsAnswer) {
     return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-business-details', {
@@ -1929,7 +2816,7 @@ router.post('/grasslands-v2/check-business-details-answer', function (req, res) 
 
 router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
   var landDetailsAnswer = req.body['land-details-answer']
-  var returnTo = getEligibilityReturnTo(req, req.body.returnTo)
+  var returnTo = getSfiEligibilityReturnTo(req, req.body.returnTo)
 
   if (!landDetailsAnswer) {
     return renderGrasslandsV2EligibilityPage(req, res, 'grasslands-v2/check-land-details', {
@@ -1963,8 +2850,9 @@ router.post('/grasslands-v2/check-land-details-answer', function (req, res) {
 
 router.get('/grasslands-v2/check-your-answers', function (req, res) {
   grasslandsV2LandActions.syncParcelSelectionsData(req)
-  var actionsSummary = buildActionsSummaryFromSession(req.session.data || {})
+  var actionsSummary = buildGrasslandsV2ActionsSummaryFromSession(req)
   var basketParcels = grasslandsV2LandActions.buildBasketParcels(req)
+  var basketSummary = grasslandsV2LandActions.summariseBasket(basketParcels)
   var consentHintsByParcel = {}
 
   basketParcels.forEach(function (parcel) {
@@ -1977,6 +2865,7 @@ router.get('/grasslands-v2/check-your-answers', function (req, res) {
       var hint = grasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
       if (hint) {
         hints[action.code] = hint
+        action.consentHint = hint
       }
     })
 
@@ -1995,7 +2884,9 @@ router.get('/grasslands-v2/check-your-answers', function (req, res) {
     data: Object.assign({}, req.session.data),
     actionsSummaryRows: actionsSummary.rows,
     actionsSummaryTotal: actionsSummary.total,
-    consentHintsByParcel: consentHintsByParcel
+    consentHintsByParcel: consentHintsByParcel,
+    basketParcels: basketParcels,
+    basketSummary: basketSummary
   })
 })
 
@@ -2005,6 +2896,7 @@ router.post('/grasslands-v2/check-your-answers', function (req, res) {
   grasslandsV2Tasks.markInProgress(req, grasslandsV2Tasks.TASK_IDS.checkAnswers)
   res.redirect('/grasslands-v2/check-your-answers')
 })
+
 
 // --- sfi-grasslands-v2 (AAC always on) ---
 

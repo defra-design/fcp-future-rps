@@ -1,0 +1,34 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v1-archive/task-list" %}
+{% extends "layouts/grasslands-v1-archive-header.html" %}
+
+{% block pageTitle %}
+  Application withdrawn
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v1-archive/_includes/account-bar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Application withdrawn
+        </h1>
+      </div>
+
+      <p class="govuk-body">
+        Your application has been withdrawn.
+      </p>
+
+      <a href="/grasslands-v1-archive/singlefrontdoor/landing/landing" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Back to Farm and Land Service
+      </a>
+
+    </div>
+  </div>
+{% endblock %}

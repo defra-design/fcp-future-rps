@@ -1,0 +1,92 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v1-archive/task-list" %}
+{% extends "layouts/grasslands-v1-archive-header.html" %}
+
+{% set interruptionType = interruptionType or 'sssi-hefer' %}
+
+{% block pageTitle %}
+  {% if interruptionType == 'sssi' %}
+    You must get SSSI consent
+  {% elif interruptionType == 'hefer' %}
+    You must get an SFI HEFER
+  {% else %}
+    You must get consent to do your actions
+  {% endif %}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v1-archive/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/grasslands-v1-archive/confirm-land-and-actions"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {# 1. SSSI only #}
+      {% if interruptionType == 'sssi' %}
+        <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
+          <h1 class="govuk-heading-l">You must get SSSI consent</h1>
+          <p class="govuk-body">
+            You are applying for actions on land that’s a site of special scientific interest (SSSI).
+            Before you do these actions, you must get SSSI consent from Natural England.
+          </p>
+          <p class="govuk-body">
+            Read the SFI26 scheme information on
+            <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">
+              SSSI consent and how to get it (opens in new tab)</a>.
+          </p>
+        </div>
+
+      {# 2. HEFER only #}
+      {% elif interruptionType == 'hefer' %}
+        <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
+          <h1 class="govuk-heading-l">You must get an SFI HEFER</h1>
+          <p class="govuk-body">
+            You are applying for actions on land with historic or archaeological features.
+            Before you do these actions, you must get an SFI HEFER from Historic England.
+          </p>
+          <p class="govuk-body">
+            Read the SFI26 scheme information on
+            <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noopener noreferrer">
+              SFI HEFERs and how to get one (opens in new tab)</a>.
+          </p>
+        </div>
+
+      {# 3. SSSI and HEFER #}
+      {% else %}
+        <div class="govuk-panel govuk-panel--confirmation govuk-panel-card">
+          <h1 class="govuk-heading-l">You must get consent to do your actions</h1>
+          <p class="govuk-body">
+            You are applying for actions on land that’s a site of special scientific interest (SSSI) and land with historic or archaeological features that require an SFI HEFER.
+            Before you start your selected actions, you must get:
+          </p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>
+              <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">
+                SSSI consent (opens in new tab)</a>
+              from Natural England
+            </li>
+            <li>
+              an
+              <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noopener noreferrer">
+                SFI HEFER (opens in new tab)</a>
+              from Historic England
+            </li>
+          </ul>
+        </div>
+      {% endif %}
+
+      <form action="/grasslands-v1-archive/consent-interruption" method="post" class="govuk-!-margin-top-6">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

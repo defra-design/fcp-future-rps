@@ -1,0 +1,31 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/grasslands-v1-archive/task-list" %}
+{% extends "layouts/grasslands-v1-archive-header.html" %}
+
+{% block pageTitle %}
+  You can continue your application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "grasslands-v1-archive/_includes/account-bar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set journeySection = "Check before you start" %}
+      {% include "grasslands-v1-archive/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">You can continue your application</h1>
+
+      <p class="govuk-body">You've confirmed you're eligible to apply.</p>
+
+      <p class="govuk-body">Return to your application to select land parcels and continue.</p>
+
+      <a href="/grasslands-v1-archive/task-list" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Return to application
+      </a>
+    </div>
+  </div>
+{% endblock %}
