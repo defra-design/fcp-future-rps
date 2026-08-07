@@ -731,7 +731,20 @@
       labelHint.hidden = true
       return
     }
-    var text = buildHintText(action)
+    var text
+    var supplementBase = getSupplementBaseCode(code)
+    if (supplementBase) {
+      var appliedHa = getSelectedQuantity(supplementBase)
+      if (!(Number.isFinite(appliedHa) && appliedHa > 0) && Number.isFinite(Number(action.maxAvailable))) {
+        appliedHa = Math.max(0, Number(action.maxAvailable))
+      }
+      if (!Number.isFinite(appliedHa) || appliedHa < 0) {
+        appliedHa = 0
+      }
+      text = 'Applied to ' + appliedHa.toFixed(4) + ' hectares'
+    } else {
+      text = buildHintText(action)
+    }
     labelHint.textContent = text
     labelHint.hidden = !text
   }

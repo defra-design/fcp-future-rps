@@ -2864,14 +2864,17 @@
       });
     }
 
+    function getClig3AppliedAreaHintText(appliedHa) {
+      var amount = Number(appliedHa);
+      var formatted = Number.isFinite(amount)
+        ? Math.max(0, amount).toFixed(4)
+        : '0.0000';
+      return 'Applied to ' + formatted + ' hectares';
+    }
+
     function mirrorClig3SupplementAvailableHints() {
-      var clig3Hint = getActionAvailableHintEl('CLIG3');
-      var clig3Text = clig3Hint && !clig3Hint.hidden ? clig3Hint.textContent : '';
       var appliedHa = getClig3AppliedQuantityHa();
-      var fallbackText = appliedHa > 0
-        ? getAvailableHintText('CLIG3', appliedHa)
-        : getAvailableHintText('CLIG3', '0.0000');
-      var text = clig3Text || fallbackText;
+      var text = getClig3AppliedAreaHintText(appliedHa);
 
       getClig3SupplementActions().forEach(function(action) {
         var hintEl = getActionAvailableHintEl(action.code);
@@ -2879,7 +2882,7 @@
           return;
         }
         hintEl.textContent = text;
-        hintEl.hidden = !text;
+        hintEl.hidden = false;
       });
     }
 
@@ -4241,7 +4244,7 @@
         var qtyLabel = document.createElement('p');
         qtyLabel.className = 'govuk-label govuk-!-margin-bottom-1';
         qtyLabel.id = 'whole-remaining-label-' + codeLower;
-        qtyLabel.textContent = 'Quantity';
+        qtyLabel.textContent = 'Area for CLIG3';
 
         var amountText = document.createElement('p');
         amountText.className = 'govuk-body govuk-!-margin-bottom-1';
@@ -4253,7 +4256,7 @@
         var qtyHint = document.createElement('p');
         qtyHint.className = 'govuk-hint govuk-!-margin-bottom-0';
         qtyHint.id = 'whole-remaining-hint-' + codeLower;
-        qtyHint.textContent = 'All remaining available area on this parcel';
+        qtyHint.textContent = 'CLIG3 will be applied to all remaining available area on this land parcel.';
 
         amountText.setAttribute('aria-describedby', qtyHint.id);
 
@@ -4361,12 +4364,12 @@
 
       var legend = document.createElement('legend');
       legend.className = 'govuk-fieldset__legend govuk-fieldset__legend--s';
-      legend.textContent = 'You can also add one supplement';
+      legend.textContent = 'Do you want to add a supplement?';
 
       var groupHint = document.createElement('div');
       groupHint.className = 'govuk-hint';
       groupHint.id = 'clig3-supplement-hint';
-      groupHint.textContent = 'Optional. Applied on the same land as CLIG3.';
+      groupHint.textContent = 'You can add one supplement to the same land as CLIG3.';
 
       var radios = document.createElement('div');
       radios.className = 'govuk-radios';
@@ -4437,6 +4440,8 @@
         label.appendChild(hint);
 
         var availableHint = createActionAvailableHint(action.code);
+        availableHint.textContent = getClig3AppliedAreaHintText(0);
+        availableHint.hidden = false;
         label.appendChild(availableHint);
 
         radio.setAttribute('aria-describedby', hintId + ' ' + availableHint.id);
@@ -4470,10 +4475,6 @@
       noneItem.appendChild(noneRadio);
       noneItem.appendChild(noneLabel);
 
-      var divider = document.createElement('div');
-      divider.className = 'govuk-radios__divider';
-      divider.textContent = 'or';
-      radios.appendChild(divider);
       radios.appendChild(noneItem);
 
       radios.addEventListener('change', function(event) {
