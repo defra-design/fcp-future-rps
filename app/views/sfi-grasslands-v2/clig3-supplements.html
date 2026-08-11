@@ -79,13 +79,18 @@
         {% endif %}
 
         <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
-          <fieldset class="govuk-fieldset" aria-describedby="clig3-supplement-hint">
+          <fieldset class="govuk-fieldset"{% if error %} aria-describedby="clig3-supplement-error clig3-supplement-hint"{% else %} aria-describedby="clig3-supplement-hint"{% endif %}>
             <legend class="govuk-fieldset__legend govuk-visually-hidden">
               Add a supplement to CLIG3
             </legend>
             <div id="clig3-supplement-hint" class="govuk-hint">
               You can add one supplement to CLIG3.
             </div>
+            {% if error and error.fieldId == 'clig3-supplement-none' %}
+              <p id="clig3-supplement-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
+              </p>
+            {% endif %}
 
             <div class="govuk-radios" data-module="govuk-radios">
               {% for option in options %}
@@ -163,8 +168,8 @@
                   id="clig3-supplement-none"
                   name="clig3Supplement"
                   type="radio"
-                  value=""
-                  {% if not selectedCode %}checked{% endif %}
+                  value="none"
+                  {% if selectedCode == 'NONE' or selectedCode == 'none' %}checked{% endif %}
                 >
                 <label class="govuk-label govuk-radios__label" for="clig3-supplement-none">
                   No supplement

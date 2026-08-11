@@ -64,7 +64,11 @@
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Land cover</dt>
                 <dd class="govuk-summary-list__value">
-                  {% if parcel.landCover is string %}
+                  {% if parcel.landCoverLines and parcel.landCoverLines.length %}
+                    {% for line in parcel.landCoverLines %}
+                      {{ line }}{% if not loop.last %}<br>{% endif %}
+                    {% endfor %}
+                  {% elif parcel.landCover is string %}
                     {{ parcel.landCover }}
                   {% elif parcel.landCover %}
                     {{ parcel.landCover | join(', ') }}

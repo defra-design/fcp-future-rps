@@ -76,6 +76,27 @@ function formatLandCover (landCover) {
   return [String(landCover)]
 }
 
+function formatLandCoverLines (landCover, totalArea) {
+  var names = formatLandCover(landCover)
+  if (!names.length) {
+    names = ['Permanent grassland']
+  }
+
+  var shares = typeof parcelReference.allocateLandCoverAreas === 'function'
+    ? parcelReference.allocateLandCoverAreas(names, totalArea)
+    : names.map(function (name) {
+      return { name: name, ha: null }
+    })
+
+  if (shares.length <= 1) {
+    return [shares[0] ? shares[0].name : 'Permanent grassland']
+  }
+
+  return shares.map(function (share) {
+    return share.name + ' : ' + toNumber(share.ha).toFixed(4) + ' ha'
+  })
+}
+
 function getParcelDisplayReference (parcel) {
   if (!parcel) {
     return ''
@@ -314,19 +335,25 @@ function getClig3SupplementGuidanceUrl (code, name) {
 
 function getClig3SupplementOptions (clig3Ha) {
   var availableHa = Math.max(0, toNumber(clig3Ha))
-  var availableText = availableHa.toFixed(4) + ' hectares available'
+  var availableFormatted = availableHa.toFixed(4) + ' hectares'
 
   return CLIG3_SUPPLEMENT_CODE_ORDER.map(function (code) {
     var name = getCatalogActionName(code) || code
     var ratePerHa = CLIG3_SUPPLEMENT_RATE_PER_HA[code]
+    var requiresQuantity = supplementRequiresQuantityInput(code)
+    var appliesFullArea = supplementAppliesFullClig3Area(code)
+    var availableText = appliesFullArea
+      ? availableFormatted + ' available'
+      : 'Up to ' + availableFormatted + ' available (same or less than CLIG3)'
+
     return {
       code: code,
       name: name,
       ratePerHa: ratePerHa,
       rateText: '£' + ratePerHa + '/ha',
       availableText: availableText,
-      requiresQuantityInput: supplementRequiresQuantityInput(code),
-      appliesFullClig3Area: supplementAppliesFullClig3Area(code),
+      requiresQuantityInput: requiresQuantity,
+      appliesFullClig3Area: appliesFullArea,
       guidanceUrl: getClig3SupplementGuidanceUrl(code, name)
     }
   })
@@ -479,7 +506,8 @@ function buildBasketParcels (req) {
 
       return Object.assign({}, parcel, summary, {
         heading: 'Land parcel ' + reference,
-        parcelReference: reference
+        parcelReference: reference,
+        landCoverLines: formatLandCoverLines(parcel.landCover, parcel.totalArea)
       })
     })
 }

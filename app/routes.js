@@ -3296,7 +3296,37 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
     return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
   }
 
-  var supplementCode = String((req.body && req.body.clig3Supplement) || '').toUpperCase()
+  var rawSupplement = req.body ? req.body.clig3Supplement : undefined
+  if (rawSupplement === undefined || rawSupplement === null) {
+    var clig3HaMissing = sfiGrasslandsV2LandActions.getClig3AppliedQuantity(draftActions)
+    var directEditMissing = Boolean(sessionData.clig3SupplementsDirectEdit)
+    var backHrefMissing = '/sfi-grasslands-v2/select-actions'
+    if (directEditMissing && sessionData.returnToCheckYourAnswers) {
+      backHrefMissing = '/sfi-grasslands-v2/check-your-answers'
+    } else if (directEditMissing) {
+      backHrefMissing = '/sfi-grasslands-v2/confirm-land-and-actions'
+    }
+
+    return res.render('sfi-grasslands-v2/clig3-supplements', {
+      data: sessionData,
+      draftParcel: draftParcel,
+      draftActions: draftActions,
+      supplementOptions: sfiGrasslandsV2LandActions.getClig3SupplementOptions(clig3HaMissing),
+      selectedSupplementCode: '',
+      selectedSupplementQuantity: '',
+      clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3HaMissing),
+      backHref: backHrefMissing,
+      quantityError: {
+        fieldId: 'clig3-supplement-none',
+        text: 'Select a supplement or choose no supplement'
+      }
+    })
+  }
+
+  var supplementCode = String(rawSupplement || '').toUpperCase()
+  if (supplementCode === 'NONE') {
+    supplementCode = ''
+  }
   var quantityField = supplementCode
     ? 'quantity-' + supplementCode.toLowerCase()
     : ''

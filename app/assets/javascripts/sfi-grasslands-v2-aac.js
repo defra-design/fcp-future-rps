@@ -237,12 +237,22 @@
 
     var covers = []
     if (parcel && Array.isArray(parcel.landCover)) {
-      parcel.landCover.forEach(function (name, index, list) {
-        covers.push({
-          name: name,
-          ha: roundHa(totalHa / list.length)
+      var allocatedCovers = window.SfiGrasslandsV2ParcelReference &&
+        typeof window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas === 'function'
+        ? window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas(parcel.landCover, totalHa)
+        : null
+      if (allocatedCovers && allocatedCovers.length) {
+        covers = allocatedCovers.map(function (cover) {
+          return { name: cover.name, ha: roundHa(cover.ha) }
         })
-      })
+      } else {
+        parcel.landCover.forEach(function (name, index, list) {
+          covers.push({
+            name: name,
+            ha: roundHa(totalHa / list.length)
+          })
+        })
+      }
     } else if (parcel && typeof parcel.landCover === 'string') {
       covers.push({ name: parcel.landCover, ha: roundHa(totalHa) })
     } else {
@@ -355,10 +365,19 @@
         break
 
       case 'WBD1':
-        // Official guidance: available area is not applicable — enter number of ponds.
-        // Do not invent an available pond count (users treat it as a known maximum).
+        // Cap at 3 ponds per hectare of Pond land cover on the parcel
         unit = 'pond'
-        baseEligible = Number.POSITIVE_INFINITY
+        var pondCoverHa = findLandCoverHa(profile, function (name) {
+          return /pond/i.test(name)
+        })
+        baseEligible = Math.max(0, Math.floor(Number(pondCoverHa) * 3))
+        if (baseEligible > 0) {
+          eligibleLand.push({
+            label: 'Maximum 3 ponds per hectare of pond land cover',
+            ha: baseEligible,
+            unit: 'pond'
+          })
+        }
         break
 
       case 'HEF1':
@@ -383,8 +402,10 @@
         break
     }
 
-    if (unit !== 'pond' && !absoluteBlock && baseEligible <= 0 && eligibleLand.length === 0) {
-      absoluteBlock = 'No eligible land remains for this action.'
+    if (!absoluteBlock && baseEligible <= 0 && eligibleLand.length === 0) {
+      absoluteBlock = unit === 'pond'
+        ? 'This parcel has no pond land cover for this action.'
+        : 'No eligible land remains for this action.'
     }
 
     return {
@@ -494,10 +515,10 @@
       var allocationNote = null
 
       // Shared pool by unit: ha actions share hectares; metre actions share length; etc.
-      // Pond count is user-declared — no shared available pool.
+      // Pond max is parcel area × 3 — it does not share a pool with other units.
       // Supplements stack on their base and do not compete for exclusive hectares.
       if (base.unit === 'pond') {
-        available = Number.POSITIVE_INFINITY
+        available = Math.max(0, Math.floor(Number(base.baseEligible) || 0))
         usedByOthers = 0
         allocationNote = null
       } else {
@@ -533,9 +554,7 @@
 
       // Show remaining capacity after this action’s own entered quantity
       var remainingForInput = available
-      if (base.unit === 'pond') {
-        remainingForInput = Number.POSITIVE_INFINITY
-      } else if (selectedQuantity > 0) {
+      if (selectedQuantity > 0) {
         remainingForInput = Math.max(0, available - selectedQuantity)
         if (base.unit === 'ha') {
           remainingForInput = roundHa(remainingForInput)
@@ -564,11 +583,19 @@
         summaryReason = base.absoluteBlock
         remainingForInput = 0
       } else if (base.unit === 'pond') {
-        status = 'available'
-        statusText = 'Available for this action'
-        summaryReason = selectedQuantity > 0
-          ? 'You have entered ' + formatQuantity(selectedQuantity, base.unit) + '.'
-          : 'Enter the number of eligible ponds on this parcel.'
+        if (available <= 0) {
+          status = 'unavailable'
+          statusText = 'Unavailable'
+          summaryReason = 'This parcel has no pond land cover for this action.'
+          remainingForInput = 0
+        } else {
+          status = 'available'
+          statusText = 'Available for this action'
+          summaryReason = selectedQuantity > 0
+            ? 'You have entered ' + formatQuantity(selectedQuantity, base.unit) + '.'
+            : 'Enter the number of eligible ponds on this parcel (maximum ' +
+              formatQuantity(available, 'pond') + ').'
+        }
       } else if (remainingForInput <= 0 && selectedQuantity <= 0) {
         status = 'unavailable'
         statusText = 'Unavailable'

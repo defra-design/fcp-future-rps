@@ -921,15 +921,15 @@
                     <dd class="govuk-summary-list__value" id="aac-parcel-land-cover">—</dd>
                   </div>
                   <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Available area</dt>
+                    <dt class="govuk-summary-list__key">Total area</dt>
                     <dd class="govuk-summary-list__value">
-                      <span id="aac-actions-available-area">—</span> hectares
+                      <span id="aac-actions-total-area">—</span>
                     </dd>
                   </div>
                   <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Total area</dt>
+                    <dt class="govuk-summary-list__key">Area available for actions</dt>
                     <dd class="govuk-summary-list__value">
-                      <span id="aac-actions-total-area">—</span> hectares
+                      <span id="aac-actions-available-area">—</span>
                     </dd>
                   </div>
                 </dl>
@@ -2758,12 +2758,12 @@
       HEF1: true
     };
 
-    // WBD1 is paid per pond — users enter a count, not a length or area.
-    // Do not show an "X ponds available" hint: we cannot calculate that yet,
-    // and showing a number encourages users to enter the maximum.
+    // WBD1 is paid per pond. Cap at 3 ponds per hectare of Pond land cover
+    // on the parcel (not the whole parcel area).
     var POND_ACTION_CODES = {
       WBD1: true
     };
+    var MAX_PONDS_PER_HECTARE = 3;
 
     function getQuantityUnitForAction(actionCode) {
       var normalizedCode = String(actionCode || '').toUpperCase();
@@ -2783,6 +2783,77 @@
     function formatPondCount(count) {
       var n = Math.max(0, Math.round(Number(count) || 0));
       return n === 1 ? '1 pond' : n.toLocaleString('en-GB') + ' ponds';
+    }
+
+    function isPondLandCoverName(name) {
+      return /pond/i.test(String(name || ''));
+    }
+
+    function sumPondLandCoverHa(covers) {
+      var total = 0;
+      (covers || []).forEach(function(cover) {
+        if (!cover) {
+          return;
+        }
+        var name = typeof cover === 'string' ? cover : cover.name;
+        var ha = typeof cover === 'string' ? null : Number(cover.ha);
+        if (!isPondLandCoverName(name)) {
+          return;
+        }
+        if (Number.isFinite(ha) && ha > 0) {
+          total += ha;
+        }
+      });
+      return Math.round(total * 10000) / 10000;
+    }
+
+    function getPondLandCoverHaForParcel(parcel) {
+      if (window.SfiGrasslandsV2Aac &&
+          window.SfiGrasslandsV2Aac.isEnabled() &&
+          typeof window.SfiGrasslandsV2Aac.getParcelAreaBreakdown === 'function' &&
+          currentSelectedParcel) {
+        var breakdown = window.SfiGrasslandsV2Aac.getParcelAreaBreakdown(
+          currentSelectedParcel,
+          parcel
+        );
+        var fromBreakdown = sumPondLandCoverHa(breakdown && breakdown.landCovers);
+        if (fromBreakdown > 0) {
+          return fromBreakdown;
+        }
+      }
+
+      var totalArea = Number(parcel && (parcel.totalArea || parcel.availableArea));
+      var coverNames = getParcelLandCovers(parcel && parcel.landCover);
+      if (window.SfiGrasslandsV2ParcelReference &&
+          typeof window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas === 'function') {
+        return sumPondLandCoverHa(
+          window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas(coverNames, totalArea)
+        );
+      }
+
+      // Single Pond cover = whole parcel; otherwise no reliable split
+      if (coverNames.length === 1 && isPondLandCoverName(coverNames[0])) {
+        return Number.isFinite(totalArea) ? totalArea : 0;
+      }
+      return sumPondLandCoverHa(coverNames.map(function(name) {
+        return { name: name, ha: null };
+      }));
+    }
+
+    function getMaxPondsForParcel(parcel) {
+      var pondHa = getPondLandCoverHaForParcel(parcel);
+      if (!Number.isFinite(pondHa) || pondHa <= 0) {
+        return 0;
+      }
+      return Math.floor(pondHa * MAX_PONDS_PER_HECTARE);
+    }
+
+    function getPondOverLimitMessage(maxPonds) {
+      if (!maxPonds) {
+        return 'This parcel has no pond land cover for this action';
+      }
+      return 'Enter up to ' + formatPondCount(maxPonds) +
+        ' (maximum ' + MAX_PONDS_PER_HECTARE + ' ponds per hectare of pond land cover)';
     }
 
     // CLIG3 always takes all remaining available hectares — no quantity input
@@ -3838,6 +3909,48 @@
     function formatLandCoverDisplay(landCoverValue) {
       var landCovers = getParcelLandCovers(landCoverValue);
       return landCovers.join(', ');
+    }
+
+    function formatHaFourDecimals(value) {
+      var numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return '0.0000';
+      }
+      return numeric.toFixed(4);
+    }
+
+    function renderLandCoverSummary(el, covers) {
+      if (!el) {
+        return;
+      }
+
+      var list = Array.isArray(covers) ? covers.filter(function(cover) {
+        return cover && cover.name;
+      }) : [];
+
+      el.textContent = '';
+
+      if (!list.length) {
+        el.textContent = '—';
+        return;
+      }
+
+      if (list.length === 1) {
+        el.textContent = list[0].name;
+        return;
+      }
+
+      list.forEach(function(cover, index) {
+        if (index > 0) {
+          el.appendChild(document.createElement('br'));
+        }
+        var ha = cover.ha;
+        var line = cover.name;
+        if (ha != null && Number.isFinite(Number(ha))) {
+          line += ' : ' + formatHaFourDecimals(ha) + ' ha';
+        }
+        el.appendChild(document.createTextNode(line));
+      });
     }
 
     function formatParcelReference(parcel) {
@@ -5324,22 +5437,22 @@
       return [
         {
           id: 'ha',
-          heading: 'Grassland and land area actions',
+          heading: 'Grassland actions',
           unit: 'ha'
         },
         {
           id: 'm',
-          heading: 'Boundaries, hedgerows and ditches',
+          heading: 'Boundary actions',
           unit: 'm'
         },
         {
           id: 'pond',
-          heading: 'Ponds',
+          heading: 'Pond actions',
           unit: 'pond'
         },
         {
           id: 'm2',
-          heading: 'Buildings',
+          heading: 'Building actions',
           unit: 'm²'
         }
       ];
@@ -5858,16 +5971,27 @@
       }
       var landCovers = breakdown.landCovers || [];
       if (landCoverEl) {
-        var coverNames = landCovers.length
-          ? landCovers.map(function(cover) { return cover.name; }).filter(Boolean)
-          : getParcelLandCovers(parcel.landCover);
-        landCoverEl.textContent = coverNames.join(', ') || '—';
+        if (landCovers.length) {
+          renderLandCoverSummary(landCoverEl, landCovers);
+        } else {
+          var fallbackNames = getParcelLandCovers(parcel.landCover);
+          var fallbackTotal = Number(breakdown.totalHa || parcel.totalArea);
+          var fallbackCovers = window.SfiGrasslandsV2ParcelReference &&
+            typeof window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas === 'function'
+            ? window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas(fallbackNames, fallbackTotal)
+            : fallbackNames.map(function(name) {
+              return { name: name, ha: fallbackTotal };
+            });
+          renderLandCoverSummary(landCoverEl, fallbackCovers);
+        }
       }
       if (totalEl) {
-        totalEl.textContent = formatBreakdownNumber(breakdown.totalHa);
+        var totalText = formatBreakdownNumber(breakdown.totalHa);
+        totalEl.textContent = totalText === '—' ? '—' : (totalText + ' ha');
       }
       if (availableEl) {
-        availableEl.textContent = formatBreakdownNumber(availableHa);
+        var availableText = formatBreakdownNumber(availableHa);
+        availableEl.textContent = availableText === '—' ? '—' : (availableText + ' ha');
       }
 
       // Details panel: previous agreements as summary lists (same pattern as selected land parcel)
@@ -6390,8 +6514,9 @@
         var isOverLimitHa = totals.ha > totalAreaHa;
         var isOverLimitM = totals.m > totalAreaM;
         var isOverLimitM2 = (totals.m2 || 0) > totalAreaM2;
-        // Pond count is not calculated — do not over-limit against a guessed available number
-        var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2;
+        var maxPonds = getMaxPondsForParcel(parcel);
+        var isOverLimitPond = totals.pond > maxPonds;
+        var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2 || isOverLimitPond;
 
         // Update all quantity hints
         $('.govuk-checkboxes__conditional').each(function() {
@@ -6450,6 +6575,8 @@
               errors.overLimit = 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel';
             } else if (suffix === 'm²' && isOverLimitM2) {
               errors.overLimit = 'Total square metres exceeds ' + Math.max(0, Math.round(totalAreaM2)).toLocaleString('en-GB') + ' available on this parcel';
+            } else if (suffix === 'pond' && isOverLimitPond) {
+              errors.overLimit = getPondOverLimitMessage(maxPonds);
             }
           }
 
@@ -7479,11 +7606,8 @@
 
           if (parsed.value > maxAllowed + 0.0001) {
             if (action.unit === 'pond') {
-              // Pond count is user-declared — do not validate against a calculated available
-              refreshQuantityFieldDisplay($input);
-              return;
-            }
-            if (action.unit === 'm') {
+              errors.overLimit = getPondOverLimitMessage(Math.max(0, Math.floor(maxAllowed)));
+            } else if (action.unit === 'm') {
               errors.overLimit = 'Enter up to ' +
                 Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
                 ' metres';

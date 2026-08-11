@@ -14,8 +14,13 @@
 {% block content %}
 
 <style>
-  .govuk-summary-list__key {
-    width: 50% !important;
+  .app-cya-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
   }
 </style>
 
@@ -120,27 +125,34 @@
 
     <!-- Considered in design: Average of 6 actions per application during SFI 2024 -->
 
-    <h2 class="govuk-heading-m">Your land and actions</h2>
-
     {% set parcels = basketParcels if basketParcels else [] %}
     {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
+
+    <div class="app-cya-section-heading">
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Your land and actions</h2>
+      {% if parcels and parcels.length %}
+        <a class="govuk-link govuk-!-font-size-19" href="/sfi-grasslands-v2/confirm-land-and-actions?from=check-your-answers">Change<span class="govuk-visually-hidden"> your land and actions</span></a>
+      {% else %}
+        <a class="govuk-link govuk-!-font-size-19" href="/sfi-grasslands-v2/confirm-land-and-actions?from=check-your-answers">Add<span class="govuk-visually-hidden"> land and actions</span></a>
+      {% endif %}
+    </div>
 
     {% if parcels and parcels.length %}
       {% for parcel in parcels %}
         {% set parcelRef = parcel.parcelReference or parcel.parcelName or '' %}
-        {% set parcelId = parcel.parcelId %}
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-          <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key">Parcel reference</dt>
             <dd class="govuk-summary-list__value">{{ parcelRef }}</dd>
-            <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions?from=check-your-answers#parcel-{{ parcelId }}">Change<span class="govuk-visually-hidden"> land and actions for land parcel {{ parcelRef }}</span></a>
-            </dd>
           </div>
           <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key">Land cover</dt>
             <dd class="govuk-summary-list__value">
-              {% if parcel.landCover is string %}
+              {% if parcel.landCoverLines and parcel.landCoverLines.length %}
+                {% for line in parcel.landCoverLines %}
+                  {{ line }}{% if not loop.last %}<br>{% endif %}
+                {% endfor %}
+              {% elif parcel.landCover is string %}
                 {{ parcel.landCover }}
               {% elif parcel.landCover %}
                 {{ parcel.landCover | join(', ') }}
@@ -163,7 +175,7 @@
           </div>
 
           {% for action in parcel.actions %}
-            <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
               <dt class="govuk-summary-list__key">
                 {{ action.name }} ({{ action.code }})
                 {% if action.consentHint %}
@@ -171,11 +183,6 @@
                 {% endif %}
               </dt>
               <dd class="govuk-summary-list__value">{{ action.valueDisplay }}</dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions/change/{{ parcelId }}{% if action.code %}?actionCode={{ action.code }}&amp;{% else %}?{% endif %}from=check-your-answers">
-                  Change<span class="govuk-visually-hidden"> {{ action.name }} ({{ action.code }})</span>
-                </a>
-              </dd>
             </div>
           {% endfor %}
 
@@ -185,28 +192,17 @@
           </div>
         </dl>
       {% endfor %}
-
-      <h2 class="govuk-heading-m">Payment summary</h2>
-      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Total yearly payment</dt>
-          <dd class="govuk-summary-list__value"><strong>{{ summary.totalYearlyPaymentFormatted }}</strong></dd>
-        </div>
-      </dl>
     {% else %}
-      <p class="govuk-body">No land parcels or actions have been added yet.</p>
-      <p class="govuk-body govuk-!-margin-bottom-9">
-        <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions?from=check-your-answers">Add land and actions</a>
-      </p>
-
-      <h2 class="govuk-heading-m">Payment summary</h2>
-      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Total yearly payment</dt>
-          <dd class="govuk-summary-list__value"><strong>£0.00</strong></dd>
-        </div>
-      </dl>
+      <p class="govuk-body govuk-!-margin-bottom-9">No land parcels or actions have been added yet.</p>
     {% endif %}
+
+    <h2 class="govuk-heading-m">Payment summary</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Total yearly payment</dt>
+        <dd class="govuk-summary-list__value"><strong>{% if parcels and parcels.length %}{{ summary.totalYearlyPaymentFormatted }}{% else %}£0.00{% endif %}</strong></dd>
+      </div>
+    </dl>
       
          <form class="form" action="submit-application" method="post">
 <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">

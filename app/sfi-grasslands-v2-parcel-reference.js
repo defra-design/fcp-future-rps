@@ -105,11 +105,84 @@
     return parcelData
   }
 
+  // Relative weights so multi-cover parcels look like a real field, not equal slices.
+  // Grassland/arable dominate; scrub is a minority; ponds and tracks stay small.
+  function getLandCoverWeight (name) {
+    var cover = String(name || '').toLowerCase()
+    if (/pond/.test(cover)) {
+      return 0.02
+    }
+    if (/river|stream|ditch|track/.test(cover)) {
+      return 0.06
+    }
+    if (/scrub|notional/.test(cover)) {
+      return 0.14
+    }
+    if (/bog|rocky|non-agricultural/.test(cover)) {
+      return 0.1
+    }
+    if (/permanent grassland|temporary grass/.test(cover)) {
+      return 1
+    }
+    if (/arable|fallow|leguminous|perennial|crop/.test(cover)) {
+      return 0.55
+    }
+    return 0.25
+  }
+
+  function roundHaFour (value) {
+    return Math.round(Math.max(0, Number(value) || 0) * 10000) / 10000
+  }
+
+  function allocateLandCoverAreas (landCoverNames, totalArea) {
+    var names = (landCoverNames || []).filter(Boolean)
+    var total = Number(totalArea)
+    if (!names.length) {
+      return []
+    }
+    if (names.length === 1 || !Number.isFinite(total) || total <= 0) {
+      return names.map(function (name) {
+        return {
+          name: name,
+          ha: Number.isFinite(total) && total > 0 ? roundHaFour(total) : null
+        }
+      })
+    }
+
+    var weights = names.map(getLandCoverWeight)
+    var weightTotal = weights.reduce(function (sum, weight) {
+      return sum + weight
+    }, 0)
+    if (weightTotal <= 0) {
+      weightTotal = names.length
+      weights = names.map(function () {
+        return 1
+      })
+    }
+
+    var shares = []
+    var allocated = 0
+    names.forEach(function (name, index) {
+      if (index === names.length - 1) {
+        shares.push({
+          name: name,
+          ha: roundHaFour(total - allocated)
+        })
+        return
+      }
+      var share = roundHaFour((weights[index] / weightTotal) * total)
+      allocated = roundHaFour(allocated + share)
+      shares.push({ name: name, ha: share })
+    })
+    return shares
+  }
+
   var api = {
     map: PARCEL_REFERENCES,
     getParts: getParts,
     format: format,
-    applyToParcelData: applyToParcelData
+    applyToParcelData: applyToParcelData,
+    allocateLandCoverAreas: allocateLandCoverAreas
   }
 
   if (typeof module !== 'undefined' && module.exports) {
