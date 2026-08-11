@@ -665,35 +665,6 @@
       color: #505a5f;
     }
 
-    /* Supplements nested under CLIG3 — radios (single choice) */
-    #actions-section .app-clig3-supplements {
-      margin-top: 24px;
-      padding-top: 8px;
-    }
-
-    #actions-section .app-clig3-supplements .govuk-fieldset__legend {
-      margin-bottom: 5px;
-    }
-
-    #actions-section .app-clig3-supplements .govuk-radios__item {
-      margin-bottom: 12px;
-    }
-
-    #actions-section .app-clig3-supplements .govuk-radios__conditional {
-      margin-bottom: 8px;
-    }
-
-    #actions-section .app-clig3-supplements .app-clig3-supplement-actions {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      border: 0;
-    }
-
     /* AAC on: single column — no side parcel / previous-agreements panel */
     .app-bottom-panels--aac {
       grid-template-columns: minmax(0, 1fr);
@@ -4519,7 +4490,7 @@
         container.appendChild(parts.item);
 
         if (isWholeRemainingAreaAction(action.code)) {
-          appendClig3Supplements(parts.conditional);
+          // CLIG3 supplements are collected on a separate page after Save and continue
         }
 
         container.appendChild(parts.conditional);
@@ -4997,6 +4968,9 @@
       try {
         // Restore each saved action
         savedSelections.actions.forEach(function(action) {
+          if (isClig3Supplement(action.code)) {
+            return;
+          }
           console.log('Restoring action:', action.code, 'quantity:', action.quantity);
           
           // Check the checkbox
@@ -7364,7 +7338,7 @@
                   yearlyPayment: action && action.yearlyPayment
                 };
               }).filter(function(action) {
-                return Boolean(action.code);
+                return Boolean(action.code) && !isClig3Supplement(action.code);
               })
             };
           }

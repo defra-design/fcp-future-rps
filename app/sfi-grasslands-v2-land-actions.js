@@ -229,8 +229,173 @@ var STACKED_SUPPLEMENT_CODES = {
   GRH10: true
 }
 
+// Official SFI payment rates (£/ha) — keep aligned with sfi-scheme-2026 catalog
+var CLIG3_SUPPLEMENT_RATE_PER_HA = {
+  GRH7: 157,
+  GRH8: 187,
+  GRH10: 28
+}
+
+var CLIG3_SUPPLEMENT_CODE_ORDER = ['GRH7', 'GRH8', 'GRH10']
+
 function isStackedSupplementAction (code) {
   return !!STACKED_SUPPLEMENT_CODES[String(code || '').toUpperCase()]
+}
+
+function isClig3SupplementAction (code) {
+  return isStackedSupplementAction(code)
+}
+
+function supplementRequiresQuantityInput (code) {
+  var normalised = String(code || '').toUpperCase()
+  return normalised === 'GRH7' || normalised === 'GRH8'
+}
+
+function supplementAppliesFullClig3Area (code) {
+  return String(code || '').toUpperCase() === 'GRH10'
+}
+
+function findActionByCode (actions, code) {
+  var normalised = String(code || '').toUpperCase()
+  return (actions || []).find(function (action) {
+    return String((action && action.code) || '').toUpperCase() === normalised
+  }) || null
+}
+
+function draftHasClig3 (actions) {
+  return Boolean(findActionByCode(actions, 'CLIG3'))
+}
+
+function getClig3AppliedQuantity (actions) {
+  var clig3 = findActionByCode(actions, 'CLIG3')
+  if (!clig3) {
+    return 0
+  }
+  return toNumber(clig3.quantity)
+}
+
+function getSelectedClig3SupplementCode (actions) {
+  var selected = (actions || []).find(function (action) {
+    return isClig3SupplementAction(action && action.code)
+  })
+  return selected ? String(selected.code).toUpperCase() : ''
+}
+
+function getSelectedClig3SupplementQuantity (actions) {
+  var code = getSelectedClig3SupplementCode(actions)
+  if (!code) {
+    return ''
+  }
+  var selected = findActionByCode(actions, code)
+  if (!selected || selected.quantity == null || selected.quantity === '') {
+    return ''
+  }
+  return String(selected.quantity)
+}
+
+function stripClig3Supplements (actions) {
+  return (actions || []).filter(function (action) {
+    return !isClig3SupplementAction(action && action.code)
+  })
+}
+
+function getClig3SupplementGuidanceUrl (code, name) {
+  var codeSlug = String(code || '').toLowerCase()
+  var nameSlug = String(name || '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+  if (!codeSlug || !nameSlug) {
+    return 'https://www.gov.uk/find-funding-for-land-or-farms'
+  }
+  return 'https://www.gov.uk/find-funding-for-land-or-farms/' + codeSlug + '-' + nameSlug
+}
+
+function getClig3SupplementOptions (clig3Ha) {
+  var availableHa = Math.max(0, toNumber(clig3Ha))
+  var availableText = availableHa.toFixed(4) + ' hectares available'
+
+  return CLIG3_SUPPLEMENT_CODE_ORDER.map(function (code) {
+    var name = getCatalogActionName(code) || code
+    var ratePerHa = CLIG3_SUPPLEMENT_RATE_PER_HA[code]
+    return {
+      code: code,
+      name: name,
+      ratePerHa: ratePerHa,
+      rateText: '£' + ratePerHa + '/ha',
+      availableText: availableText,
+      requiresQuantityInput: supplementRequiresQuantityInput(code),
+      appliesFullClig3Area: supplementAppliesFullClig3Area(code),
+      guidanceUrl: getClig3SupplementGuidanceUrl(code, name)
+    }
+  })
+}
+
+function parseSupplementQuantity (rawValue) {
+  if (rawValue == null) {
+    return { valid: false, value: 0 }
+  }
+  var normalised = String(rawValue).replace(/,/g, '').replace(/\s/g, '').trim()
+  if (!normalised) {
+    return { valid: false, value: 0 }
+  }
+  var value = Number(normalised)
+  if (!Number.isFinite(value) || value <= 0) {
+    return { valid: false, value: 0 }
+  }
+  return { valid: true, value: Math.round(value * 10000) / 10000 }
+}
+
+function applyClig3SupplementSelection (actions, supplementCode, quantityRaw) {
+  var nextActions = stripClig3Supplements(actions)
+  var code = String(supplementCode || '').toUpperCase()
+  if (!code || !STACKED_SUPPLEMENT_CODES[code] || !draftHasClig3(nextActions)) {
+    return { actions: nextActions, error: null }
+  }
+
+  var name = getCatalogActionName(code) || code
+  var ratePerHa = CLIG3_SUPPLEMENT_RATE_PER_HA[code]
+  if (!Number.isFinite(ratePerHa)) {
+    return { actions: nextActions, error: null }
+  }
+
+  var clig3Ha = getClig3AppliedQuantity(nextActions)
+  var quantity = clig3Ha
+
+  if (supplementRequiresQuantityInput(code)) {
+    var parsed = parseSupplementQuantity(quantityRaw)
+    if (!parsed.valid) {
+      return {
+        actions: nextActions,
+        error: {
+          fieldId: 'quantity-' + code.toLowerCase(),
+          text: 'Enter a quantity for ' + code
+        }
+      }
+    }
+    if (parsed.value > clig3Ha + 0.00005) {
+      return {
+        actions: nextActions,
+        error: {
+          fieldId: 'quantity-' + code.toLowerCase(),
+          text: 'Quantity must be ' + clig3Ha.toFixed(4) + ' hectares or less'
+        }
+      }
+    }
+    quantity = parsed.value
+  }
+
+  nextActions.push({
+    code: code,
+    name: name,
+    quantity: String(quantity),
+    unit: 'ha',
+    paymentRate: ratePerHa,
+    yearlyPayment: Math.round(quantity * ratePerHa * 100) / 100
+  })
+
+  return { actions: nextActions, error: null }
 }
 
 function summariseParcelActions (parcel) {
@@ -485,6 +650,16 @@ module.exports = {
   hasSavedLandAndActions: hasSavedLandAndActions,
   summariseDraftActions: summariseDraftActions,
   remainingAvailableArea: remainingAvailableArea,
+  isClig3SupplementAction: isClig3SupplementAction,
+  isStackedSupplementAction: isStackedSupplementAction,
+  draftHasClig3: draftHasClig3,
+  getClig3AppliedQuantity: getClig3AppliedQuantity,
+  getSelectedClig3SupplementCode: getSelectedClig3SupplementCode,
+  getSelectedClig3SupplementQuantity: getSelectedClig3SupplementQuantity,
+  stripClig3Supplements: stripClig3Supplements,
+  applyClig3SupplementSelection: applyClig3SupplementSelection,
+  getClig3SupplementOptions: getClig3SupplementOptions,
+  formatHectares: formatHectares,
   formatMoney: formatMoney,
   formatHaShort: formatHaShort,
   formatQuantityDisplay: formatQuantityDisplay,

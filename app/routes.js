@@ -3205,8 +3205,139 @@ router.post('/sfi-grasslands-v2/select-actions', function (req, res) {
     }, getSfiGrasslandsV2CompatibilityLocals(req)))
   }
 
-  sfiGrasslandsV2LandActions.setDraftActions(req, draftActions)
+  var previousDraftActions = sfiGrasslandsV2LandActions.getDraftActions(req)
+  var previousSupplement = sfiGrasslandsV2LandActions.getSelectedClig3SupplementCode(previousDraftActions)
+  var previousSupplementQuantity = sfiGrasslandsV2LandActions.getSelectedClig3SupplementQuantity(previousDraftActions)
+  // Posted actions no longer include nested supplements — drop any stale ones
+  // unless CLIG3 is still selected (then the supplements page re-applies).
+  var cleanedActions = sfiGrasslandsV2LandActions.stripClig3Supplements(draftActions)
 
+  if (!sfiGrasslandsV2LandActions.draftHasClig3(cleanedActions)) {
+    sfiGrasslandsV2LandActions.setDraftActions(req, cleanedActions)
+    return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+  }
+
+  // Keep any previously chosen supplement so the next page can pre-select it
+  if (previousSupplement) {
+    var restored = sfiGrasslandsV2LandActions.applyClig3SupplementSelection(
+      cleanedActions,
+      previousSupplement,
+      previousSupplementQuantity
+    )
+    cleanedActions = restored.actions
+  }
+  sfiGrasslandsV2LandActions.setDraftActions(req, cleanedActions)
+
+  res.redirect('/sfi-grasslands-v2/clig3-supplements')
+})
+
+router.get('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+
+  var draftParcel = sfiGrasslandsV2LandActions.getDraftParcel(req)
+  var draftActions = sfiGrasslandsV2LandActions.getDraftActions(req)
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/sfi-grasslands-v2/select-land')
+  }
+
+  if (!sfiGrasslandsV2LandActions.draftHasClig3(draftActions)) {
+    sfiGrasslandsV2LandActions.setDraftActions(
+      req,
+      sfiGrasslandsV2LandActions.stripClig3Supplements(draftActions)
+    )
+    return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+  }
+
+  if (req.query.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  var clig3Ha = sfiGrasslandsV2LandActions.getClig3AppliedQuantity(draftActions)
+  var directEdit = Boolean(sessionData.clig3SupplementsDirectEdit)
+  var backHref = '/sfi-grasslands-v2/select-actions'
+  if (directEdit && sessionData.returnToCheckYourAnswers) {
+    backHref = '/sfi-grasslands-v2/check-your-answers'
+  } else if (directEdit) {
+    backHref = '/sfi-grasslands-v2/confirm-land-and-actions'
+  }
+
+  res.render('sfi-grasslands-v2/clig3-supplements', {
+    data: sessionData,
+    draftParcel: draftParcel,
+    draftActions: draftActions,
+    supplementOptions: sfiGrasslandsV2LandActions.getClig3SupplementOptions(clig3Ha),
+    selectedSupplementCode: sfiGrasslandsV2LandActions.getSelectedClig3SupplementCode(draftActions),
+    selectedSupplementQuantity: sfiGrasslandsV2LandActions.getSelectedClig3SupplementQuantity(draftActions),
+    clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3Ha),
+    backHref: backHref,
+    quantityError: null
+  })
+})
+
+router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.selectLand)
+
+  var draftParcel = sfiGrasslandsV2LandActions.getDraftParcel(req)
+  var draftActions = sfiGrasslandsV2LandActions.getDraftActions(req)
+  var sessionData = getSfiGrasslandsV2SessionData(req)
+
+  if (!draftParcel || !draftParcel.parcelId) {
+    return res.redirect('/sfi-grasslands-v2/select-land')
+  }
+
+  if (!sfiGrasslandsV2LandActions.draftHasClig3(draftActions)) {
+    sfiGrasslandsV2LandActions.setDraftActions(
+      req,
+      sfiGrasslandsV2LandActions.stripClig3Supplements(draftActions)
+    )
+    delete sessionData.clig3SupplementsDirectEdit
+    return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+  }
+
+  var supplementCode = String((req.body && req.body.clig3Supplement) || '').toUpperCase()
+  var quantityField = supplementCode
+    ? 'quantity-' + supplementCode.toLowerCase()
+    : ''
+  var quantityRaw = quantityField && req.body ? req.body[quantityField] : ''
+
+  var applied = sfiGrasslandsV2LandActions.applyClig3SupplementSelection(
+    draftActions,
+    supplementCode,
+    quantityRaw
+  )
+
+  if (applied.error) {
+    var clig3HaError = sfiGrasslandsV2LandActions.getClig3AppliedQuantity(draftActions)
+    var directEditError = Boolean(sessionData.clig3SupplementsDirectEdit)
+    var backHrefError = '/sfi-grasslands-v2/select-actions'
+    if (directEditError && sessionData.returnToCheckYourAnswers) {
+      backHrefError = '/sfi-grasslands-v2/check-your-answers'
+    } else if (directEditError) {
+      backHrefError = '/sfi-grasslands-v2/confirm-land-and-actions'
+    }
+
+    return res.render('sfi-grasslands-v2/clig3-supplements', {
+      data: sessionData,
+      draftParcel: draftParcel,
+      draftActions: draftActions,
+      supplementOptions: sfiGrasslandsV2LandActions.getClig3SupplementOptions(clig3HaError),
+      selectedSupplementCode: supplementCode,
+      selectedSupplementQuantity: quantityRaw,
+      clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3HaError),
+      backHref: backHrefError,
+      quantityError: applied.error
+    })
+  }
+
+  sfiGrasslandsV2LandActions.setDraftActions(req, applied.actions)
+
+  if (req.body && req.body.from === 'check-your-answers') {
+    sessionData.returnToCheckYourAnswers = true
+  }
+
+  delete sessionData.clig3SupplementsDirectEdit
   res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
 })
 
@@ -3275,7 +3406,10 @@ router.get('/sfi-grasslands-v2/confirm-land-and-actions', function (req, res) {
     data: sessionData,
     basketParcels: basketParcels,
     basketSummary: basketSummary,
-    flashMessage: flashMessage
+    flashMessage: flashMessage,
+    draftHasClig3: sfiGrasslandsV2LandActions.draftHasClig3(
+      sfiGrasslandsV2LandActions.getDraftActions(req)
+    )
   })
 })
 
@@ -3351,6 +3485,13 @@ router.get('/sfi-grasslands-v2/confirm-land-and-actions/change/:parcelId', funct
 
   if (req.query.actionCode) {
     sessionData.focusActionCode = String(req.query.actionCode).toUpperCase()
+  }
+
+  var actionCode = sessionData.focusActionCode || ''
+  if (sfiGrasslandsV2LandActions.isClig3SupplementAction(actionCode)) {
+    sessionData.clig3SupplementsDirectEdit = true
+    return res.redirect('/sfi-grasslands-v2/clig3-supplements' +
+      (req.query.from === 'check-your-answers' ? '?from=check-your-answers' : ''))
   }
 
   res.redirect('/sfi-grasslands-v2/select-actions')

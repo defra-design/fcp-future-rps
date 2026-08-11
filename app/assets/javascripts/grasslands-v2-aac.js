@@ -326,15 +326,9 @@
             ha: Math.min(profile.restrictions.sssiHa, profile.totalHa)
           })
         }
-        if (code === 'CNUM2' || code === 'CSAM3') {
-          // Habitat / HEFER-style reduction for the Gate Field story (e.g. 3 ha → 2 ha)
-          var habitatCut = Math.min(1, baseEligible)
-          if (habitatCut > 0 && profile.restrictions.historicFeature) {
-            exclusions.push({ label: 'Additional habitat requirements reduce the available area', ha: habitatCut })
-            baseEligible = roundHa(baseEligible - habitatCut)
-          }
-        }
-        // Prototype: do not deduct for previous / existing agreements
+        // Share one exclusive hectare pool across grassland actions.
+        // Do not apply CNUM2/CSAM3-only habitat cuts — those left ~1 ha available
+        // on other actions after the user entered CNUM2/CSAM3 max.
         if (profile.availableHa != null) {
           baseEligible = roundHa(Math.min(baseEligible, profile.availableHa))
         }
