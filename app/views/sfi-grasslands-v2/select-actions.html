@@ -338,7 +338,8 @@
 
     .app-action-consent-hint {
       display: block;
-      margin-top: 5px;
+      margin-top: 2px;
+      margin-bottom: 0;
       color: #505a5f;
       font-weight: 400;
       font-size: 16px;
@@ -562,15 +563,6 @@
       margin-bottom: 0;
     }
 
-    /* WBD1 eligibility details under the quantity field */
-    #actions-section .app-pond-eligibility-details .govuk-details__summary,
-    #actions-section .app-pond-eligibility-details .govuk-details__summary-text,
-    #actions-section .app-pond-eligibility-details .govuk-details__text,
-    #actions-section .app-pond-eligibility-details .govuk-body,
-    #actions-section .app-pond-eligibility-details .govuk-list {
-      font-size: 16px;
-    }
-
     /* Keep GOV.UK details reveal: grey vertical bar + inset text */
     .app-aac-parcel-summary .govuk-details__text {
       padding-top: 15px;
@@ -663,6 +655,8 @@
 
     #actions-section [data-whole-remaining-area] .govuk-hint {
       color: #505a5f;
+      font-size: 16px;
+      line-height: 1.25;
     }
 
     /* AAC on: single column — no side parcel / previous-agreements panel */
@@ -677,6 +671,12 @@
 
     #actions-section #actions-checkboxes-container > .govuk-checkboxes__item[data-available-for-parcel="false"],
     #actions-section #actions-checkboxes-container > .govuk-checkboxes__item[hidden] {
+      display: none !important;
+    }
+
+    /* If an action row is hidden, never leave its quantity panel floating above the list */
+    #actions-section #actions-checkboxes-container > .govuk-checkboxes__item[data-available-for-parcel="false"] + .govuk-checkboxes__conditional,
+    #actions-section #actions-checkboxes-container > .govuk-checkboxes__item[hidden] + .govuk-checkboxes__conditional {
       display: none !important;
     }
 
@@ -1019,9 +1019,6 @@
               <button type="submit" id="continue-button" class="govuk-button" data-module="govuk-button">
                 Save and continue
               </button>
-              <a href="/sfi-grasslands-v2/check-your-answers" id="return-to-cya-link" class="govuk-link govuk-link--no-visited-state"{% if not returnToCheckYourAnswers %} style="display: none;"{% endif %}>
-                Cancel changes
-              </a>
             </div>
           </form>
         </div>
@@ -2393,25 +2390,6 @@
         actions: ['CNUM2', 'CSAM2', 'CAHL1', 'AHW7', 'CIGL1'],
         color: '#CD853F'
       },
-      'stone-bridge': {
-        name: 'Stone Bridge',
-        osRef: 'SP 877 521',
-        numParcels: 9,
-        totalArea: '51.2341',
-        availableArea: '51.2341',
-        numActions: 1,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9470, -0.7549],
-          [51.9473, -0.7526],
-          [51.9466, -0.7523],
-          [51.9459, -0.7527],
-          [51.9456, -0.7550],
-          [51.9463, -0.7553]
-        ],
-        actions: ['BFS1', 'CIPM2', 'CAHL2', 'CSAM2', 'SOH1'],
-        color: '#BC8F8F'
-      },
       'beech-wood': {
         name: 'Beech Wood',
         osRef: 'SP 907 524',
@@ -2758,12 +2736,11 @@
       HEF1: true
     };
 
-    // WBD1 is paid per pond. Cap at 3 ponds per hectare of Pond land cover
-    // on the parcel (not the whole parcel area).
+    // WBD1 is paid per pond — users enter a count, not a length or area.
+    // Do not show an "X ponds available" hint or validate against parcel hectares.
     var POND_ACTION_CODES = {
       WBD1: true
     };
-    var MAX_PONDS_PER_HECTARE = 3;
 
     function getQuantityUnitForAction(actionCode) {
       var normalizedCode = String(actionCode || '').toUpperCase();
@@ -2783,77 +2760,6 @@
     function formatPondCount(count) {
       var n = Math.max(0, Math.round(Number(count) || 0));
       return n === 1 ? '1 pond' : n.toLocaleString('en-GB') + ' ponds';
-    }
-
-    function isPondLandCoverName(name) {
-      return /pond/i.test(String(name || ''));
-    }
-
-    function sumPondLandCoverHa(covers) {
-      var total = 0;
-      (covers || []).forEach(function(cover) {
-        if (!cover) {
-          return;
-        }
-        var name = typeof cover === 'string' ? cover : cover.name;
-        var ha = typeof cover === 'string' ? null : Number(cover.ha);
-        if (!isPondLandCoverName(name)) {
-          return;
-        }
-        if (Number.isFinite(ha) && ha > 0) {
-          total += ha;
-        }
-      });
-      return Math.round(total * 10000) / 10000;
-    }
-
-    function getPondLandCoverHaForParcel(parcel) {
-      if (window.SfiGrasslandsV2Aac &&
-          window.SfiGrasslandsV2Aac.isEnabled() &&
-          typeof window.SfiGrasslandsV2Aac.getParcelAreaBreakdown === 'function' &&
-          currentSelectedParcel) {
-        var breakdown = window.SfiGrasslandsV2Aac.getParcelAreaBreakdown(
-          currentSelectedParcel,
-          parcel
-        );
-        var fromBreakdown = sumPondLandCoverHa(breakdown && breakdown.landCovers);
-        if (fromBreakdown > 0) {
-          return fromBreakdown;
-        }
-      }
-
-      var totalArea = Number(parcel && (parcel.totalArea || parcel.availableArea));
-      var coverNames = getParcelLandCovers(parcel && parcel.landCover);
-      if (window.SfiGrasslandsV2ParcelReference &&
-          typeof window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas === 'function') {
-        return sumPondLandCoverHa(
-          window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas(coverNames, totalArea)
-        );
-      }
-
-      // Single Pond cover = whole parcel; otherwise no reliable split
-      if (coverNames.length === 1 && isPondLandCoverName(coverNames[0])) {
-        return Number.isFinite(totalArea) ? totalArea : 0;
-      }
-      return sumPondLandCoverHa(coverNames.map(function(name) {
-        return { name: name, ha: null };
-      }));
-    }
-
-    function getMaxPondsForParcel(parcel) {
-      var pondHa = getPondLandCoverHaForParcel(parcel);
-      if (!Number.isFinite(pondHa) || pondHa <= 0) {
-        return 0;
-      }
-      return Math.floor(pondHa * MAX_PONDS_PER_HECTARE);
-    }
-
-    function getPondOverLimitMessage(maxPonds) {
-      if (!maxPonds) {
-        return 'This parcel has no pond land cover for this action';
-      }
-      return 'Enter up to ' + formatPondCount(maxPonds) +
-        ' (maximum ' + MAX_PONDS_PER_HECTARE + ' ponds per hectare of pond land cover)';
     }
 
     // CLIG3 always takes all remaining available hectares — no quantity input
@@ -3868,7 +3774,6 @@
       'ash-copse': 'Scrub - ungrazeable',
       'home-paddock': 'Notional - mixed',
       'gate-field': ['Permanent grassland', 'Other arable crops'],
-      'stone-bridge': 'Rivers and Streams type 2',
       'beech-wood': 'Notional - natural',
       'orchard-plot': 'Perennial crops',
       'new-ground': 'Land lying fallow',
@@ -3987,8 +3892,7 @@
       'church-meadow': true,
       'church-field': true,
       'mill-field': true,
-      'mill-meadow': true,
-      'stone-bridge': true
+      'mill-meadow': true
     };
 
     var ARABLE_LAND_COVERS = {
@@ -4151,9 +4055,8 @@
         SOH1: ['CNUM3', 'CAHL1', 'BFS1', 'CIPM2', 'CNUM2', 'CIGL1', 'AHW3', 'CSAM3', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
         CIGL1: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'AHW3', 'CSAM3', 'PRF1', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
         AHW3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'CSAM3', 'PRF1', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
-        // CLIG3 and CSAM3 cannot coexist: CSAM3 replaces grassland, CLIG3 protects it
-        CLIG3: ['CSAM3'],
-        CSAM3: ['CLIG3', 'CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
+        // CLIG3 and CSAM3 share remaining grassland area — not hard-incompatible
+        CSAM3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CHRW3', 'WBD3', 'AHW5', 'GRH12'],
         PRF1: ['CNUM3', 'CAHL1', 'BFS1', 'CIPM2', 'CIGL1', 'AHW3', 'CHRW3', 'WBD3', 'GRH12'],
         CHRW3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1', 'WBD3', 'AHW5', 'GRH12'],
         WBD3: ['CNUM3', 'CAHL1', 'CAHL2', 'CSAM2', 'BFS1', 'AHW7', 'CIPM2', 'CNUM2', 'SOH1', 'CIGL1', 'AHW3', 'CSAM3', 'PRF1', 'CHRW3', 'AHW5', 'GRH12'],
@@ -4199,17 +4102,13 @@
     };
 
     var ACTION_CONSENT_REQUIREMENTS = {
-      // SSSI only
-      GRH7: { sssi: true, hefer: false },
-      GRH8: { sssi: true, hefer: false },
-      GRH10: { sssi: true, hefer: false },
       // HEFER only
       CSAM3: { sssi: false, hefer: true },
       CNUM2: { sssi: false, hefer: true },
       // Both
       CLIG3: { sssi: true, hefer: true },
       GRH12: { sssi: true, hefer: true }
-      // Remaining MVP actions: neither
+      // Remaining MVP actions (incl. CLIG3 supplements GRH7/8/10): neither
     };
 
     function getCurrentDraftParcelId() {
@@ -4292,6 +4191,13 @@
       });
       label.appendChild(guidanceLink);
 
+      var consentHint = buildActionConsentHint(action.code, consentHintId);
+      var describedBy = hintId;
+      if (consentHint) {
+        label.appendChild(consentHint);
+        describedBy += ' ' + consentHintId;
+      }
+
       var hint = document.createElement('span');
       hint.className = 'app-action-hint';
       hint.id = hintId;
@@ -4301,13 +4207,7 @@
       var availableHint = createActionAvailableHint(action.code);
       var availableHintId = availableHint.id;
       label.appendChild(availableHint);
-
-      var consentHint = buildActionConsentHint(action.code, consentHintId);
-      var describedBy = hintId + ' ' + availableHintId;
-      if (consentHint) {
-        label.appendChild(consentHint);
-        describedBy += ' ' + consentHintId;
-      }
+      describedBy += ' ' + availableHintId;
       // Nested supplements already sit under a “supplements for CLIG3” legend —
       // no need to repeat the relationship on every label.
       input.setAttribute('aria-describedby', describedBy);
@@ -4328,7 +4228,7 @@
         var qtyLabel = document.createElement('p');
         qtyLabel.className = 'govuk-label govuk-!-margin-bottom-1';
         qtyLabel.id = 'whole-remaining-label-' + codeLower;
-        qtyLabel.textContent = 'Area for CLIG3';
+        qtyLabel.textContent = 'Quantity';
 
         var amountText = document.createElement('p');
         amountText.className = 'govuk-body govuk-!-margin-bottom-1';
@@ -4340,7 +4240,7 @@
         var qtyHint = document.createElement('p');
         qtyHint.className = 'govuk-hint govuk-!-margin-bottom-0';
         qtyHint.id = 'whole-remaining-hint-' + codeLower;
-        qtyHint.textContent = 'CLIG3 will be applied to all remaining available area on this land parcel.';
+        qtyHint.textContent = 'CLIG3 will be applied to the full available area on this land parcel.';
 
         amountText.setAttribute('aria-describedby', qtyHint.id);
 
@@ -4369,18 +4269,6 @@
         ? 'Number of ponds'
         : 'Quantity';
 
-      var quantityHint = document.createElement('div');
-      // Must include govuk-checkboxes__hint — updateAvailableQuantities / selectParcel
-      // find this node with `.govuk-hint.govuk-checkboxes__hint`.
-      quantityHint.className = 'govuk-hint govuk-checkboxes__hint';
-      quantityHint.textContent = getAvailableHintText(
-        action.code,
-        getQuantityUnitForAction(action.code) === 'ha' ? '0.0000' : 0
-      );
-      if (isPondUnit(getQuantityUnitForAction(action.code))) {
-        quantityHint.hidden = true;
-      }
-
       var wrapper = document.createElement('div');
       wrapper.className = 'govuk-input__wrapper';
 
@@ -4400,35 +4288,8 @@
       wrapper.appendChild(qtyInput);
       wrapper.appendChild(suffix);
       quantityFormGroup.appendChild(quantityLabel);
-      quantityFormGroup.appendChild(quantityHint);
       quantityFormGroup.appendChild(wrapper);
       conditional.appendChild(quantityFormGroup);
-
-      if (String(action.code || '').toUpperCase() === 'WBD1') {
-        var eligibilityDetails = document.createElement('details');
-        eligibilityDetails.className = 'govuk-details app-pond-eligibility-details govuk-!-margin-top-4 govuk-!-margin-bottom-0';
-        eligibilityDetails.setAttribute('data-module', 'govuk-details');
-
-        var eligibilitySummary = document.createElement('summary');
-        eligibilitySummary.className = 'govuk-details__summary';
-        eligibilitySummary.innerHTML =
-          '<span class="govuk-details__summary-text">Check your ponds are eligible</span>';
-
-        var eligibilityText = document.createElement('div');
-        eligibilityText.className = 'govuk-details__text';
-        eligibilityText.innerHTML =
-          '<p class="govuk-body">Each pond must:</p>' +
-          '<ul class="govuk-list govuk-list--bullet">' +
-          '<li>be larger than 25 square metres, up to a maximum of 2 hectares (at the time of application)</li>' +
-          '<li>be under your management control — including the surrounding water and the whole of the pond edge</li>' +
-          '</ul>' +
-          '<p class="govuk-body">Ponds used for wastewater, treated effluent discharge, or those that have been heavily modified for treatment are not eligible.</p>' +
-          '<p class="govuk-body govuk-!-margin-bottom-0">Payment is limited to a maximum of 3 ponds per hectare.</p>';
-
-        eligibilityDetails.appendChild(eligibilitySummary);
-        eligibilityDetails.appendChild(eligibilityText);
-        conditional.appendChild(eligibilityDetails);
-      }
 
       return { item: item, conditional: conditional };
     }
@@ -5623,9 +5484,38 @@
           $item.hide();
           $item[0].hidden = true;
           $item[0].style.display = 'none';
+          checkbox.checked = false;
+          checkbox.setAttribute('aria-expanded', 'false');
+          $('#quantity-' + String(actionCode).toLowerCase()).val('');
+          // Hide by id so an orphaned panel cannot sit above group headings
+          $('#conditional-' + String(actionCode).toLowerCase())
+            .addClass('govuk-checkboxes__conditional--hidden');
           if (conditional.length) {
             conditional.addClass('govuk-checkboxes__conditional--hidden');
           }
+        }
+      });
+
+      // Safety net: any quantity panel whose action row is missing/hidden must stay closed
+      $('#actions-checkboxes-container > .govuk-checkboxes__conditional').each(function() {
+        var conditionalEl = this;
+        var code = String(conditionalEl.id || '')
+          .replace(/^conditional-/i, '')
+          .toUpperCase();
+        if (!code) {
+          return;
+        }
+        var checkboxEl = document.querySelector(
+          '#actions-checkboxes-container > .govuk-checkboxes__item input[name="actions"][value="' + code + '"]'
+        );
+        var itemEl = checkboxEl && checkboxEl.closest('.govuk-checkboxes__item');
+        if (
+          !itemEl ||
+          itemEl.hidden ||
+          itemEl.getAttribute('data-available-for-parcel') === 'false' ||
+          itemEl.style.display === 'none'
+        ) {
+          conditionalEl.classList.add('govuk-checkboxes__conditional--hidden');
         }
       });
 
@@ -6448,6 +6338,17 @@
         $('input[name="actions"]:checked').each(function() {
           var $checkbox = $(this);
           var actionCode = $checkbox.val();
+          if (currentAvailableActions.indexOf(actionCode) === -1) {
+            return;
+          }
+          var $item = $checkbox.closest('.govuk-checkboxes__item');
+          if (
+            $item.attr('data-available-for-parcel') === 'false' ||
+            $item.is('[hidden]') ||
+            $item.css('display') === 'none'
+          ) {
+            return;
+          }
           var actionName = getActionName(actionCode);
           
           // Get quantity if entered (strip thousand separators like "2,166")
@@ -6514,42 +6415,35 @@
         var isOverLimitHa = totals.ha > totalAreaHa;
         var isOverLimitM = totals.m > totalAreaM;
         var isOverLimitM2 = (totals.m2 || 0) > totalAreaM2;
-        var maxPonds = getMaxPondsForParcel(parcel);
-        var isOverLimitPond = totals.pond > maxPonds;
-        var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2 || isOverLimitPond;
+        // Pond count is user-declared — do not over-limit against parcel hectares
+        var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2;
 
-        // Update all quantity hints
+        // Update label available hints (quantity fields no longer show available copy)
         $('.govuk-checkboxes__conditional').each(function() {
           var $conditional = $(this);
-          var $hint = $conditional.find('.govuk-hint.govuk-checkboxes__hint');
           var $suffix = $conditional.find('.govuk-input__suffix');
           var actionCode = $conditional.attr('id').replace('conditional-', '').toUpperCase();
 
           if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
-            $hint.text('0.0000 hectares available');
             setActionAvailableHint(actionCode, 0);
             return;
           }
 
           if ($suffix.text() === 'pond') {
-            $hint.text('').prop('hidden', true);
             setActionAvailableHint(actionCode, null);
             return;
           }
 
           if ($suffix.text() === 'ha') {
-            $hint.text(remainingHa.toFixed(4) + ' hectares available').prop('hidden', false);
             setActionAvailableHint(actionCode, remainingHa);
           } else if ($suffix.text() === 'm') {
-            $hint.text(getAvailableHintText(actionCode, remainingM)).prop('hidden', false);
             setActionAvailableHint(actionCode, remainingM);
           } else if ($suffix.text() === 'm²') {
-            $hint.text(getAvailableHintText(actionCode, remainingM2)).prop('hidden', false);
             setActionAvailableHint(actionCode, remainingM2);
           }
         });
 
-        // CLIG3 has no quantity hint field — still refresh the label available amount
+        // CLIG3 has no quantity input — still refresh the label available amount
         setActionAvailableHint('CLIG3', remainingHa);
         mirrorClig3SupplementAvailableHints();
 
@@ -6575,8 +6469,6 @@
               errors.overLimit = 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel';
             } else if (suffix === 'm²' && isOverLimitM2) {
               errors.overLimit = 'Total square metres exceeds ' + Math.max(0, Math.round(totalAreaM2)).toLocaleString('en-GB') + ' available on this parcel';
-            } else if (suffix === 'pond' && isOverLimitPond) {
-              errors.overLimit = getPondOverLimitMessage(maxPonds);
             }
           }
 
@@ -6643,7 +6535,8 @@
             $quantityInput.data('blurred', true);
             updateQuantityFormatErrors($quantityInput);
           });
-          updateAacQuantityOverLimitErrors();
+          // On Continue, check every quantity — live UI only flags the last edited field
+          updateAacQuantityOverLimitErrors({ all: true });
         } else {
           $('input[name="actions"]:checked').each(function() {
             var actionCode = ($(this).val() || '').toString();
@@ -6753,28 +6646,28 @@
           ).remove();
         });
         
-        // Reset hints to show total available (default mode only —
-        // AAC owns quantity copy when the AAC toggle is on)
+        // Reset label available hints when changing parcels (default mode only —
+        // AAC owns availability copy when enabled). Quantity fields have no available hint.
         if (parcelData[parcelId] && !(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled())) {
           var parcel = parcelData[parcelId];
           $('.govuk-checkboxes__conditional').each(function() {
             var $conditional = $(this);
-            var $hint = $conditional.find('.govuk-hint.govuk-checkboxes__hint');
             var $suffix = $conditional.find('.govuk-input__suffix');
             var actionCode = $conditional.attr('id').replace('conditional-', '').toUpperCase();
-            
+
             if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
-              $hint.text('0.0000 hectares available');
+              setActionAvailableHint(actionCode, 0);
             } else if ($suffix.text() === 'pond') {
-              $hint.text('').prop('hidden', true);
+              setActionAvailableHint(actionCode, null);
             } else if ($suffix.text() === 'ha') {
-              $hint.text(getAvailableHintText(actionCode, parcel.availableArea)).prop('hidden', false);
+              setActionAvailableHint(actionCode, parcel.availableArea);
             } else if ($suffix.text() === 'm') {
-              $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel))).prop('hidden', false);
+              setActionAvailableHint(actionCode, getLinearAvailableMetres(parcel));
             } else if ($suffix.text() === 'm²') {
-              $hint.text(getAvailableHintText(actionCode, getBuildingSquareMetresAvailable(parcel))).prop('hidden', false);
+              setActionAvailableHint(actionCode, getBuildingSquareMetresAvailable(parcel));
             }
           });
+          setActionAvailableHint('CLIG3', parcel.availableArea);
         }
 
         applyActionFilters();
@@ -6806,6 +6699,18 @@
         $('input[name="actions"]:checked').each(function() {
           var $checkbox = $(this);
           var actionCode = $checkbox.val();
+          // Never save actions that are not eligible for this parcel (e.g. WBD1 on Temporary grass)
+          if (currentAvailableActions.indexOf(actionCode) === -1) {
+            return;
+          }
+          var $item = $checkbox.closest('.govuk-checkboxes__item');
+          if (
+            $item.attr('data-available-for-parcel') === 'false' ||
+            $item.is('[hidden]') ||
+            $item.css('display') === 'none'
+          ) {
+            return;
+          }
           var actionName = getActionName(actionCode);
           var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
           var quantityUnit = getQuantityUnitForAction(actionCode);
@@ -7186,9 +7091,8 @@
           debug: false,
           // AAC exploration: only genuine policy conflicts — not the full matrix.
           // Area sharing is handled by remaining eligible area, not binary disable.
+          // CLIG3 and CSAM3 share remaining grassland area (not hard-incompatible).
           incompatibleByCode: {
-            CLIG3: ['CSAM3'],
-            CSAM3: ['CLIG3'],
             GRH7: ['GRH8', 'GRH10'],
             GRH8: ['GRH7', 'GRH10'],
             GRH10: ['GRH7', 'GRH8']
@@ -7280,21 +7184,6 @@
         $input.attr('aria-disabled', 'true');
         $item.addClass('sfi-compatibility-disabled');
         $item.css('opacity', '');
-
-        if ($conditional.length) {
-          var unit = getQuantityUnitForAction(code);
-          if (unit === 'ha') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0.0000 hectares available');
-          } else if (unit === 'm') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 metres available');
-          } else if (unit === 'm²') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 square metres available');
-          } else if (unit === 'pond') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('').prop('hidden', true);
-          } else {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 available');
-          }
-        }
 
         if (!$label.find('#' + hintId).length) {
           $label.append(
@@ -7550,6 +7439,10 @@
         syncAllWholeRemainingAreaActions();
       });
 
+      // Live over-limit errors only appear on the quantity last edited.
+      // Continue still validates every field via { all: true }.
+      var lastQuantityEditedActionCode = null;
+
       function updateAacQuantityOverLimitErrors(options) {
         options = options || {};
         if (!(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled())) {
@@ -7563,19 +7456,32 @@
           byCode[action.code] = action;
         });
 
-        var onlyCode = options.actionCode
-          ? String(options.actionCode).toUpperCase()
-          : null;
+        var checkAll = options.all === true;
+        var onlyCode = checkAll
+          ? null
+          : (options.actionCode
+            ? String(options.actionCode).toUpperCase()
+            : (lastQuantityEditedActionCode || null));
 
         $('input[id^="quantity-"]').each(function() {
           var $input = $(this);
           var actionCode = ($input.attr('id') || '').replace('quantity-', '').toUpperCase();
+          var errors = getQuantityErrorsStore($input);
+
+          // Live mode: only the last-edited field can show an over-limit error
           if (onlyCode && actionCode !== onlyCode) {
+            if (errors.overLimit) {
+              errors.overLimit = null;
+              refreshQuantityFieldDisplay($input);
+            }
+            return;
+          }
+
+          if (!checkAll && !onlyCode) {
             return;
           }
 
           var $checkbox = getQuantityCheckbox($input);
-          var errors = getQuantityErrorsStore($input);
           // Keep format errors (e.g. letter "d"); only manage over-limit here
           errors.overLimit = null;
 
@@ -7606,7 +7512,9 @@
 
           if (parsed.value > maxAllowed + 0.0001) {
             if (action.unit === 'pond') {
-              errors.overLimit = getPondOverLimitMessage(Math.max(0, Math.floor(maxAllowed)));
+              // Pond count is user-declared — do not validate against parcel hectares
+              refreshQuantityFieldDisplay($input);
+              return;
             } else if (action.unit === 'm') {
               errors.overLimit = 'Enter up to ' +
                 Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
@@ -7634,6 +7542,8 @@
         if (!actionCode) {
           return;
         }
+
+        lastQuantityEditedActionCode = actionCode;
 
         var $input = $(inputEl);
         $input.data('blurred', true);
@@ -7670,8 +7580,8 @@
         refreshContinueFromActionSelection();
       }
 
-      // While typing: wait after the last keystroke, then run the same AAC path as blur
-      // (spinner + 2.5s simulated API). Blur cancels a pending debounce and commits immediately.
+      // While typing: wait after the last keystroke, then run AAC (spinner + simulated API).
+      // Do not also run on blur — only the debounce updates available land.
       var QUANTITY_AAC_DEBOUNCE_MS = 800;
       var quantityAacDebounceTimer = null;
 
@@ -7692,15 +7602,6 @@
           triggerAacQuantityUpdate(inputEl);
         }, QUANTITY_AAC_DEBOUNCE_MS);
       }
-
-      $(document).on('blur', 'input[id^="quantity-"]', function() {
-        if (!(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled())) {
-          return;
-        }
-        // Cancel pending debounced update — blur commits immediately with spinner
-        clearQuantityAacDebounce();
-        triggerAacQuantityUpdate(this);
-      });
 
       function focusFarmByKey(farmKey) {
         var farmConfig = FARM_VIEW_CONFIG[farmKey];

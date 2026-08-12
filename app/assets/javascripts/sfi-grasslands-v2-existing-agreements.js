@@ -101,14 +101,6 @@
         actions: [{ code: 'AHW3', name: 'Beetle banks' }]
       }
     ],
-    'stone-bridge': [
-      {
-        scheme: 'Sustainable Farming Incentive',
-        endDate: '31 May 2027',
-        availableArea: '51.2341 hectares',
-        actions: [{ code: 'BFS1', name: '12m to 24m watercourse buffer strip on cultivated land' }]
-      }
-    ],
     'far-meadow': [
       {
         scheme: 'Sustainable Farming Incentive',

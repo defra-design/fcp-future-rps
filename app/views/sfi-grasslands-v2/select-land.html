@@ -155,6 +155,62 @@
       padding-bottom: 10px;
     }
 
+    .app-application-summary__selected {
+      margin-top: 20px;
+      padding-top: 5px;
+    }
+
+    .app-application-summary__selected-heading {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-family: "GDS Transport", arial, sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      line-height: 1.31579;
+      color: #0b0c0c;
+    }
+
+    .app-application-summary__selected .govuk-summary-list {
+      margin-bottom: 15px;
+    }
+
+    .app-application-summary__selected .govuk-summary-list__row {
+      border-bottom: 1px solid #b1b4b6;
+    }
+
+    .app-application-summary__selected .govuk-summary-list__value {
+      width: 100%;
+      margin-bottom: 0;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 19px;
+      line-height: 1.31579;
+      color: #0b0c0c;
+    }
+
+    .app-application-summary__view-all {
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 19px;
+      line-height: 1.31579;
+    }
+
+    .app-parcel-list-item--added {
+      opacity: 0.55;
+    }
+
+    .app-parcel-list-item--added a.govuk-link {
+      color: #505a5f !important;
+    }
+
+    .app-parcel-list-item--added .app-parcel-list-item__status {
+      display: block;
+      margin-top: 2px;
+      color: #505a5f;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
     .map-reset-view-button {
       position: absolute;
       top: 12px;
@@ -514,6 +570,7 @@
 
       <div class="app-application-summary" id="os-map-references">
         <div class="app-application-summary__inner farm-info-panel" id="blackberry-farm-info">
+          {% set selectedParcels = applicationParcels or [] %}
           <table class="govuk-table">
             <caption class="govuk-table__caption">Agile Farm</caption>
             <tbody class="govuk-table__body">
@@ -527,6 +584,29 @@
               </tr>
             </tbody>
           </table>
+          {% if selectedParcels | length %}
+            <div class="app-application-summary__selected">
+              <h3 class="app-application-summary__selected-heading">
+                Parcels in your application
+              </h3>
+              <dl class="govuk-summary-list">
+                {% for parcel in selectedParcels %}
+                  {% set parcelRef = parcel.parcelReference or parcel.osReference or parcel.parcelName or parcel.parcelId %}
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-visually-hidden">
+                      Parcel reference
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                      {{ parcelRef }}
+                    </dd>
+                  </div>
+                {% endfor %}
+              </dl>
+              <p class="app-application-summary__view-all">
+                <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions">Review land and actions</a>
+              </p>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -618,9 +698,11 @@
       <input type="hidden" name="selectedParcelTotalArea" id="selectedParcelTotalArea" value="{% if hasDraftParcel %}{{ draftParcel.totalArea }}{% endif %}">
       <input type="hidden" name="selectedParcelLandCover" id="selectedParcelLandCover" value="{% if hasDraftParcel %}{{ draftParcel.landCover | dump }}{% endif %}">
       <input type="hidden" name="selectedParcelAvailableArea" id="selectedParcelAvailableArea" value="{% if hasDraftParcel %}{{ draftParcel.availableArea }}{% endif %}">
-      <button type="submit" id="continue-button" class="govuk-button" data-module="govuk-button">
-        Continue
-      </button>
+      <div class="govuk-button-group">
+        <button type="submit" id="continue-button" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </div>
     </form>
 
     <!-- Two column layout below map -->
@@ -773,7 +855,6 @@
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('pond-close'); return false;" class="govuk-link">SO3757 3203</a><span>29.3214 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('river-meadow'); return false;" class="govuk-link">SO3757 3204</a><span>67.3421 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('spring-pasture'); return false;" class="govuk-link">SO3757 3205</a><span>64.3215 ha available</span></li>
-                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('stone-bridge'); return false;" class="govuk-link">SO3757 3206</a><span>51.2341 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('upper-slope'); return false;" class="govuk-link">SO3757 3207</a><span>54.6789 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('valley-bottom'); return false;" class="govuk-link">SO3757 3208</a><span>88.9423 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('woodland-edge'); return false;" class="govuk-link">SO3757 3209</a><span>28.4516 ha available</span></li>
@@ -916,9 +997,6 @@
             <button type="submit" id="legacy-continue-button" disabled class="govuk-button" data-module="govuk-button">
               Continue
             </button>
-            <a href="/sfi-grasslands-v2/check-your-answers" id="return-to-cya-link" class="govuk-link govuk-link--no-visited-state" style="display: none;">
-              Cancel changes
-            </a>
           </div>
         </form>
         </div>
@@ -989,6 +1067,7 @@
   <script src="/public/javascripts/sfi-grasslands-v2-aac.js"></script>
 
   <!-- Pass server data to JavaScript -->
+  <script id="application-parcels-data" type="application/json">{{ (applicationParcels or []) | dump | safe }}</script>
   {% if data['parcelSelectionsData'] %}
   <script id="session-data" type="application/json">{{ data['parcelSelectionsData'] | safe }}</script>
   {% endif %}
@@ -2192,25 +2271,6 @@
         actions: ['CNUM2', 'CSAM2', 'CAHL1', 'AHW7', 'CIGL1'],
         color: '#CD853F'
       },
-      'stone-bridge': {
-        name: 'Stone Bridge',
-        osRef: 'SP 877 521',
-        numParcels: 9,
-        totalArea: '51.2341',
-        availableArea: '51.2341',
-        numActions: 1,
-        location: 'buckinghamshire',
-        coords: [
-          [51.9470, -0.7549],
-          [51.9473, -0.7526],
-          [51.9466, -0.7523],
-          [51.9459, -0.7527],
-          [51.9456, -0.7550],
-          [51.9463, -0.7553]
-        ],
-        actions: ['BFS1', 'CIPM2', 'CAHL2', 'CSAM2', 'SOH1'],
-        color: '#BC8F8F'
-      },
       'beech-wood': {
         name: 'Beech Wood',
         osRef: 'SP 907 524',
@@ -3034,7 +3094,6 @@
       'ash-copse': 'Scrub - ungrazeable',
       'home-paddock': 'Notional - mixed',
       'gate-field': ['Permanent grassland', 'Other arable crops'],
-      'stone-bridge': 'Rivers and Streams type 2',
       'beech-wood': 'Notional - natural',
       'orchard-plot': 'Perennial crops',
       'new-ground': 'Land lying fallow',
@@ -3212,8 +3271,7 @@
       'church-meadow': true,
       'church-field': true,
       'mill-field': true,
-      'mill-meadow': true,
-      'stone-bridge': true
+      'mill-meadow': true
     };
 
     var ARABLE_LAND_COVERS = {
@@ -3510,6 +3568,28 @@
     renderActionCheckboxes();
 
     // Default style for parcels
+    var applicationParcelIds = {};
+    (function loadApplicationParcelIds() {
+      var el = document.getElementById('application-parcels-data');
+      if (!el) {
+        return;
+      }
+      try {
+        var parcels = JSON.parse(el.textContent || '[]');
+        (Array.isArray(parcels) ? parcels : []).forEach(function(parcel) {
+          if (parcel && parcel.parcelId) {
+            applicationParcelIds[String(parcel.parcelId)] = true;
+          }
+        });
+      } catch (error) {
+        applicationParcelIds = {};
+      }
+    })();
+
+    function isParcelAlreadyAdded(parcelId) {
+      return !!applicationParcelIds[String(parcelId || '')];
+    }
+
     function defaultStyle(feature) {
       return {
         fillColor: feature.properties.color,
@@ -3518,6 +3598,21 @@
         color: '#0b0c0c',
         fillOpacity: 0.5
       };
+    }
+
+    // Already in the application — muted so unused parcels stand out
+    function addedStyle(feature) {
+      return {
+        fillColor: '#b1b4b6',
+        weight: 2,
+        opacity: 1,
+        color: '#505a5f',
+        fillOpacity: 0.35
+      };
+    }
+
+    function restingStyle(parcelId, feature) {
+      return isParcelAlreadyAdded(parcelId) ? addedStyle(feature) : defaultStyle(feature);
     }
 
     // Highlight style
@@ -3567,7 +3662,11 @@
 
       rawMap.setFeatureState(
         { source: PARCEL_SOURCE_ID, id: parcelId },
-        { selected: !!selected, hover: !!hover }
+        {
+          selected: !!selected,
+          hover: !!hover,
+          added: isParcelAlreadyAdded(parcelId)
+        }
       );
     }
 
@@ -3588,11 +3687,20 @@
           type: 'fill',
           source: PARCEL_SOURCE_ID,
           paint: {
-            'fill-color': ['get', 'color'],
+            'fill-color': [
+              'case',
+              ['all',
+                ['boolean', ['feature-state', 'added'], false],
+                ['!', ['boolean', ['feature-state', 'selected'], false]],
+                ['!', ['boolean', ['feature-state', 'hover'], false]]
+              ], '#b1b4b6',
+              ['get', 'color']
+            ],
             'fill-opacity': [
               'case',
               ['boolean', ['feature-state', 'selected'], false], 1,
               ['boolean', ['feature-state', 'hover'], false], 0.7,
+              ['boolean', ['feature-state', 'added'], false], 0.35,
               0.5
             ]
           }
@@ -3609,6 +3717,7 @@
               'case',
               ['boolean', ['feature-state', 'selected'], false], '#00703c',
               ['boolean', ['feature-state', 'hover'], false], '#ffdd00',
+              ['boolean', ['feature-state', 'added'], false], '#505a5f',
               '#0b0c0c'
             ],
             'line-width': [
@@ -3617,7 +3726,15 @@
               ['boolean', ['feature-state', 'hover'], false], 4,
               2
             ],
-            'line-opacity': 1
+            'line-opacity': [
+              'case',
+              ['all',
+                ['boolean', ['feature-state', 'added'], false],
+                ['!', ['boolean', ['feature-state', 'selected'], false]],
+                ['!', ['boolean', ['feature-state', 'hover'], false]]
+              ], 0.7,
+              1
+            ]
           }
         });
       }
@@ -3768,9 +3885,13 @@
     }
 
     function buildParcelPopupContent(parcelId, data) {
-      return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
+      var html = '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
         '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
         '<p>' + formatAvailableActionsCountLabel(getParcelAvailableActionsCount(parcelId, data)) + '</p>';
+      if (isParcelAlreadyAdded(parcelId)) {
+        html += '<p>Already in your application</p>';
+      }
+      return html;
     }
 
     function createParcelOverlay(parcelId, data) {
@@ -3938,7 +4059,7 @@
 
       polygon.on('mouseout', function() {
         if (currentSelectedParcel !== parcelId) {
-          this.setStyle(defaultStyle(this.feature));
+          this.setStyle(restingStyle(parcelId, this.feature));
         }
         this.closePopupWithDelay();
       });
@@ -3961,8 +4082,34 @@
         if (polygon && polygon._syncVisualState) {
           polygon._syncVisualState();
         }
+        if (polygon && isParcelAlreadyAdded(parcelId) && currentSelectedParcel !== parcelId) {
+          polygon.setStyle(addedStyle(polygon.feature));
+        }
       });
     });
+
+    function markAddedParcelsInList() {
+      Object.keys(applicationParcelIds).forEach(function(parcelId) {
+        var links = document.querySelectorAll(
+          'a[onclick*="selectParcelById(\'' + parcelId + '\')"]'
+        );
+        Array.prototype.forEach.call(links, function(link) {
+          var item = link.closest('li');
+          if (item) {
+            item.classList.add('app-parcel-list-item--added');
+            if (!item.querySelector('.app-parcel-list-item__status')) {
+              var status = document.createElement('span');
+              status.className = 'app-parcel-list-item__status';
+              status.textContent = 'Already in your application';
+              item.appendChild(status);
+            }
+          }
+          link.setAttribute('aria-description', 'Already in your application');
+        });
+      });
+    }
+
+    markAddedParcelsInList();
 
     // Function to restore parcel state from saved selections
     function restoreParcelState(parcelId) {
@@ -4278,12 +4425,12 @@
       if (noticeEl) {
         noticeEl.hidden = !blockContinue;
       }
-      if (continueForm) {
-        continueForm.hidden = blockContinue;
-      }
       if (continueButton) {
         continueButton.hidden = blockContinue;
         continueButton.disabled = blockContinue;
+      }
+      if (continueForm) {
+        continueForm.hidden = blockContinue;
       }
     }
 
@@ -4364,7 +4511,7 @@
 
     function clearSelectedParcel() {
       if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-        parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+        parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
       }
       currentSelectedParcel = null;
 
@@ -4472,7 +4619,7 @@
 
       // Reset previous selection
       if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-        parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+        parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
       }
 
       // Set new selection
@@ -5691,7 +5838,7 @@
         closeAllParcelPopups();
 
         if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-          parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+          parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
         }
         currentSelectedParcel = null;
 
@@ -5853,7 +6000,7 @@
           
           // Reset selected parcel styling
           if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-            parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
+            parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
           }
           
           // Clear current selection (but keep data in parcelSelections)

@@ -48,6 +48,8 @@
 
     [data-whole-remaining-area] .govuk-hint {
       color: #505a5f;
+      font-size: 16px;
+      line-height: 1.25;
     }
   </style>
 
@@ -83,9 +85,9 @@
             <legend class="govuk-fieldset__legend govuk-visually-hidden">
               Add a supplement to CLIG3
             </legend>
-            <div id="clig3-supplement-hint" class="govuk-hint">
+            <p id="clig3-supplement-hint" class="govuk-body">
               You can add one supplement to CLIG3.
-            </div>
+            </p>
             {% if error and error.fieldId == 'clig3-supplement-none' %}
               <p id="clig3-supplement-error" class="govuk-error-message">
                 <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
@@ -149,7 +151,7 @@
                   {% elif option.appliesFullClig3Area %}
                     <div class="govuk-form-group govuk-!-margin-bottom-0" data-whole-remaining-area="true">
                       <p class="govuk-label govuk-!-margin-bottom-1">
-                        Area applied to {{ option.code }}
+                        Quantity
                       </p>
                       <p class="govuk-body govuk-!-margin-bottom-1">
                         <strong>{{ appliedAreaText }}</strong>
@@ -179,9 +181,11 @@
           </fieldset>
         </div>
 
-        <button type="submit" class="govuk-button" data-module="govuk-button">
-          Save and continue
-        </button>
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Save and continue
+          </button>
+        </div>
       </form>
     </div>
   </div>

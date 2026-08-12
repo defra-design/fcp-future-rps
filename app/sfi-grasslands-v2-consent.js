@@ -10,10 +10,6 @@ var PARCEL_CONSENT_FLAGS = {
 }
 
 var ACTION_CONSENT_REQUIREMENTS = {
-  // SSSI only
-  GRH7: { sssi: true, hefer: false },
-  GRH8: { sssi: true, hefer: false },
-  GRH10: { sssi: true, hefer: false },
   // HEFER only
   CSAM3: { sssi: false, hefer: true },
   CNUM2: { sssi: false, hefer: true },

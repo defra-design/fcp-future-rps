@@ -15,7 +15,7 @@
 
   {{ govukBackLink({
     text: "Back",
-    href: fromCheckYourAnswers and "/sfi-grasslands-v2/check-your-answers" or (summary.isEmpty and "/sfi-grasslands-v2/select-land" or (draftHasClig3 and "/sfi-grasslands-v2/clig3-supplements" or "/sfi-grasslands-v2/select-actions"))
+    href: fromCheckYourAnswers and "/sfi-grasslands-v2/check-your-answers" or (summary.isEmpty and "/sfi-grasslands-v2/select-land" or "/sfi-grasslands-v2/select-actions")
   }) }}
 {% endblock %}
 

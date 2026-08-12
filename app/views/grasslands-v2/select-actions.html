@@ -338,7 +338,8 @@
 
     .app-action-consent-hint {
       display: block;
-      margin-top: 5px;
+      margin-top: 2px;
+      margin-bottom: 0;
       color: #505a5f;
       font-weight: 400;
       font-size: 16px;
@@ -665,35 +666,6 @@
       color: #505a5f;
     }
 
-    /* Supplements nested under CLIG3 — radios (single choice) */
-    #actions-section .app-clig3-supplements {
-      margin-top: 24px;
-      padding-top: 8px;
-    }
-
-    #actions-section .app-clig3-supplements .govuk-fieldset__legend {
-      margin-bottom: 5px;
-    }
-
-    #actions-section .app-clig3-supplements .govuk-radios__item {
-      margin-bottom: 12px;
-    }
-
-    #actions-section .app-clig3-supplements .govuk-radios__conditional {
-      margin-bottom: 8px;
-    }
-
-    #actions-section .app-clig3-supplements .app-clig3-supplement-actions {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      border: 0;
-    }
-
     /* AAC on: single column — no side parcel / previous-agreements panel */
     .app-bottom-panels--aac {
       grid-template-columns: minmax(0, 1fr);
@@ -721,26 +693,6 @@
     #actions-section #actions-checkboxes-container > .govuk-checkboxes__conditional + .govuk-checkboxes__item {
       margin-top: 8px;
       border-top: 1px solid #f3f2f1;
-    }
-
-    #actions-section #actions-checkboxes-container > .app-action-list-group-heading {
-      margin-top: 24px;
-      margin-bottom: 8px;
-      padding-top: 8px;
-    }
-
-    #actions-section #actions-checkboxes-container > .app-action-list-group-heading:first-child {
-      margin-top: 0;
-      padding-top: 0;
-    }
-
-    #actions-section #actions-checkboxes-container > .app-action-list-group-heading[hidden] {
-      display: none !important;
-    }
-
-    #actions-section #actions-checkboxes-container > .app-action-list-group-heading + .govuk-checkboxes__item {
-      border-top: 0;
-      margin-top: 0;
     }
 
     #actions-section #actions-checkboxes-container > .govuk-checkboxes__item .govuk-checkboxes__label {
@@ -2819,7 +2771,7 @@
       return String(actionCode || '').toUpperCase() === 'CLIG3';
     }
 
-    // Supplements that stack on CLIG3 (compatibility SUPBAS) — shown nested under the base
+    // Supplements that stack on CLIG3 (compatibility SUPBAS) — shown in the main list
     var CLIG3_SUPPLEMENT_CODES = {
       GRH7: true,
       GRH8: true,
@@ -2836,56 +2788,6 @@
       });
     }
 
-    function getClig3AppliedQuantityHa() {
-      var $clig3Qty = $('#quantity-clig3');
-      if (!$clig3Qty.length) {
-        return 0;
-      }
-      var parsed = parseQuantityInput($clig3Qty.val());
-      return parsed.valid ? parsed.value : 0;
-    }
-
-    function syncClig3SupplementQuantitiesFromBase() {
-      var appliedHa = getClig3AppliedQuantityHa();
-      var selected = document.querySelector('input[name="clig3-supplement"]:checked');
-      var selectedCode = selected ? String(selected.value || '').toUpperCase() : '';
-
-      getClig3SupplementActions().forEach(function(action) {
-        var code = String(action.code || '').toUpperCase();
-        var quantityInput = document.getElementById('quantity-' + code.toLowerCase());
-        if (!quantityInput) {
-          return;
-        }
-        if (selectedCode === code && appliedHa > 0) {
-          quantityInput.value = appliedHa.toFixed(4);
-        } else {
-          quantityInput.value = '';
-        }
-      });
-    }
-
-    function getClig3AppliedAreaHintText(appliedHa) {
-      var amount = Number(appliedHa);
-      var formatted = Number.isFinite(amount)
-        ? Math.max(0, amount).toFixed(4)
-        : '0.0000';
-      return 'Applied to ' + formatted + ' hectares';
-    }
-
-    function mirrorClig3SupplementAvailableHints() {
-      var appliedHa = getClig3AppliedQuantityHa();
-      var text = getClig3AppliedAreaHintText(appliedHa);
-
-      getClig3SupplementActions().forEach(function(action) {
-        var hintEl = getActionAvailableHintEl(action.code);
-        if (!hintEl) {
-          return;
-        }
-        hintEl.textContent = text;
-        hintEl.hidden = false;
-      });
-    }
-
     function clearClig3SupplementSelections() {
       getClig3SupplementActions().forEach(function(action) {
         var codeLower = String(action.code || '').toLowerCase();
@@ -2898,49 +2800,11 @@
         if (quantityInput) {
           quantityInput.value = '';
         }
-      });
-      var noneRadio = document.getElementById('clig3-supplement-none');
-      if (noneRadio) {
-        noneRadio.checked = true;
-      }
-    }
-
-    function syncClig3SupplementCheckboxesFromRadios() {
-      var selected = document.querySelector('input[name="clig3-supplement"]:checked');
-      var selectedCode = selected ? String(selected.value || '').toUpperCase() : '';
-
-      getClig3SupplementActions().forEach(function(action) {
-        var code = String(action.code || '').toUpperCase();
-        var codeLower = code.toLowerCase();
-        var checkbox = document.getElementById('action-' + codeLower);
-        var isSelected = selectedCode === code;
-
-        if (checkbox) {
-          checkbox.checked = isSelected;
-          checkbox.setAttribute('aria-expanded', isSelected ? 'true' : 'false');
+        var conditional = document.getElementById('conditional-' + codeLower);
+        if (conditional) {
+          conditional.classList.add('govuk-checkboxes__conditional--hidden');
         }
       });
-      syncClig3SupplementQuantitiesFromBase();
-      mirrorClig3SupplementAvailableHints();
-    }
-
-    function syncClig3SupplementRadiosFromCheckboxes() {
-      var selectedCode = '';
-      getClig3SupplementActions().forEach(function(action) {
-        var checkbox = document.getElementById('action-' + String(action.code || '').toLowerCase());
-        if (checkbox && checkbox.checked) {
-          selectedCode = String(action.code || '').toUpperCase();
-        }
-      });
-
-      var radioId = selectedCode
-        ? 'clig3-supplement-' + selectedCode.toLowerCase()
-        : 'clig3-supplement-none';
-      var radio = document.getElementById(radioId);
-      if (radio) {
-        radio.checked = true;
-      }
-      syncClig3SupplementCheckboxesFromRadios();
     }
 
     function getWholeRemainingAreaHa(actionCode) {
@@ -3025,8 +2889,6 @@
       ['CLIG3'].forEach(function(code) {
         syncWholeRemainingAreaAction(code);
       });
-      syncClig3SupplementQuantitiesFromBase();
-      mirrorClig3SupplementAvailableHints();
     }
 
     function isMetreBasedUnit(unit) {
@@ -4208,6 +4070,13 @@
       });
       label.appendChild(guidanceLink);
 
+      var consentHint = buildActionConsentHint(action.code, consentHintId);
+      var describedBy = hintId;
+      if (consentHint) {
+        label.appendChild(consentHint);
+        describedBy += ' ' + consentHintId;
+      }
+
       var hint = document.createElement('span');
       hint.className = 'app-action-hint';
       hint.id = hintId;
@@ -4217,15 +4086,7 @@
       var availableHint = createActionAvailableHint(action.code);
       var availableHintId = availableHint.id;
       label.appendChild(availableHint);
-
-      var consentHint = buildActionConsentHint(action.code, consentHintId);
-      var describedBy = hintId + ' ' + availableHintId;
-      if (consentHint) {
-        label.appendChild(consentHint);
-        describedBy += ' ' + consentHintId;
-      }
-      // Nested supplements already sit under a “supplements for CLIG3” legend —
-      // no need to repeat the relationship on every label.
+      describedBy += ' ' + availableHintId;
       input.setAttribute('aria-describedby', describedBy);
 
       item.appendChild(input);
@@ -4285,18 +4146,6 @@
         ? 'Number of ponds'
         : 'Quantity';
 
-      var quantityHint = document.createElement('div');
-      // Must include govuk-checkboxes__hint — updateAvailableQuantities / selectParcel
-      // find this node with `.govuk-hint.govuk-checkboxes__hint`.
-      quantityHint.className = 'govuk-hint govuk-checkboxes__hint';
-      quantityHint.textContent = getAvailableHintText(
-        action.code,
-        getQuantityUnitForAction(action.code) === 'ha' ? '0.0000' : 0
-      );
-      if (isPondUnit(getQuantityUnitForAction(action.code))) {
-        quantityHint.hidden = true;
-      }
-
       var wrapper = document.createElement('div');
       wrapper.className = 'govuk-input__wrapper';
 
@@ -4316,7 +4165,6 @@
       wrapper.appendChild(qtyInput);
       wrapper.appendChild(suffix);
       quantityFormGroup.appendChild(quantityLabel);
-      quantityFormGroup.appendChild(quantityHint);
       quantityFormGroup.appendChild(wrapper);
       conditional.appendChild(quantityFormGroup);
 
@@ -4349,158 +4197,6 @@
       return { item: item, conditional: conditional };
     }
 
-    function appendClig3Supplements(clig3Conditional) {
-      var supplements = getClig3SupplementActions();
-      if (!clig3Conditional || !supplements.length) {
-        return;
-      }
-
-      var wrap = document.createElement('div');
-      wrap.className = 'app-clig3-supplements';
-      wrap.setAttribute('data-clig3-supplements', 'true');
-
-      var fieldset = document.createElement('fieldset');
-      fieldset.className = 'govuk-fieldset';
-
-      var legend = document.createElement('legend');
-      legend.className = 'govuk-fieldset__legend govuk-fieldset__legend--s';
-      legend.textContent = 'Do you want to add a supplement?';
-
-      var groupHint = document.createElement('div');
-      groupHint.className = 'govuk-hint';
-      groupHint.id = 'clig3-supplement-hint';
-      groupHint.textContent = 'You can add one supplement to the same land as CLIG3.';
-
-      var radios = document.createElement('div');
-      radios.className = 'govuk-radios';
-      radios.setAttribute('data-module', 'govuk-radios');
-      radios.setAttribute('aria-describedby', 'clig3-supplement-hint');
-
-      // Hidden action checkboxes so save / AAC keep using input[name="actions"]
-      var hiddenActions = document.createElement('div');
-      hiddenActions.className = 'app-clig3-supplement-actions';
-      hiddenActions.setAttribute('aria-hidden', 'true');
-
-      supplements.forEach(function(action) {
-        var codeLower = action.code.toLowerCase();
-        var hintId = 'action-hint-' + codeLower;
-
-        var hiddenItem = document.createElement('div');
-        hiddenItem.className = 'govuk-checkboxes__item';
-        var hiddenCheckbox = document.createElement('input');
-        hiddenCheckbox.className = 'govuk-checkboxes__input';
-        hiddenCheckbox.type = 'checkbox';
-        hiddenCheckbox.name = 'actions';
-        hiddenCheckbox.id = 'action-' + codeLower;
-        hiddenCheckbox.value = action.code;
-        hiddenCheckbox.tabIndex = -1;
-        var hiddenLabel = document.createElement('label');
-        hiddenLabel.className = 'govuk-label govuk-checkboxes__label';
-        hiddenLabel.setAttribute('for', 'action-' + codeLower);
-        hiddenLabel.textContent = action.code;
-        hiddenItem.appendChild(hiddenCheckbox);
-        hiddenItem.appendChild(hiddenLabel);
-        hiddenActions.appendChild(hiddenItem);
-
-        var item = document.createElement('div');
-        item.className = 'govuk-radios__item';
-
-        var radio = document.createElement('input');
-        radio.className = 'govuk-radios__input';
-        radio.type = 'radio';
-        radio.name = 'clig3-supplement';
-        radio.id = 'clig3-supplement-' + codeLower;
-        radio.value = action.code;
-
-        var label = document.createElement('label');
-        label.className = 'govuk-label govuk-radios__label';
-        label.setAttribute('for', 'clig3-supplement-' + codeLower);
-        label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
-
-        var guidanceLink = document.createElement('a');
-        guidanceLink.className = 'govuk-link app-action-guidance-link';
-        guidanceLink.href = getActionGuidanceUrl(action);
-        guidanceLink.target = '_blank';
-        guidanceLink.rel = 'noopener noreferrer';
-        guidanceLink.textContent = 'read guidance';
-        guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
-        guidanceLink.addEventListener('click', function(event) {
-          event.stopPropagation();
-        });
-        label.appendChild(guidanceLink);
-
-        var hint = document.createElement('span');
-        hint.className = 'app-action-hint';
-        hint.id = hintId;
-        hint.style.display = 'block';
-        hint.style.fontWeight = 'normal';
-        hint.style.color = '#505a5f';
-        hint.style.marginTop = '5px';
-        hint.textContent = 'Payment rate per year: ' + (action.rateText || '');
-        label.appendChild(hint);
-
-        var availableHint = createActionAvailableHint(action.code);
-        availableHint.textContent = getClig3AppliedAreaHintText(0);
-        availableHint.hidden = false;
-        label.appendChild(availableHint);
-
-        radio.setAttribute('aria-describedby', hintId + ' ' + availableHint.id);
-        item.appendChild(radio);
-        item.appendChild(label);
-        radios.appendChild(item);
-
-        // Quantity mirrors CLIG3 applied area — no user input
-        var qtyInput = document.createElement('input');
-        qtyInput.type = 'hidden';
-        qtyInput.id = 'quantity-' + codeLower;
-        qtyInput.name = 'quantity-' + codeLower;
-        qtyInput.value = '';
-        qtyInput.setAttribute('data-clig3-supplement-quantity', 'true');
-        hiddenActions.appendChild(qtyInput);
-      });
-
-      var noneItem = document.createElement('div');
-      noneItem.className = 'govuk-radios__item';
-      var noneRadio = document.createElement('input');
-      noneRadio.className = 'govuk-radios__input';
-      noneRadio.type = 'radio';
-      noneRadio.name = 'clig3-supplement';
-      noneRadio.id = 'clig3-supplement-none';
-      noneRadio.value = '';
-      noneRadio.checked = true;
-      var noneLabel = document.createElement('label');
-      noneLabel.className = 'govuk-label govuk-radios__label';
-      noneLabel.setAttribute('for', 'clig3-supplement-none');
-      noneLabel.textContent = 'No supplement';
-      noneItem.appendChild(noneRadio);
-      noneItem.appendChild(noneLabel);
-
-      radios.appendChild(noneItem);
-
-      radios.addEventListener('change', function(event) {
-        if (!event.target || event.target.name !== 'clig3-supplement') {
-          return;
-        }
-        syncClig3SupplementCheckboxesFromRadios();
-        var selectedCode = String(event.target.value || '').toUpperCase();
-        var $trigger = selectedCode
-          ? $('input[name="actions"][value="' + selectedCode + '"]')
-          : $('#action-clig3');
-        if ($trigger.length) {
-          $trigger.trigger('change');
-        } else if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
-          window.GrasslandsV2Aac.render();
-        }
-      });
-
-      fieldset.appendChild(legend);
-      fieldset.appendChild(groupHint);
-      fieldset.appendChild(radios);
-      wrap.appendChild(fieldset);
-      wrap.appendChild(hiddenActions);
-      clig3Conditional.appendChild(wrap);
-    }
-
     function renderActionCheckboxes() {
       var container = document.getElementById('actions-checkboxes-container');
       if (!container) {
@@ -4510,18 +4206,8 @@
       container.innerHTML = '';
 
       ACTION_CATALOG.forEach(function(action) {
-        // Supplements are nested under CLIG3 — do not list them as peers
-        if (isClig3Supplement(action.code)) {
-          return;
-        }
-
         var parts = createActionCheckboxElements(action);
         container.appendChild(parts.item);
-
-        if (isWholeRemainingAreaAction(action.code)) {
-          appendClig3Supplements(parts.conditional);
-        }
-
         container.appendChild(parts.conditional);
       });
     }
@@ -5037,7 +4723,6 @@
             window.GrasslandsV2ActionsCompatibilityLoading.setSuspended(false);
           }
         }
-        syncClig3SupplementRadiosFromCheckboxes();
         if (window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled()) {
           window.GrasslandsV2Aac.render();
         }
@@ -5346,45 +5031,6 @@
       return codes.sort(compareByDefaultOrder);
     }
 
-    function getActionListGroups() {
-      return [
-        {
-          id: 'ha',
-          heading: 'Grassland and land area actions',
-          unit: 'ha'
-        },
-        {
-          id: 'm',
-          heading: 'Boundaries, hedgerows and ditches',
-          unit: 'm'
-        },
-        {
-          id: 'pond',
-          heading: 'Ponds',
-          unit: 'pond'
-        },
-        {
-          id: 'm2',
-          heading: 'Buildings',
-          unit: 'm²'
-        }
-      ];
-    }
-
-    function getActionListGroupId(actionCode) {
-      var unit = getQuantityUnitForAction(actionCode);
-      if (unit === 'm²') {
-        return 'm2';
-      }
-      if (unit === 'pond') {
-        return 'pond';
-      }
-      if (unit === 'm') {
-        return 'm';
-      }
-      return 'ha';
-    }
-
     function clearActionListGroupHeadings(container) {
       if (!container) {
         return;
@@ -5399,34 +5045,6 @@
       );
     }
 
-    function updateActionListGroupHeadingVisibility() {
-      var container = document.getElementById('actions-checkboxes-container');
-      if (!container) {
-        return;
-      }
-
-      Array.prototype.forEach.call(
-        container.querySelectorAll('.app-action-list-group-heading'),
-        function(heading) {
-          var hasVisibleAction = false;
-          var sibling = heading.nextElementSibling;
-          while (sibling && !sibling.classList.contains('app-action-list-group-heading')) {
-            if (
-              sibling.classList.contains('govuk-checkboxes__item') &&
-              sibling.getAttribute('data-available-for-parcel') !== 'false' &&
-              !sibling.hidden &&
-              sibling.style.display !== 'none'
-            ) {
-              hasVisibleAction = true;
-              break;
-            }
-            sibling = sibling.nextElementSibling;
-          }
-          heading.hidden = !hasVisibleAction;
-        }
-      );
-    }
-
     function reorderActionOptions(sortedCodes) {
       var container = document.getElementById('actions-checkboxes-container');
       if (!container || !Array.isArray(sortedCodes) || sortedCodes.length === 0) {
@@ -5436,23 +5054,6 @@
       clearActionListGroupHeadings(container);
 
       var fragment = document.createDocumentFragment();
-      var groups = getActionListGroups();
-      var codesByGroup = {};
-      groups.forEach(function(group) {
-        codesByGroup[group.id] = [];
-      });
-
-      sortedCodes.forEach(function(actionCode) {
-        // Keep CLIG3 supplements nested under the base action
-        if (isClig3Supplement(actionCode)) {
-          return;
-        }
-        var groupId = getActionListGroupId(actionCode);
-        if (!codesByGroup[groupId]) {
-          codesByGroup[groupId] = [];
-        }
-        codesByGroup[groupId].push(actionCode);
-      });
 
       function findTopLevelActionItem(actionCode) {
         var item = null;
@@ -5477,31 +5078,18 @@
         return item;
       }
 
-      groups.forEach(function(group) {
-        var codes = codesByGroup[group.id] || [];
-        if (!codes.length) {
+      sortedCodes.forEach(function(actionCode) {
+        var item = findTopLevelActionItem(actionCode);
+        if (!item) {
           return;
         }
 
-        var heading = document.createElement('h3');
-        heading.className = 'govuk-heading-s app-action-list-group-heading';
-        heading.setAttribute('data-action-group', group.id);
-        heading.textContent = group.heading;
-        fragment.appendChild(heading);
+        var conditional = item.nextElementSibling;
+        fragment.appendChild(item);
 
-        codes.forEach(function(actionCode) {
-          var item = findTopLevelActionItem(actionCode);
-          if (!item) {
-            return;
-          }
-
-          var conditional = item.nextElementSibling;
-          fragment.appendChild(item);
-
-          if (conditional && conditional.classList && conditional.classList.contains('govuk-checkboxes__conditional')) {
-            fragment.appendChild(conditional);
-          }
-        });
+        if (conditional && conditional.classList && conditional.classList.contains('govuk-checkboxes__conditional')) {
+          fragment.appendChild(conditional);
+        }
       });
 
       container.appendChild(fragment);
@@ -5541,8 +5129,6 @@
           }
         }
       });
-
-      updateActionListGroupHeadingVisibility();
 
       if (currentSelectedParcel && visibleCount === 0) {
         var noResultsTitle = document.getElementById('no-results-title');
@@ -6419,40 +6005,33 @@
         // Pond count is not calculated — do not over-limit against a guessed available number
         var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2;
 
-        // Update all quantity hints
+        // Update label available hints (quantity fields no longer show available copy)
         $('.govuk-checkboxes__conditional').each(function() {
           var $conditional = $(this);
-          var $hint = $conditional.find('.govuk-hint.govuk-checkboxes__hint');
           var $suffix = $conditional.find('.govuk-input__suffix');
           var actionCode = $conditional.attr('id').replace('conditional-', '').toUpperCase();
 
           if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
-            $hint.text('0.0000 hectares available');
             setActionAvailableHint(actionCode, 0);
             return;
           }
 
           if ($suffix.text() === 'pond') {
-            $hint.text('').prop('hidden', true);
             setActionAvailableHint(actionCode, null);
             return;
           }
 
           if ($suffix.text() === 'ha') {
-            $hint.text(remainingHa.toFixed(4) + ' hectares available').prop('hidden', false);
             setActionAvailableHint(actionCode, remainingHa);
           } else if ($suffix.text() === 'm') {
-            $hint.text(getAvailableHintText(actionCode, remainingM)).prop('hidden', false);
             setActionAvailableHint(actionCode, remainingM);
           } else if ($suffix.text() === 'm²') {
-            $hint.text(getAvailableHintText(actionCode, remainingM2)).prop('hidden', false);
             setActionAvailableHint(actionCode, remainingM2);
           }
         });
 
-        // CLIG3 has no quantity hint field — still refresh the label available amount
+        // CLIG3 has no quantity input — still refresh the label available amount
         setActionAvailableHint('CLIG3', remainingHa);
-        mirrorClig3SupplementAvailableHints();
 
         // Tier 1: live over-limit validation
         $('input[id^="quantity-"]').each(function() {
@@ -6542,7 +6121,8 @@
             $quantityInput.data('blurred', true);
             updateQuantityFormatErrors($quantityInput);
           });
-          updateAacQuantityOverLimitErrors();
+          // On Continue, check every quantity — live UI only flags the last edited field
+          updateAacQuantityOverLimitErrors({ all: true });
         } else {
           $('input[name="actions"]:checked').each(function() {
             var actionCode = ($(this).val() || '').toString();
@@ -6652,28 +6232,28 @@
           ).remove();
         });
         
-        // Reset hints to show total available (default mode only —
-        // AAC owns quantity copy when the AAC toggle is on)
+        // Reset label available hints when changing parcels (default mode only —
+        // AAC owns availability copy when enabled). Quantity fields have no available hint.
         if (parcelData[parcelId] && !(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled())) {
           var parcel = parcelData[parcelId];
           $('.govuk-checkboxes__conditional').each(function() {
             var $conditional = $(this);
-            var $hint = $conditional.find('.govuk-hint.govuk-checkboxes__hint');
             var $suffix = $conditional.find('.govuk-input__suffix');
             var actionCode = $conditional.attr('id').replace('conditional-', '').toUpperCase();
-            
+
             if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
-              $hint.text('0.0000 hectares available');
+              setActionAvailableHint(actionCode, 0);
             } else if ($suffix.text() === 'pond') {
-              $hint.text('').prop('hidden', true);
+              setActionAvailableHint(actionCode, null);
             } else if ($suffix.text() === 'ha') {
-              $hint.text(getAvailableHintText(actionCode, parcel.availableArea)).prop('hidden', false);
+              setActionAvailableHint(actionCode, parcel.availableArea);
             } else if ($suffix.text() === 'm') {
-              $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel))).prop('hidden', false);
+              setActionAvailableHint(actionCode, getLinearAvailableMetres(parcel));
             } else if ($suffix.text() === 'm²') {
-              $hint.text(getAvailableHintText(actionCode, getBuildingSquareMetresAvailable(parcel))).prop('hidden', false);
+              setActionAvailableHint(actionCode, getBuildingSquareMetresAvailable(parcel));
             }
           });
+          setActionAvailableHint('CLIG3', parcel.availableArea);
         }
 
         applyActionFilters();
@@ -7102,7 +6682,6 @@
             if ($('#quantity-clig3').val() !== clig3Before) {
               window.GrasslandsV2Aac.render();
             }
-            mirrorClig3SupplementAvailableHints();
             updateAacQuantityOverLimitErrors();
             refreshContinueFromActionSelection();
             captureCurrentParcelState();
@@ -7179,21 +6758,6 @@
         $input.attr('aria-disabled', 'true');
         $item.addClass('sfi-compatibility-disabled');
         $item.css('opacity', '');
-
-        if ($conditional.length) {
-          var unit = getQuantityUnitForAction(code);
-          if (unit === 'ha') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0.0000 hectares available');
-          } else if (unit === 'm') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 metres available');
-          } else if (unit === 'm²') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 square metres available');
-          } else if (unit === 'pond') {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('').prop('hidden', true);
-          } else {
-            $conditional.find('.govuk-hint.govuk-checkboxes__hint').text('0 available');
-          }
-        }
 
         if (!$label.find('#' + hintId).length) {
           $label.append(
@@ -7449,6 +7013,10 @@
         syncAllWholeRemainingAreaActions();
       });
 
+      // Live over-limit errors only appear on the quantity last edited.
+      // Continue still validates every field via { all: true }.
+      var lastQuantityEditedActionCode = null;
+
       function updateAacQuantityOverLimitErrors(options) {
         options = options || {};
         if (!(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled())) {
@@ -7462,19 +7030,32 @@
           byCode[action.code] = action;
         });
 
-        var onlyCode = options.actionCode
-          ? String(options.actionCode).toUpperCase()
-          : null;
+        var checkAll = options.all === true;
+        var onlyCode = checkAll
+          ? null
+          : (options.actionCode
+            ? String(options.actionCode).toUpperCase()
+            : (lastQuantityEditedActionCode || null));
 
         $('input[id^="quantity-"]').each(function() {
           var $input = $(this);
           var actionCode = ($input.attr('id') || '').replace('quantity-', '').toUpperCase();
+          var errors = getQuantityErrorsStore($input);
+
+          // Live mode: only the last-edited field can show an over-limit error
           if (onlyCode && actionCode !== onlyCode) {
+            if (errors.overLimit) {
+              errors.overLimit = null;
+              refreshQuantityFieldDisplay($input);
+            }
+            return;
+          }
+
+          if (!checkAll && !onlyCode) {
             return;
           }
 
           var $checkbox = getQuantityCheckbox($input);
-          var errors = getQuantityErrorsStore($input);
           // Keep format errors (e.g. letter "d"); only manage over-limit here
           errors.overLimit = null;
 
@@ -7537,6 +7118,8 @@
           return;
         }
 
+        lastQuantityEditedActionCode = actionCode;
+
         var $input = $(inputEl);
         $input.data('blurred', true);
         updateQuantityFormatErrors($input);
@@ -7572,8 +7155,8 @@
         refreshContinueFromActionSelection();
       }
 
-      // While typing: wait after the last keystroke, then run the same AAC path as blur
-      // (spinner + 2.5s simulated API). Blur cancels a pending debounce and commits immediately.
+      // While typing: wait after the last keystroke, then run AAC (spinner + simulated API).
+      // Do not also run on blur — only the debounce updates available land.
       var QUANTITY_AAC_DEBOUNCE_MS = 800;
       var quantityAacDebounceTimer = null;
 
@@ -7594,15 +7177,6 @@
           triggerAacQuantityUpdate(inputEl);
         }, QUANTITY_AAC_DEBOUNCE_MS);
       }
-
-      $(document).on('blur', 'input[id^="quantity-"]', function() {
-        if (!(window.GrasslandsV2Aac && window.GrasslandsV2Aac.isEnabled())) {
-          return;
-        }
-        // Cancel pending debounced update — blur commits immediately with spinner
-        clearQuantityAacDebounce();
-        triggerAacQuantityUpdate(this);
-      });
 
       function focusFarmByKey(farmKey) {
         var farmConfig = FARM_VIEW_CONFIG[farmKey];

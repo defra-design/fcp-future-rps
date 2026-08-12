@@ -469,9 +469,15 @@
         return
       }
       var meta = buildBaseCalculation(selectedCode, getWorkingProfile(state.parcelId, state.parcel))
-      if (meta.unit === unit) {
-        used += quantity
+      if (meta.unit !== unit) {
+        return
       }
+      // Figures above an action's own eligible amount are already invalid.
+      // Do not let that excess zero out other actions' available land / errors.
+      if (quantity > meta.baseEligible + 0.0001) {
+        return
+      }
+      used += quantity
     })
     if (unit === 'ha') {
       return roundHa(used)
@@ -874,12 +880,12 @@
   function buildHintText (action) {
     // Match default (AAC off) quantity copy: "X metres available" / "X.XXXX hectares available"
     // Pond actions intentionally have no available-quantity hint.
-    // Use maxAvailable (capacity before this action's own entry), not remaining after it —
-    // otherwise entering the full amount wrongly reads as "0 available".
+    // Show remaining after this action's own entry so the checked action
+    // matches siblings (what is still available to add).
     if (!action || action.unit === 'pond') {
       return ''
     }
-    var amount = action.status === 'unavailable' ? 0 : action.maxAvailable
+    var amount = action.status === 'unavailable' ? 0 : action.available
     return formatAvailableHint(amount, action.unit)
   }
 

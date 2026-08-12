@@ -64,6 +64,45 @@ function clearDraft (req) {
   delete data.sfiDraftLandParcel
   delete data.sfiDraftLandActions
   delete data.sfiDraftParcelId
+  clearClig3SupplementsComplete(req)
+}
+
+function clearClig3SupplementsComplete (req) {
+  var data = getSessionData(req)
+  delete data.clig3SupplementsCompleteParcelId
+  delete data.clig3SupplementsCompleteQuantity
+}
+
+function markClig3SupplementsComplete (req, actions) {
+  var data = getSessionData(req)
+  var parcel = getDraftParcel(req)
+  if (!parcel || !parcel.parcelId || !draftHasClig3(actions)) {
+    clearClig3SupplementsComplete(req)
+    return
+  }
+  data.clig3SupplementsCompleteParcelId = parcel.parcelId
+  data.clig3SupplementsCompleteQuantity = getClig3AppliedQuantity(actions)
+}
+
+function shouldShowClig3Supplements (req, actions) {
+  if (!draftHasClig3(actions)) {
+    return false
+  }
+  var data = getSessionData(req)
+  var parcel = getDraftParcel(req)
+  if (!parcel || !parcel.parcelId) {
+    return true
+  }
+  if (data.clig3SupplementsCompleteParcelId !== parcel.parcelId) {
+    return true
+  }
+  var completeQty = Number(data.clig3SupplementsCompleteQuantity)
+  var currentQty = getClig3AppliedQuantity(actions)
+  if (!Number.isFinite(completeQty)) {
+    return true
+  }
+  // Only return to the supplements page when CLIG3 quantity has changed
+  return Math.abs(completeQty - currentQty) > 0.0001
 }
 
 function formatLandCover (landCover) {
@@ -342,16 +381,13 @@ function getClig3SupplementOptions (clig3Ha) {
     var ratePerHa = CLIG3_SUPPLEMENT_RATE_PER_HA[code]
     var requiresQuantity = supplementRequiresQuantityInput(code)
     var appliesFullArea = supplementAppliesFullClig3Area(code)
-    var availableText = appliesFullArea
-      ? availableFormatted + ' available'
-      : 'Up to ' + availableFormatted + ' available (same or less than CLIG3)'
 
     return {
       code: code,
       name: name,
       ratePerHa: ratePerHa,
       rateText: '£' + ratePerHa + '/ha',
-      availableText: availableText,
+      availableText: availableFormatted + ' available',
       requiresQuantityInput: requiresQuantity,
       appliesFullClig3Area: appliesFullArea,
       guidanceUrl: getClig3SupplementGuidanceUrl(code, name)
@@ -567,6 +603,9 @@ function loadParcelIntoDraftForEdit (req, parcelId) {
   })
   setDraftActions(req, Array.isArray(parcel.actions) ? parcel.actions : [])
 
+  // Already chose supplements for this saved parcel — only revisit if CLIG3 quantity changes
+  markClig3SupplementsComplete(req, getDraftActions(req))
+
   getSessionData(req).sfiApplicationParcels = parcels.filter(function (entry) {
     return entry.parcelId !== parcelId
   })
@@ -681,6 +720,9 @@ module.exports = {
   isClig3SupplementAction: isClig3SupplementAction,
   isStackedSupplementAction: isStackedSupplementAction,
   draftHasClig3: draftHasClig3,
+  shouldShowClig3Supplements: shouldShowClig3Supplements,
+  markClig3SupplementsComplete: markClig3SupplementsComplete,
+  clearClig3SupplementsComplete: clearClig3SupplementsComplete,
   getClig3AppliedQuantity: getClig3AppliedQuantity,
   getSelectedClig3SupplementCode: getSelectedClig3SupplementCode,
   getSelectedClig3SupplementQuantity: getSelectedClig3SupplementQuantity,

@@ -52,7 +52,6 @@
     'pond-close': { sheetId: 'SO3757', parcelId: '3203' },
     'river-meadow': { sheetId: 'SO3757', parcelId: '3204' },
     'spring-pasture': { sheetId: 'SO3757', parcelId: '3205' },
-    'stone-bridge': { sheetId: 'SO3757', parcelId: '3206' },
     'upper-slope': { sheetId: 'SO3757', parcelId: '3207' },
     'valley-bottom': { sheetId: 'SO3757', parcelId: '3208' },
     'woodland-edge': { sheetId: 'SO3757', parcelId: '3209' },

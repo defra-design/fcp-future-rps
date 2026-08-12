@@ -3126,8 +3126,17 @@ router.get('/sfi-grasslands-v2/select-land', function (req, res) {
   res.render('sfi-grasslands-v2/select-land', Object.assign({
     data: getSfiGrasslandsV2SessionData(req),
     draftParcel: sfiGrasslandsV2LandActions.getDraftParcel(req),
-    applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req)
+    applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req),
+    showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
   }, getSfiGrasslandsV2CompatibilityLocals(req)))
+})
+
+router.get('/sfi-grasslands-v2/cancel-land-actions-draft', function (req, res) {
+  sfiGrasslandsV2LandActions.clearDraft(req)
+  if (sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)) {
+    return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
+  }
+  res.redirect('/sfi-grasslands-v2/select-land')
 })
 
 router.post('/sfi-grasslands-v2/select-land', function (req, res) {
@@ -3144,6 +3153,7 @@ router.post('/sfi-grasslands-v2/select-land', function (req, res) {
   // Only clear draft actions when the parcel changes
   if (previousParcelId !== req.body.selectedParcelId) {
     sfiGrasslandsV2LandActions.setDraftActions(req, [])
+    sfiGrasslandsV2LandActions.clearClig3SupplementsComplete(req)
   }
 
   res.redirect('/sfi-grasslands-v2/select-actions')
@@ -3169,7 +3179,8 @@ router.get('/sfi-grasslands-v2/select-actions', function (req, res) {
     draftActions: sfiGrasslandsV2LandActions.getDraftActions(req),
     applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req),
     focusActionCode: focusActionCode,
-    returnToCheckYourAnswers: Boolean(sessionData.returnToCheckYourAnswers)
+    returnToCheckYourAnswers: Boolean(sessionData.returnToCheckYourAnswers),
+    showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
   }, getSfiGrasslandsV2CompatibilityLocals(req)))
 })
 
@@ -3213,6 +3224,7 @@ router.post('/sfi-grasslands-v2/select-actions', function (req, res) {
   var cleanedActions = sfiGrasslandsV2LandActions.stripClig3Supplements(draftActions)
 
   if (!sfiGrasslandsV2LandActions.draftHasClig3(cleanedActions)) {
+    sfiGrasslandsV2LandActions.clearClig3SupplementsComplete(req)
     sfiGrasslandsV2LandActions.setDraftActions(req, cleanedActions)
     return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
   }
@@ -3228,7 +3240,12 @@ router.post('/sfi-grasslands-v2/select-actions', function (req, res) {
   }
   sfiGrasslandsV2LandActions.setDraftActions(req, cleanedActions)
 
-  res.redirect('/sfi-grasslands-v2/clig3-supplements')
+  // Only show supplements again when CLIG3 was added or its quantity changed
+  if (sfiGrasslandsV2LandActions.shouldShowClig3Supplements(req, cleanedActions)) {
+    return res.redirect('/sfi-grasslands-v2/clig3-supplements')
+  }
+
+  res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
 })
 
 router.get('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
@@ -3272,7 +3289,8 @@ router.get('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
     selectedSupplementQuantity: sfiGrasslandsV2LandActions.getSelectedClig3SupplementQuantity(draftActions),
     clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3Ha),
     backHref: backHref,
-    quantityError: null
+    quantityError: null,
+    showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
   })
 })
 
@@ -3319,7 +3337,8 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
       quantityError: {
         fieldId: 'clig3-supplement-none',
         text: 'Select a supplement or choose no supplement'
-      }
+      },
+      showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
     })
   }
 
@@ -3357,7 +3376,8 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
       selectedSupplementQuantity: quantityRaw,
       clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3HaError),
       backHref: backHrefError,
-      quantityError: applied.error
+      quantityError: applied.error,
+      showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
     })
   }
 
@@ -3367,6 +3387,7 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
     sessionData.returnToCheckYourAnswers = true
   }
 
+  sfiGrasslandsV2LandActions.markClig3SupplementsComplete(req, applied.actions)
   delete sessionData.clig3SupplementsDirectEdit
   res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
 })
