@@ -2980,94 +2980,15 @@ var PARCEL_CONSENT_FLAGS = {
   'far-meadow': { sssi: false, hefer: true } // SO3757 3193
 };
 
-var SSSI_CONSENT_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent';
-var HEFER_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer';
-
-function createConsentGuidanceLink(href, text) {
-  var link = document.createElement('a');
-  link.className = 'govuk-link';
-  link.href = href;
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-  link.textContent = text;
-  return link;
-}
-
-function updateParcelProtectedLandIntro() {
-  var factorEl = document.getElementById('aac-actions-intro-protected-factor');
-  var noteEl = document.getElementById('aac-actions-intro-protected-note');
-  if (!factorEl || !noteEl) {
+function updateAacActionsIntro() {
+  var notes = document.getElementById('aac-actions-intro-protected-notes');
+  if (!notes) {
     return;
   }
 
   var parcelId = currentSelectedParcel || getCurrentDraftParcelId();
   var flags = PARCEL_CONSENT_FLAGS[parcelId] || {};
-  var hasSssi = Boolean(flags.sssi);
-  var hasHefer = Boolean(flags.hefer);
-
-  if (!hasSssi && !hasHefer) {
-    factorEl.hidden = true;
-    factorEl.textContent = '';
-    noteEl.hidden = true;
-    noteEl.textContent = '';
-    return;
-  }
-
-  if (hasSssi && hasHefer) {
-    factorEl.textContent = 'whether SSSI land or historic or archaeological features are ineligible for the action';
-    noteEl.textContent = 'If an action is ineligible on SSSI land or historic or archaeological features, that area is taken off the quantity available.';
-  } else if (hasSssi) {
-    factorEl.textContent = 'whether SSSI land is ineligible for the action';
-    noteEl.textContent = 'If an action is ineligible on SSSI land, that area is taken off the quantity available.';
-  } else {
-    factorEl.textContent = 'whether historic or archaeological features are ineligible for the action';
-    noteEl.textContent = 'If an action is ineligible on historic or archaeological features, that area is taken off the quantity available.';
-  }
-
-  factorEl.hidden = false;
-  noteEl.hidden = false;
-}
-
-function updateParcelConsentIntro() {
-  var intro = document.getElementById('parcel-consent-intro');
-  if (!intro) {
-    return;
-  }
-
-  updateParcelProtectedLandIntro();
-
-  var parcelId = currentSelectedParcel || getCurrentDraftParcelId();
-  var flags = PARCEL_CONSENT_FLAGS[parcelId] || {};
-  var hasSssi = Boolean(flags.sssi);
-  var hasHefer = Boolean(flags.hefer);
-
-  intro.textContent = '';
-
-  if (!hasSssi && !hasHefer) {
-    intro.hidden = true;
-    return;
-  }
-
-  var sssiLink = createConsentGuidanceLink(SSSI_CONSENT_GUIDANCE_HREF, 'SSSI consent (opens in new tab)');
-  var heferLink = createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'SFI HEFER (opens in new tab)');
-
-  if (hasSssi && hasHefer) {
-    intro.appendChild(document.createTextNode('This parcel includes SSSI land and historic or archaeological features. Some actions may need '));
-    intro.appendChild(sssiLink);
-    intro.appendChild(document.createTextNode(' or an '));
-    intro.appendChild(heferLink);
-    intro.appendChild(document.createTextNode('. We’ll show this on the relevant actions.'));
-  } else if (hasSssi) {
-    intro.appendChild(document.createTextNode('This parcel includes SSSI land. Some actions may need '));
-    intro.appendChild(sssiLink);
-    intro.appendChild(document.createTextNode('. We’ll show this on the relevant actions.'));
-  } else {
-    intro.appendChild(document.createTextNode('This parcel includes historic or archaeological features. Some actions may need an '));
-    intro.appendChild(heferLink);
-    intro.appendChild(document.createTextNode('. We’ll show this on the relevant actions.'));
-  }
-
-  intro.hidden = false;
+  notes.hidden = !(flags.sssi || flags.hefer);
 }
 
 // Eligible-with-requirement only. Ineligible / not_applicable come from PROTECTED_LAND_RULES in AAC.
@@ -4077,7 +3998,7 @@ function selectParcel(parcelId) {
     landCoverEl.textContent = getParcelLandCovers(parcel.landCover).join(', ') || '-';
   }
   document.getElementById('actions-heading').textContent = 'Available actions';
-  updateParcelConsentIntro();
+  updateAacActionsIntro();
 
   // Keep the left panel visible and only hide the farm summary tables.
   // This allows parcel-info-container (now in the same left panel) to be shown.
@@ -5162,7 +5083,7 @@ $(document).ready(function(){
           var consentHintLines = getActionConsentHintLines(action.code, parcelId);
           consentHintLines.forEach(function(line) {
             $actionKey.append(
-              $('<div class="govuk-hint govuk-!-font-size-16 govuk-!-margin-top-1 govuk-!-margin-bottom-0"></div>')
+              $('<div class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-1 govuk-!-margin-bottom-0"></div>')
                 .text(line)
             );
           });
@@ -5331,7 +5252,6 @@ $(document).ready(function(){
   // Don't select any parcel by default - let user choose from the map or list
   // Update UI to show no selection
   document.getElementById('actions-heading').textContent = 'Available actions';
-  updateParcelConsentIntro();
   
   // Hide all action checkboxes initially
   applyActionFilters();
@@ -5983,7 +5903,7 @@ $(document).ready(function(){
     if (aacIntro) {
       aacIntro.hidden = !aacEnabled;
     }
-    updateParcelConsentIntro();
+    updateAacActionsIntro();
   }
 
   function setAacModeEnabled(enabled) {
@@ -6575,7 +6495,7 @@ $(document).ready(function(){
       parcelPolygons[currentSelectedParcel].setStyle(defaultStyle(parcelPolygons[currentSelectedParcel].feature));
     }
     currentSelectedParcel = null;
-    updateParcelConsentIntro();
+    updateAacActionsIntro();
 
     Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
       panel.style.display = panel.id === farmConfig.panelId ? 'block' : 'none';
@@ -6705,7 +6625,7 @@ $(document).ready(function(){
       
       // Clear current selection (but keep data in parcelSelections)
       currentSelectedParcel = null;
-      updateParcelConsentIntro();
+      updateAacActionsIntro();
 
       // Note: All user actions are preserved in parcelSelections object and accordion sections
     });

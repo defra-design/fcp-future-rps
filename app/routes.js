@@ -3679,7 +3679,9 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
     return Object.assign({}, parcel, {
       landCover: parcel.landCover || parcel.landCoverLabel || 'Permanent grassland',
       actions: (parcel.actions || []).map(function (action) {
-        return Object.assign({}, action)
+        return Object.assign({}, action, {
+          consentHint: sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+        })
       })
     })
   })
@@ -3708,12 +3710,14 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
         {
           code: 'CLIG3',
           name: 'Manage grassland with very low nutrient inputs',
-          valueDisplay: '8.2000 ha (£1,238.20)'
+          valueDisplay: '8.2000 ha (£1,238.20)',
+          consentHint: sfiGrasslandsV2Consent.getActionConsentHint('far-meadow', 'CLIG3')
         },
         {
           code: 'GRH7',
           name: 'Haymaking supplement',
-          valueDisplay: '4.2500 ha (£667.25)'
+          valueDisplay: '4.2500 ha (£667.25)',
+          consentHint: sfiGrasslandsV2Consent.getActionConsentHint('far-meadow', 'GRH7')
         }
       ]
     },
@@ -3730,12 +3734,14 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
         {
           code: 'CNUM2',
           name: 'Legumes on improved grassland',
-          valueDisplay: '10.0000 ha (£1,020.00)'
+          valueDisplay: '10.0000 ha (£1,020.00)',
+          consentHint: sfiGrasslandsV2Consent.getActionConsentHint('pond-close', 'CNUM2')
         },
         {
           code: 'CSAM3',
           name: 'Herbal leys',
-          valueDisplay: '9.4900 ha (£2,125.60)'
+          valueDisplay: '9.4900 ha (£2,125.60)',
+          consentHint: sfiGrasslandsV2Consent.getActionConsentHint('pond-close', 'CSAM3')
         }
       ]
     }

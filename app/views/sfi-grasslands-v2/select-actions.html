@@ -201,17 +201,27 @@
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
 
-              {# AAC only: guidance under the list heading. Protected-land lines filled by JS. #}
+              {# AAC only: guidance under the list heading. #}
               <div id="aac-actions-intro" hidden>
                 <p class="govuk-body">The quantity available for each action depends on:</p>
-                <ul class="govuk-list govuk-list--bullet" id="aac-actions-intro-factors">
+                <ul class="govuk-list govuk-list--bullet">
                   <li>the land cover on this parcel</li>
-                  <li>existing agreements</li>
+                  <li>land already in existing agreements</li>
                   <li>other actions you select</li>
-                  <li id="aac-actions-intro-protected-factor" hidden></li>
+                  <li>whether any of the land is ineligible for the action</li>
                 </ul>
-                <p class="govuk-body" id="aac-actions-intro-protected-note" hidden></p>
-                <p class="govuk-body" id="parcel-consent-intro" hidden></p>
+                <div id="aac-actions-intro-protected-notes" hidden>
+                  <p class="govuk-body">
+                    If an action is <strong>not eligible</strong> on SSSI land or land with historic or archaeological features, that area will be taken off the quantity available.
+                  </p>
+                  <p class="govuk-body">
+                    If an action <strong>is eligible</strong> on this land, you will need
+                    <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noreferrer noopener">SSSI consent (opens in new tab)</a>
+                    or an
+                    <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noreferrer noopener">SFI HEFER (opens in new tab)</a>,
+                    depending on what affects the land. We’ll show what you need for each action.
+                  </p>
+                </div>
                 <p class="govuk-body">
                   Enter the quantity you want for each action. The available quantity will update as you make your selections.
                 </p>

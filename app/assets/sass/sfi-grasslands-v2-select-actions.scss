@@ -772,7 +772,7 @@
 }
 
 #aac-actions-intro[hidden],
-#parcel-consent-intro[hidden] {
+#aac-actions-intro-protected-notes[hidden] {
   display: none !important;
 }
 
@@ -789,17 +789,18 @@
 
 .app-action-availability-details__list {
   margin-bottom: 0;
+  max-width: 22rem;
 }
 
 .app-action-availability-details__list .govuk-summary-list__key,
 .app-action-availability-details__list .govuk-summary-list__value {
   font-size: 16px;
-  font-weight: 400;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
-.app-action-availability-details__total .govuk-summary-list__key,
-.app-action-availability-details__total .govuk-summary-list__value {
-  font-weight: 700;
+.app-action-availability-details__list .govuk-summary-list__value {
+  text-align: right;
 }
 
 /* Hidden until JS sets style.display, or the server omits this class (draft parcel). */

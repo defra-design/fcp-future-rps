@@ -1078,18 +1078,7 @@
     return rows
   }
 
-  function formatProtectedLandDetailsTitle (hasSssi, hasHefer) {
-    if (hasSssi && hasHefer) {
-      return 'Find out how SSSI and HEFER affect this action'
-    }
-    if (hasSssi) {
-      return 'Find out how SSSI affects this action'
-    }
-    if (hasHefer) {
-      return 'Find out how HEFER affects this action'
-    }
-    return null
-  }
+  var PROTECTED_LAND_DETAILS_TITLE = 'Show deductions from available quantity'
 
   function initAvailabilityDetails (details) {
     if (!details || !window.GOVUKFrontend) {
@@ -1104,27 +1093,6 @@
     }
   }
 
-  function formatBreakdownBaseLabel (unit) {
-    if (unit === 'm') {
-      return 'Available length for this parcel'
-    }
-    if (unit === 'pond') {
-      return 'Ponds on this parcel'
-    }
-    return 'Available area for this parcel'
-  }
-
-  function formatBreakdownValue (amount, unit) {
-    if (unit === 'm') {
-      return Math.round(amount).toLocaleString('en-GB') + ' m'
-    }
-    if (unit === 'pond') {
-      var ponds = Math.round(amount)
-      return ponds === 1 ? '1 pond' : ponds.toLocaleString('en-GB') + ' ponds'
-    }
-    return Number(amount).toFixed(4) + ' ha'
-  }
-
   function formatBreakdownDeduction (amount, unit) {
     if (unit === 'm') {
       return '−' + Math.round(amount).toLocaleString('en-GB') + ' m'
@@ -1135,7 +1103,7 @@
     return '−' + Number(amount).toFixed(4) + ' ha'
   }
 
-  // Display-only: explain SSSI / HEFER deductions. Lives in the checkbox conditional.
+  // Display-only: show SSSI / HEFER deductions. Lives in the checkbox conditional.
   function applyAvailabilityBreakdown (item, action) {
     var conditional = action && action.code ? getActionConditional(action.code) : null
     clearAvailabilityBreakdown(item)
@@ -1153,36 +1121,6 @@
       return
     }
 
-    var hasSssi = deductions.some(function (row) { return row.featureKey === 'sssi' })
-    var hasHefer = deductions.some(function (row) { return row.featureKey === 'hefer' })
-    var title = formatProtectedLandDetailsTitle(hasSssi, hasHefer)
-    if (!title) {
-      return
-    }
-
-    var breakdownBase = Number(
-      action.baseBeforeProtectedLand != null
-        ? action.baseBeforeProtectedLand
-        : action.profileAvailableHa
-    )
-    if (!Number.isFinite(breakdownBase)) {
-      return
-    }
-
-    var deductionTotal = deductions.reduce(function (sum, row) {
-      return sum + Number(row.amount || 0)
-    }, 0)
-    var afterProtected = Number(
-      action.baseEligible != null
-        ? action.baseEligible
-        : (action.unit === 'ha'
-          ? roundHa4(Math.max(0, breakdownBase - deductionTotal))
-          : Math.max(0, Math.round(breakdownBase - deductionTotal)))
-    )
-    if (!Number.isFinite(afterProtected)) {
-      return
-    }
-
     var details = document.createElement('details')
     details.className = 'govuk-details app-action-availability-details govuk-!-margin-top-4 govuk-!-margin-bottom-0'
     details.setAttribute('data-module', 'govuk-details')
@@ -1192,38 +1130,28 @@
     summary.className = 'govuk-details__summary'
     var summaryText = document.createElement('span')
     summaryText.className = 'govuk-details__summary-text'
-    summaryText.textContent = title
+    summaryText.textContent = PROTECTED_LAND_DETAILS_TITLE
     summary.appendChild(summaryText)
     details.appendChild(summary)
 
     var text = document.createElement('div')
     text.className = 'govuk-details__text'
     var list = document.createElement('dl')
-    list.className = 'govuk-summary-list govuk-summary-list--no-border app-action-availability-details__list'
+    list.className = 'govuk-summary-list app-action-availability-details__list'
 
-    function appendRow (keyText, valueText, isTotal) {
+    deductions.forEach(function (deduction) {
       var row = document.createElement('div')
-      row.className = 'govuk-summary-list__row' + (isTotal ? ' app-action-availability-details__total' : '')
+      row.className = 'govuk-summary-list__row'
       var key = document.createElement('dt')
       key.className = 'govuk-summary-list__key'
-      key.textContent = keyText
+      key.textContent = deduction.label
       var value = document.createElement('dd')
       value.className = 'govuk-summary-list__value'
-      value.textContent = valueText
+      value.textContent = formatBreakdownDeduction(deduction.amount, deduction.unit || action.unit)
       row.appendChild(key)
       row.appendChild(value)
       list.appendChild(row)
-    }
-
-    appendRow(formatBreakdownBaseLabel(action.unit), formatBreakdownValue(breakdownBase, action.unit), false)
-    deductions.forEach(function (deduction) {
-      appendRow(deduction.label, formatBreakdownDeduction(deduction.amount, deduction.unit || action.unit), false)
     })
-    appendRow(
-      'Available for ' + action.code,
-      formatBreakdownValue(afterProtected, action.unit),
-      true
-    )
 
     text.appendChild(list)
     details.appendChild(text)
