@@ -1080,6 +1080,14 @@
 
   var PROTECTED_LAND_DETAILS_TITLE = 'Show deductions from available quantity'
 
+  function isActionDeductionBreakdownEnabled () {
+    if (window.SfiGrasslandsV2FeatureToggles &&
+        typeof window.SfiGrasslandsV2FeatureToggles.isToggleEnabled === 'function') {
+      return window.SfiGrasslandsV2FeatureToggles.isToggleEnabled('actionDeductions')
+    }
+    return false
+  }
+
   function initAvailabilityDetails (details) {
     if (!details || !window.GOVUKFrontend) {
       return
@@ -1108,6 +1116,10 @@
     var conditional = action && action.code ? getActionConditional(action.code) : null
     clearAvailabilityBreakdown(item)
     clearAvailabilityBreakdown(conditional)
+
+    if (!isActionDeductionBreakdownEnabled()) {
+      return
+    }
 
     if (!item || !action || !conditional) {
       return

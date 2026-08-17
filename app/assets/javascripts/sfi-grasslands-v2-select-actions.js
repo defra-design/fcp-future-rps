@@ -5863,6 +5863,10 @@ $(document).ready(function(){
       var previousAgreementsOn = previousAgreementsToggle
         ? Boolean(previousAgreementsToggle.checked)
         : getFeatureToggleQueryFlag('previousAgreements');
+      var actionDeductionsToggle = document.getElementById('show-action-deductions');
+      var actionDeductionsOn = actionDeductionsToggle
+        ? Boolean(actionDeductionsToggle.checked)
+        : getFeatureToggleQueryFlag('actionDeductions');
 
       function setOrClear(paramName, enabled) {
         if (enabled) {
@@ -5883,6 +5887,7 @@ $(document).ready(function(){
       setOrClear('aac', false);
       setOrClear('allActions', allActionsOn);
       setOrClear('previousAgreements', previousAgreementsOn);
+      setOrClear('actionDeductions', actionDeductionsOn);
 
       if (changed) {
         window.history.replaceState({}, '', url.pathname + url.search + url.hash);
@@ -6127,6 +6132,24 @@ $(document).ready(function(){
     }
   }
 
+  function wireActionDeductionsToggle() {
+    var storageKey = 'sfiGrasslandsV2ShowActionDeductions';
+    var toggle = document.getElementById('show-action-deductions');
+    var enabled = getFeatureToggleQueryFlag('actionDeductions') || getSessionFlag(storageKey);
+
+    setSessionFlag(storageKey, enabled);
+    if (toggle) {
+      toggle.checked = enabled;
+      toggle.addEventListener('change', function() {
+        setSessionFlag(storageKey, Boolean(toggle.checked));
+        syncFeatureToggleQueryParams();
+        if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+          window.SfiGrasslandsV2Aac.render();
+        }
+      });
+    }
+  }
+
   function wirePreviousAgreementsToggle() {
     var storageKey = 'sfiGrasslandsV2ShowPreviousAgreements';
     var toggle = document.getElementById('show-previous-agreements');
@@ -6179,6 +6202,7 @@ $(document).ready(function(){
   wireCnum2UnavailableToggle();
   wireShowAllMvpActionsToggle();
   wirePreviousAgreementsToggle();
+  wireActionDeductionsToggle();
   wireAacToggles();
   syncFeatureToggleQueryParams();
 

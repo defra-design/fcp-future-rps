@@ -13,8 +13,34 @@
       id: 'show-previous-agreements',
       storageKey: 'sfiGrasslandsV2ShowPreviousAgreements',
       queryParam: 'previousAgreements'
+    },
+    {
+      id: 'show-action-deductions',
+      storageKey: 'sfiGrasslandsV2ShowActionDeductions',
+      queryParam: 'actionDeductions'
     }
   ]
+
+  function findToggle (queryParam) {
+    for (var i = 0; i < TOGGLES.length; i++) {
+      if (TOGGLES[i].queryParam === queryParam) {
+        return TOGGLES[i]
+      }
+    }
+    return null
+  }
+
+  function isToggleEnabled (queryParam) {
+    var toggle = findToggle(queryParam)
+    if (!toggle) {
+      return false
+    }
+    var input = document.getElementById(toggle.id)
+    if (input) {
+      return Boolean(input.checked)
+    }
+    return getQueryFlag(queryParam) || getSessionFlag(toggle.storageKey)
+  }
 
   function getQueryFlag (paramName) {
     try {
@@ -120,6 +146,7 @@
     syncQueryParams: syncQueryParams,
     getSessionFlag: getSessionFlag,
     setSessionFlag: setSessionFlag,
-    getQueryFlag: getQueryFlag
+    getQueryFlag: getQueryFlag,
+    isToggleEnabled: isToggleEnabled
   }
 })(window, document)
