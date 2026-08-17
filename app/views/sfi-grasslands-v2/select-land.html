@@ -117,6 +117,15 @@
       box-shadow: 0 0 0 3px #ffdd00;
     }
 
+    .app-map-field:focus:not(:focus-visible) {
+      box-shadow: none;
+    }
+
+    .app-map-field:focus-visible {
+      outline: 3px solid transparent;
+      box-shadow: 0 0 0 3px #ffdd00, inset 0 0 0 2px #0b0c0c;
+    }
+
     #map-form-group {
       margin-bottom: 0;
       min-width: 0;
@@ -342,16 +351,6 @@
       color: #1d70b8 !important;
       text-decoration: underline;
     }
-    .maplibregl-popup-content .maplibregl-popup-close-button {
-      font-size: 24px !important;
-      line-height: 1;
-      width: 32px;
-      height: 32px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
     .maplibregl-ctrl-attrib {
       display: none !important;
     }
@@ -536,6 +535,9 @@
     {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
     <h1 class="govuk-heading-l" id="page-heading">Select the land you want to do your actions on</h1>
     <p id="select-parcel-text" class="govuk-body">Select a land parcel on the map. You'll choose actions for that parcel on the next page.</p>
+    <p id="map-keyboard-hint" class="govuk-visually-hidden">
+      Use the arrow keys to move between land parcels. Press Enter or Space to select a parcel.
+    </p>
     <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a land parcel on the map. You'll choose actions for that parcel on the next page.</p>
     <p id="selected-parcel-text" style="display: none;"></p>
     <script type="application/json" id="draft-parcel-json">{% if draftParcel %}{{ draftParcel | dump | safe }}{% else %}null{% endif %}</script>
@@ -548,10 +550,10 @@
         <div
           id="map-field"
           class="app-map-field map-viewport"
-          tabindex="-1"
-          role="group"
+          tabindex="0"
+          role="application"
           aria-labelledby="map-field-label"
-          aria-describedby="select-parcel-text"
+          aria-describedby="select-parcel-text map-keyboard-hint"
           aria-required="true"
         >
           <div id="map"></div>
@@ -603,7 +605,7 @@
                 {% endfor %}
               </dl>
               <p class="app-application-summary__view-all">
-                <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions">Review land and actions</a>
+                <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions">View land and actions</a>
               </p>
             </div>
           {% endif %}
@@ -653,9 +655,9 @@
                 {% set draftShare = (draftTotal / (draftCovers | length)) | round(4) %}
                 {% for cover in draftCovers %}
                   {% if loop.last %}
-                    {{ cover }} : {{ (draftTotal - (draftShare * (draftCovers | length - 1))) | round(4) }} ha
+                    {{ cover }} - {{ (draftTotal - (draftShare * (draftCovers | length - 1))) | round(4) }} ha
                   {% else %}
-                    {{ cover }} : {{ draftShare }} ha<br>
+                    {{ cover }} - {{ draftShare }} ha<br>
                   {% endif %}
                 {% endfor %}
               {% endif %}
@@ -669,8 +671,12 @@
           <dd class="govuk-summary-list__value" id="summary-parcel-total-area">{% if hasDraftParcel %}{{ draftParcel.totalArea }} ha{% else %}-{% endif %}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Area available for actions</dt>
+          <dt class="govuk-summary-list__key">Available area</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-available-area">{% if hasDraftParcel %}{{ draftParcel.availableArea or draftParcel.totalArea }} ha{% else %}-{% endif %}</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">SFI actions available</dt>
+          <dd class="govuk-summary-list__value" id="summary-parcel-sfi-actions">-</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
           <dt class="govuk-summary-list__key">Additional requirements</dt>
@@ -842,8 +848,8 @@
                       <span>18.5673 ha available</span>
                     </li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('eastern-meadow'); return false;" class="govuk-link">SO3757 3192</a><span>78.5624 ha available</span></li>
-                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('far-meadow'); return false;" class="govuk-link">SO3757 3193</a><span>56.3210 ha available</span></li>
-                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('gate-field'); return false;" class="govuk-link">SO3757 3194</a><span>44.8765 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('far-meadow'); return false;" class="govuk-link">SO3757 3193</a><span>56.3200 ha available</span></li>
+                    <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('gate-field'); return false;" class="govuk-link">SO3757 3194</a><span>39.8100 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('home-paddock'); return false;" class="govuk-link">SO3757 3195</a><span>33.4521 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('lane-meadow'); return false;" class="govuk-link">SO3757 3196</a><span>62.1098 ha available</span></li>
                     <li style="display: flex; justify-content: space-between; font-size: 1.1rem;"><a href="#" onclick="selectParcelById('lower-pasture'); return false;" class="govuk-link">SO3757 3197</a><span>71.8932 ha available</span></li>
@@ -2256,8 +2262,8 @@
         name: 'Gate Field',
         osRef: 'SP 901 528',
         numParcels: 8,
-        totalArea: '44.8765',
-        availableArea: '44.8765',
+        totalArea: '44.8800',
+        availableArea: '39.8100',
         numActions: 0,
         location: 'buckinghamshire',
         coords: [
@@ -2332,8 +2338,8 @@
         name: 'Far Meadow',
         osRef: 'SP 909 531',
         numParcels: 10,
-        totalArea: '56.3210',
-        availableArea: '56.3210',
+        totalArea: '56.3200',
+        availableArea: '56.3200',
         numActions: 2,
         location: 'buckinghamshire',
         coords: [
@@ -3146,6 +3152,14 @@
 
     // Match select-actions AAC card: total minus SSSI only (not previous agreements / HEFER).
     function getAreaAvailableForActions(parcelId, parcel) {
+      // Prototype OS refs use fixed available areas for user testing.
+      if (parcelId === 'gate-field') {
+        return 39.81;
+      }
+      if (parcelId === 'far-meadow') {
+        return 56.32;
+      }
+
       var fallback = Number(parcel && (parcel.availableArea != null ? parcel.availableArea : parcel.totalArea));
       if (!(window.SfiGrasslandsV2Aac &&
           typeof window.SfiGrasslandsV2Aac.getParcelAreaBreakdown === 'function')) {
@@ -3174,7 +3188,7 @@
     }
 
     // Split total area across covers for the summary. One cover = name only;
-    // multiple covers = each line "Name : X.XXXX ha" using realistic weights.
+    // multiple covers = each line "Name - X.XXXX ha" using realistic weights.
     function getLandCoverAreaShares(landCoverValue, totalArea) {
       var names = getParcelLandCovers(landCoverValue);
       if (window.SfiGrasslandsV2ParcelReference &&
@@ -3232,7 +3246,7 @@
           el.appendChild(document.createElement('br'));
         }
         el.appendChild(document.createTextNode(
-          share.name + ' : ' + formatHaFourDecimals(share.ha) + ' ha'
+          share.name + ' - ' + formatHaFourDecimals(share.ha) + ' ha'
         ));
       });
     }
@@ -3627,11 +3641,10 @@
     }
 
     // Selected style
-    // Selected style — thicker outline so selection is clear without relying on colour alone
     function selectedStyle(feature) {
       return {
         fillColor: feature.properties.color,
-        weight: 8,
+        weight: 1,
         opacity: 1,
         color: '#00703c',
         fillOpacity: 1
@@ -3655,6 +3668,20 @@
       return feature.id || (feature.properties && feature.properties.parcelId) || null;
     }
 
+    function syncParcelFeatureCollection() {
+      parcelFeatureCollection.features.forEach(function(feature) {
+        var id = feature.id || (feature.properties && feature.properties.parcelId);
+        if (!feature.properties) {
+          feature.properties = {};
+        }
+        feature.properties.added = isParcelAlreadyAdded(id);
+      });
+
+      if (rawMap && rawMap.getSource(PARCEL_SOURCE_ID)) {
+        rawMap.getSource(PARCEL_SOURCE_ID).setData(parcelFeatureCollection);
+      }
+    }
+
     function applyParcelVisualState(parcelId, selected, hover) {
       if (!rawMap || !rawMap.getSource(PARCEL_SOURCE_ID)) {
         return;
@@ -3671,15 +3698,80 @@
     }
 
     function ensureSharedParcelLayers(mapInstance) {
+      syncParcelFeatureCollection();
+
       var existingSource = mapInstance.getSource(PARCEL_SOURCE_ID);
       if (existingSource) {
         existingSource.setData(parcelFeatureCollection);
       } else {
         mapInstance.addSource(PARCEL_SOURCE_ID, {
           type: 'geojson',
+          promoteId: 'parcelId',
           data: parcelFeatureCollection
         });
       }
+
+      var fillColorExpr = [
+        'case',
+        ['all',
+          ['any',
+            ['boolean', ['feature-state', 'added'], false],
+            ['==', ['get', 'added'], true]
+          ],
+          ['!', ['boolean', ['feature-state', 'selected'], false]],
+          ['!', ['boolean', ['feature-state', 'hover'], false]]
+        ], '#b1b4b6',
+        ['get', 'color']
+      ];
+      var fillOpacityExpr = [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false], 1,
+        ['boolean', ['feature-state', 'hover'], false], 0.7,
+        ['any',
+          ['boolean', ['feature-state', 'added'], false],
+          ['==', ['get', 'added'], true]
+        ], 0.45,
+        0.5
+      ];
+      var lineColorExpr = [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false], '#00703c',
+        ['boolean', ['feature-state', 'hover'], false], '#ffdd00',
+        ['any',
+          ['boolean', ['feature-state', 'added'], false],
+          ['==', ['get', 'added'], true]
+        ], '#505a5f',
+        '#0b0c0c'
+      ];
+      var lineWidthExpr = [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false], 1,
+        ['boolean', ['feature-state', 'hover'], false], 4,
+        2
+      ];
+      var lineOpacityExpr = [
+        'case',
+        ['all',
+          ['any',
+            ['boolean', ['feature-state', 'added'], false],
+            ['==', ['get', 'added'], true]
+          ],
+          ['!', ['boolean', ['feature-state', 'selected'], false]],
+          ['!', ['boolean', ['feature-state', 'hover'], false]]
+        ], 0.75,
+        1
+      ];
+      var labelColorExpr = [
+        'case',
+        ['all',
+          ['any',
+            ['boolean', ['feature-state', 'added'], false],
+            ['==', ['get', 'added'], true]
+          ],
+          ['!', ['boolean', ['feature-state', 'selected'], false]]
+        ], '#505a5f',
+        '#0b0c0c'
+      ];
 
       if (!mapInstance.getLayer(PARCEL_FILL_LAYER_ID)) {
         mapInstance.addLayer({
@@ -3687,24 +3779,13 @@
           type: 'fill',
           source: PARCEL_SOURCE_ID,
           paint: {
-            'fill-color': [
-              'case',
-              ['all',
-                ['boolean', ['feature-state', 'added'], false],
-                ['!', ['boolean', ['feature-state', 'selected'], false]],
-                ['!', ['boolean', ['feature-state', 'hover'], false]]
-              ], '#b1b4b6',
-              ['get', 'color']
-            ],
-            'fill-opacity': [
-              'case',
-              ['boolean', ['feature-state', 'selected'], false], 1,
-              ['boolean', ['feature-state', 'hover'], false], 0.7,
-              ['boolean', ['feature-state', 'added'], false], 0.35,
-              0.5
-            ]
+            'fill-color': fillColorExpr,
+            'fill-opacity': fillOpacityExpr
           }
         });
+      } else {
+        mapInstance.setPaintProperty(PARCEL_FILL_LAYER_ID, 'fill-color', fillColorExpr);
+        mapInstance.setPaintProperty(PARCEL_FILL_LAYER_ID, 'fill-opacity', fillOpacityExpr);
       }
 
       if (!mapInstance.getLayer(PARCEL_LINE_LAYER_ID)) {
@@ -3713,30 +3794,15 @@
           type: 'line',
           source: PARCEL_SOURCE_ID,
           paint: {
-            'line-color': [
-              'case',
-              ['boolean', ['feature-state', 'selected'], false], '#00703c',
-              ['boolean', ['feature-state', 'hover'], false], '#ffdd00',
-              ['boolean', ['feature-state', 'added'], false], '#505a5f',
-              '#0b0c0c'
-            ],
-            'line-width': [
-              'case',
-              ['boolean', ['feature-state', 'selected'], false], 8,
-              ['boolean', ['feature-state', 'hover'], false], 4,
-              2
-            ],
-            'line-opacity': [
-              'case',
-              ['all',
-                ['boolean', ['feature-state', 'added'], false],
-                ['!', ['boolean', ['feature-state', 'selected'], false]],
-                ['!', ['boolean', ['feature-state', 'hover'], false]]
-              ], 0.7,
-              1
-            ]
+            'line-color': lineColorExpr,
+            'line-width': lineWidthExpr,
+            'line-opacity': lineOpacityExpr
           }
         });
+      } else {
+        mapInstance.setPaintProperty(PARCEL_LINE_LAYER_ID, 'line-color', lineColorExpr);
+        mapInstance.setPaintProperty(PARCEL_LINE_LAYER_ID, 'line-width', lineWidthExpr);
+        mapInstance.setPaintProperty(PARCEL_LINE_LAYER_ID, 'line-opacity', lineOpacityExpr);
       }
 
       if (!mapInstance.getLayer(PARCEL_LABEL_LAYER_ID)) {
@@ -3750,11 +3816,13 @@
             'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular']
           },
           paint: {
-            'text-color': '#0b0c0c',
+            'text-color': labelColorExpr,
             'text-halo-color': '#ffffff',
             'text-halo-width': 1
           }
         });
+      } else {
+        mapInstance.setPaintProperty(PARCEL_LABEL_LAYER_ID, 'text-color', labelColorExpr);
       }
 
       if (parcelLayerEventsBound) {
@@ -3871,11 +3939,6 @@
       return 'bottom';
     }
 
-    function formatAvailableActionsCountLabel(count) {
-      var n = Math.max(0, Math.round(Number(count) || 0));
-      return 'Actions available: ' + n;
-    }
-
     function getParcelAvailableActionsCount(parcelId, data) {
       var parcel = (data && data.actions) ? data : parcelData[parcelId];
       if (parcel && Array.isArray(parcel.actions)) {
@@ -3887,7 +3950,7 @@
     function buildParcelPopupContent(parcelId, data) {
       var html = '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
         '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
-        '<p>' + formatAvailableActionsCountLabel(getParcelAvailableActionsCount(parcelId, data)) + '</p>';
+        '<p>SFI actions available: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
       if (isParcelAlreadyAdded(parcelId)) {
         html += '<p>Already in your application</p>';
       }
@@ -3914,13 +3977,14 @@
           parcelId: parcelId,
           name: data.name,
           displayName: formatParcelReference(data),
-          color: data.color
+          color: data.color,
+          added: isParcelAlreadyAdded(parcelId)
         }
       });
 
       function applyStyle(nextStyle) {
-        var selected = !!(nextStyle && nextStyle.color === '#00703c' && nextStyle.weight >= 5);
-        var hover = !!(nextStyle && nextStyle.color === '#ffdd00' && nextStyle.weight >= 4 && !selected);
+        var selected = !!(nextStyle && nextStyle.color === '#00703c');
+        var hover = !!(nextStyle && nextStyle.color === '#ffdd00' && !selected);
         visualState.selected = selected;
         visualState.hover = hover;
         applyParcelVisualState(parcelId, selected, hover);
@@ -3978,7 +4042,7 @@
             maxWidth: '216px',
             anchor: getParcelPopupAnchor(rawMap, popupLngLat),
             offset: 12,
-            closeButton: true,
+            closeButton: false,
             closeOnClick: false,
             className: 'parcel-popup-selectable'
           })
@@ -3991,10 +4055,6 @@
             popupElement.addEventListener('mouseenter', cancelPopupClose);
             popupElement.addEventListener('mouseleave', schedulePopupClose);
             popupElement.addEventListener('click', function(event) {
-              if (event.target.closest('.maplibregl-popup-close-button')) {
-                return;
-              }
-
               event.preventDefault();
               event.stopPropagation();
 
@@ -4368,7 +4428,7 @@
       }
       if (mapField) {
         mapField.removeAttribute('aria-invalid');
-        mapField.setAttribute('aria-describedby', 'select-parcel-text');
+        mapField.setAttribute('aria-describedby', 'select-parcel-text map-keyboard-hint');
       }
 
       var pageTitle = document.title || '';
@@ -4461,6 +4521,11 @@
           : '-';
       }
 
+      var sfiActionsEl = document.getElementById('summary-parcel-sfi-actions');
+      if (sfiActionsEl) {
+        sfiActionsEl.textContent = String(getParcelAvailableActionsCount(parcelId, parcel));
+      }
+
       renderLandCoverSummary(
         document.getElementById('summary-parcel-land-cover'),
         landCovers,
@@ -4514,6 +4579,7 @@
         parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
       }
       currentSelectedParcel = null;
+      clearKeyboardParcelHighlight();
 
       var summary = document.getElementById('selected-parcel-summary');
       if (summary) {
@@ -4624,6 +4690,7 @@
 
       // Set new selection
       currentSelectedParcel = parcelId;
+      keyboardFocusedParcelId = parcelId;
       if (parcelPolygons[parcelId]) {
         parcelPolygons[parcelId].setStyle(selectedStyle(parcelPolygons[parcelId].feature));
       }
@@ -4783,6 +4850,173 @@
       }
       // Scroll to map
       document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+
+    // Keyboard: Tab to map, arrows move highlight, Enter/Space selects
+    var keyboardFocusedParcelId = null;
+
+    function getKeyboardParcelOrder() {
+      return Object.keys(parcelPolygons).filter(function(parcelId) {
+        return Boolean(parcelData[parcelId] && parcelPolygons[parcelId]);
+      }).sort(function(a, b) {
+        var refA = formatParcelReference(Object.assign({ id: a, parcelId: a }, parcelData[a])) || a;
+        var refB = formatParcelReference(Object.assign({ id: b, parcelId: b }, parcelData[b])) || b;
+        return refA.localeCompare(refB, 'en-GB', { numeric: true });
+      });
+    }
+
+    function announceMapKeyboardParcel(parcelId, isSelected) {
+      var statusEl = document.getElementById('parcel-selection-status');
+      if (!statusEl || !parcelId || !parcelData[parcelId]) {
+        return;
+      }
+      var reference = formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, parcelData[parcelId])) || parcelId;
+      var index = getKeyboardParcelOrder().indexOf(parcelId);
+      var total = getKeyboardParcelOrder().length;
+      var position = index >= 0 ? (' Parcel ' + (index + 1) + ' of ' + total + '.') : '';
+      statusEl.textContent = '';
+      window.setTimeout(function() {
+        statusEl.textContent = (isSelected ? 'Selected land parcel: ' : 'Land parcel: ') + reference + '.' + position;
+      }, 50);
+    }
+
+    function clearKeyboardParcelHighlight() {
+      if (!keyboardFocusedParcelId) {
+        return;
+      }
+      if (keyboardFocusedParcelId !== currentSelectedParcel && parcelPolygons[keyboardFocusedParcelId]) {
+        parcelPolygons[keyboardFocusedParcelId].setStyle(
+          restingStyle(keyboardFocusedParcelId, parcelPolygons[keyboardFocusedParcelId].feature)
+        );
+      }
+      keyboardFocusedParcelId = null;
+    }
+
+    function setKeyboardFocusedParcel(parcelId, options) {
+      options = options || {};
+      if (!parcelId || !parcelPolygons[parcelId]) {
+        return;
+      }
+
+      if (keyboardFocusedParcelId &&
+          keyboardFocusedParcelId !== parcelId &&
+          keyboardFocusedParcelId !== currentSelectedParcel &&
+          parcelPolygons[keyboardFocusedParcelId]) {
+        parcelPolygons[keyboardFocusedParcelId].setStyle(
+          restingStyle(keyboardFocusedParcelId, parcelPolygons[keyboardFocusedParcelId].feature)
+        );
+      }
+
+      keyboardFocusedParcelId = parcelId;
+
+      if (parcelId !== currentSelectedParcel) {
+        parcelPolygons[parcelId].setStyle(highlightStyle(parcelPolygons[parcelId].feature));
+      }
+
+      if (!options.skipPan && typeof map !== 'undefined' && map && typeof map.panTo === 'function') {
+        try {
+          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
+        } catch (err) {
+          // ignore pan errors while map is settling
+        }
+      }
+
+      if (!options.skipAnnounce) {
+        announceMapKeyboardParcel(parcelId, parcelId === currentSelectedParcel);
+      }
+    }
+
+    function moveKeyboardParcelFocus(delta) {
+      var order = getKeyboardParcelOrder();
+      if (!order.length) {
+        return;
+      }
+
+      var currentIndex = keyboardFocusedParcelId ? order.indexOf(keyboardFocusedParcelId) : -1;
+      if (currentIndex < 0 && currentSelectedParcel) {
+        currentIndex = order.indexOf(currentSelectedParcel);
+      }
+
+      var nextIndex;
+      if (currentIndex < 0) {
+        nextIndex = delta >= 0 ? 0 : order.length - 1;
+      } else {
+        nextIndex = (currentIndex + delta + order.length) % order.length;
+      }
+
+      setKeyboardFocusedParcel(order[nextIndex]);
+    }
+
+    function initMapKeyboardNavigation() {
+      var mapField = document.getElementById('map-field');
+      if (!mapField || mapField.getAttribute('data-keyboard-nav') === 'true') {
+        return;
+      }
+      mapField.setAttribute('data-keyboard-nav', 'true');
+
+      mapField.addEventListener('focus', function() {
+        if (keyboardFocusedParcelId && parcelPolygons[keyboardFocusedParcelId]) {
+          announceMapKeyboardParcel(keyboardFocusedParcelId, keyboardFocusedParcelId === currentSelectedParcel);
+          return;
+        }
+        var startId = currentSelectedParcel || getKeyboardParcelOrder()[0];
+        if (startId) {
+          setKeyboardFocusedParcel(startId, { skipPan: true });
+        }
+      });
+
+      mapField.addEventListener('blur', function() {
+        clearKeyboardParcelHighlight();
+      });
+
+      mapField.addEventListener('keydown', function(event) {
+        var key = event.key;
+        if (key === 'ArrowRight' || key === 'ArrowDown') {
+          event.preventDefault();
+          moveKeyboardParcelFocus(1);
+          return;
+        }
+        if (key === 'ArrowLeft' || key === 'ArrowUp') {
+          event.preventDefault();
+          moveKeyboardParcelFocus(-1);
+          return;
+        }
+        if (key === 'Home') {
+          event.preventDefault();
+          var orderHome = getKeyboardParcelOrder();
+          if (orderHome.length) {
+            setKeyboardFocusedParcel(orderHome[0]);
+          }
+          return;
+        }
+        if (key === 'End') {
+          event.preventDefault();
+          var orderEnd = getKeyboardParcelOrder();
+          if (orderEnd.length) {
+            setKeyboardFocusedParcel(orderEnd[orderEnd.length - 1]);
+          }
+          return;
+        }
+        if (key === 'Enter' || key === ' ') {
+          event.preventDefault();
+          var parcelToSelect = keyboardFocusedParcelId || currentSelectedParcel || getKeyboardParcelOrder()[0];
+          if (!parcelToSelect) {
+            return;
+          }
+          selectParcel(parcelToSelect, { skipMapMove: true, scrollToSummary: true });
+          keyboardFocusedParcelId = parcelToSelect;
+          announceMapKeyboardParcel(parcelToSelect, true);
+        }
+      });
+
+      // Keep focus on the map field after pointer selection so arrow keys still work
+      if (typeof map !== 'undefined' && map && typeof map.on === 'function') {
+        map.on('click', function() {
+          if (document.activeElement !== mapField) {
+            mapField.focus({ preventScroll: true });
+          }
+        });
+      }
     }
 
     function getSelectedThemes() {
@@ -6043,6 +6277,7 @@
 
         onMapReady(function() {
           focusFarmByKey('blackberry');
+          initMapKeyboardNavigation();
         });
       });
     });

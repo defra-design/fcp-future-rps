@@ -1,0 +1,53 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v2/task-list" %}
+{% extends "layouts/sfi-grasslands-v2-header.html" %}
+
+{% block pageTitle %}
+  Before you submit your application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v2/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v2/check-your-answers"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set journeySection = "Review and submit your application" %}
+      {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">
+        Before you submit your application
+      </h1>
+
+      <p class="govuk-body">
+        It’s your responsibility to check that land (including landscape features) is eligible for your Grasslands actions. Payments may be reduced if the RPA finds ineligible land, features or incompatible actions.
+      </p>
+
+      <p class="govuk-body">
+        If you’ve applied for Grasslands actions on land that has a conditional exemption from Inheritance Tax, you will not be paid for activities which duplicate, or conflict with, your undertakings under that exemption.
+      </p>
+
+      <p class="govuk-body">
+        If you’ve applied for Grasslands actions on land owned by a public body, you will not be paid for activities which conflict with, or duplicate, the public body’s statutory duties.
+      </p>
+
+      <p class="govuk-body">
+        You must make sure that you have management control of the land for the duration of the actions.
+      </p>
+
+      <form class="form" action="/sfi-grasslands-v2/before-you-submit" method="post">
+        <input type="hidden" name="continue" value="1">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

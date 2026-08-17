@@ -3392,41 +3392,26 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
   res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
 })
 
+// Archived: consent interruption cards (reference only — not in the live journey)
 router.get('/sfi-grasslands-v2/consent-interruption', function (req, res) {
   var sessionData = getSfiGrasslandsV2SessionData(req)
-  var previewType = req.query.preview
+  var previewType = req.query.preview || 'sssi-hefer'
   var allowedPreviewTypes = ['sssi', 'hefer', 'sssi-hefer']
 
-  if (previewType && allowedPreviewTypes.indexOf(previewType) !== -1) {
-    return res.render('sfi-grasslands-v2/consent-interruption', {
-      data: sessionData,
-      interruptionType: previewType,
-      requiresSssi: previewType === 'sssi' || previewType === 'sssi-hefer',
-      requiresHefer: previewType === 'hefer' || previewType === 'sssi-hefer'
-    })
-  }
-
-  var consent = sfiGrasslandsV2Consent.getConsentRequirementsForParcels(
-    sfiGrasslandsV2LandActions.buildBasketParcels(req)
-  )
-
-  if (!consent.requiresConsent) {
-    return res.redirect(sessionData.afterConsentRedirect || '/sfi-grasslands-v2/confirm-land-and-actions')
+  if (allowedPreviewTypes.indexOf(previewType) === -1) {
+    previewType = 'sssi-hefer'
   }
 
   res.render('sfi-grasslands-v2/consent-interruption', {
     data: sessionData,
-    interruptionType: consent.interruptionType,
-    requiresSssi: consent.requiresSssi,
-    requiresHefer: consent.requiresHefer
+    interruptionType: previewType,
+    requiresSssi: previewType === 'sssi' || previewType === 'sssi-hefer',
+    requiresHefer: previewType === 'hefer' || previewType === 'sssi-hefer'
   })
 })
 
 router.post('/sfi-grasslands-v2/consent-interruption', function (req, res) {
-  var sessionData = getSfiGrasslandsV2SessionData(req)
-  var redirectTo = sessionData.afterConsentRedirect || '/sfi-grasslands-v2/task-list'
-  delete sessionData.afterConsentRedirect
-  res.redirect(redirectTo)
+  res.redirect('/sfi-grasslands-v2/')
 })
 
 router.get('/sfi-grasslands-v2/confirm-land-and-actions', function (req, res) {
@@ -3493,23 +3478,11 @@ router.post('/sfi-grasslands-v2/confirm-land-and-actions', function (req, res) {
     return res.redirect('/sfi-grasslands-v2/select-land?addAnother=1')
   }
 
-  var consent = sfiGrasslandsV2Consent.getConsentRequirementsForParcels(
-    sfiGrasslandsV2LandActions.buildBasketParcels(req)
-  )
   var goingToCya = action === 'returnToCya' ||
     req.body.from === 'check-your-answers' ||
     sessionData.returnToCheckYourAnswers
 
-  if (consent.requiresConsent) {
-    if (goingToCya) {
-      delete sessionData.returnToCheckYourAnswers
-      sessionData.afterConsentRedirect = '/sfi-grasslands-v2/check-your-answers'
-    } else {
-      sessionData.afterConsentRedirect = '/sfi-grasslands-v2/task-list'
-    }
-    return res.redirect('/sfi-grasslands-v2/consent-interruption')
-  }
-
+  // Consent interruption cards are archived — skip them in the live journey.
   if (goingToCya) {
     delete sessionData.returnToCheckYourAnswers
     return res.redirect('/sfi-grasslands-v2/check-your-answers')
@@ -3589,10 +3562,54 @@ router.post('/sfi-grasslands-v2/remove-parcel-actions/:parcelId', function (req,
   res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
 })
 
+router.get('/sfi-grasslands-v2/before-you-submit', function (req, res) {
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.submitApplication)
+  res.render('sfi-grasslands-v2/before-you-submit', {
+    data: getSfiGrasslandsV2SessionData(req)
+  })
+})
+
+router.post('/sfi-grasslands-v2/before-you-submit', function (req, res) {
+  req.session.data = Object.assign(req.session.data || {}, req.body || {})
+  sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.checkAnswers)
+  sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.submitApplication)
+
+  // Continue from this page → confirm and submit. CYA “Save and continue” lands here.
+  if (req.body && String(req.body.continue) === '1') {
+    return res.redirect('/sfi-grasslands-v2/submit-application')
+  }
+
+  res.render('sfi-grasslands-v2/before-you-submit', {
+    data: getSfiGrasslandsV2SessionData(req)
+  })
+})
+
 router.get('/sfi-grasslands-v2/submit-application', function (req, res) {
+  var previewType = req.query.preview
+  var allowedPreviewTypes = ['sssi', 'hefer', 'sssi-hefer', 'none']
+  var requiresSssi
+  var requiresHefer
+
+  if (previewType && allowedPreviewTypes.indexOf(previewType) !== -1) {
+    requiresSssi = previewType === 'sssi' || previewType === 'sssi-hefer'
+    requiresHefer = previewType === 'hefer' || previewType === 'sssi-hefer'
+  } else {
+    var consent = sfiGrasslandsV2Consent.getConsentRequirementsForParcels(
+      sfiGrasslandsV2LandActions.buildBasketParcels(req)
+    )
+    requiresSssi = consent.requiresSssi
+    requiresHefer = consent.requiresHefer
+  }
+
   sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.submitApplication)
   res.render('sfi-grasslands-v2/submit-application', {
-    data: getSfiGrasslandsV2SessionData(req)
+    data: getSfiGrasslandsV2SessionData(req),
+    requiresSssi: requiresSssi,
+    requiresHefer: requiresHefer,
+    consentDeclarationLine: sfiGrasslandsV2Consent.getSubmitDeclarationConsentLine(
+      requiresSssi,
+      requiresHefer
+    )
   })
 })
 
@@ -3600,9 +3617,7 @@ router.post('/sfi-grasslands-v2/submit-application', function (req, res) {
   req.session.data = Object.assign(req.session.data || {}, req.body || {})
   sfiGrasslandsV2Tasks.markCompleted(req, sfiGrasslandsV2Tasks.TASK_IDS.checkAnswers)
   sfiGrasslandsV2Tasks.markInProgress(req, sfiGrasslandsV2Tasks.TASK_IDS.submitApplication)
-  res.render('sfi-grasslands-v2/submit-application', {
-    data: getSfiGrasslandsV2SessionData(req)
-  })
+  res.redirect('/sfi-grasslands-v2/before-you-submit')
 })
 
 function getSfiGrasslandsV2ConfirmationNotices (req) {

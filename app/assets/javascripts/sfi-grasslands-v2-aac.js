@@ -50,8 +50,152 @@
     'valley-bottom': 2
   }
 
+  // SO3757 3193 (far-meadow) HEFER only; SO3757 3194 (gate-field) SSSI + HEFER.
+  var PARCEL_SSSI_HEFER_FLAGS = {
+    'far-meadow': { sssi: false, hefer: true },
+    'gate-field': { sssi: true, hefer: true }
+  }
+
+  // Action-level protected land rules (separate from AAC / compatibility).
+  // sssi: ineligible | consent_required | not_applicable
+  // hefer: ineligible | hefer_required | not_applicable
+  var PROTECTED_LAND_RULES = {
+    CSAM3: { sssi: 'ineligible', hefer: 'ineligible' },
+    CNUM2: { sssi: 'consent_required', hefer: 'ineligible' },
+    CLIG3: { sssi: 'consent_required', hefer: 'hefer_required' },
+    GRH12: { sssi: 'consent_required', hefer: 'hefer_required' },
+    CIGL1: { sssi: 'consent_required', hefer: 'ineligible' },
+    CIGL2: { sssi: 'consent_required', hefer: 'hefer_required' },
+    BND1: { sssi: 'consent_required', hefer: 'hefer_required' },
+    BND2: { sssi: 'consent_required', hefer: 'hefer_required' },
+    WBD2: { sssi: 'ineligible', hefer: 'hefer_required' },
+    CHRW2: { sssi: 'consent_required', hefer: 'hefer_required' },
+    WBD1: { sssi: 'ineligible', hefer: 'hefer_required' },
+    HEF1: { sssi: 'not_applicable', hefer: 'hefer_required' }
+  }
+
+  // Prototype deduction / base amounts when the parcel has that feature and the rule is ineligible.
+  var PROTECTED_LAND_DEDUCTIONS = {
+    CSAM3: {
+      sssi: { unit: 'ha', amount: 2.1, label: 'SSSI area not eligible for this action' },
+      hefer: { unit: 'ha', amount: 2.1, label: 'HEFER area not eligible for this action' }
+    },
+    CNUM2: {
+      hefer: { unit: 'ha', amount: 2.75, label: 'HEFER area not eligible for this action' }
+    },
+    CIGL1: {
+      hefer: { unit: 'ha', amount: 3.6, label: 'HEFER area not eligible for this action' }
+    },
+    WBD2: {
+      baseAvailable: { unit: 'm', amount: 3002 },
+      sssi: { unit: 'm', amount: 260, label: 'SSSI length not eligible for this action' }
+    },
+    WBD1: {
+      baseAvailable: { unit: 'pond', amount: 3 },
+      sssi: { unit: 'pond', amount: 1, label: 'Ponds on SSSI land not eligible' }
+    }
+  }
+
   function roundHa (value) {
     return Math.round(Math.max(0, value) * 100) / 100
+  }
+
+  function roundHa4 (value) {
+    return Math.round(Math.max(0, value) * 10000) / 10000
+  }
+
+  function getParcelSssiHeferFlags (parcelId) {
+    return PARCEL_SSSI_HEFER_FLAGS[parcelId] || { sssi: false, hefer: false }
+  }
+
+  function isProtectedLandTestParcel (parcelId) {
+    return Boolean(PARCEL_SSSI_HEFER_FLAGS[parcelId])
+  }
+
+  function getProtectedLandRules (code) {
+    return PROTECTED_LAND_RULES[String(code || '').toUpperCase()] || null
+  }
+
+  function getProtectedLandRequirementFlags (code, parcelId) {
+    var rules = getProtectedLandRules(code)
+    var flags = getParcelSssiHeferFlags(parcelId)
+    if (!rules) {
+      return { sssi: false, hefer: false }
+    }
+    return {
+      sssi: Boolean(flags.sssi && rules.sssi === 'consent_required'),
+      hefer: Boolean(flags.hefer && rules.hefer === 'hefer_required')
+    }
+  }
+
+  function getProtectedLandBaseOverride (code, unit) {
+    if (!isProtectedLandTestParcel(state.parcelId)) {
+      return null
+    }
+    var config = PROTECTED_LAND_DEDUCTIONS[String(code || '').toUpperCase()]
+    if (!config || !config.baseAvailable || config.baseAvailable.unit !== unit) {
+      return null
+    }
+    return Number(config.baseAvailable.amount)
+  }
+
+  function roundForUnit (value, unit) {
+    var amount = Number(value)
+    if (!Number.isFinite(amount)) {
+      return amount
+    }
+    if (unit === 'ha') {
+      return roundHa4(amount)
+    }
+    return Math.max(0, Math.round(amount))
+  }
+
+  // Deduct only when the action rule is ineligible and the parcel has that feature.
+  // Consent / HEFER-required never reduces the amount here.
+  function applyProtectedLandDeductions (code, unit, baseEligible, exclusions) {
+    var rules = getProtectedLandRules(code)
+    var flags = getParcelSssiHeferFlags(state.parcelId)
+    var config = PROTECTED_LAND_DEDUCTIONS[String(code || '').toUpperCase()] || {}
+    var remaining = baseEligible
+
+    if (!rules) {
+      return remaining
+    }
+
+    function deduct (featureKey) {
+      var ruleValue = rules[featureKey]
+      var featureOn = featureKey === 'sssi' ? flags.sssi : flags.hefer
+      var deduction = config[featureKey]
+      if (ruleValue !== 'ineligible' || !featureOn || !deduction) {
+        return
+      }
+      if (deduction.unit !== unit || !(Number(deduction.amount) > 0)) {
+        return
+      }
+      if (!Number.isFinite(remaining)) {
+        return
+      }
+      var amount = roundForUnit(Math.min(Number(deduction.amount), Math.max(0, remaining)), unit)
+      if (!(amount > 0)) {
+        return
+      }
+      exclusions.push({
+        featureKey: featureKey,
+        label: deduction.label || (
+          featureKey === 'sssi'
+            ? 'SSSI area not eligible for this action'
+            : 'HEFER area not eligible for this action'
+        ),
+        amount: amount,
+        ha: amount,
+        unit: unit
+      })
+      remaining = roundForUnit(remaining - amount, unit)
+    }
+
+    deduct('sssi')
+    deduct('hefer')
+    return remaining
   }
 
   function formatHa (value) {
@@ -123,20 +267,28 @@
     }
 
     var restrictions = []
-    if (parcelId === 'gate-field') {
-      // Clear fixed deductions for the Gate Field AAC exploration story
-      restrictions.push({
-        label: 'SSSI restrictions',
-        ha: totalHa > 10 ? 4 : 1
-      })
-      restrictions.push({
-        label: 'Historic features / an SFI HEFER may apply to some actions',
-        ha: null
-      })
-      restrictions.push({
-        label: 'Herbal leys (CSAM3) already included in a previous agreement',
-        ha: totalHa > 10 ? 2 : 1
-      })
+    var parcelFlags = getParcelSssiHeferFlags(parcelId)
+
+    if (parcelId === 'gate-field' || parcelId === 'far-meadow') {
+      // Testing parcels: SSSI / HEFER affect actions, not the parcel Available area.
+      if (parcelFlags.sssi) {
+        restrictions.push({
+          label: 'SSSI land — some actions may need consent or treat this area as ineligible',
+          ha: null
+        })
+      }
+      if (parcelFlags.hefer) {
+        restrictions.push({
+          label: 'Historic features / an SFI HEFER may apply to some actions',
+          ha: null
+        })
+      }
+      if (parcelId === 'gate-field') {
+        restrictions.push({
+          label: 'Herbal leys (CSAM3) already included in a previous agreement',
+          ha: totalHa > 10 ? 2 : 1
+        })
+      }
     } else {
       if (profile.restrictions && profile.restrictions.sssiHa > 0) {
         restrictions.push({
@@ -149,15 +301,7 @@
           label: 'Historic features / an SFI HEFER may apply to some actions',
           ha: null
         })
-      } else if (parcelId === 'far-meadow') {
-        restrictions.push({
-          label: 'An SFI HEFER may apply to some actions',
-          ha: null
-        })
       }
-
-      // Prototype: do not deduct area for previous / existing agreements
-      var previousAgreementHa = 0
     }
 
     var previousAgreementTotal = 0
@@ -166,12 +310,25 @@
       if (/previous agreement/i.test(item.label) && item.ha != null) {
         previousAgreementTotal = Number(item.ha) || 0
       }
+      // Do not deduct SSSI/HEFER from parcel Available area — those are action-level.
+      // Previous agreements are listed for context only (not deducted).
+      if (/previous agreement/i.test(item.label) || /sssi/i.test(item.label) ||
+          /hefer|historic|archaeological/i.test(item.label)) {
+        return
+      }
       if (item.ha != null && Number.isFinite(Number(item.ha)) && Number(item.ha) > 0) {
         deductedHa = roundHa(deductedHa + Number(item.ha))
       }
     })
 
     var availableHa = Math.max(0, roundHa(totalHa - deductedHa))
+    // Prefer the parcel’s stated available area for the two testing OS refs
+    if (parcelId === 'gate-field' || parcelId === 'far-meadow') {
+      var parcelAvailable = Number(parcel && parcel.availableArea)
+      if (Number.isFinite(parcelAvailable) && parcelAvailable > 0) {
+        availableHa = roundHa4(parcelAvailable)
+      }
+    }
 
     return {
       totalHa: totalHa,
@@ -216,17 +373,41 @@
       availableHa: availableHa,
       landCovers: covers,
       restrictions: Object.assign({}, profile.restrictions, {
-        previousAgreementHa: breakdown.previousAgreementHa || 0
+        previousAgreementHa: breakdown.previousAgreementHa || 0,
+        historicFeature: getParcelSssiHeferFlags(parcelId).hefer ||
+          !!(profile.restrictions && profile.restrictions.historicFeature)
       })
     }
   }
 
   function getParcelProfile (parcelId, parcel) {
     if (parcelId === 'gate-field') {
+      // SO3757 3194: keep total/available from parcel data so the card and
+      // action quantities stay aligned (Available area starts action AAC).
+      var gateTotal = Number(parcel && parcel.totalArea)
+      if (!Number.isFinite(gateTotal) || gateTotal <= 0) {
+        gateTotal = 44.88
+      }
+      var gateAvailable = Number(parcel && parcel.availableArea)
+      if (!Number.isFinite(gateAvailable) || gateAvailable < 0) {
+        gateAvailable = gateTotal
+      }
+      gateAvailable = Math.min(gateAvailable, gateTotal)
+      var remainderHa = roundHa4(Math.max(0, gateTotal - gateAvailable))
+      var covers = [
+        { name: 'Permanent grassland', ha: roundHa4(gateAvailable) }
+      ]
+      if (remainderHa > 0) {
+        covers.push({ name: 'Scrub', ha: remainderHa })
+      }
       return {
-        totalHa: GATE_FIELD_PROFILE.totalHa,
-        landCovers: GATE_FIELD_PROFILE.landCovers.slice(),
-        restrictions: Object.assign({}, GATE_FIELD_PROFILE.restrictions)
+        totalHa: roundHa4(gateTotal),
+        landCovers: covers,
+        restrictions: Object.assign({}, GATE_FIELD_PROFILE.restrictions, {
+          sssiHa: 0,
+          historicFeature: true,
+          scrubPresent: remainderHa > 0
+        })
       }
     }
 
@@ -266,7 +447,9 @@
       'church-meadow': true,
       'church-field': true,
       'mill-field': true,
-      'mill-meadow': true
+      'mill-meadow': true,
+      'far-meadow': true,
+      'gate-field': true
     }
 
     return {
@@ -310,6 +493,7 @@
     var exclusions = []
     var unit = 'ha'
     var baseEligible = 0
+    var baseBeforeProtectedLand = null
     var absoluteBlock = null
 
     switch (code) {
@@ -317,7 +501,6 @@
       case 'CIGL1':
       case 'CIGL2':
       case 'CNUM2':
-      case 'CSAM3':
       case 'GRH7':
       case 'GRH8':
       case 'GRH10':
@@ -326,54 +509,86 @@
         if (grasslandHa > 0) {
           eligibleLand.push({ label: 'Eligible permanent grassland', ha: grasslandHa })
         }
-        // Narrative exclusion: SSSI land is outside the eligible grassland total
-        // (do not subtract again from grasslandHa — that already excludes SSSI).
-        if (profile.restrictions.sssiHa > 0 && grasslandHa > 0 &&
-            (code === 'GRH7' || code === 'GRH8' || code === 'GRH10' || code === 'GRH12' || code === 'CLIG3' || code === 'CIGL1' || code === 'CIGL2')) {
-          exclusions.push({
-            label: 'Excluded because of SSSI restrictions',
-            ha: Math.min(profile.restrictions.sssiHa, profile.totalHa)
-          })
-        }
         // Share one exclusive hectare pool across grassland actions.
-        // Do not apply CNUM2/CSAM3-only habitat cuts — those left ~1 ha available
-        // on other actions after the user entered CNUM2/CSAM3 max.
         if (profile.availableHa != null) {
-          baseEligible = roundHa(Math.min(baseEligible, profile.availableHa))
+          baseEligible = roundHa4(Math.min(baseEligible, profile.availableHa))
         }
+        baseBeforeProtectedLand = baseEligible
+        baseEligible = applyProtectedLandDeductions(code, 'ha', baseEligible, exclusions)
+        break
+
+      case 'CSAM3':
+        // Herbal leys: grassland and arable/fallow covers (matches land-cover filter).
+        baseEligible = roundHa4(grasslandHa + arableHa)
+        if (grasslandHa > 0) {
+          eligibleLand.push({ label: 'Eligible permanent grassland', ha: grasslandHa })
+        }
+        if (arableHa > 0) {
+          eligibleLand.push({ label: 'Eligible arable or fallow land', ha: arableHa })
+        }
+        if (profile.availableHa != null) {
+          baseEligible = roundHa4(Math.min(baseEligible, profile.availableHa))
+        }
+        baseBeforeProtectedLand = baseEligible
+        baseEligible = applyProtectedLandDeductions(code, 'ha', baseEligible, exclusions)
         break
 
       case 'SCR2':
-        baseEligible = scrubHa > 0 ? scrubHa : (profile.restrictions.scrubPresent ? 1 : 0)
+        // Prefer scrub; if the parcel land cover still allows SCR2 (e.g. fallow), use that area.
+        baseEligible = scrubHa > 0 ? scrubHa : arableHa
         if (profile.availableHa != null) {
           baseEligible = roundHa(Math.min(baseEligible, profile.availableHa))
         }
         if (baseEligible > 0) {
-          eligibleLand.push({ label: 'Eligible scrub and open habitat', ha: baseEligible })
+          eligibleLand.push({
+            label: scrubHa > 0 ? 'Eligible scrub and open habitat' : 'Eligible arable or fallow land',
+            ha: baseEligible
+          })
         }
         break
 
       case 'BND1':
       case 'BND2':
       case 'CHRW2':
+        unit = 'm'
+        // Reflect parcel available hectares, but keep the action measurement in metres.
+        // Consent / HEFER-required does not change length.
+        baseEligible = metresFromAvailableHa(profile.availableHa != null ? profile.availableHa : profile.totalHa)
+        baseBeforeProtectedLand = baseEligible
+        eligibleLand.push({ label: 'Estimated eligible length from available area', ha: baseEligible, unit: 'm' })
+        break
+
       case 'WBD2':
         unit = 'm'
-        // Reflect parcel available hectares, but keep the action measurement in metres
-        baseEligible = metresFromAvailableHa(profile.availableHa != null ? profile.availableHa : profile.totalHa)
+        baseEligible = getProtectedLandBaseOverride(code, 'm')
+        if (baseEligible == null) {
+          baseEligible = metresFromAvailableHa(profile.availableHa != null ? profile.availableHa : profile.totalHa)
+        }
+        baseBeforeProtectedLand = baseEligible
+        baseEligible = applyProtectedLandDeductions(code, 'm', baseEligible, exclusions)
         eligibleLand.push({ label: 'Estimated eligible length from available area', ha: baseEligible, unit: 'm' })
         break
 
       case 'WBD1':
-        // Official guidance: available area is not applicable — enter number of ponds.
-        // Do not invent an available pond count from parcel hectares.
+        // Prototype parcels use a finite pond count so SSSI ineligibility can be shown.
+        // Other parcels keep an open count (user-declared).
         unit = 'pond'
-        baseEligible = Number.POSITIVE_INFINITY
+        baseEligible = getProtectedLandBaseOverride(code, 'pond')
+        if (baseEligible == null) {
+          baseEligible = Number.POSITIVE_INFINITY
+        }
+        baseBeforeProtectedLand = baseEligible
+        if (Number.isFinite(baseEligible)) {
+          baseEligible = applyProtectedLandDeductions(code, 'pond', baseEligible, exclusions)
+          eligibleLand.push({ label: 'Ponds on this parcel', ha: baseBeforeProtectedLand, unit: 'pond' })
+        }
         break
 
       case 'HEF1':
         unit = 'm²'
-        if (profile.restrictions.historicFeature) {
+        if (profile.restrictions.historicFeature || getParcelSssiHeferFlags(state.parcelId).hefer) {
           baseEligible = squareMetresFromAvailableHa(profile.availableHa != null ? profile.availableHa : profile.totalHa)
+          baseBeforeProtectedLand = baseEligible
           eligibleLand.push({ label: 'Traditional building footprint', ha: baseEligible, unit: 'm²' })
         } else {
           baseEligible = 0
@@ -399,7 +614,10 @@
     return {
       code: code,
       unit: unit,
-      baseEligible: unit === 'pond' ? baseEligible : roundHa(baseEligible),
+      baseEligible: unit === 'pond' && !Number.isFinite(baseEligible)
+        ? baseEligible
+        : roundForUnit(baseEligible, unit === 'm²' ? 'm' : unit),
+      baseBeforeProtectedLand: baseBeforeProtectedLand,
       eligibleLand: eligibleLand,
       exclusions: exclusions,
       absoluteBlock: absoluteBlock
@@ -464,7 +682,11 @@
   }
 
   function getUsedByOtherUnitActions (code, unit) {
+    var profile = getWorkingProfile(state.parcelId, state.parcel)
+    var selfBase = buildBaseCalculation(code, profile)
+    var selfEligible = Number(selfBase.baseEligible)
     var used = 0
+
     Object.keys(state.selections).forEach(function (selectedCode) {
       if (selectedCode === code) {
         return
@@ -477,7 +699,7 @@
       if (!quantity) {
         return
       }
-      var meta = buildBaseCalculation(selectedCode, getWorkingProfile(state.parcelId, state.parcel))
+      var meta = buildBaseCalculation(selectedCode, profile)
       if (meta.unit !== unit) {
         return
       }
@@ -486,10 +708,26 @@
       if (quantity > meta.baseEligible + 0.0001) {
         return
       }
-      used += quantity
+
+      // Different actions can have different eligible bases (e.g. HEFER ineligible
+      // for CNUM2 but not CLIG3). Only the overlapping eligible land competes.
+      // Land the other action can use that this action cannot should not reduce
+      // this action's allowance — otherwise selecting CLIG3 after a valid CNUM2
+      // entry incorrectly errors CNUM2.
+      var competingQuantity = quantity
+      if (
+        unit === 'ha' &&
+        Number.isFinite(selfEligible) &&
+        Number.isFinite(Number(meta.baseEligible))
+      ) {
+        var exclusiveToOther = Math.max(0, Number(meta.baseEligible) - selfEligible)
+        competingQuantity = Math.max(0, quantity - exclusiveToOther)
+      }
+
+      used += competingQuantity
     })
     if (unit === 'ha') {
-      return roundHa(used)
+      return roundHa4(used)
     }
     return Math.max(0, Math.round(used * 100) / 100)
   }
@@ -509,16 +747,16 @@
       var allocationNote = null
 
       // Shared pool by unit: ha actions share hectares; metre actions share length; etc.
-      // Pond count is user-declared — no shared available pool.
+      // Pond count is open unless protected-land rules give a finite prototype total.
       // Supplements stack on their base and do not compete for exclusive hectares.
-      if (base.unit === 'pond') {
+      if (base.unit === 'pond' && !Number.isFinite(base.baseEligible)) {
         available = Number.POSITIVE_INFINITY
         usedByOthers = 0
         allocationNote = null
       } else {
         available = Math.max(0, base.baseEligible - usedByOthers)
         if (base.unit === 'ha') {
-          available = roundHa(available)
+          available = roundHa4(available)
         } else {
           available = Math.max(0, Math.round(available))
         }
@@ -548,12 +786,12 @@
 
       // Show remaining capacity after this action’s own entered quantity
       var remainingForInput = available
-      if (base.unit === 'pond') {
+      if (base.unit === 'pond' && !Number.isFinite(available)) {
         remainingForInput = Number.POSITIVE_INFINITY
       } else if (selectedQuantity > 0) {
         remainingForInput = Math.max(0, available - selectedQuantity)
         if (base.unit === 'ha') {
-          remainingForInput = roundHa(remainingForInput)
+          remainingForInput = roundHa4(remainingForInput)
         } else {
           remainingForInput = Math.max(0, Math.round(remainingForInput))
         }
@@ -578,7 +816,7 @@
         statusText = 'Unavailable'
         summaryReason = base.absoluteBlock
         remainingForInput = 0
-      } else if (base.unit === 'pond') {
+      } else if (base.unit === 'pond' && !Number.isFinite(base.baseEligible)) {
         status = 'available'
         statusText = 'Available for this action'
         summaryReason = selectedQuantity > 0
@@ -592,9 +830,13 @@
             ? 'No metres are left for this action. They are already being used by your other selected actions.'
             : base.unit === 'm²'
               ? 'No square metres are left for this action. They are already being used by your other selected actions.'
+              : base.unit === 'pond'
+                ? 'No ponds are left for this action.'
               : 'No land is left for this action. The remaining eligible land is being used by your other selected actions.'
         } else {
-          summaryReason = 'No eligible area remains for this action.'
+          summaryReason = base.unit === 'pond'
+            ? 'No eligible ponds remain for this action.'
+            : 'No eligible area remains for this action.'
         }
       } else if (selectedQuantity > 0) {
         status = 'available'
@@ -604,6 +846,11 @@
           : 'You have used the available area for this action.'
       } else {
         summaryReason = 'This action can use up to ' + formatQuantity(remainingForInput, base.unit) + '.'
+      }
+
+      var breakdownBase = base.baseBeforeProtectedLand
+      if (breakdownBase == null) {
+        breakdownBase = base.unit === 'ha' ? profile.availableHa : base.baseEligible
       }
 
       results.push({
@@ -623,6 +870,7 @@
         allocationNote: allocationNote,
         hardConflict: hardConflict,
         baseEligible: base.baseEligible,
+        baseBeforeProtectedLand: breakdownBase,
         profileTotalHa: profile.totalHa,
         profileAvailableHa: profile.availableHa,
         debugLines: buildDebugLines(base, allocationNote, remainingForInput)
@@ -730,12 +978,30 @@
     return document.getElementById('action-available-hint-' + String(code || '').toLowerCase())
   }
 
+  function formatProtectedLandReducedSuffix (hasSssi, hasHefer) {
+    if (hasSssi && hasHefer) {
+      return ' (reduced for SSSI and HEFER)'
+    }
+    if (hasSssi) {
+      return ' (reduced for SSSI)'
+    }
+    if (hasHefer) {
+      return ' (reduced for HEFER)'
+    }
+    return ''
+  }
+
   function applyAvailableHint (code, action) {
     var labelHint = getActionAvailableHint(code)
     if (!labelHint) {
       return
     }
-    if (!action || action.unit === 'pond') {
+    if (!action) {
+      labelHint.textContent = ''
+      labelHint.hidden = true
+      return
+    }
+    if (action.unit === 'pond' && !Number.isFinite(Number(action.maxAvailable != null ? action.maxAvailable : action.available))) {
       labelHint.textContent = ''
       labelHint.hidden = true
       return
@@ -753,9 +1019,218 @@
       text = 'Applied to ' + appliedHa.toFixed(4) + ' hectares'
     } else {
       text = buildHintText(action)
+      var deductions = getProtectedLandDeductionRows(action)
+      if (text && deductions.length) {
+        var hasSssi = deductions.some(function (row) { return row.featureKey === 'sssi' })
+        var hasHefer = deductions.some(function (row) { return row.featureKey === 'hefer' })
+        text += formatProtectedLandReducedSuffix(hasSssi, hasHefer)
+      }
     }
     labelHint.textContent = text
     labelHint.hidden = !text
+  }
+
+  function clearAvailabilityBreakdown (root) {
+    if (!root) {
+      return
+    }
+    Array.prototype.forEach.call(root.querySelectorAll('[data-aac-availability-breakdown]'), function (el) {
+      el.remove()
+    })
+  }
+
+  function getProtectedLandFeatureKey (item) {
+    if (!item) {
+      return null
+    }
+    if (item.featureKey === 'sssi' || item.featureKey === 'hefer') {
+      return item.featureKey
+    }
+    var text = String(item.label || '')
+    if (/sssi/i.test(text)) {
+      return 'sssi'
+    }
+    if (/hefer|historic|archaeological/i.test(text)) {
+      return 'hefer'
+    }
+    return null
+  }
+
+  function getProtectedLandDeductionRows (action) {
+    if (!action || !Array.isArray(action.exclusions)) {
+      return []
+    }
+    var rows = []
+    action.exclusions.forEach(function (item) {
+      var featureKey = getProtectedLandFeatureKey(item)
+      var amount = item && (item.amount != null ? item.amount : item.ha)
+      if (!featureKey || amount == null || !Number.isFinite(Number(amount)) || !(Number(amount) > 0)) {
+        return
+      }
+      var unit = item.unit || action.unit || 'ha'
+      rows.push({
+        featureKey: featureKey,
+        label: featureKey === 'sssi' ? 'SSSI deduction' : 'HEFER deduction',
+        amount: unit === 'ha' ? roundHa4(Number(amount)) : Math.round(Number(amount)),
+        unit: unit
+      })
+    })
+    return rows
+  }
+
+  function formatProtectedLandDetailsTitle (hasSssi, hasHefer) {
+    if (hasSssi && hasHefer) {
+      return 'Find out how SSSI and HEFER affect this action'
+    }
+    if (hasSssi) {
+      return 'Find out how SSSI affects this action'
+    }
+    if (hasHefer) {
+      return 'Find out how HEFER affects this action'
+    }
+    return null
+  }
+
+  function initAvailabilityDetails (details) {
+    if (!details || !window.GOVUKFrontend) {
+      return
+    }
+    try {
+      if (window.GOVUKFrontend.Details) {
+        new window.GOVUKFrontend.Details(details).init()
+      }
+    } catch (error) {
+      // Details still work as native <details> if GOV.UK JS is unavailable.
+    }
+  }
+
+  function formatBreakdownBaseLabel (unit) {
+    if (unit === 'm') {
+      return 'Available length for this parcel'
+    }
+    if (unit === 'pond') {
+      return 'Ponds on this parcel'
+    }
+    return 'Available area for this parcel'
+  }
+
+  function formatBreakdownValue (amount, unit) {
+    if (unit === 'm') {
+      return Math.round(amount).toLocaleString('en-GB') + ' m'
+    }
+    if (unit === 'pond') {
+      var ponds = Math.round(amount)
+      return ponds === 1 ? '1 pond' : ponds.toLocaleString('en-GB') + ' ponds'
+    }
+    return Number(amount).toFixed(4) + ' ha'
+  }
+
+  function formatBreakdownDeduction (amount, unit) {
+    if (unit === 'm') {
+      return '−' + Math.round(amount).toLocaleString('en-GB') + ' m'
+    }
+    if (unit === 'pond') {
+      return '−' + Math.round(amount)
+    }
+    return '−' + Number(amount).toFixed(4) + ' ha'
+  }
+
+  // Display-only: explain SSSI / HEFER deductions. Lives in the checkbox conditional.
+  function applyAvailabilityBreakdown (item, action) {
+    var conditional = action && action.code ? getActionConditional(action.code) : null
+    clearAvailabilityBreakdown(item)
+    clearAvailabilityBreakdown(conditional)
+
+    if (!item || !action || !conditional) {
+      return
+    }
+    if (action.unit !== 'ha' && action.unit !== 'm' && action.unit !== 'pond') {
+      return
+    }
+
+    var deductions = getProtectedLandDeductionRows(action)
+    if (!deductions.length) {
+      return
+    }
+
+    var hasSssi = deductions.some(function (row) { return row.featureKey === 'sssi' })
+    var hasHefer = deductions.some(function (row) { return row.featureKey === 'hefer' })
+    var title = formatProtectedLandDetailsTitle(hasSssi, hasHefer)
+    if (!title) {
+      return
+    }
+
+    var breakdownBase = Number(
+      action.baseBeforeProtectedLand != null
+        ? action.baseBeforeProtectedLand
+        : action.profileAvailableHa
+    )
+    if (!Number.isFinite(breakdownBase)) {
+      return
+    }
+
+    var deductionTotal = deductions.reduce(function (sum, row) {
+      return sum + Number(row.amount || 0)
+    }, 0)
+    var afterProtected = Number(
+      action.baseEligible != null
+        ? action.baseEligible
+        : (action.unit === 'ha'
+          ? roundHa4(Math.max(0, breakdownBase - deductionTotal))
+          : Math.max(0, Math.round(breakdownBase - deductionTotal)))
+    )
+    if (!Number.isFinite(afterProtected)) {
+      return
+    }
+
+    var details = document.createElement('details')
+    details.className = 'govuk-details app-action-availability-details govuk-!-margin-top-4 govuk-!-margin-bottom-0'
+    details.setAttribute('data-module', 'govuk-details')
+    details.setAttribute('data-aac-availability-breakdown', '')
+
+    var summary = document.createElement('summary')
+    summary.className = 'govuk-details__summary'
+    var summaryText = document.createElement('span')
+    summaryText.className = 'govuk-details__summary-text'
+    summaryText.textContent = title
+    summary.appendChild(summaryText)
+    details.appendChild(summary)
+
+    var text = document.createElement('div')
+    text.className = 'govuk-details__text'
+    var list = document.createElement('dl')
+    list.className = 'govuk-summary-list govuk-summary-list--no-border app-action-availability-details__list'
+
+    function appendRow (keyText, valueText, isTotal) {
+      var row = document.createElement('div')
+      row.className = 'govuk-summary-list__row' + (isTotal ? ' app-action-availability-details__total' : '')
+      var key = document.createElement('dt')
+      key.className = 'govuk-summary-list__key'
+      key.textContent = keyText
+      var value = document.createElement('dd')
+      value.className = 'govuk-summary-list__value'
+      value.textContent = valueText
+      row.appendChild(key)
+      row.appendChild(value)
+      list.appendChild(row)
+    }
+
+    appendRow(formatBreakdownBaseLabel(action.unit), formatBreakdownValue(breakdownBase, action.unit), false)
+    deductions.forEach(function (deduction) {
+      appendRow(deduction.label, formatBreakdownDeduction(deduction.amount, deduction.unit || action.unit), false)
+    })
+    appendRow(
+      'Available for ' + action.code,
+      formatBreakdownValue(afterProtected, action.unit),
+      true
+    )
+
+    text.appendChild(list)
+    details.appendChild(text)
+
+    // Show below the quantity field when the checkbox conditional opens
+    conditional.appendChild(details)
+    initAvailabilityDetails(details)
   }
 
   function setBusy (isBusy, editedCode) {
@@ -852,11 +1327,14 @@
   }
 
   function formatAvailableHint (available, unit) {
-    // Pond count is user-declared — never show an available quantity
-    if (unit === 'pond') {
-      return ''
-    }
     var amount = Number(available)
+    if (unit === 'pond') {
+      if (!Number.isFinite(amount)) {
+        return ''
+      }
+      var ponds = Math.max(0, Math.round(amount))
+      return ponds === 1 ? '1 pond available' : ponds.toLocaleString('en-GB') + ' ponds available'
+    }
     if (unit === 'm') {
       var metres = Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0
       return metres.toLocaleString('en-GB') + ' metres available'
@@ -888,10 +1366,13 @@
 
   function buildHintText (action) {
     // Match default (AAC off) quantity copy: "X metres available" / "X.XXXX hectares available"
-    // Pond actions intentionally have no available-quantity hint.
+    // Pond actions only show an available count when protected-land rules provide one.
     // Show remaining after this action's own entry so the checked action
     // matches siblings (what is still available to add).
-    if (!action || action.unit === 'pond') {
+    if (!action) {
+      return ''
+    }
+    if (action.unit === 'pond' && !Number.isFinite(Number(action.maxAvailable != null ? action.maxAvailable : action.available))) {
       return ''
     }
     var amount = action.status === 'unavailable' ? 0 : action.available
@@ -1000,6 +1481,7 @@
       if (!action) {
         clearAacDisable(checkbox, item)
         clearAacExtras(conditional)
+        clearAvailabilityBreakdown(item)
         return
       }
 
@@ -1033,13 +1515,14 @@
         }
         if (hint) {
           hint.textContent = buildHintText(action)
-          if (action.unit === 'pond') {
+          if (action.unit === 'pond' && !Number.isFinite(Number(action.maxAvailable != null ? action.maxAvailable : action.available))) {
             hint.hidden = true
           } else {
-            hint.hidden = false
+            hint.hidden = !hint.textContent
           }
         }
         applyAvailableHint(code, action)
+        applyAvailabilityBreakdown(item, action)
         if (label) {
           var unavailableHint = document.createElement('span')
           unavailableHint.className = 'aac-unavailable-hint'
@@ -1062,13 +1545,14 @@
 
       if (hint) {
         hint.textContent = buildHintText(action)
-        if (action.unit === 'pond') {
+        if (action.unit === 'pond' && !Number.isFinite(Number(action.maxAvailable != null ? action.maxAvailable : action.available))) {
           hint.hidden = true
         } else {
-          hint.hidden = false
+          hint.hidden = !hint.textContent
         }
       }
       applyAvailableHint(code, action)
+      applyAvailabilityBreakdown(item, action)
 
       applyDebug(conditional, action)
     })
@@ -1086,6 +1570,8 @@
         quantityInput.disabled = false
       }
       clearAacExtras(conditional)
+      clearAvailabilityBreakdown(item)
+      clearAvailabilityBreakdown(conditional)
     })
     Array.prototype.forEach.call(document.querySelectorAll('[data-aac-spinner], [data-aac-updating]'), function (el) {
       el.remove()
@@ -1268,6 +1754,10 @@
     applyToCheckboxes: applyToCheckboxes,
     getSelectionsForSave: getSelectionsForSave,
     getParcelAreaBreakdown: getParcelAreaBreakdown,
+    getProtectedLandRules: getProtectedLandRules,
+    getProtectedLandRequirementFlags: getProtectedLandRequirementFlags,
+    getParcelSssiHeferFlags: getParcelSssiHeferFlags,
+    protectedLandRules: PROTECTED_LAND_RULES,
     isEnabled: function () {
       return state.enabled
     },
@@ -1280,4 +1770,10 @@
   }
 
   window.SfiGrasslandsV2Aac = api
+  window.SfiGrasslandsV2ProtectedLand = {
+    rules: PROTECTED_LAND_RULES,
+    getParcelFlags: getParcelSssiHeferFlags,
+    getRequirementFlags: getProtectedLandRequirementFlags,
+    getRules: getProtectedLandRules
+  }
 })(window)

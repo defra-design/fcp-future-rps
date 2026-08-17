@@ -1,0 +1,44 @@
+---
+description: Keep page templates for markup; extract CSS and JS into assets when they grow beyond a short paragraph
+globs: app/views/**/*.html,app/assets/javascripts/**/*.js,app/assets/sass/**/*.scss
+alwaysApply: true
+---
+
+# Page CSS and JS belong in assets, not in the HTML
+
+GOV.UK Prototype Kit pages should stay readable. Put **markup and Nunjucks in the HTML file**. Put **styles and behaviour in asset files** once either is more than a short paragraph (roughly more than ~15 lines).
+
+## What can stay in the HTML
+
+- Server data as JSON script tags (Nunjucks cannot run inside a static `.js` file)
+- Third-party / plugin `<link>` and `<script>` tags
+
+Do **not** use `style=""` in templates. Put the CSS in the page Sass file and toggle a class with Nunjucks or JS (`app-js-hidden`, `hidden`, or a named layout class). JS that already sets `style.display` can keep doing that — it overrides the class.
+
+## CSS
+
+1. Create `app/assets/sass/<journey>-<page>.scss` (example: `sfi-grasslands-v2-select-actions.scss`)
+2. Link it from the page as `/public/stylesheets/<filename>.css` (after plugin CSS if you override it)
+3. Do **not** `@import` page styles into `application.scss` — that file runs on every page
+
+```html
+<link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v2-select-actions.css">
+```
+
+## JavaScript
+
+1. Create `app/assets/javascripts/<journey>-<page>.js`
+2. Include it from `{% block pageScripts %}` as `/public/javascripts/<filename>.js`
+3. Load it **after** shared scripts it depends on
+4. Do **not** add page-specific behaviour to `application.js`
+
+```html
+<script id="session-data" type="application/json">{{ data['parcelSelectionsData'] | safe }}</script>
+<script src="/public/javascripts/sfi-grasslands-v2-select-actions.js"></script>
+```
+
+## New asset files
+
+- Start with a short comment saying which page loads the file
+- Prefer an IIFE for new JS so you do not leak globals (do not wrap existing extracted files unless asked)
+- Do not copy large inline `<style>` or `<script>` blocks into new pages; extract first

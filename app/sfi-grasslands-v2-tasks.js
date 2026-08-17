@@ -315,13 +315,13 @@ function getResolvedTaskStates (req) {
     submitApplication = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      href: '/sfi-grasslands-v2/submit-application'
+      href: '/sfi-grasslands-v2/before-you-submit'
     }
   } else {
     submitApplication = {
       key: STATUS.INCOMPLETE,
       status: statusViewIncomplete(),
-      href: '/sfi-grasslands-v2/submit-application'
+      href: '/sfi-grasslands-v2/before-you-submit'
     }
   }
 

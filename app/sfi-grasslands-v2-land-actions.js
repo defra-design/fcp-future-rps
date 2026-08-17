@@ -33,14 +33,34 @@ function getApplicationParcels (req) {
   return parcels
 }
 
+// Fixed total/available for user-testing OS refs (SO3757 3193 / 3194).
+var PROTOTYPE_PARCEL_AREAS = {
+  'gate-field': { totalArea: '44.8800', availableArea: '39.8100' },
+  'far-meadow': { totalArea: '56.3200', availableArea: '56.3200' }
+}
+
+function applyPrototypeParcelAreas (parcel) {
+  if (!parcel || !parcel.parcelId) {
+    return parcel
+  }
+  var areas = PROTOTYPE_PARCEL_AREAS[parcel.parcelId]
+  if (!areas) {
+    return parcel
+  }
+  return Object.assign({}, parcel, {
+    totalArea: areas.totalArea,
+    availableArea: areas.availableArea
+  })
+}
+
 function getDraftParcel (req) {
   var data = getSessionData(req)
-  return parseJson(data.sfiDraftLandParcel, null)
+  return applyPrototypeParcelAreas(parseJson(data.sfiDraftLandParcel, null))
 }
 
 function setDraftParcel (req, parcel) {
   var data = getSessionData(req)
-  data.sfiDraftLandParcel = parcel || null
+  data.sfiDraftLandParcel = applyPrototypeParcelAreas(parcel || null)
   return data.sfiDraftLandParcel
 }
 
@@ -132,7 +152,7 @@ function formatLandCoverLines (landCover, totalArea) {
   }
 
   return shares.map(function (share) {
-    return share.name + ' : ' + toNumber(share.ha).toFixed(4) + ' ha'
+    return share.name + ' - ' + toNumber(share.ha).toFixed(4) + ' ha'
   })
 }
 

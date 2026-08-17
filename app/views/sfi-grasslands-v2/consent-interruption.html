@@ -19,14 +19,19 @@
   {% include "sfi-grasslands-v2/_includes/account-bar.html" %}
 
   {{ govukBackLink({
-    text: "Back",
-    href: "/sfi-grasslands-v2/confirm-land-and-actions"
+    text: "Back to SFI Grasslands index",
+    href: "/sfi-grasslands-v2/"
   }) }}
 {% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
+
+      {{ govukWarningText({
+        text: "Archived page — not part of the live journey. Preview only.",
+        iconFallbackText: "Warning"
+      }) }}
 
       {# 1. SSSI only #}
       {% if interruptionType == 'sssi' %}
@@ -84,7 +89,7 @@
 
       <form action="/sfi-grasslands-v2/consent-interruption" method="post" class="govuk-!-margin-top-6">
         <button type="submit" class="govuk-button" data-module="govuk-button">
-          Continue
+          Back to index
         </button>
       </form>
     </div>
