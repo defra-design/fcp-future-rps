@@ -1876,7 +1876,7 @@ function setActionAvailableHint(actionCode, availableAmount) {
     hintEl.hidden = true;
     return;
   }
-  // When AAC is on it owns this hint (including any “reduced for…” suffix).
+  // When AAC is on it owns this hint.
   if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
     return;
   }
@@ -2980,15 +2980,84 @@ var PARCEL_CONSENT_FLAGS = {
   'far-meadow': { sssi: false, hefer: true } // SO3757 3193
 };
 
+var SSSI_CONSENT_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent';
+var HEFER_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer';
+
+function createConsentGuidanceLink(href, text) {
+  var link = document.createElement('a');
+  link.className = 'govuk-link';
+  link.href = href;
+  link.target = '_blank';
+  link.rel = 'noreferrer noopener';
+  link.textContent = text + ' (opens in new tab)';
+  return link;
+}
+
+function setEligibleParcelNote(el, hasSssi, hasHefer) {
+  el.textContent = '';
+  var sssiLink = createConsentGuidanceLink(SSSI_CONSENT_GUIDANCE_HREF, 'SSSI consent');
+  var heferLink = createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'SFI HEFER');
+
+  if (hasSssi && hasHefer) {
+    el.appendChild(document.createTextNode('Some actions require '));
+    el.appendChild(sssiLink);
+    el.appendChild(document.createTextNode(' or an '));
+    el.appendChild(heferLink);
+    el.appendChild(document.createTextNode('. We’ll show what you need for each action.'));
+    return;
+  }
+
+  if (hasSssi) {
+    el.appendChild(document.createTextNode('Some actions require '));
+    el.appendChild(sssiLink);
+    el.appendChild(document.createTextNode('. We’ll show what you need for each action.'));
+    return;
+  }
+
+  el.appendChild(document.createTextNode('Some actions require an '));
+  el.appendChild(heferLink);
+  el.appendChild(document.createTextNode('. We’ll show what you need for each action.'));
+}
+
 function updateAacActionsIntro() {
   var notes = document.getElementById('aac-actions-intro-protected-notes');
-  if (!notes) {
+  var eligibleNote = document.getElementById('aac-actions-intro-eligible-note');
+  var ineligibleFactor = document.getElementById('aac-actions-intro-ineligible-factor');
+  if (!notes && !ineligibleFactor) {
     return;
   }
 
   var parcelId = currentSelectedParcel || getCurrentDraftParcelId();
   var flags = PARCEL_CONSENT_FLAGS[parcelId] || {};
-  notes.hidden = !(flags.sssi || flags.hefer);
+  var hasSssi = Boolean(flags.sssi);
+  var hasHefer = Boolean(flags.hefer);
+  var hasProtectedLand = hasSssi || hasHefer;
+
+  if (notes) {
+    notes.hidden = !hasProtectedLand;
+  }
+
+  if (eligibleNote) {
+    if (hasProtectedLand) {
+      setEligibleParcelNote(eligibleNote, hasSssi, hasHefer);
+    } else {
+      eligibleNote.textContent = '';
+    }
+  }
+
+  if (!ineligibleFactor) {
+    return;
+  }
+
+  if (hasSssi && hasHefer) {
+    ineligibleFactor.textContent = 'SSSI land or land with historic or archaeological features';
+  } else if (hasSssi) {
+    ineligibleFactor.textContent = 'SSSI land';
+  } else if (hasHefer) {
+    ineligibleFactor.textContent = 'land with historic or archaeological features';
+  } else {
+    ineligibleFactor.textContent = 'whether any of the land is ineligible for the action';
+  }
 }
 
 // Eligible-with-requirement only. Ineligible / not_applicable come from PROTECTED_LAND_RULES in AAC.
@@ -3913,6 +3982,7 @@ function restoreParcelState(parcelId) {
   var hasQueuedActionFocus = Boolean(pendingActionFocusCode);
 
   // Scroll to the actions section only when no specific action focus is queued.
+  // When Change linked to an action, wait until after AAC restore to focus quantity.
   var $actionsSection = $('#actions-section');
   if ($actionsSection.length > 0 && !hasQueuedActionFocus) {
     $('html, body').animate({
@@ -3925,9 +3995,6 @@ function restoreParcelState(parcelId) {
   if ($anyQuantityInput.length > 0) {
     $anyQuantityInput.trigger('input');
   }
-
-  // Run action-specific focus directly when queued.
-  consumeQueuedActionFocus(hasQueuedActionFocus ? 120 : 0);
 }
 
 // Function to select a parcel
@@ -4084,7 +4151,8 @@ function selectParcel(parcelId) {
 }
 
 // Function to select parcel from list
-function selectParcelById(parcelId) {
+function selectParcelById(parcelId, options) {
+  options = options || {};
   selectParcel(parcelId);
   // Only zoom if no parcel is currently selected, otherwise just pan
   if (parcelPolygons[parcelId]) {
@@ -4097,8 +4165,10 @@ function selectParcelById(parcelId) {
     closeAllParcelPopups(parcelId);
     parcelPolygons[parcelId].openPopup();
   }
-  // Scroll to map
-  document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
+  // When Change linked to a specific action, keep the viewport on that input.
+  if (!options.skipMapScroll && !pendingActionFocusCode) {
+    document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
+  }
 }
 
 function getSelectedThemes() {
@@ -4461,25 +4531,96 @@ function applyActionFilters() {
   }
 }
 
+function isElementVisible(el) {
+  if (!el) {
+    return false;
+  }
+  return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+}
+
+function scrollElementIntoView(el) {
+  if (!el) {
+    return;
+  }
+  // Prefer window scroll — more reliable than scrollIntoView while the page is still settling.
+  try {
+    var rect = el.getBoundingClientRect();
+    var absoluteTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+    var targetTop = Math.max(0, absoluteTop - Math.round(window.innerHeight / 3));
+    window.scrollTo(0, targetTop);
+  } catch (scrollError) {
+    if (typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+  }
+}
+
+function openActionConditional(checkbox, codeLower) {
+  if (!checkbox) {
+    return null;
+  }
+  var conditional = document.getElementById('conditional-' + codeLower);
+  if (!conditional) {
+    return null;
+  }
+  checkbox.checked = true;
+  checkbox.setAttribute('aria-expanded', 'true');
+  conditional.classList.remove('govuk-checkboxes__conditional--hidden');
+  conditional.classList.remove('govuk-radios__conditional--hidden');
+  conditional.style.display = '';
+  return conditional;
+}
+
+// One attempt: open the action, scroll to quantity if ready. Returns true when done.
+function tryFocusActionQuantity(actionCode) {
+  var normalizedActionCode = String(actionCode || '').toUpperCase();
+  if (!normalizedActionCode) {
+    return true;
+  }
+
+  var codeLower = normalizedActionCode.toLowerCase();
+  var checkbox = document.querySelector('input[name="actions"][value="' + normalizedActionCode + '"]');
+  if (!checkbox) {
+    return false;
+  }
+
+  openActionConditional(checkbox, codeLower);
+  var quantityInput = document.getElementById('quantity-' + codeLower);
+
+  if (!quantityInput || quantityInput.type === 'hidden' || !isElementVisible(quantityInput)) {
+    return false;
+  }
+
+  scrollElementIntoView(quantityInput);
+  if (typeof quantityInput.focus === 'function') {
+    try {
+      quantityInput.focus({ preventScroll: true });
+    } catch (error) {
+      quantityInput.focus();
+    }
+  }
+  if (typeof quantityInput.select === 'function') {
+    try {
+      quantityInput.select();
+    } catch (selectError) {
+      // Ignore select() failures on non-text inputs.
+    }
+  }
+  return true;
+}
+
 function focusActionByCode(actionCode, attempt) {
   var normalizedActionCode = String(actionCode || '').toUpperCase();
   if (!normalizedActionCode) {
     return;
   }
 
-  var maxAttempts = 12;
+  var maxAttempts = 30;
   var currentAttempt = Number.isFinite(attempt) ? attempt : 0;
-  var checkboxSelector = 'input[name="actions"][value="' + normalizedActionCode + '"]';
-  var checkbox = document.querySelector(checkboxSelector);
 
-  if (checkbox) {
-    checkbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (typeof checkbox.focus === 'function') {
-      try {
-        checkbox.focus({ preventScroll: true });
-      } catch (error) {
-        checkbox.focus();
-      }
+  if (tryFocusActionQuantity(normalizedActionCode)) {
+    if (pendingActionFocusCode === normalizedActionCode) {
+      pendingActionFocusCode = null;
     }
     return;
   }
@@ -4487,7 +4628,24 @@ function focusActionByCode(actionCode, attempt) {
   if (currentAttempt < maxAttempts) {
     setTimeout(function() {
       focusActionByCode(normalizedActionCode, currentAttempt + 1);
-    }, 120);
+    }, 150);
+    return;
+  }
+
+  // Last resort: bring the checkbox into view if quantity never became ready.
+  var checkbox = document.querySelector('input[name="actions"][value="' + normalizedActionCode + '"]');
+  if (checkbox) {
+    scrollElementIntoView(checkbox);
+    if (typeof checkbox.focus === 'function') {
+      try {
+        checkbox.focus({ preventScroll: true });
+      } catch (error) {
+        checkbox.focus();
+      }
+    }
+  }
+  if (pendingActionFocusCode === normalizedActionCode) {
+    pendingActionFocusCode = null;
   }
 }
 
@@ -4502,7 +4660,6 @@ function consumeQueuedActionFocus(delayMs) {
   }
 
   var actionCodeToFocus = pendingActionFocusCode;
-  pendingActionFocusCode = null;
   setTimeout(function() {
     focusActionByCode(actionCodeToFocus, 0);
   }, Number.isFinite(delayMs) ? delayMs : 0);
@@ -4644,20 +4801,6 @@ function formatBreakdownNumber(value) {
   return numeric.toFixed(4);
 }
 
-function findRestrictionHa(restrictions, matcher) {
-  var list = restrictions || [];
-  for (var i = 0; i < list.length; i++) {
-    if (matcher(list[i].label || '') && list[i].ha != null && Number.isFinite(Number(list[i].ha))) {
-      return Number(list[i].ha);
-    }
-  }
-  return 0;
-}
-
-function isHeferRestrictionLabel(label) {
-  return /hefer|historic/i.test(String(label || ''));
-}
-
 function isPreviousAgreementsToggleOn() {
   if (window.SfiGrasslandsV2FeatureToggles) {
     return window.SfiGrasslandsV2FeatureToggles.getQueryFlag('previousAgreements') ||
@@ -4675,13 +4818,11 @@ function isPreviousAgreementsToggleOn() {
 
 function updateAacParcelAreaBreakdown() {
   var container = document.getElementById('aac-parcel-summary');
-  var listEl = document.getElementById('aac-parcel-area-breakdown-list');
   var totalEl = document.getElementById('aac-actions-total-area');
-  var availableEl = document.getElementById('aac-actions-available-area');
   var referenceEl = document.getElementById('aac-parcel-reference');
   var landCoverEl = document.getElementById('aac-parcel-land-cover');
   var bottomPanels = document.querySelector('.app-bottom-panels');
-  if (!container || !listEl) {
+  if (!container) {
     return;
   }
 
@@ -4690,18 +4831,10 @@ function updateAacParcelAreaBreakdown() {
     bottomPanels.classList.toggle('app-bottom-panels--aac', Boolean(aacOn));
   }
 
-  var detailsEl = document.getElementById('aac-parcel-area-details');
   if (!aacOn || !currentSelectedParcel || !parcelData[currentSelectedParcel]) {
     container.hidden = true;
-    if (detailsEl) {
-      detailsEl.hidden = true;
-      detailsEl.open = false;
-    }
     if (totalEl) {
       totalEl.textContent = '—';
-    }
-    if (availableEl) {
-      availableEl.textContent = '—';
     }
     if (referenceEl) {
       referenceEl.textContent = '—';
@@ -4723,39 +4856,6 @@ function updateAacParcelAreaBreakdown() {
     currentSelectedParcel,
     parcel
   );
-
-  var sssiHa = findRestrictionHa(breakdown.restrictions, function(label) {
-    return /sssi/i.test(label);
-  });
-
-  var areaDeductionHa = 0;
-  // SSSI / HEFER are action-level for the testing parcels — do not take them
-  // off the parcel Available area (that figure is the starting point for actions).
-  var skipParcelSssiDeduction = currentSelectedParcel === 'gate-field' ||
-    currentSelectedParcel === 'far-meadow';
-  if (sssiHa > 0 && !skipParcelSssiDeduction) {
-    areaDeductionHa += sssiHa;
-  }
-  (breakdown.restrictions || []).forEach(function(item) {
-    var label = item.label || '';
-    if (/sssi/i.test(label) || /previous agreement/i.test(label) || isHeferRestrictionLabel(label)) {
-      return;
-    }
-    if (item.ha != null && Number.isFinite(Number(item.ha)) && Number(item.ha) > 0) {
-      areaDeductionHa += Number(item.ha);
-    }
-  });
-  areaDeductionHa = Math.round(areaDeductionHa * 10000) / 10000;
-  var availableHa = Math.max(
-    0,
-    Math.round((Number(breakdown.totalHa) - areaDeductionHa) * 10000) / 10000
-  );
-  if (skipParcelSssiDeduction) {
-    var parcelAvailable = Number(parcel.availableArea);
-    if (Number.isFinite(parcelAvailable) && parcelAvailable > 0) {
-      availableHa = Math.round(parcelAvailable * 10000) / 10000;
-    }
-  }
 
   var parcelReference = formatParcelReference(
     Object.assign({ id: currentSelectedParcel, parcelId: currentSelectedParcel }, parcel)
@@ -4789,23 +4889,8 @@ function updateAacParcelAreaBreakdown() {
     var totalText = formatBreakdownNumber(breakdown.totalHa);
     totalEl.textContent = totalText === '—' ? '—' : (totalText + ' ha');
   }
-  if (availableEl) {
-    var availableText = formatBreakdownNumber(availableHa);
-    availableEl.textContent = availableText === '—' ? '—' : (availableText + ' ha');
-  }
 
-  // Keep the static “why lower” inset — do not rebuild previous-agreement lists here.
   container.hidden = false;
-
-  if (detailsEl) {
-    var totalHa = Number(breakdown.totalHa);
-    var showWhyLower = Number.isFinite(totalHa) && Number.isFinite(availableHa) &&
-      availableHa < (totalHa - 0.00005);
-    detailsEl.hidden = !showWhyLower;
-    if (!showWhyLower) {
-      detailsEl.open = false;
-    }
-  }
 }
 
 function escapeHtmlText(value) {
@@ -4879,6 +4964,25 @@ $(document).ready(function(){
   // Check if user came from check-your-answers with a specific parcel to edit
   var selectedParcelId = sessionStorage.getItem('selectedParcelId');
   var selectedActionCode = editFocus.actionCode || sessionStorage.getItem('selectedActionCode');
+
+  // Change links redirect with #quantity-code. Read it, then strip the hash so the
+  // browser does not try to jump before the quantity field exists in the DOM.
+  try {
+    var hashMatch = (window.location.hash || '').match(/^#quantity-([a-z0-9]+)$/i);
+    if (hashMatch) {
+      selectedActionCode = selectedActionCode || String(hashMatch[1]).toUpperCase();
+      if (window.history && typeof window.history.replaceState === 'function') {
+        window.history.replaceState(
+          {},
+          '',
+          window.location.pathname + window.location.search
+        );
+      }
+    }
+  } catch (hashErr) {
+    // Ignore hash parsing issues.
+  }
+
   if (selectedActionCode) {
     sessionStorage.removeItem('selectedActionCode');
     queueActionFocus(selectedActionCode);
@@ -5062,16 +5166,6 @@ $(document).ready(function(){
         var $areaUsedValue = $('<dd class="govuk-summary-list__value"></dd>').text(totalUsedArea.toFixed(4) + ' ha');
         $areaUsedRow.append($areaUsedKey).append($areaUsedValue);
         $summaryList.append($areaUsedRow);
-        
-        // Calculate available area left (available area minus area used)
-        var availableAreaLeft = parseFloat(parcel.availableArea) - totalUsedArea;
-        
-        // Add available area left row
-        var $availableAreaRow = $('<div class="govuk-summary-list__row"></div>');
-        var $availableAreaKey = $('<dt class="govuk-summary-list__key"></dt>').text('Available area left');
-        var $availableAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(availableAreaLeft.toFixed(4) + ' ha');
-        $availableAreaRow.append($availableAreaKey).append($availableAreaValue);
-        $summaryList.append($availableAreaRow);
         
         // Add individual rows for each action with Change link (GOV.UK pattern)
         var totalPayment = 0;
@@ -6258,7 +6352,9 @@ $(document).ready(function(){
 
       updatePreviousAgreementsSummary(draftParcel.parcelId);
       setTimeout(function() {
-        selectParcelById(draftParcel.parcelId);
+        selectParcelById(draftParcel.parcelId, {
+          skipMapScroll: Boolean(pendingActionFocusCode)
+        });
         document.getElementById('actions-section').style.display = 'block';
         document.getElementById('action-tools-panel').style.display = 'block';
 
@@ -6269,6 +6365,8 @@ $(document).ready(function(){
             applyGreyOutCnum2();
           }
           refreshContinueFromActionSelection();
+          // Wait for checkboxes, quantities and AAC to settle, then scroll to the Change target.
+          consumeQueuedActionFocus(pendingActionFocusCode ? 450 : 0);
         }
 
         if (Array.isArray(draftActions) && draftActions.length) {

@@ -671,10 +671,6 @@
           <dd class="govuk-summary-list__value" id="summary-parcel-total-area">{% if hasDraftParcel %}{{ draftParcel.totalArea }} ha{% else %}-{% endif %}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Available area</dt>
-          <dd class="govuk-summary-list__value" id="summary-parcel-available-area">{% if hasDraftParcel %}{{ draftParcel.availableArea or draftParcel.totalArea }} ha{% else %}-{% endif %}</dd>
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
           <dt class="govuk-summary-list__key">SFI actions available</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-sfi-actions">-</dd>
         </div>
@@ -682,9 +678,9 @@
           <dt class="govuk-summary-list__key">Additional requirements</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-requirements">
             {% if hasDraftParcel and draftParcel.parcelId == 'gate-field' %}
-              SSSI consent and an SFI HEFER may apply to some actions
+              Some actions require SSSI consent or an SFI HEFER
             {% elif hasDraftParcel and draftParcel.parcelId == 'far-meadow' %}
-              An SFI HEFER may apply to some actions
+              Some actions require an SFI HEFER
             {% endif %}
           </dd>
         </div>
@@ -3099,7 +3095,7 @@
       'lane-meadow': 'Temporary grass',
       'ash-copse': 'Scrub - ungrazeable',
       'home-paddock': 'Notional - mixed',
-      'gate-field': ['Permanent grassland', 'Other arable crops'],
+      'gate-field': ['Permanent grassland', 'Scrub'],
       'beech-wood': 'Notional - natural',
       'orchard-plot': 'Perennial crops',
       'new-ground': 'Land lying fallow',
@@ -3188,8 +3184,25 @@
     }
 
     // Split total area across covers for the summary. One cover = name only;
-    // multiple covers = each line "Name - X.XXXX ha" using realistic weights.
-    function getLandCoverAreaShares(landCoverValue, totalArea) {
+    // multiple covers = each line "Name - X.XXXX ha".
+    // Prefer AAC shares so select-land matches select-actions (e.g. gate-field).
+    function getLandCoverAreaShares(landCoverValue, totalArea, parcelId, parcel) {
+      if (parcelId && window.SfiGrasslandsV2Aac &&
+          typeof window.SfiGrasslandsV2Aac.getParcelAreaBreakdown === 'function') {
+        var breakdown = window.SfiGrasslandsV2Aac.getParcelAreaBreakdown(
+          parcelId,
+          parcel || parcelData[parcelId]
+        );
+        if (breakdown && Array.isArray(breakdown.landCovers) && breakdown.landCovers.length) {
+          return breakdown.landCovers.map(function(cover) {
+            return {
+              name: cover.name,
+              ha: cover.ha != null ? Number(cover.ha) : null
+            };
+          });
+        }
+      }
+
       var names = getParcelLandCovers(landCoverValue);
       if (window.SfiGrasslandsV2ParcelReference &&
           typeof window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas === 'function') {
@@ -3223,12 +3236,12 @@
       return shares;
     }
 
-    function renderLandCoverSummary(el, landCoverValue, totalArea) {
+    function renderLandCoverSummary(el, landCoverValue, totalArea, parcelId, parcel) {
       if (!el) {
         return;
       }
 
-      var shares = getLandCoverAreaShares(landCoverValue, totalArea);
+      var shares = getLandCoverAreaShares(landCoverValue, totalArea, parcelId, parcel);
       el.textContent = '';
 
       if (!shares.length) {
@@ -4514,12 +4527,6 @@
         : '-';
 
       var availableForActions = getAreaAvailableForActions(parcelId, parcel);
-      var availableAreaEl = document.getElementById('summary-parcel-available-area');
-      if (availableAreaEl) {
-        availableAreaEl.textContent = availableForActions != null
-          ? (formatHaFourDecimals(availableForActions) + ' ha')
-          : '-';
-      }
 
       var sfiActionsEl = document.getElementById('summary-parcel-sfi-actions');
       if (sfiActionsEl) {
@@ -4529,17 +4536,19 @@
       renderLandCoverSummary(
         document.getElementById('summary-parcel-land-cover'),
         landCovers,
-        parcel.totalArea
+        parcel.totalArea,
+        parcelId,
+        parcel
       );
 
       var requirementsRow = document.getElementById('summary-parcel-requirements-row');
       var requirementsEl = document.getElementById('summary-parcel-requirements');
       if (requirementsRow && requirementsEl) {
         if (parcelId === 'gate-field') {
-          requirementsEl.textContent = 'SSSI consent and an SFI HEFER may apply to some actions';
+          requirementsEl.textContent = 'Some actions require SSSI consent or an SFI HEFER';
           requirementsRow.classList.remove('govuk-!-display-none');
         } else if (parcelId === 'far-meadow') {
-          requirementsEl.textContent = 'An SFI HEFER may apply to some actions';
+          requirementsEl.textContent = 'Some actions require an SFI HEFER';
           requirementsRow.classList.remove('govuk-!-display-none');
         } else {
           requirementsEl.textContent = '';
@@ -5515,16 +5524,6 @@
             var $areaUsedValue = $('<dd class="govuk-summary-list__value"></dd>').text(totalUsedArea.toFixed(4) + ' ha');
             $areaUsedRow.append($areaUsedKey).append($areaUsedValue);
             $summaryList.append($areaUsedRow);
-            
-            // Calculate available area left (available area minus area used)
-            var availableAreaLeft = parseFloat(parcel.availableArea) - totalUsedArea;
-            
-            // Add available area left row
-            var $availableAreaRow = $('<div class="govuk-summary-list__row"></div>');
-            var $availableAreaKey = $('<dt class="govuk-summary-list__key"></dt>').text('Available area left');
-            var $availableAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(availableAreaLeft.toFixed(4) + ' ha');
-            $availableAreaRow.append($availableAreaKey).append($availableAreaValue);
-            $summaryList.append($availableAreaRow);
             
             // Add individual rows for each action with Change link (GOV.UK pattern)
             var totalPayment = 0;

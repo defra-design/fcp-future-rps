@@ -978,19 +978,6 @@
     return document.getElementById('action-available-hint-' + String(code || '').toLowerCase())
   }
 
-  function formatProtectedLandReducedSuffix (hasSssi, hasHefer) {
-    if (hasSssi && hasHefer) {
-      return ' (reduced for SSSI and HEFER)'
-    }
-    if (hasSssi) {
-      return ' (reduced for SSSI)'
-    }
-    if (hasHefer) {
-      return ' (reduced for HEFER)'
-    }
-    return ''
-  }
-
   function applyAvailableHint (code, action) {
     var labelHint = getActionAvailableHint(code)
     if (!labelHint) {
@@ -1019,12 +1006,6 @@
       text = 'Applied to ' + appliedHa.toFixed(4) + ' hectares'
     } else {
       text = buildHintText(action)
-      var deductions = getProtectedLandDeductionRows(action)
-      if (text && deductions.length) {
-        var hasSssi = deductions.some(function (row) { return row.featureKey === 'sssi' })
-        var hasHefer = deductions.some(function (row) { return row.featureKey === 'hefer' })
-        text += formatProtectedLandReducedSuffix(hasSssi, hasHefer)
-      }
     }
     labelHint.textContent = text
     labelHint.hidden = !text

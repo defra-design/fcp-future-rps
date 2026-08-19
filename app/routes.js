@@ -3518,7 +3518,11 @@ router.get('/sfi-grasslands-v2/confirm-land-and-actions/change/:parcelId', funct
       (req.query.from === 'check-your-answers' ? '?from=check-your-answers' : ''))
   }
 
-  res.redirect('/sfi-grasslands-v2/select-actions')
+  var selectActionsUrl = '/sfi-grasslands-v2/select-actions'
+  if (actionCode) {
+    selectActionsUrl += '#quantity-' + String(actionCode).toLowerCase()
+  }
+  res.redirect(selectActionsUrl)
 })
 
 router.get('/sfi-grasslands-v2/remove-parcel-actions/:parcelId', function (req, res) {

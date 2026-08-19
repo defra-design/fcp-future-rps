@@ -49,6 +49,15 @@
       </div>
     </div>
 
+    <div id="quantity-error-summary" class="govuk-error-summary" aria-labelledby="quantity-error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" hidden>
+      <h2 class="govuk-error-summary__title" id="quantity-error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list" id="quantity-error-summary-list"></ul>
+      </div>
+    </div>
+
     {% set journeySection = "Select land and actions" %}
     {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
     <h1 class="govuk-heading-l" id="page-heading">Select actions for this land parcel</h1>
@@ -173,26 +182,9 @@
                       <span id="aac-actions-total-area">—</span>
                     </dd>
                   </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Available area</dt>
-                    <dd class="govuk-summary-list__value">
-                      <span id="aac-actions-available-area">—</span>
-                    </dd>
-                  </div>
                 </dl>
               </div>
             </div>
-
-            <details class="govuk-details app-aac-parcel-summary__why-lower" data-module="govuk-details" id="aac-parcel-area-details" hidden>
-              <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">Why the available area is lower</span>
-              </summary>
-              <div class="govuk-details__text" id="aac-parcel-area-breakdown-list">
-                <p class="govuk-body govuk-!-margin-bottom-0">
-                  The available area is based on the land cover on this parcel and land already being used for actions in existing agreements.
-                </p>
-              </div>
-            </details>
           </div>
 
           <div class="govuk-form-group govuk-!-margin-top-2" id="actions-form-group">
@@ -208,19 +200,10 @@
                   <li>the land cover on this parcel</li>
                   <li>land already in existing agreements</li>
                   <li>other actions you select</li>
-                  <li>whether any of the land is ineligible for the action</li>
+                  <li id="aac-actions-intro-ineligible-factor">whether any of the land is ineligible for the action</li>
                 </ul>
-                <div id="aac-actions-intro-protected-notes" hidden>
-                  <p class="govuk-body">
-                    If an action is <strong>not eligible</strong> on SSSI land or land with historic or archaeological features, that area will be taken off the quantity available.
-                  </p>
-                  <p class="govuk-body">
-                    If an action <strong>is eligible</strong> on this land, you will need
-                    <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noreferrer noopener">SSSI consent (opens in new tab)</a>
-                    or an
-                    <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer" target="_blank" rel="noreferrer noopener">SFI HEFER (opens in new tab)</a>,
-                    depending on what affects the land. We’ll show what you need for each action.
-                  </p>
+                <div id="aac-actions-intro-protected-notes" class="govuk-inset-text" hidden>
+                  <p class="govuk-body govuk-!-margin-bottom-0" id="aac-actions-intro-eligible-note"></p>
                 </div>
                 <p class="govuk-body">
                   Enter the quantity you want for each action. The available quantity will update as you make your selections.
@@ -249,15 +232,6 @@
             <div class="govuk-!-margin-top-4">
               <p class="govuk-body govuk-!-font-weight-bold" id="no-results-title">There are no matching results.</p>
               <p class="govuk-body" id="no-results-description">Please check your spelling, or action code, and try again.</p>
-            </div>
-          </div>
-
-          <div id="quantity-error-summary" class="govuk-error-summary govuk-!-margin-top-6" aria-labelledby="quantity-error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" hidden>
-            <h2 class="govuk-error-summary__title" id="quantity-error-summary-title">
-              There is a problem
-            </h2>
-            <div class="govuk-error-summary__body">
-              <ul class="govuk-list govuk-error-summary__list" id="quantity-error-summary-list"></ul>
             </div>
           </div>
 
@@ -315,12 +289,12 @@
                 {% if draftParcel.parcelId == 'gate-field' %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Additional requirements</dt>
-                  <dd class="govuk-summary-list__value">SSSI consent and an SFI HEFER may apply to some actions</dd>
+                  <dd class="govuk-summary-list__value">Some actions require SSSI consent or an SFI HEFER</dd>
                 </div>
                 {% elif draftParcel.parcelId == 'far-meadow' %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">Additional requirements</dt>
-                  <dd class="govuk-summary-list__value">An SFI HEFER may apply to some actions</dd>
+                  <dd class="govuk-summary-list__value">Some actions require an SFI HEFER</dd>
                 </div>
                 {% endif %}
               </dl>

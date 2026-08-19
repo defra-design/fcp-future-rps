@@ -3267,7 +3267,7 @@
       'lane-meadow': 'Temporary grass',
       'ash-copse': 'Scrub - ungrazeable',
       'home-paddock': 'Notional - mixed',
-      'gate-field': ['Permanent grassland', 'Other arable crops'],
+      'gate-field': ['Permanent grassland', 'Scrub'],
       'beech-wood': 'Notional - natural',
       'orchard-plot': 'Perennial crops',
       'new-ground': 'Land lying fallow',
@@ -4786,16 +4786,6 @@
             var $areaUsedValue = $('<dd class="govuk-summary-list__value"></dd>').text(totalUsedArea.toFixed(4) + ' ha');
             $areaUsedRow.append($areaUsedKey).append($areaUsedValue);
             $summaryList.append($areaUsedRow);
-            
-            // Calculate available area left (available area minus area used)
-            var availableAreaLeft = parseFloat(parcel.availableArea) - totalUsedArea;
-            
-            // Add available area left row
-            var $availableAreaRow = $('<div class="govuk-summary-list__row"></div>');
-            var $availableAreaKey = $('<dt class="govuk-summary-list__key"></dt>').text('Available area left');
-            var $availableAreaValue = $('<dd class="govuk-summary-list__value"></dd>').text(availableAreaLeft.toFixed(4) + ' ha');
-            $availableAreaRow.append($availableAreaKey).append($availableAreaValue);
-            $summaryList.append($availableAreaRow);
             
             // Add individual rows for each action with Change link (GOV.UK pattern)
             var totalPayment = 0;
