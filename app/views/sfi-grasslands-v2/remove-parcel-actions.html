@@ -23,18 +23,19 @@
       {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">Remove this land parcel?</h1>
 
+      {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
       <p class="govuk-body">
-        This will remove land parcel {{ parcel.parcelReference or parcel.heading or parcel.parcelName }} and all actions added to it from your application.
+        Land parcel <strong>{{ parcelRef }}</strong> and all related actions will be removed from your application.
       </p>
 
       <form action="/sfi-grasslands-v2/remove-parcel-actions/{{ parcel.parcelId }}" method="post">
         <input type="hidden" name="confirmRemove" value="yes">
-        <div class="govuk-button-group">
-          <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
-            Remove this land parcel
-          </button>
+        <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+          Remove this land parcel
+        </button>
+        <p class="govuk-body">
           <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions">Cancel</a>
-        </div>
+        </p>
       </form>
     </div>
   </div>

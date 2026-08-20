@@ -24,7 +24,7 @@
 
   {{ govukBackLink({
     text: "Back",
-    href: "/sfi-grasslands-v2/select-land"
+    href: showCancelToLandAndActions and "/sfi-grasslands-v2/cancel-land-actions-draft" or "/sfi-grasslands-v2/select-land"
   }) }}
 {% endblock %}
 
@@ -182,10 +182,6 @@
                       <span id="aac-actions-total-area">—</span>
                     </dd>
                   </div>
-                  <div class="govuk-summary-list__row" id="aac-parcel-requirements-row" hidden>
-                    <dt class="govuk-summary-list__key">Requirements</dt>
-                    <dd class="govuk-summary-list__value" id="aac-parcel-requirements"></dd>
-                  </div>
                 </dl>
               </div>
             </div>
@@ -247,6 +243,13 @@
                 Save and continue
               </button>
             </div>
+            {% if showCancelToLandAndActions %}
+              <p class="govuk-body">
+                <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v2/cancel-land-actions-draft">
+                  Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+                </a>
+              </p>
+            {% endif %}
           </form>
         </div>
       </div>
@@ -290,28 +293,6 @@
                     <span id="selected-parcel-total-area">{{ draftParcel.totalArea }} hectares</span>
                   </dd>
                 </div>
-                {% if draftParcel.parcelId == 'gate-field' %}
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Requirements</dt>
-                  <dd class="govuk-summary-list__value">
-                    <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
-                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                      <li>site of special scientific interest (SSSI) consent</li>
-                      <li>a Historic Environment Farm Environment Record (HEFER)</li>
-                    </ul>
-                  </dd>
-                </div>
-                {% elif draftParcel.parcelId == 'far-meadow' %}
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Requirements</dt>
-                  <dd class="govuk-summary-list__value">
-                    <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
-                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                      <li>a Historic Environment Farm Environment Record (HEFER)</li>
-                    </ul>
-                  </dd>
-                </div>
-                {% endif %}
               </dl>
               <p class="govuk-body app-selected-parcel__change">
                 <a class="govuk-link" href="/sfi-grasslands-v2/select-land">Change parcel</a>

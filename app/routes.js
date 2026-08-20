@@ -3127,13 +3127,13 @@ router.get('/sfi-grasslands-v2/select-land', function (req, res) {
     data: getSfiGrasslandsV2SessionData(req),
     draftParcel: sfiGrasslandsV2LandActions.getDraftParcel(req),
     applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req),
-    showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
+    showCancelToLandAndActions: sfiGrasslandsV2LandActions.shouldShowCancelLandActions(req)
   }, getSfiGrasslandsV2CompatibilityLocals(req)))
 })
 
 router.get('/sfi-grasslands-v2/cancel-land-actions-draft', function (req, res) {
-  sfiGrasslandsV2LandActions.clearDraft(req)
-  if (sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)) {
+  var restored = sfiGrasslandsV2LandActions.cancelLandActionsDraft(req)
+  if (restored) {
     return res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
   }
   res.redirect('/sfi-grasslands-v2/select-land')
@@ -3180,7 +3180,7 @@ router.get('/sfi-grasslands-v2/select-actions', function (req, res) {
     applicationParcels: sfiGrasslandsV2LandActions.getApplicationParcels(req),
     focusActionCode: focusActionCode,
     returnToCheckYourAnswers: Boolean(sessionData.returnToCheckYourAnswers),
-    showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
+    showCancelToLandAndActions: sfiGrasslandsV2LandActions.shouldShowCancelLandActions(req)
   }, getSfiGrasslandsV2CompatibilityLocals(req)))
 })
 
@@ -3290,7 +3290,7 @@ router.get('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
     clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3Ha),
     backHref: backHref,
     quantityError: null,
-    showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
+    showCancelToLandAndActions: sfiGrasslandsV2LandActions.shouldShowCancelLandActions(req)
   })
 })
 
@@ -3338,7 +3338,7 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
         fieldId: 'clig3-supplement-none',
         text: 'Select a supplement or choose no supplement'
       },
-      showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
+      showCancelToLandAndActions: sfiGrasslandsV2LandActions.shouldShowCancelLandActions(req)
     })
   }
 
@@ -3377,7 +3377,7 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
       clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3HaError),
       backHref: backHrefError,
       quantityError: applied.error,
-      showCancelToLandAndActions: sfiGrasslandsV2LandActions.hasSavedLandAndActions(req)
+      showCancelToLandAndActions: sfiGrasslandsV2LandActions.shouldShowCancelLandActions(req)
     })
   }
 
@@ -3658,11 +3658,13 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
   var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req).map(function (parcel) {
     return Object.assign({}, parcel, {
       landCover: parcel.landCover || parcel.landCoverLabel || 'Permanent grassland',
-      actions: (parcel.actions || []).map(function (action) {
-        return Object.assign({}, action, {
-          consentHint: sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+      actions: sfiGrasslandsV2LandActions.groupParcelActionsForDisplay(
+        (parcel.actions || []).map(function (action) {
+          return Object.assign({}, action, {
+            consentHint: sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+          })
         })
-      })
+      )
     })
   })
   var basketSummary = sfiGrasslandsV2LandActions.summariseBasket(basketParcels)
@@ -3679,7 +3681,7 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
   var mockParcels = [
     {
       parcelId: 'far-meadow',
-      heading: 'Land parcel SO3757 3193',
+      heading: 'Parcel reference SO3757 3193',
       parcelReference: 'SO3757 3193',
       totalAreaFormatted: '12.4500 ha',
       areaUsedFormatted: '8.2000 ha',
@@ -3690,12 +3692,16 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
         {
           code: 'CLIG3',
           name: 'Manage grassland with very low nutrient inputs',
+          quantityDisplay: '8.2000 ha',
+          yearlyPaymentFormatted: '£1,238.20',
           valueDisplay: '8.2000 ha (£1,238.20)',
           consentHint: sfiGrasslandsV2Consent.getActionConsentHint('far-meadow', 'CLIG3')
         },
         {
           code: 'GRH7',
           name: 'Haymaking supplement',
+          quantityDisplay: '4.2500 ha',
+          yearlyPaymentFormatted: '£667.25',
           valueDisplay: '4.2500 ha (£667.25)',
           consentHint: sfiGrasslandsV2Consent.getActionConsentHint('far-meadow', 'GRH7')
         }
@@ -3703,7 +3709,7 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
     },
     {
       parcelId: 'pond-close',
-      heading: 'Land parcel SO3757 3203',
+      heading: 'Parcel reference SO3757 3203',
       parcelReference: 'SO3757 3203',
       totalAreaFormatted: '29.3214 ha',
       areaUsedFormatted: '19.4900 ha',
@@ -3714,12 +3720,16 @@ function getSfiGrasslandsV2ReviewApplicationData (req) {
         {
           code: 'CNUM2',
           name: 'Legumes on improved grassland',
+          quantityDisplay: '10.0000 ha',
+          yearlyPaymentFormatted: '£1,020.00',
           valueDisplay: '10.0000 ha (£1,020.00)',
           consentHint: sfiGrasslandsV2Consent.getActionConsentHint('pond-close', 'CNUM2')
         },
         {
           code: 'CSAM3',
           name: 'Herbal leys',
+          quantityDisplay: '9.4900 ha',
+          yearlyPaymentFormatted: '£2,125.60',
           valueDisplay: '9.4900 ha (£2,125.60)',
           consentHint: sfiGrasslandsV2Consent.getActionConsentHint('pond-close', 'CSAM3')
         }

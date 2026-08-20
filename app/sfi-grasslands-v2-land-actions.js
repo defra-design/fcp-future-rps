@@ -87,6 +87,35 @@ function clearDraft (req) {
   clearClig3SupplementsComplete(req)
 }
 
+function clearLandActionsEditSnapshot (req) {
+  delete getSessionData(req).sfiLandActionsEditSnapshot
+}
+
+function getLandActionsEditSnapshot (req) {
+  return getSessionData(req).sfiLandActionsEditSnapshot || null
+}
+
+function shouldShowCancelLandActions (req) {
+  return Boolean(getLandActionsEditSnapshot(req)) || hasSavedLandAndActions(req)
+}
+
+function cancelLandActionsDraft (req) {
+  var data = getSessionData(req)
+  var snapshot = getLandActionsEditSnapshot(req)
+
+  clearDraft(req)
+  clearLandActionsEditSnapshot(req)
+  delete data.focusActionCode
+  delete data.clig3SupplementsDirectEdit
+
+  if (snapshot && snapshot.parcel) {
+    upsertApplicationParcel(req, snapshot.parcel)
+    syncParcelSelectionsData(req)
+  }
+
+  return hasSavedLandAndActions(req)
+}
+
 function clearClig3SupplementsComplete (req) {
   var data = getSessionData(req)
   delete data.clig3SupplementsCompleteParcelId
@@ -652,6 +681,12 @@ function loadParcelIntoDraftForEdit (req, parcelId) {
   })
   setDraftActions(req, Array.isArray(parcel.actions) ? parcel.actions : [])
 
+  // Snapshot so Cancel changes can restore the pre-edit basket state.
+  // Editing moves the parcel out of application into draft.
+  getSessionData(req).sfiLandActionsEditSnapshot = {
+    parcel: JSON.parse(JSON.stringify(parcel))
+  }
+
   // Already chose supplements for this saved parcel — only revisit if CLIG3 quantity changes
   markClig3SupplementsComplete(req, getDraftActions(req))
 
@@ -749,6 +784,7 @@ function commitDraftToApplication (req) {
 
   syncParcelSelectionsData(req)
   clearDraft(req)
+  clearLandActionsEditSnapshot(req)
   return getApplicationParcels(req)
 }
 
@@ -759,6 +795,8 @@ module.exports = {
   getDraftActions: getDraftActions,
   setDraftActions: setDraftActions,
   clearDraft: clearDraft,
+  cancelLandActionsDraft: cancelLandActionsDraft,
+  shouldShowCancelLandActions: shouldShowCancelLandActions,
   formatLandCover: formatLandCover,
   getParcelDisplayReference: getParcelDisplayReference,
   upsertApplicationParcel: upsertApplicationParcel,
