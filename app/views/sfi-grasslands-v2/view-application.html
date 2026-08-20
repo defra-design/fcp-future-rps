@@ -34,7 +34,7 @@
 
       {% include "sfi-grasslands-v2/_includes/applicant-details.html" %}
 
-      <h2 class="govuk-heading-m">Your land and actions</h2>
+      <h2 class="govuk-heading-m">Review land parcels and actions</h2>
 
       {% for parcel in parcels %}
         {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Land parcel ', '')) or parcel.parcelName or '' %}

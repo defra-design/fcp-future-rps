@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v2-header.html" %}
 
 {% block pageTitle %}
-  Add a supplement to CLIG3
+  Do you want to add a supplement to CLIG3?
 {% endblock %}
 
 {% block beforeContent %}
@@ -73,7 +73,7 @@
       {% set journeySection = "Select land and actions" %}
       {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
 
-      <h1 class="govuk-heading-l">Add a supplement to CLIG3</h1>
+      <h1 class="govuk-heading-l">Do you want to add a supplement to CLIG3?</h1>
 
       <form action="/sfi-grasslands-v2/clig3-supplements" method="post" novalidate>
         {% if fromCheckYourAnswers %}
@@ -83,7 +83,7 @@
         <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
           <fieldset class="govuk-fieldset"{% if error %} aria-describedby="clig3-supplement-error clig3-supplement-hint"{% else %} aria-describedby="clig3-supplement-hint"{% endif %}>
             <legend class="govuk-fieldset__legend govuk-visually-hidden">
-              Add a supplement to CLIG3
+              Do you want to add a supplement to CLIG3?
             </legend>
             <p id="clig3-supplement-hint" class="govuk-body">
               You can add one supplement to CLIG3.
@@ -114,7 +114,7 @@
                       href="{{ option.guidanceUrl }}"
                       target="_blank"
                       rel="noopener noreferrer"
-                    >read guidance<span class="govuk-visually-hidden"> for {{ option.name }}: {{ option.code }} (opens in new tab)</span></a>
+                    >read guidance (opens in new tab)<span class="govuk-visually-hidden"> for {{ option.name }}: {{ option.code }}</span></a>
                     <span class="app-action-hint" id="action-hint-{{ option.code | lower }}">
                       Payment rate per year: {{ option.rateText }}
                     </span>

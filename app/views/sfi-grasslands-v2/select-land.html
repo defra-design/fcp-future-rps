@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v2-header.html" %}
 
 {% block pageTitle %}
-  Select the land you want to do your actions on
+  Select your land parcels
 {% endblock %}
 
 {% block beforeContent %}
@@ -533,12 +533,12 @@
 
     {% set journeySection = "Select land and actions" %}
     {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
-    <h1 class="govuk-heading-l" id="page-heading">Select the land you want to do your actions on</h1>
-    <p id="select-parcel-text" class="govuk-body">Select a land parcel on the map. You'll choose actions for that parcel on the next page.</p>
+    <h1 class="govuk-heading-l" id="page-heading">Select your land parcels</h1>
+    <p id="select-parcel-text" class="govuk-body">Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).</p>
     <p id="map-keyboard-hint" class="govuk-visually-hidden">
       Use the arrow keys to move between land parcels. Press Enter or Space to select a parcel.
     </p>
-    <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a land parcel on the map. You'll choose actions for that parcel on the next page.</p>
+    <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).</p>
     <p id="selected-parcel-text" style="display: none;"></p>
     <script type="application/json" id="draft-parcel-json">{% if draftParcel %}{{ draftParcel | dump | safe }}{% else %}null{% endif %}</script>
 
@@ -605,7 +605,7 @@
                 {% endfor %}
               </dl>
               <p class="app-application-summary__view-all">
-                <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions">View land and actions</a>
+                <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions">Review land parcels and actions</a>
               </p>
             </div>
           {% endif %}
@@ -671,16 +671,23 @@
           <dd class="govuk-summary-list__value" id="summary-parcel-total-area">{% if hasDraftParcel %}{{ draftParcel.totalArea }} ha{% else %}-{% endif %}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">SFI actions available</dt>
+          <dt class="govuk-summary-list__key">Actions available</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-sfi-actions">-</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
-          <dt class="govuk-summary-list__key">Additional requirements</dt>
+          <dt class="govuk-summary-list__key">Requirements</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-requirements">
             {% if hasDraftParcel and draftParcel.parcelId == 'gate-field' %}
-              Some actions require SSSI consent or an SFI HEFER
+              <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+              <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                <li>Site of special scientific interest consent</li>
+                <li>Historic Environment Farm Environment Record</li>
+              </ul>
             {% elif hasDraftParcel and draftParcel.parcelId == 'far-meadow' %}
-              Some actions require an SFI HEFER
+              <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+              <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                <li>Historic Environment Farm Environment Record</li>
+              </ul>
             {% endif %}
           </dd>
         </div>
@@ -3535,7 +3542,7 @@
         guidanceLink.href = getActionGuidanceUrl(action);
         guidanceLink.target = '_blank';
         guidanceLink.rel = 'noopener noreferrer';
-        guidanceLink.textContent = 'read guidance';
+        guidanceLink.textContent = 'read guidance (opens in new tab)';
         label.appendChild(guidanceLink);
 
         var hint = document.createElement('div');
@@ -3963,7 +3970,7 @@
     function buildParcelPopupContent(parcelId, data) {
       var html = '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
         '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
-        '<p>SFI actions available: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
+        '<p>Actions available: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
       if (isParcelAlreadyAdded(parcelId)) {
         html += '<p>Already in your application</p>';
       }
@@ -4507,6 +4514,37 @@
       }
     }
 
+    function getParcelRequirementFlags(parcelId) {
+      if (window.SfiGrasslandsV2Aac && typeof window.SfiGrasslandsV2Aac.getParcelSssiHeferFlags === 'function') {
+        return window.SfiGrasslandsV2Aac.getParcelSssiHeferFlags(parcelId);
+      }
+      return { sssi: false, hefer: false };
+    }
+
+    function renderParcelRequirements(el, parcelId) {
+      if (!el) {
+        return false;
+      }
+      var flags = getParcelRequirementFlags(parcelId);
+      var items = [];
+      if (flags.sssi) {
+        items.push('Site of special scientific interest consent');
+      }
+      if (flags.hefer) {
+        items.push('Historic Environment Farm Environment Record');
+      }
+      if (!items.length) {
+        el.textContent = '';
+        return false;
+      }
+      var listItems = items.map(function(item) {
+        return '<li>' + item + '</li>';
+      }).join('');
+      el.innerHTML = '<p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>' +
+        '<ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">' + listItems + '</ul>';
+      return true;
+    }
+
     function updateSelectedParcelSummary(parcelId, parcel, osRefDisplay) {
       var summary = document.getElementById('selected-parcel-summary');
       if (!summary || !parcel) {
@@ -4544,11 +4582,7 @@
       var requirementsRow = document.getElementById('summary-parcel-requirements-row');
       var requirementsEl = document.getElementById('summary-parcel-requirements');
       if (requirementsRow && requirementsEl) {
-        if (parcelId === 'gate-field') {
-          requirementsEl.textContent = 'Some actions require SSSI consent or an SFI HEFER';
-          requirementsRow.classList.remove('govuk-!-display-none');
-        } else if (parcelId === 'far-meadow') {
-          requirementsEl.textContent = 'Some actions require an SFI HEFER';
+        if (renderParcelRequirements(requirementsEl, parcelId)) {
           requirementsRow.classList.remove('govuk-!-display-none');
         } else {
           requirementsEl.textContent = '';

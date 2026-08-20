@@ -3417,11 +3417,13 @@ router.post('/sfi-grasslands-v2/consent-interruption', function (req, res) {
 router.get('/sfi-grasslands-v2/confirm-land-and-actions', function (req, res) {
   var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req).map(function (parcel) {
     return Object.assign({}, parcel, {
-      actions: (parcel.actions || []).map(function (action) {
-        return Object.assign({}, action, {
-          consentHint: sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+      actions: sfiGrasslandsV2LandActions.groupParcelActionsForDisplay(
+        (parcel.actions || []).map(function (action) {
+          return Object.assign({}, action, {
+            consentHint: sfiGrasslandsV2Consent.getActionConsentHint(parcel.parcelId, action.code)
+          })
         })
-      })
+      )
     })
   })
   var basketSummary = sfiGrasslandsV2LandActions.summariseBasket(basketParcels)
@@ -3609,11 +3611,7 @@ router.get('/sfi-grasslands-v2/submit-application', function (req, res) {
   res.render('sfi-grasslands-v2/submit-application', {
     data: getSfiGrasslandsV2SessionData(req),
     requiresSssi: requiresSssi,
-    requiresHefer: requiresHefer,
-    consentDeclarationLine: sfiGrasslandsV2Consent.getSubmitDeclarationConsentLine(
-      requiresSssi,
-      requiresHefer
-    )
+    requiresHefer: requiresHefer
   })
 })
 
@@ -3827,7 +3825,7 @@ router.post('/sfi-grasslands-v2/management-control-answer', function (req, res) 
     return renderSfiGrasslandsV2EligibilityPage(req, res, managementView, {
       returnTo: returnTo,
       eligibilityError: true,
-      eligibilityErrorMessage: 'Select if you will have the required management control of the land in this application',
+      eligibilityErrorMessage: 'Confirm if you have management control of the land in this application',
       eligibilityErrorFieldId: 'management-answer-v2-error'
     })
   }
@@ -3958,6 +3956,12 @@ router.get('/sfi-grasslands-v2/check-your-answers', function (req, res) {
     if (Object.keys(hints).length > 0) {
       consentHintsByParcel[parcel.parcelId] = hints
     }
+  })
+
+  basketParcels = basketParcels.map(function (parcel) {
+    return Object.assign({}, parcel, {
+      actions: sfiGrasslandsV2LandActions.groupParcelActionsForDisplay(parcel.actions || [])
+    })
   })
 
   if (actionsSummary.rows && actionsSummary.rows.length > 0) {

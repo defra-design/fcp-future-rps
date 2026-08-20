@@ -200,14 +200,13 @@
                   <li>the land cover on this parcel</li>
                   <li>land already in existing agreements</li>
                   <li>other actions you select</li>
-                  <li id="aac-actions-intro-ineligible-factor">whether any of the land is ineligible for the action</li>
+                  <li id="aac-actions-intro-sssi-factor" hidden>site of special scientific interest (SSSI) eligibility</li>
+                  <li id="aac-actions-intro-hefer-factor" hidden>Historic Environment Farm Environment Record (HEFER) eligibility</li>
+                  <li id="aac-actions-intro-ineligible-factor" hidden>whether any of the land is ineligible for the action</li>
                 </ul>
                 <div id="aac-actions-intro-protected-notes" class="govuk-inset-text" hidden>
                   <p class="govuk-body govuk-!-margin-bottom-0" id="aac-actions-intro-eligible-note"></p>
                 </div>
-                <p class="govuk-body">
-                  Enter the quantity you want for each action. The available quantity will update as you make your selections.
-                </p>
               </div>
               <div id="actions-compatibility-status-sentinel" class="actions-compatibility-status-sentinel" aria-hidden="true"></div>
               <div class="actions-compatibility-status-slot">
@@ -288,13 +287,24 @@
                 </div>
                 {% if draftParcel.parcelId == 'gate-field' %}
                 <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Additional requirements</dt>
-                  <dd class="govuk-summary-list__value">Some actions require SSSI consent or an SFI HEFER</dd>
+                  <dt class="govuk-summary-list__key">Requirements</dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                      <li>Site of special scientific interest consent</li>
+                      <li>Historic Environment Farm Environment Record</li>
+                    </ul>
+                  </dd>
                 </div>
                 {% elif draftParcel.parcelId == 'far-meadow' %}
                 <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Additional requirements</dt>
-                  <dd class="govuk-summary-list__value">Some actions require an SFI HEFER</dd>
+                  <dt class="govuk-summary-list__key">Requirements</dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                      <li>Historic Environment Farm Environment Record</li>
+                    </ul>
+                  </dd>
                 </div>
                 {% endif %}
               </dl>

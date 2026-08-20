@@ -650,6 +650,15 @@
   display: none !important;
 }
 
+#actions-section #actions-checkboxes-container > .app-action-list-group-lead-in {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+#actions-section #actions-checkboxes-container > .app-action-list-group-lead-in[hidden] {
+  display: none !important;
+}
+
 #actions-section #actions-checkboxes-container > .app-action-list-group-heading + .govuk-checkboxes__item {
   border-top: 0;
   margin-top: 0;

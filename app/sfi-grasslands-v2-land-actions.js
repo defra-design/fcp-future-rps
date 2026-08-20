@@ -326,6 +326,34 @@ function isClig3SupplementAction (code) {
   return isStackedSupplementAction(code)
 }
 
+function groupParcelActionsForDisplay (actions) {
+  var list = Array.isArray(actions) ? actions : []
+  var supplements = list.filter(function (action) {
+    return isClig3SupplementAction(action && action.code)
+  })
+  var hasClig3 = list.some(function (action) {
+    return String((action && action.code) || '').toUpperCase() === 'CLIG3'
+  })
+
+  if (!hasClig3 || !supplements.length) {
+    return list
+  }
+
+  var grouped = []
+  list.forEach(function (action) {
+    if (isClig3SupplementAction(action && action.code)) {
+      return
+    }
+    grouped.push(action)
+    if (String((action && action.code) || '').toUpperCase() === 'CLIG3') {
+      supplements.forEach(function (supplement) {
+        grouped.push(supplement)
+      })
+    }
+  })
+  return grouped
+}
+
 function supplementRequiresQuantityInput (code) {
   var normalised = String(code || '').toUpperCase()
   return normalised === 'GRH7' || normalised === 'GRH8'
@@ -556,6 +584,7 @@ function buildBasketParcels (req) {
     .filter(function (parcel) {
       return parcel && Array.isArray(parcel.actions) && parcel.actions.length > 0
     })
+    .reverse()
     .map(function (parcel) {
       var summary = summariseParcelActions(parcel)
       var reference = getParcelDisplayReference(parcel) || 'Unknown parcel'
@@ -739,6 +768,7 @@ module.exports = {
   remainingAvailableArea: remainingAvailableArea,
   isClig3SupplementAction: isClig3SupplementAction,
   isStackedSupplementAction: isStackedSupplementAction,
+  groupParcelActionsForDisplay: groupParcelActionsForDisplay,
   draftHasClig3: draftHasClig3,
   shouldShowClig3Supplements: shouldShowClig3Supplements,
   markClig3SupplementsComplete: markClig3SupplementsComplete,

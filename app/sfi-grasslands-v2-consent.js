@@ -3,8 +3,10 @@
  * Keep in sync with PROTECTED_LAND_RULES / PARCEL_SSSI_HEFER_FLAGS in
  * app/assets/javascripts/sfi-grasslands-v2-aac.js
  *
- * Only show “Requires…” when the action is eligible but needs consent / HEFER —
+ * Only show the action hint when the action is eligible but needs consent / HEFER —
  * not when the land is ineligible for that action.
+ * Keep wording in sync with getActionConsentHintLines in
+ * sfi-grasslands-v2-select-actions.js.
  */
 
 var PARCEL_CONSENT_FLAGS = {
@@ -53,13 +55,13 @@ function getActionConsentHint (parcelId, actionCode) {
   var requiresHefer = requirements.hefer
 
   if (requiresSssi && requiresHefer) {
-    return 'Requires SSSI consent and an SFI HEFER'
+    return 'SSSI consent and HEFER required'
   }
   if (requiresSssi) {
-    return 'Requires SSSI consent'
+    return 'SSSI consent required'
   }
   if (requiresHefer) {
-    return 'Requires an SFI HEFER'
+    return 'HEFER required'
   }
 
   return null
@@ -102,23 +104,6 @@ function getConsentRequirementsForParcels (parcels) {
   }
 }
 
-/**
- * Declaration bullet on confirm-and-submit.
- * Only shown when at least one selected action needs SSSI consent and/or a HEFER.
- */
-function getSubmitDeclarationConsentLine (requiresSssi, requiresHefer) {
-  if (requiresSssi && requiresHefer) {
-    return 'you will get consent for SSSI actions and request a HEFER where required'
-  }
-  if (requiresSssi) {
-    return 'you will get consent for SSSI actions where required'
-  }
-  if (requiresHefer) {
-    return 'you will request a HEFER where required'
-  }
-  return null
-}
-
 module.exports = {
   PARCEL_CONSENT_FLAGS: PARCEL_CONSENT_FLAGS,
   PROTECTED_LAND_RULES: PROTECTED_LAND_RULES,
@@ -133,6 +118,5 @@ module.exports = {
   }, {}),
   getActionConsentHint: getActionConsentHint,
   getConsentRequirementsForParcels: getConsentRequirementsForParcels,
-  getSubmitDeclarationConsentLine: getSubmitDeclarationConsentLine,
   getRequirementFlags: getRequirementFlags
 }

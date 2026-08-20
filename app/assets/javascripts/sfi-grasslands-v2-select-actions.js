@@ -2995,35 +2995,30 @@ function createConsentGuidanceLink(href, text) {
 
 function setEligibleParcelNote(el, hasSssi, hasHefer) {
   el.textContent = '';
-  var sssiLink = createConsentGuidanceLink(SSSI_CONSENT_GUIDANCE_HREF, 'SSSI consent');
-  var heferLink = createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'SFI HEFER');
-
-  if (hasSssi && hasHefer) {
-    el.appendChild(document.createTextNode('Some actions require '));
-    el.appendChild(sssiLink);
-    el.appendChild(document.createTextNode(' or an '));
-    el.appendChild(heferLink);
-    el.appendChild(document.createTextNode('. We’ll show what you need for each action.'));
+  if (!hasSssi && !hasHefer) {
     return;
   }
 
+  el.appendChild(document.createTextNode('Some actions require '));
   if (hasSssi) {
-    el.appendChild(document.createTextNode('Some actions require '));
-    el.appendChild(sssiLink);
-    el.appendChild(document.createTextNode('. We’ll show what you need for each action.'));
-    return;
+    el.appendChild(createConsentGuidanceLink(SSSI_CONSENT_GUIDANCE_HREF, 'SSSI consent'));
   }
-
-  el.appendChild(document.createTextNode('Some actions require an '));
-  el.appendChild(heferLink);
-  el.appendChild(document.createTextNode('. We’ll show what you need for each action.'));
+  if (hasSssi && hasHefer) {
+    el.appendChild(document.createTextNode(' or an '));
+  }
+  if (hasHefer) {
+    el.appendChild(createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'HEFER'));
+  }
+  el.appendChild(document.createTextNode('. We’ll tell you what you need for each action.'));
 }
 
 function updateAacActionsIntro() {
   var notes = document.getElementById('aac-actions-intro-protected-notes');
   var eligibleNote = document.getElementById('aac-actions-intro-eligible-note');
+  var sssiFactor = document.getElementById('aac-actions-intro-sssi-factor');
+  var heferFactor = document.getElementById('aac-actions-intro-hefer-factor');
   var ineligibleFactor = document.getElementById('aac-actions-intro-ineligible-factor');
-  if (!notes && !ineligibleFactor) {
+  if (!notes && !sssiFactor && !heferFactor && !ineligibleFactor) {
     return;
   }
 
@@ -3033,30 +3028,24 @@ function updateAacActionsIntro() {
   var hasHefer = Boolean(flags.hefer);
   var hasProtectedLand = hasSssi || hasHefer;
 
+  if (sssiFactor) {
+    sssiFactor.hidden = !hasSssi;
+  }
+  if (heferFactor) {
+    heferFactor.hidden = !hasHefer;
+  }
+  if (ineligibleFactor) {
+    ineligibleFactor.hidden = hasProtectedLand;
+  }
   if (notes) {
     notes.hidden = !hasProtectedLand;
   }
-
   if (eligibleNote) {
     if (hasProtectedLand) {
       setEligibleParcelNote(eligibleNote, hasSssi, hasHefer);
     } else {
       eligibleNote.textContent = '';
     }
-  }
-
-  if (!ineligibleFactor) {
-    return;
-  }
-
-  if (hasSssi && hasHefer) {
-    ineligibleFactor.textContent = 'SSSI land or land with historic or archaeological features';
-  } else if (hasSssi) {
-    ineligibleFactor.textContent = 'SSSI land';
-  } else if (hasHefer) {
-    ineligibleFactor.textContent = 'land with historic or archaeological features';
-  } else {
-    ineligibleFactor.textContent = 'whether any of the land is ineligible for the action';
   }
 }
 
@@ -3112,13 +3101,13 @@ function getActionConsentFlags(actionCode, parcelIdOverride) {
 function getActionConsentHintLines(actionCode, parcelIdOverride) {
   var flags = getActionConsentFlags(actionCode, parcelIdOverride);
   if (flags.sssi && flags.hefer) {
-    return ['SSSI consent and an SFI HEFER required'];
+    return ['SSSI consent and HEFER required'];
   }
   if (flags.sssi) {
     return ['SSSI consent required'];
   }
   if (flags.hefer) {
-    return ['SFI HEFER required'];
+    return ['HEFER required'];
   }
   return [];
 }
@@ -3172,7 +3161,7 @@ function createActionCheckboxElements(action) {
   guidanceLink.href = getActionGuidanceUrl(action);
   guidanceLink.target = '_blank';
   guidanceLink.rel = 'noopener noreferrer';
-  guidanceLink.textContent = 'read guidance';
+  guidanceLink.textContent = 'read guidance (opens in new tab)';
   guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
   guidanceLink.addEventListener('click', function(event) {
     event.stopPropagation();
@@ -3355,7 +3344,7 @@ function appendClig3Supplements(clig3Conditional) {
     guidanceLink.href = getActionGuidanceUrl(action);
     guidanceLink.target = '_blank';
     guidanceLink.rel = 'noopener noreferrer';
-    guidanceLink.textContent = 'read guidance';
+    guidanceLink.textContent = 'read guidance (opens in new tab)';
     guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
     guidanceLink.addEventListener('click', function(event) {
       event.stopPropagation();
@@ -4329,10 +4318,10 @@ function clearActionListGroupHeadings(container) {
     return;
   }
   Array.prototype.forEach.call(
-    container.querySelectorAll('.app-action-list-group-heading'),
-    function(heading) {
-      if (heading.parentNode) {
-        heading.parentNode.removeChild(heading);
+    container.querySelectorAll('.app-action-list-group-heading, .app-action-list-group-lead-in'),
+    function(el) {
+      if (el.parentNode) {
+        el.parentNode.removeChild(el);
       }
     }
   );
@@ -4362,6 +4351,10 @@ function updateActionListGroupHeadingVisibility() {
         sibling = sibling.nextElementSibling;
       }
       heading.hidden = !hasVisibleAction;
+      var leadIn = heading.nextElementSibling;
+      if (leadIn && leadIn.classList.contains('app-action-list-group-lead-in')) {
+        leadIn.hidden = !hasVisibleAction;
+      }
     }
   );
 }
@@ -4427,6 +4420,13 @@ function reorderActionOptions(sortedCodes) {
     heading.setAttribute('data-action-group', group.id);
     heading.textContent = group.heading;
     fragment.appendChild(heading);
+
+    if (group.id === 'ha' || group.id === 'm') {
+      var leadIn = document.createElement('p');
+      leadIn.className = 'govuk-body app-action-list-group-lead-in';
+      leadIn.textContent = 'The available quantity will update as you make your selections.';
+      fragment.appendChild(leadIn);
+    }
 
     codes.forEach(function(actionCode) {
       var item = findTopLevelActionItem(actionCode);

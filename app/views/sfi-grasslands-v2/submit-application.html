@@ -32,8 +32,11 @@
 
       <ul class="govuk-list govuk-list--bullet">
         <li>the information in your application is correct</li>
-        {% if consentDeclarationLine %}
-          <li>{{ consentDeclarationLine }}</li>
+        {% if requiresSssi %}
+          <li>you will get consent for actions involving sites of special scientific interest</li>
+        {% endif %}
+        {% if requiresHefer %}
+          <li>you will request a Historic Environment Farm Environment Record where required</li>
         {% endif %}
         <li>you have management control of the land for the required period</li>
         <li>you will meet the requirements for the Grasslands actions you have applied for</li>
