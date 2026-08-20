@@ -1893,6 +1893,12 @@ function createActionAvailableHint(actionCode) {
   availableHint.setAttribute('data-action-available-hint', String(actionCode || '').toUpperCase());
   if (isPondUnit(getQuantityUnitForAction(actionCode))) {
     availableHint.hidden = true;
+  } else if (isWholeRemainingAreaAction(actionCode)) {
+    // CLIG3: show the pool it will take (not a misleading 0.0000 placeholder)
+    availableHint.textContent = getAvailableHintText(
+      actionCode,
+      getWholeRemainingAreaHa(actionCode)
+    );
   } else {
     availableHint.textContent = getAvailableHintText(
       actionCode,
@@ -1900,6 +1906,15 @@ function createActionAvailableHint(actionCode) {
     );
   }
   return availableHint;
+}
+
+function createClig3FullAreaHint(actionCode) {
+  var codeLower = String(actionCode || '').toLowerCase();
+  var hint = document.createElement('span');
+  hint.className = 'app-action-full-area-hint';
+  hint.id = 'action-full-area-hint-' + codeLower;
+  hint.textContent = 'This action will use all the remaining available area on this land parcel.';
+  return hint;
 }
 
 function getLinearAvailableMetres(parcel) {
@@ -3185,6 +3200,12 @@ function createActionCheckboxElements(action) {
   var availableHintId = availableHint.id;
   label.appendChild(availableHint);
   describedBy += ' ' + availableHintId;
+  // Outside the conditional so people see it before they select CLIG3
+  if (isWholeRemainingAreaAction(action.code)) {
+    var fullAreaHint = createClig3FullAreaHint(action.code);
+    label.appendChild(fullAreaHint);
+    describedBy += ' ' + fullAreaHint.id;
+  }
   // Nested supplements already sit under a “supplements for CLIG3” legend —
   // no need to repeat the relationship on every label.
   input.setAttribute('aria-describedby', describedBy);
@@ -3214,17 +3235,12 @@ function createActionCheckboxElements(action) {
     amountText.innerHTML =
       '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> hectares</strong>';
 
-    var qtyHint = document.createElement('p');
-    qtyHint.className = 'govuk-hint govuk-!-margin-bottom-1';
-    qtyHint.id = 'whole-remaining-hint-' + codeLower;
-    qtyHint.textContent = 'CLIG3 will be applied to the full available area on this land parcel.';
-
     var supplementHint = document.createElement('p');
     supplementHint.className = 'govuk-hint govuk-!-margin-bottom-0';
     supplementHint.id = 'whole-remaining-supplement-hint-' + codeLower;
     supplementHint.textContent = 'You can add a supplement to CLIG3 on the next page.';
 
-    amountText.setAttribute('aria-describedby', qtyHint.id + ' ' + supplementHint.id);
+    amountText.setAttribute('aria-describedby', supplementHint.id);
 
     var hiddenQty = document.createElement('input');
     hiddenQty.type = 'hidden';
@@ -3235,7 +3251,6 @@ function createActionCheckboxElements(action) {
 
     formGroup.appendChild(qtyLabel);
     formGroup.appendChild(amountText);
-    formGroup.appendChild(qtyHint);
     formGroup.appendChild(supplementHint);
     formGroup.appendChild(hiddenQty);
     conditional.appendChild(formGroup);
@@ -5406,8 +5421,8 @@ $(document).ready(function(){
       }
     });
 
-    // CLIG3 has no quantity input — still refresh the label available amount
-    setActionAvailableHint('CLIG3', remainingHa);
+    // CLIG3 has no quantity input — show the hectares it will take (exclude its own entry)
+    setActionAvailableHint('CLIG3', getWholeRemainingAreaHa('CLIG3'));
     mirrorClig3SupplementAvailableHints();
 
     // Tier 1: live over-limit validation

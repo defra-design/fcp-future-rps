@@ -36,6 +36,17 @@
       line-height: 1.25;
     }
 
+    .app-action-full-area-hint {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 0;
+      padding: 0;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
     .app-action-guidance-link {
       font-size: 16px;
       line-height: 1.25;
@@ -124,8 +135,8 @@
                       {{ option.availableText }}
                     </span>
                     {% if option.appliesFullClig3Area %}
-                      <span class="app-action-available-hint" id="action-full-area-hint-{{ option.code | lower }}">
-                        {{ option.code }} will be applied to the full available area on this land parcel.
+                      <span class="app-action-full-area-hint" id="action-full-area-hint-{{ option.code | lower }}">
+                        This action will use all the remaining available area on this land parcel.
                       </span>
                     {% endif %}
                   </label>

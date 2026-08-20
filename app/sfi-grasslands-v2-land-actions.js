@@ -464,7 +464,9 @@ function getClig3SupplementOptions (clig3Ha) {
       name: name,
       ratePerHa: ratePerHa,
       rateText: '£' + ratePerHa + '/ha',
-      availableText: availableFormatted + ' available',
+      availableText: appliesFullArea
+        ? availableFormatted + ' available'
+        : 'Up to ' + availableFormatted + ' available',
       requiresQuantityInput: requiresQuantity,
       appliesFullClig3Area: appliesFullArea,
       guidanceUrl: getClig3SupplementGuidanceUrl(code, name)
