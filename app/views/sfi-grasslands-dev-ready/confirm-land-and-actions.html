@@ -103,21 +103,20 @@
                       </td>
                     </tr>
                   {% endfor %}
+                  <tr class="govuk-table__row app-confirm-parcel-card__subtotal">
+                    <th scope="row" class="govuk-table__cell">Subtotal</th>
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.yearlyPaymentFormatted }}</td>
+                    <td class="govuk-table__cell"></td>
+                  </tr>
                 </tbody>
               </table>
 
-              <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+              <p class="govuk-body app-confirm-parcel-card__add-action">
                 <a class="govuk-link" href="/sfi-grasslands-dev-ready/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if fromCheckYourAnswers %}?from=check-your-answers{% endif %}">
                   Add another action<span class="govuk-visually-hidden"> to {{ parcelRef }}</span>
                 </a>
               </p>
-
-              <dl class="govuk-summary-list app-confirm-parcel-card__total">
-                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                  <dt class="govuk-summary-list__key">Yearly payment</dt>
-                  <dd class="govuk-summary-list__value">{{ parcel.yearlyPaymentFormatted }}</dd>
-                </div>
-              </dl>
             </div>
           </div>
         {% endfor %}

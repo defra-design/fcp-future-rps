@@ -167,15 +167,13 @@
                     <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.yearlyPaymentFormatted }}</td>
                   </tr>
                 {% endfor %}
+                <tr class="govuk-table__row app-confirm-parcel-card__subtotal">
+                  <th scope="row" class="govuk-table__cell">Subtotal</th>
+                  <td class="govuk-table__cell"></td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.yearlyPaymentFormatted }}</td>
+                </tr>
               </tbody>
             </table>
-
-            <dl class="govuk-summary-list app-confirm-parcel-card__total">
-              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                <dt class="govuk-summary-list__key">Yearly payment</dt>
-                <dd class="govuk-summary-list__value">{{ parcel.yearlyPaymentFormatted }}</dd>
-              </div>
-            </dl>
           </div>
         </div>
       {% endfor %}

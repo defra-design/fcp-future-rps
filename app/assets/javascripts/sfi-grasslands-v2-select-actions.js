@@ -4838,43 +4838,11 @@ function isPreviousAgreementsToggleOn() {
   }
 }
 
-function renderAacParcelRequirements(parcelId) {
-  var requirementsRow = document.getElementById('aac-parcel-requirements-row');
-  var requirementsEl = document.getElementById('aac-parcel-requirements');
-  if (!requirementsRow || !requirementsEl) {
-    return;
-  }
-
-  var flags = PARCEL_CONSENT_FLAGS[parcelId] || {};
-  var items = [];
-  if (flags.sssi) {
-    items.push('site of special scientific interest (SSSI) consent');
-  }
-  if (flags.hefer) {
-    items.push('a Historic Environment Farm Environment Record (HEFER)');
-  }
-
-  if (!items.length) {
-    requirementsEl.textContent = '';
-    requirementsRow.hidden = true;
-    return;
-  }
-
-  var listItems = items.map(function(item) {
-    return '<li>' + item + '</li>';
-  }).join('');
-  requirementsEl.innerHTML = '<p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>' +
-    '<ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">' + listItems + '</ul>';
-  requirementsRow.hidden = false;
-}
-
 function updateAacParcelAreaBreakdown() {
   var container = document.getElementById('aac-parcel-summary');
   var totalEl = document.getElementById('aac-actions-total-area');
   var referenceEl = document.getElementById('aac-parcel-reference');
   var landCoverEl = document.getElementById('aac-parcel-land-cover');
-  var requirementsRow = document.getElementById('aac-parcel-requirements-row');
-  var requirementsEl = document.getElementById('aac-parcel-requirements');
   var bottomPanels = document.querySelector('.app-bottom-panels');
   if (!container) {
     return;
@@ -4895,12 +4863,6 @@ function updateAacParcelAreaBreakdown() {
     }
     if (landCoverEl) {
       landCoverEl.textContent = '—';
-    }
-    if (requirementsEl) {
-      requirementsEl.textContent = '';
-    }
-    if (requirementsRow) {
-      requirementsRow.hidden = true;
     }
     return;
   }
@@ -4949,8 +4911,6 @@ function updateAacParcelAreaBreakdown() {
     var totalText = formatBreakdownNumber(breakdown.totalHa);
     totalEl.textContent = totalText === '—' ? '—' : (totalText + ' ha');
   }
-
-  renderAacParcelRequirements(currentSelectedParcel);
 
   container.hidden = false;
 }

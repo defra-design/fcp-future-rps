@@ -6,6 +6,24 @@
 
 .app-confirm-parcel-card .govuk-table {
   margin-bottom: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+// Keep Quantity / Yearly payment / Change lined up across parcel cards
+.app-confirm-parcel-card .govuk-table th:nth-child(2),
+.app-confirm-parcel-card .govuk-table td:nth-child(2) {
+  width: 8.5rem;
+}
+
+.app-confirm-parcel-card .govuk-table th:nth-child(3),
+.app-confirm-parcel-card .govuk-table td:nth-child(3) {
+  width: 9.5rem;
+}
+
+.app-confirm-parcel-card .govuk-table th:nth-child(4),
+.app-confirm-parcel-card .govuk-table td:nth-child(4) {
+  width: 5.5rem;
 }
 
 .app-confirm-parcel-card__hint {
@@ -18,8 +36,20 @@
   line-height: 1.25;
 }
 
-.app-confirm-parcel-card__total {
+.app-confirm-parcel-card__subtotal .govuk-table__cell {
+  border-bottom: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.31579;
+}
+
+.app-confirm-parcel-card__subtotal th.govuk-table__cell {
+  font-weight: 700;
+}
+
+.app-confirm-parcel-card__add-action {
   margin-top: 15px;
   margin-bottom: 0;
 }
-
