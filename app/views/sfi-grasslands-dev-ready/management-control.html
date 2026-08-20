@@ -1,0 +1,76 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-dev-ready/task-list" %}
+{% extends "layouts/sfi-grasslands-dev-ready-header.html" %}
+
+{% block pageTitle %}
+  Confirm you have management control of all the land in your application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-dev-ready/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-dev-ready/check-land-details"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "sfi-grasslands-dev-ready/_includes/eligibility-error-summary.html" %}
+
+      {% set journeySection = "Check before you start" %}
+      {% include "sfi-grasslands-dev-ready/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Confirm you have management control of all the land in your application</h1>
+
+      <p class="govuk-body">
+        You must have management control of all the land in your application for as long as you are carrying out the actions on the land.
+      </p>
+
+      <p class="govuk-body">
+        If you have a short-term tenancy, only include land if you expect to have management control of it for the whole of that tenancy.
+      </p>
+
+      <p class="govuk-body">
+        Read the guidance on
+        <a class="govuk-link" href="#" target="_blank" rel="noopener noreferrer">management control of land (opens in a new tab)</a>.
+      </p>
+
+      <form class="form" action="/sfi-grasslands-dev-ready/management-control-answer" method="post">
+        {% include "sfi-grasslands-dev-ready/_includes/eligibility-return-to.html" %}
+        <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="management-answer-v2-error"{% endif %}>
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do you have management control of all the land?
+            </legend>
+            {% if eligibilityError %}
+              <p id="management-answer-v2-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
+              </p>
+            {% endif %}
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="management-answer-v2-change-yes" name="management-answer-v2" type="radio" value="yes" {% if data['management-answer-v2'] == "yes" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="management-answer-v2-change-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="management-answer-v2-change-no" name="management-answer-v2" type="radio" value="no" {% if data['management-answer-v2'] == "no" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="management-answer-v2-change-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Save and continue
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

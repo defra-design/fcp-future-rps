@@ -1,8 +1,8 @@
 /**
- * sfi-grasslands-v2: Select actions page
+ * sfi-grasslands-dev-ready: Select actions page
  *
  * Map, parcel selection, action checkboxes, quantities, and save.
- * Loaded only from app/views/sfi-grasslands-v2/select-actions.html.
+ * Loaded only from app/views/sfi-grasslands-dev-ready/select-actions.html.
  */
 function toMapLibreLatLng(latLng) {
   return [latLng[1], latLng[0]];
@@ -1368,9 +1368,9 @@ Object.keys(parcelData).forEach(function(parcelId) {
   }
 });
 
-if (window.SfiGrasslandsV2ParcelReference &&
-    typeof window.SfiGrasslandsV2ParcelReference.applyToParcelData === 'function') {
-  window.SfiGrasslandsV2ParcelReference.applyToParcelData(parcelData);
+if (window.SfiGrasslandsDevReadyParcelReference &&
+    typeof window.SfiGrasslandsDevReadyParcelReference.applyToParcelData === 'function') {
+  window.SfiGrasslandsDevReadyParcelReference.applyToParcelData(parcelData);
 }
 
 
@@ -1379,8 +1379,8 @@ var ACTION_CATALOG =
     ? window.SFI_SCHEME_2026.actions.slice()
     : [];
 
-if (window.SFI_GRASSLANDS_V2_MVP_ACTIONS && typeof window.SFI_GRASSLANDS_V2_MVP_ACTIONS.filterCatalog === 'function') {
-  ACTION_CATALOG = window.SFI_GRASSLANDS_V2_MVP_ACTIONS.filterCatalog(ACTION_CATALOG);
+if (window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && typeof window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.filterCatalog === 'function') {
+  ACTION_CATALOG = window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.filterCatalog(ACTION_CATALOG);
 }
 
 var ACTION_GUIDANCE_URL_OVERRIDES =
@@ -1754,17 +1754,17 @@ function getWholeRemainingAreaHa(actionCode) {
     return 0;
   }
 
-  if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled() &&
-      typeof window.SfiGrasslandsV2Aac.recalculate === 'function') {
-    window.SfiGrasslandsV2Aac.syncSelectionsFromDom();
+  if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled() &&
+      typeof window.SfiGrasslandsDevReadyAac.recalculate === 'function') {
+    window.SfiGrasslandsDevReadyAac.syncSelectionsFromDom();
     // Exclude this action's own quantity so "remaining" is the pool it can take
     var quantityInput = document.getElementById('quantity-' + code.toLowerCase());
     var previousValue = quantityInput ? quantityInput.value : '';
     if (quantityInput) {
       quantityInput.value = '';
     }
-    window.SfiGrasslandsV2Aac.syncSelectionsFromDom();
-    var calculation = window.SfiGrasslandsV2Aac.recalculate();
+    window.SfiGrasslandsDevReadyAac.syncSelectionsFromDom();
+    var calculation = window.SfiGrasslandsDevReadyAac.recalculate();
     if (quantityInput) {
       quantityInput.value = previousValue;
     }
@@ -1877,7 +1877,7 @@ function setActionAvailableHint(actionCode, availableAmount) {
     return;
   }
   // When AAC is on it owns this hint.
-  if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+  if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
     return;
   }
   var text = getAvailableHintText(actionCode, availableAmount);
@@ -2200,7 +2200,7 @@ function isActionCodeOnThisPage(code) {
   if (!normalized) {
     return false;
   }
-  var mvpSet = window.SFI_GRASSLANDS_V2_MVP_ACTIONS && window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codeSet;
+  var mvpSet = window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codeSet;
   if (mvpSet) {
     return Boolean(mvpSet[normalized]);
   }
@@ -2258,15 +2258,15 @@ function updatePreviousAgreementsSummary(parcelId) {
   }
 
   // Fallback to shared existing-agreements data if accordion markup is missing
-  if (!agreements.length && window.SfiGrasslandsV2ExistingAgreements) {
-    var fallbackActions = window.SfiGrasslandsV2ExistingAgreements.get(parcelId) || [];
+  if (!agreements.length && window.SfiGrasslandsDevReadyExistingAgreements) {
+    var fallbackActions = window.SfiGrasslandsDevReadyExistingAgreements.get(parcelId) || [];
     if (fallbackActions.length) {
       agreements.push({
         scheme: '',
         endDate: '',
         availableArea: '',
         actionLabels: fallbackActions.map(function(action) {
-          return window.SfiGrasslandsV2ExistingAgreements.formatLabel(action);
+          return window.SfiGrasslandsDevReadyExistingAgreements.formatLabel(action);
         })
       });
     }
@@ -2735,8 +2735,8 @@ function renderLandCoverSummary(el, covers) {
 }
 
 function formatParcelReference(parcel) {
-  if (window.SfiGrasslandsV2ParcelReference && typeof window.SfiGrasslandsV2ParcelReference.format === 'function') {
-    return window.SfiGrasslandsV2ParcelReference.format(parcel)
+  if (window.SfiGrasslandsDevReadyParcelReference && typeof window.SfiGrasslandsDevReadyParcelReference.format === 'function') {
+    return window.SfiGrasslandsDevReadyParcelReference.format(parcel)
   }
   if (!parcel) {
     return ''
@@ -3096,9 +3096,9 @@ function getCurrentDraftParcelId() {
 
 function getActionConsentFlags(actionCode, parcelIdOverride) {
   var parcelId = parcelIdOverride || currentSelectedParcel || getCurrentDraftParcelId();
-  if (window.SfiGrasslandsV2ProtectedLand &&
-      typeof window.SfiGrasslandsV2ProtectedLand.getRequirementFlags === 'function') {
-    return window.SfiGrasslandsV2ProtectedLand.getRequirementFlags(actionCode, parcelId);
+  if (window.SfiGrasslandsDevReadyProtectedLand &&
+      typeof window.SfiGrasslandsDevReadyProtectedLand.getRequirementFlags === 'function') {
+    return window.SfiGrasslandsDevReadyProtectedLand.getRequirementFlags(actionCode, parcelId);
   }
 
   var parcelFlags = PARCEL_CONSENT_FLAGS[parcelId] || { sssi: false, hefer: false };
@@ -3431,8 +3431,8 @@ function appendClig3Supplements(clig3Conditional) {
       : $('#action-clig3');
     if ($trigger.length) {
       $trigger.trigger('change');
-    } else if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
-      window.SfiGrasslandsV2Aac.render();
+    } else if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
+      window.SfiGrasslandsDevReadyAac.render();
     }
   });
 
@@ -3933,8 +3933,8 @@ function restoreParcelState(parcelId) {
   console.log('Restoring actions:', savedSelections.actions);
 
   // Skip the fake compatibility API while restoring saved checkbox state
-  if (window.SfiGrasslandsV2ActionsCompatibilityLoading) {
-    window.SfiGrasslandsV2ActionsCompatibilityLoading.setSuspended(true);
+  if (window.SfiGrasslandsDevReadyActionsCompatibilityLoading) {
+    window.SfiGrasslandsDevReadyActionsCompatibilityLoading.setSuspended(true);
   }
 
   try {
@@ -3977,15 +3977,15 @@ function restoreParcelState(parcelId) {
       }
     });
   } finally {
-    if (window.SfiGrasslandsV2ActionsCompatibilityLoading) {
+    if (window.SfiGrasslandsDevReadyActionsCompatibilityLoading) {
       // Keep suspended if AAC mode is on — AAC owns availability while enabled
-      if (!(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled())) {
-        window.SfiGrasslandsV2ActionsCompatibilityLoading.setSuspended(false);
+      if (!(window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled())) {
+        window.SfiGrasslandsDevReadyActionsCompatibilityLoading.setSuspended(false);
       }
     }
     syncClig3SupplementRadiosFromCheckboxes();
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
-      window.SfiGrasslandsV2Aac.render();
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
+      window.SfiGrasslandsDevReadyAac.render();
     }
   }
   
@@ -4547,8 +4547,8 @@ function applyActionFilters() {
     $('#no-results-message').hide();
   }
 
-  if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
-    window.SfiGrasslandsV2Aac.render();
+  if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
+    window.SfiGrasslandsDevReadyAac.render();
   }
 }
 
@@ -4688,8 +4688,8 @@ function consumeQueuedActionFocus(delayMs) {
 
 // Function to update actions list
 function getAllMvpActionCodes() {
-  if (window.SFI_GRASSLANDS_V2_MVP_ACTIONS && Array.isArray(window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codes)) {
-    return window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codes.slice();
+  if (window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && Array.isArray(window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codes)) {
+    return window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codes.slice();
   }
   return ACTION_CATALOG.map(function(action) {
     return action.code;
@@ -4777,18 +4777,18 @@ function refreshAvailableActionsForCurrentParcel() {
 }
 
 function syncAacForCurrentParcel() {
-  if (!window.SfiGrasslandsV2Aac) {
+  if (!window.SfiGrasslandsDevReadyAac) {
     return;
   }
 
-  if (!window.SfiGrasslandsV2Aac.isEnabled()) {
-    window.SfiGrasslandsV2Aac.setParcel(null, null, []);
+  if (!window.SfiGrasslandsDevReadyAac.isEnabled()) {
+    window.SfiGrasslandsDevReadyAac.setParcel(null, null, []);
     updateAacParcelAreaBreakdown();
     return;
   }
 
   if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) {
-    window.SfiGrasslandsV2Aac.setParcel(null, null, []);
+    window.SfiGrasslandsDevReadyAac.setParcel(null, null, []);
     updateAacParcelAreaBreakdown();
     return;
   }
@@ -4798,7 +4798,7 @@ function syncAacForCurrentParcel() {
     ? currentAvailableActions
     : getParcelAvailableActions(parcelData[currentSelectedParcel]);
 
-  window.SfiGrasslandsV2Aac.setParcel(
+  window.SfiGrasslandsDevReadyAac.setParcel(
     currentSelectedParcel,
     parcelData[currentSelectedParcel],
     actionCodes
@@ -4823,48 +4823,18 @@ function formatBreakdownNumber(value) {
 }
 
 function isPreviousAgreementsToggleOn() {
-  if (window.SfiGrasslandsV2FeatureToggles) {
-    return window.SfiGrasslandsV2FeatureToggles.getQueryFlag('previousAgreements') ||
-      window.SfiGrasslandsV2FeatureToggles.getSessionFlag('sfiGrasslandsV2ShowPreviousAgreements');
+  if (window.SfiGrasslandsDevReadyFeatureToggles) {
+    return window.SfiGrasslandsDevReadyFeatureToggles.getQueryFlag('previousAgreements') ||
+      window.SfiGrasslandsDevReadyFeatureToggles.getSessionFlag('sfiGrasslandsDevReadyShowPreviousAgreements');
   }
   try {
     if (new URLSearchParams(window.location.search).get('previousAgreements') === '1') {
       return true;
     }
-    return window.sessionStorage.getItem('sfiGrasslandsV2ShowPreviousAgreements') === '1';
+    return window.sessionStorage.getItem('sfiGrasslandsDevReadyShowPreviousAgreements') === '1';
   } catch (error) {
     return false;
   }
-}
-
-function renderAacParcelRequirements(parcelId) {
-  var requirementsRow = document.getElementById('aac-parcel-requirements-row');
-  var requirementsEl = document.getElementById('aac-parcel-requirements');
-  if (!requirementsRow || !requirementsEl) {
-    return;
-  }
-
-  var flags = PARCEL_CONSENT_FLAGS[parcelId] || {};
-  var items = [];
-  if (flags.sssi) {
-    items.push('site of special scientific interest (SSSI) consent');
-  }
-  if (flags.hefer) {
-    items.push('a Historic Environment Farm Environment Record (HEFER)');
-  }
-
-  if (!items.length) {
-    requirementsEl.textContent = '';
-    requirementsRow.hidden = true;
-    return;
-  }
-
-  var listItems = items.map(function(item) {
-    return '<li>' + item + '</li>';
-  }).join('');
-  requirementsEl.innerHTML = '<p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>' +
-    '<ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">' + listItems + '</ul>';
-  requirementsRow.hidden = false;
 }
 
 function updateAacParcelAreaBreakdown() {
@@ -4872,14 +4842,12 @@ function updateAacParcelAreaBreakdown() {
   var totalEl = document.getElementById('aac-actions-total-area');
   var referenceEl = document.getElementById('aac-parcel-reference');
   var landCoverEl = document.getElementById('aac-parcel-land-cover');
-  var requirementsRow = document.getElementById('aac-parcel-requirements-row');
-  var requirementsEl = document.getElementById('aac-parcel-requirements');
   var bottomPanels = document.querySelector('.app-bottom-panels');
   if (!container) {
     return;
   }
 
-  var aacOn = window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled();
+  var aacOn = window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled();
   if (bottomPanels) {
     bottomPanels.classList.toggle('app-bottom-panels--aac', Boolean(aacOn));
   }
@@ -4895,23 +4863,17 @@ function updateAacParcelAreaBreakdown() {
     if (landCoverEl) {
       landCoverEl.textContent = '—';
     }
-    if (requirementsEl) {
-      requirementsEl.textContent = '';
-    }
-    if (requirementsRow) {
-      requirementsRow.hidden = true;
-    }
     return;
   }
 
-  if (typeof window.SfiGrasslandsV2Aac.getParcelAreaBreakdown !== 'function') {
+  if (typeof window.SfiGrasslandsDevReadyAac.getParcelAreaBreakdown !== 'function') {
     container.hidden = true;
     return;
   }
 
   var parcel = parcelData[currentSelectedParcel];
   applyPrototypeParcelAreas(currentSelectedParcel);
-  var breakdown = window.SfiGrasslandsV2Aac.getParcelAreaBreakdown(
+  var breakdown = window.SfiGrasslandsDevReadyAac.getParcelAreaBreakdown(
     currentSelectedParcel,
     parcel
   );
@@ -4935,9 +4897,9 @@ function updateAacParcelAreaBreakdown() {
     } else {
       var fallbackNames = getParcelLandCovers(parcel.landCover);
       var fallbackTotal = Number(breakdown.totalHa || parcel.totalArea);
-      var fallbackCovers = window.SfiGrasslandsV2ParcelReference &&
-        typeof window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas === 'function'
-        ? window.SfiGrasslandsV2ParcelReference.allocateLandCoverAreas(fallbackNames, fallbackTotal)
+      var fallbackCovers = window.SfiGrasslandsDevReadyParcelReference &&
+        typeof window.SfiGrasslandsDevReadyParcelReference.allocateLandCoverAreas === 'function'
+        ? window.SfiGrasslandsDevReadyParcelReference.allocateLandCoverAreas(fallbackNames, fallbackTotal)
         : fallbackNames.map(function(name) {
           return { name: name, ha: fallbackTotal };
         });
@@ -4948,8 +4910,6 @@ function updateAacParcelAreaBreakdown() {
     var totalText = formatBreakdownNumber(breakdown.totalHa);
     totalEl.textContent = totalText === '—' ? '—' : (totalText + ' ha');
   }
-
-  renderAacParcelRequirements(currentSelectedParcel);
 
   container.hidden = false;
 }
@@ -5417,7 +5377,7 @@ $(document).ready(function(){
     if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) return;
 
     // AAC mode owns available-area hints and which actions stay visible
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       syncAllWholeRemainingAreaActions();
       return;
     }
@@ -5539,13 +5499,13 @@ $(document).ready(function(){
   }
 
   function validateBeforeSave() {
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled() && window.SfiGrasslandsV2Aac.isBusy()) {
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled() && window.SfiGrasslandsDevReadyAac.isBusy()) {
       return false;
     }
 
     hideQuantityErrorSummary();
 
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       // AAC: format (invalid characters) + over-limit against remaining available
       $('input[name="actions"]:checked').each(function() {
         var actionCode = ($(this).val() || '').toString();
@@ -5603,7 +5563,7 @@ $(document).ready(function(){
     var $input = $(this);
     var inputEl = this;
 
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       if (hasClearlyInvalidQuantityInput($input.val())) {
         clearQuantityAacDebounce();
         updateQuantityFormatErrors($input);
@@ -5629,7 +5589,7 @@ $(document).ready(function(){
 
   // Tier 2: format validation when the user leaves the field (default / non-AAC only)
   $(document).on('blur', 'input[id^="quantity-"]', function() {
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       return;
     }
 
@@ -5642,8 +5602,8 @@ $(document).ready(function(){
   // Update quantities when parcel changes
   var originalSelectParcel = selectParcel;
   selectParcel = function(parcelId) {
-    if (window.SfiGrasslandsV2ActionsCompatibilityLoading) {
-      window.SfiGrasslandsV2ActionsCompatibilityLoading.reset();
+    if (window.SfiGrasslandsDevReadyActionsCompatibilityLoading) {
+      window.SfiGrasslandsDevReadyActionsCompatibilityLoading.reset();
     }
 
     hideQuantityErrorSummary();
@@ -5666,7 +5626,7 @@ $(document).ready(function(){
     
     // Reset label available hints when changing parcels (default mode only —
     // AAC owns availability copy when enabled). Quantity fields have no available hint.
-    if (parcelData[parcelId] && !(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled())) {
+    if (parcelData[parcelId] && !(window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled())) {
       var parcel = parcelData[parcelId];
       $('.govuk-checkboxes__conditional').each(function() {
         var $conditional = $(this);
@@ -5690,14 +5650,14 @@ $(document).ready(function(){
 
     applyActionFilters();
 
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       // AAC owns availability — do not re-apply the full compatibility matrix
-      if (window.SfiGrasslandsV2ActionsCompatibilityLoading) {
-        if (typeof window.SfiGrasslandsV2ActionsCompatibilityLoading.setSuspended === 'function') {
-          window.SfiGrasslandsV2ActionsCompatibilityLoading.setSuspended(true);
+      if (window.SfiGrasslandsDevReadyActionsCompatibilityLoading) {
+        if (typeof window.SfiGrasslandsDevReadyActionsCompatibilityLoading.setSuspended === 'function') {
+          window.SfiGrasslandsDevReadyActionsCompatibilityLoading.setSuspended(true);
         }
-        if (typeof window.SfiGrasslandsV2ActionsCompatibilityLoading.resetCompatibilityState === 'function') {
-          window.SfiGrasslandsV2ActionsCompatibilityLoading.resetCompatibilityState();
+        if (typeof window.SfiGrasslandsDevReadyActionsCompatibilityLoading.resetCompatibilityState === 'function') {
+          window.SfiGrasslandsDevReadyActionsCompatibilityLoading.resetCompatibilityState();
         }
       }
       syncAacForCurrentParcel();
@@ -5890,14 +5850,14 @@ $(document).ready(function(){
   }
 
   function findExistingAgreementConflict(candidateCode) {
-    if (!window.SfiGrasslandsV2ExistingAgreements || typeof window.SfiGrasslandsV2ExistingAgreements.get !== 'function') {
+    if (!window.SfiGrasslandsDevReadyExistingAgreements || typeof window.SfiGrasslandsDevReadyExistingAgreements.get !== 'function') {
       return null;
     }
     var parcelId = getCurrentParcelIdForCompatibility();
     if (!parcelId) {
       return null;
     }
-    var existingActions = window.SfiGrasslandsV2ExistingAgreements.get(parcelId);
+    var existingActions = window.SfiGrasslandsDevReadyExistingAgreements.get(parcelId);
     for (var i = 0; i < existingActions.length; i++) {
       var existingAction = existingActions[i];
       // Same code already on the parcel is fine — do not block selecting it again
@@ -5916,7 +5876,7 @@ $(document).ready(function(){
    * Prefer the shared loading helper when available.
    */
   function updateCompatibilityState() {
-    var loading = window.SfiGrasslandsV2ActionsCompatibilityLoading;
+    var loading = window.SfiGrasslandsDevReadyActionsCompatibilityLoading;
     if (
       loading &&
       typeof loading.resetCompatibilityState === 'function' &&
@@ -6005,7 +5965,7 @@ $(document).ready(function(){
   }
 
   // Keep shareable feature-toggle state in the URL, e.g. ?allActions=1
-  // AAC is always on in sfi-grasslands-v2 (not a feature toggle).
+  // AAC is always on in sfi-grasslands-dev-ready (not a feature toggle).
   function syncFeatureToggleQueryParams() {
     try {
       var url = new URL(window.location.href);
@@ -6067,16 +6027,16 @@ $(document).ready(function(){
   }
 
   function setAacModeEnabled(enabled) {
-    if (!window.SfiGrasslandsV2Aac) {
+    if (!window.SfiGrasslandsDevReadyAac) {
       return;
     }
 
-    window.SfiGrasslandsV2Aac.setEnabled(enabled);
+    window.SfiGrasslandsDevReadyAac.setEnabled(enabled);
     updateActionsModeIntro(enabled);
 
-    if (window.SfiGrasslandsV2ActionsCompatibilityLoading &&
-        typeof window.SfiGrasslandsV2ActionsCompatibilityLoading.setSuspended === 'function') {
-      window.SfiGrasslandsV2ActionsCompatibilityLoading.setSuspended(enabled);
+    if (window.SfiGrasslandsDevReadyActionsCompatibilityLoading &&
+        typeof window.SfiGrasslandsDevReadyActionsCompatibilityLoading.setSuspended === 'function') {
+      window.SfiGrasslandsDevReadyActionsCompatibilityLoading.setSuspended(enabled);
     }
 
     if (enabled) {
@@ -6087,18 +6047,18 @@ $(document).ready(function(){
       applyGreyOutCnum2();
     } else {
       // Avoid re-entering AAC sync while turning AAC off
-      if (window.SfiGrasslandsV2Aac) {
-        window.SfiGrasslandsV2Aac.setParcel(null, null, []);
+      if (window.SfiGrasslandsDevReadyAac) {
+        window.SfiGrasslandsDevReadyAac.setParcel(null, null, []);
       }
       updateAacParcelAreaBreakdown();
       refreshAvailableActionsForCurrentParcel();
       applyGreyOutCnum2();
       updateAvailableQuantities({ skipCompatibilityUpdate: true });
       if (
-        window.SfiGrasslandsV2ActionsCompatibilityLoading &&
-        typeof window.SfiGrasslandsV2ActionsCompatibilityLoading.updateCompatibility === 'function'
+        window.SfiGrasslandsDevReadyActionsCompatibilityLoading &&
+        typeof window.SfiGrasslandsDevReadyActionsCompatibilityLoading.updateCompatibility === 'function'
       ) {
-        window.SfiGrasslandsV2ActionsCompatibilityLoading.updateCompatibility(null);
+        window.SfiGrasslandsDevReadyActionsCompatibilityLoading.updateCompatibility(null);
       } else {
         updateCompatibilityState();
       }
@@ -6106,15 +6066,15 @@ $(document).ready(function(){
   }
 
   function wireAacToggles() {
-    if (!window.SfiGrasslandsV2Aac) {
+    if (!window.SfiGrasslandsDevReadyAac) {
       return;
     }
 
-    // AAC is always enabled in sfi-grasslands-v2
-    setSessionFlag('sfiGrasslandsV2UseAac', true);
-    setSessionFlag('sfiGrasslandsV2AacDebug', false);
+    // AAC is always enabled in sfi-grasslands-dev-ready
+    setSessionFlag('sfiGrasslandsDevReadyUseAac', true);
+    setSessionFlag('sfiGrasslandsDevReadyAacDebug', false);
 
-    window.SfiGrasslandsV2Aac.init({
+    window.SfiGrasslandsDevReadyAac.init({
       enabled: true,
       debug: false,
       // AAC exploration: only genuine policy conflicts — not the full matrix.
@@ -6133,7 +6093,7 @@ $(document).ready(function(){
         var clig3Before = $('#quantity-clig3').val();
         syncAllWholeRemainingAreaActions();
         if ($('#quantity-clig3').val() !== clig3Before) {
-          window.SfiGrasslandsV2Aac.render();
+          window.SfiGrasslandsDevReadyAac.render();
         }
         mirrorClig3SupplementAvailableHints();
         updateAacQuantityOverLimitErrors();
@@ -6251,7 +6211,7 @@ $(document).ready(function(){
   window.__grasslandsApplyPreviousAgreementGreyOut = applyGreyOutCnum2;
 
   function wireShowAllMvpActionsToggle() {
-    var showAllMvpActionsStorageKey = 'sfiGrasslandsV2ShowAllMvpActions';
+    var showAllMvpActionsStorageKey = 'sfiGrasslandsDevReadyShowAllMvpActions';
     var showAllMvpActionsToggle = document.getElementById('show-all-mvp-actions');
     // URL is the shareable override. Do not revive a stale session flag when the
     // toggle is off — default behaviour must stay land-cover filtered.
@@ -6270,10 +6230,10 @@ $(document).ready(function(){
         applyGreyOutCnum2();
         updateAvailableQuantities({ skipCompatibilityUpdate: true });
         if (
-          window.SfiGrasslandsV2ActionsCompatibilityLoading &&
-          typeof window.SfiGrasslandsV2ActionsCompatibilityLoading.updateCompatibility === 'function'
+          window.SfiGrasslandsDevReadyActionsCompatibilityLoading &&
+          typeof window.SfiGrasslandsDevReadyActionsCompatibilityLoading.updateCompatibility === 'function'
         ) {
-          window.SfiGrasslandsV2ActionsCompatibilityLoading.updateCompatibility(null);
+          window.SfiGrasslandsDevReadyActionsCompatibilityLoading.updateCompatibility(null);
         } else {
           updateCompatibilityState();
         }
@@ -6288,7 +6248,7 @@ $(document).ready(function(){
   }
 
   function wireActionDeductionsToggle() {
-    var storageKey = 'sfiGrasslandsV2ShowActionDeductions';
+    var storageKey = 'sfiGrasslandsDevReadyShowActionDeductions';
     var toggle = document.getElementById('show-action-deductions');
     var enabled = getFeatureToggleQueryFlag('actionDeductions') || getSessionFlag(storageKey);
 
@@ -6298,15 +6258,15 @@ $(document).ready(function(){
       toggle.addEventListener('change', function() {
         setSessionFlag(storageKey, Boolean(toggle.checked));
         syncFeatureToggleQueryParams();
-        if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
-          window.SfiGrasslandsV2Aac.render();
+        if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
+          window.SfiGrasslandsDevReadyAac.render();
         }
       });
     }
   }
 
   function wirePreviousAgreementsToggle() {
-    var storageKey = 'sfiGrasslandsV2ShowPreviousAgreements';
+    var storageKey = 'sfiGrasslandsDevReadyShowPreviousAgreements';
     var toggle = document.getElementById('show-previous-agreements');
     var enabled = getFeatureToggleQueryFlag('previousAgreements') || getSessionFlag(storageKey);
 
@@ -6319,8 +6279,8 @@ $(document).ready(function(){
         syncFeatureToggleQueryParams();
         updateAacParcelAreaBreakdown();
         applyGreyOutCnum2();
-        if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
-          window.SfiGrasslandsV2Aac.render();
+        if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
+          window.SfiGrasslandsDevReadyAac.render();
         }
         updateAvailableQuantities({ skipCompatibilityUpdate: true });
       });
@@ -6332,15 +6292,15 @@ $(document).ready(function(){
 
   function wireCnum2UnavailableToggle() {
     greyOutCnum2Enabled = false;
-    setSessionFlag('sfiGrasslandsV2GreyOutCnum2', false);
+    setSessionFlag('sfiGrasslandsDevReadyGreyOutCnum2', false);
     applyGreyOutCnum2();
   }
 
-  if (window.SfiGrasslandsV2ActionsCompatibilityLoading) {
+  if (window.SfiGrasslandsDevReadyActionsCompatibilityLoading) {
     // Compatibility updates are immediate — no simulated API delay
-    setSessionFlag('sfiGrasslandsV2SimulateCompatibilityApiDelay', false);
+    setSessionFlag('sfiGrasslandsDevReadySimulateCompatibilityApiDelay', false);
 
-    window.SfiGrasslandsV2ActionsCompatibilityLoading.init({
+    window.SfiGrasslandsDevReadyActionsCompatibilityLoading.init({
       simulateDelay: false,
       areActionsIncompatible: actionsAreIncompatible,
       getActionCode: function(checkbox) {
@@ -6420,7 +6380,7 @@ $(document).ready(function(){
         document.getElementById('action-tools-panel').style.display = 'block';
 
         function finishAacAfterRestore() {
-          if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+          if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
             syncAacForCurrentParcel();
             updateAacParcelAreaBreakdown();
             applyGreyOutCnum2();
@@ -6468,11 +6428,11 @@ $(document).ready(function(){
 
     // AAC mode: checking a box is instant — only quantity entry simulates the API wait
     // (CLIG3 commits quantity on check, so conflicts update immediately)
-    if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) {
+    if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       if (isWholeRemainingAreaAction(actionCode) && $(changedCheckbox).is(':checked')) {
-        window.SfiGrasslandsV2Aac.runUpdate(actionCode);
+        window.SfiGrasslandsDevReadyAac.runUpdate(actionCode);
       } else {
-        window.SfiGrasslandsV2Aac.render();
+        window.SfiGrasslandsDevReadyAac.render();
       }
       applyGreyOutCnum2();
       syncAllWholeRemainingAreaActions();
@@ -6482,10 +6442,10 @@ $(document).ready(function(){
 
     // Prototype: simulated compatibility API, then full rebuild from checked actions
     if (
-      window.SfiGrasslandsV2ActionsCompatibilityLoading &&
-      typeof window.SfiGrasslandsV2ActionsCompatibilityLoading.updateCompatibility === 'function'
+      window.SfiGrasslandsDevReadyActionsCompatibilityLoading &&
+      typeof window.SfiGrasslandsDevReadyActionsCompatibilityLoading.updateCompatibility === 'function'
     ) {
-      window.SfiGrasslandsV2ActionsCompatibilityLoading.updateCompatibility(changedCheckbox);
+      window.SfiGrasslandsDevReadyActionsCompatibilityLoading.updateCompatibility(changedCheckbox);
       syncAllWholeRemainingAreaActions();
       return;
     }
@@ -6501,12 +6461,12 @@ $(document).ready(function(){
 
   function updateAacQuantityOverLimitErrors(options) {
     options = options || {};
-    if (!(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled())) {
+    if (!(window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled())) {
       return;
     }
 
-    window.SfiGrasslandsV2Aac.syncSelectionsFromDom();
-    var calculation = window.SfiGrasslandsV2Aac.recalculate();
+    window.SfiGrasslandsDevReadyAac.syncSelectionsFromDom();
+    var calculation = window.SfiGrasslandsDevReadyAac.recalculate();
     var byCode = {};
     (calculation.actions || []).forEach(function(action) {
       byCode[action.code] = action;
@@ -6589,7 +6549,7 @@ $(document).ready(function(){
   }
 
   function triggerAacQuantityUpdate(inputEl) {
-    if (!(window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled()) || !inputEl) {
+    if (!(window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) || !inputEl) {
       return;
     }
 
@@ -6626,9 +6586,9 @@ $(document).ready(function(){
 
     if (rawValue) {
       // 2.5s simulated API + inline “Updating…” — then refresh shared-pool hints
-      window.SfiGrasslandsV2Aac.runUpdate(actionCode);
+      window.SfiGrasslandsDevReadyAac.runUpdate(actionCode);
     } else {
-      window.SfiGrasslandsV2Aac.render();
+      window.SfiGrasslandsDevReadyAac.render();
       applyGreyOutCnum2();
       updateAacQuantityOverLimitErrors({ actionCode: actionCode });
       captureCurrentParcelState();
@@ -6819,7 +6779,7 @@ $(document).ready(function(){
     });
 
     $('#continue-form').on('submit', function(e) {
-      if (window.SfiGrasslandsV2Aac && window.SfiGrasslandsV2Aac.isEnabled() && window.SfiGrasslandsV2Aac.isBusy()) {
+      if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled() && window.SfiGrasslandsDevReadyAac.isBusy()) {
         e.preventDefault();
         return false;
       }

@@ -1,0 +1,42 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-dev-ready/task-list" %}
+{% extends "layouts/sfi-grasslands-dev-ready-header.html" %}
+
+{% block pageTitle %}
+  Remove this land parcel?
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-dev-ready/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-dev-ready/confirm-land-and-actions"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% set journeySection = "Select land and actions" %}
+      {% include "sfi-grasslands-dev-ready/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Remove this land parcel?</h1>
+
+      {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
+      <p class="govuk-body">
+        Land parcel <strong>{{ parcelRef }}</strong> and all related actions will be removed from your application.
+      </p>
+
+      <form action="/sfi-grasslands-dev-ready/remove-parcel-actions/{{ parcel.parcelId }}" method="post">
+        <input type="hidden" name="confirmRemove" value="yes">
+        <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+          Remove this land parcel
+        </button>
+        <p class="govuk-body">
+          <a class="govuk-link" href="/sfi-grasslands-dev-ready/confirm-land-and-actions">Cancel</a>
+        </p>
+      </form>
+    </div>
+  </div>
+{% endblock %}

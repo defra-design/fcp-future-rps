@@ -1,0 +1,33 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-dev-ready/task-list" %}
+{% extends "layouts/sfi-grasslands-dev-ready-header.html" %}
+
+{% block pageTitle %}
+  You are not eligible to apply
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-dev-ready/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set journeySection = "Check before you start" %}
+      {% include "sfi-grasslands-dev-ready/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">You are not eligible to apply</h1>
+
+      <p class="govuk-body">
+        You must have management control of the land you want to include in your application. If you want to change your answer, select 'Back'.
+      </p>
+
+    </div>
+  </div>
+{% endblock %}

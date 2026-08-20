@@ -1,0 +1,60 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-dev-ready/task-list" %}
+{% extends "layouts/sfi-grasslands-dev-ready-header.html" %}
+
+{% block pageTitle %}
+  Application complete
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-dev-ready/_includes/account-bar.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Application complete
+        </h1>
+        <div class="govuk-panel__body">
+          Your application number<br><strong>HDJ2123F</strong>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-m">
+        What happens next
+      </h2>
+
+      <p class="govuk-body">
+        Thank you for submitting your Grasslands application.
+      </p>
+
+      {# Only SSSI consent affects offering an agreement. HEFER does not block it. #}
+      {% if showSssiNotice %}
+        <p class="govuk-body">
+          You need to provide SSSI consent for the actions you’ve applied for before we can review your application.
+        </p>
+        <p class="govuk-body">
+          Once we have the required consent, we’ll review your application and email you when we have an update.
+        </p>
+      {% else %}
+        <p class="govuk-body">
+          We’ll email you when your agreement offer is ready for you to check in the Farm and Land service.
+        </p>
+      {% endif %}
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="/sfi-grasslands-dev-ready/view-application" target="_blank" rel="noreferrer noopener">View / Print submitted application (opens in new tab)</a>
+      </p>
+
+      <a href="/sfi-grasslands-dev-ready/singlefrontdoor/landing/landing" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Back to Farm and Land services
+      </a>
+
+    </div>
+  </div>
+{% endblock %}

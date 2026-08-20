@@ -1,0 +1,787 @@
+// sfi-grasslands-dev-ready: Select actions page
+// Loaded only from app/views/sfi-grasslands-dev-ready/select-actions.html
+// Do not @import this into application.scss — it would run on every page.
+
+.app-map-shell {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.app-bottom-panels {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(220px, 1fr);
+  grid-template-areas: "actions parcel";
+  gap: 24px;
+  align-items: start;
+}
+
+.app-bottom-panels__actions {
+  grid-area: actions;
+  min-width: 0;
+}
+
+.app-bottom-panels__parcel {
+  grid-area: parcel;
+  min-width: 0;
+}
+
+.app-map-shell > .govuk-grid-column-one-third,
+.app-map-shell > .govuk-grid-column-two-thirds {
+  width: auto;
+  float: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-map-shell > .govuk-grid-column-one-third {
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.app-map-shell .govuk-grid-column-two-thirds > .govuk-body-s {
+  display: none;
+}
+
+#map {
+  width: 100%;
+  height: 420px;
+  min-height: 320px;
+  max-height: 560px;
+  border: 2px solid #b1b4b6;
+  cursor: pointer;
+}
+
+.map-viewport {
+  position: relative;
+}
+
+.map-reset-view-button {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 2px solid #0b0c0c;
+  box-shadow: 0 2px 4px rgba(11, 12, 12, 0.15);
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: #0b0c0c;
+  cursor: pointer;
+}
+
+.map-reset-view-button:hover {
+  background: #f3f2f1;
+}
+
+.map-reset-view-button:focus {
+  outline: 3px solid transparent;
+  box-shadow: 0 0 0 3px #ffdd00, 0 2px 4px rgba(11, 12, 12, 0.15);
+}
+
+.map-reset-view-button__icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.map-reset-view-button[hidden] {
+  display: none;
+}
+.im-map,
+.maplibregl-map {
+  font-family: "GDS Transport", arial, sans-serif;
+}
+.parcel-label {
+  background: white;
+  border: 2px solid #0b0c0c;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: normal;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.farm-map-tooltip {
+  border: 2px solid #1d70b8;
+  background: #ffffff;
+  color: #0b0c0c;
+  padding: 3px 8px;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.farm-map-tooltip:hover,
+.farm-map-tooltip:focus {
+  background: #1d70b8;
+  color: #ffffff;
+  outline: 3px solid transparent;
+  box-shadow: 0 0 0 3px #ffdd00;
+}
+.maplibregl-popup-content {
+  font-family: "GDS Transport", arial, sans-serif;
+  max-width: 168px;
+  min-width: 120px;
+  font-size: 12px;
+  padding: 8px;
+}
+.maplibregl-popup-content {
+  margin: 4px;
+  line-height: 1.3;
+}
+.maplibregl-popup-content h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.maplibregl-popup-content p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+.maplibregl-popup-content .govuk-link:focus:not(:focus-visible) {
+  background-color: transparent;
+  box-shadow: none;
+  text-decoration: underline;
+}
+.maplibregl-popup-content .maplibregl-popup-close-button {
+  font-size: 24px !important;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.maplibregl-ctrl-attrib {
+  display: none !important;
+}
+.govuk-accordion__section-heading-text-focus {
+  font-size: calc(1em + 0.2em);
+}
+#actions-sort-accordion .govuk-accordion__controls {
+  display: none;
+}
+#actions-sort-accordion {
+  width: 100%;
+  max-width: 100%;
+  border-top: 0;
+  border-bottom: 1px solid #b1b4b6;
+}
+#actions-sort-accordion .govuk-accordion__section {
+  border-top: 0;
+  border-bottom: 0;
+}
+#actions-sort-accordion .govuk-accordion__section-heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: 400;
+}
+#actions-sort-accordion .govuk-accordion__section-heading-text,
+#actions-sort-accordion .govuk-accordion__section-heading-text-focus {
+  margin-bottom: 2px !important;
+}
+#actions-sort-accordion .govuk-accordion__section-button {
+  border-top: 0 !important;
+  font-size: 16px !important;
+  line-height: 1.25 !important;
+  font-weight: 400 !important;
+  color: #1d70b8;
+  text-decoration: none;
+}
+#actions-sort-accordion .govuk-accordion__section-button:hover,
+#actions-sort-accordion .govuk-accordion__section-button:focus {
+  text-decoration: underline;
+}
+#actions-sort-accordion .govuk-accordion__section-toggle,
+#actions-sort-accordion .govuk-accordion__section-toggle-text,
+#actions-sort-accordion .govuk-accordion-nav__chevron {
+  display: none !important;
+}
+#actions-sort-accordion .govuk-accordion__section-button::before,
+#actions-sort-accordion .govuk-accordion__section-button::after {
+  display: none !important;
+  content: none !important;
+}
+#actions-sort-accordion .app-sort-arrow {
+  display: inline-block;
+  width: 14px;
+  height: 8px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+#actions-sort-accordion .app-sort-arrow::before {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 8px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8' fill='none'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%231d70b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+#actions-sort-accordion .govuk-accordion__section--expanded .app-sort-arrow::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8' fill='none'%3E%3Cpath d='M1 7L7 1L13 7' stroke='%231d70b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+#actions-sort-accordion-content-1 {
+  padding-bottom: 0px !important;
+  margin-bottom: 10px !important;
+}
+.govuk-checkboxes__item.sfi-compatibility-disabled .govuk-checkboxes__hint {
+  margin-bottom: 2px;
+}
+/* Avoid opacity on the whole item — it washes #505a5f below WCAG AA. */
+.govuk-checkboxes__item.sfi-compatibility-disabled .govuk-checkboxes__label {
+  color: #505a5f;
+}
+.govuk-checkboxes__item.sfi-compatibility-disabled .sfi-compatibility-option-hint {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 3px;
+  color: #505a5f;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+#parcel-info-container .govuk-table {
+  width: 100%;
+  table-layout: fixed;
+}
+#parcel-info-container #parcel-info .govuk-table__cell {
+  width: 50%;
+}
+.farm-table-extended-row {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .app-map-shell {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .app-bottom-panels {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "parcel"
+      "actions";
+    gap: 16px;
+  }
+
+  .app-map-shell > .govuk-grid-column-one-third {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  #map {
+    height: 320px;
+    min-height: 280px;
+  }
+}
+
+.app-action-hint {
+  display: block;
+  margin-top: 2px;
+  margin-bottom: 0;
+  padding: 0;
+  color: #505a5f;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-action-available-hint {
+  display: block;
+  margin-top: 2px;
+  margin-bottom: 0;
+  padding: 0;
+  color: #505a5f;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-action-full-area-hint {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding: 0;
+  color: #505a5f;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-action-consent-hint {
+  display: block;
+  margin-top: 2px;
+  margin-bottom: 0;
+  color: #0b0c0c;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-action-consent-hint__line {
+  display: block;
+}
+
+.app-action-guidance-link {
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 400;
+}
+
+.app-selected-parcel {
+  margin-bottom: 0;
+  padding: 15px;
+  border: 0;
+  background: #f3f2f1;
+}
+
+.app-selected-parcel__caption {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 4px;
+  color: #505a5f;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-selected-parcel__name {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.31579;
+  color: #0b0c0c;
+}
+
+.app-selected-parcel__list {
+  margin-bottom: 16px;
+}
+
+.app-previous-agreements {
+  margin-top: 16px;
+  margin-bottom: 0;
+  padding: 15px;
+  border: 0;
+  background: #f3f2f1;
+}
+
+.app-previous-agreements .govuk-details {
+  margin-bottom: 0;
+}
+
+.app-previous-agreements .govuk-details__summary {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-previous-agreements .govuk-details__text {
+  font-size: 16px;
+  line-height: 1.25;
+  padding-left: 0;
+  border-left: 0;
+}
+
+/* Stack key/value in the narrow card — table-style summary list wraps awkwardly */
+.app-previous-agreements .govuk-summary-list {
+  margin-bottom: 0;
+}
+
+.app-previous-agreements .govuk-summary-list__row {
+  display: block;
+  border-bottom: 0;
+  margin-bottom: 12px;
+  padding-bottom: 0;
+}
+
+.app-previous-agreements .govuk-summary-list__row:last-child {
+  margin-bottom: 0;
+}
+
+.app-previous-agreements .govuk-summary-list__key,
+.app-previous-agreements .govuk-summary-list__value {
+  display: block;
+  width: auto;
+  float: none;
+  padding: 0;
+  border: 0;
+}
+
+.app-previous-agreements .govuk-summary-list__key {
+  margin-bottom: 2px;
+  color: #505a5f;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-previous-agreements .govuk-summary-list__value {
+  margin-bottom: 0;
+  color: #0b0c0c;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-previous-agreements .govuk-heading-s {
+  font-size: 16px;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.app-previous-agreements .govuk-list {
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style-type: none;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #0b0c0c;
+}
+
+.app-previous-agreements .govuk-list > li {
+  margin-bottom: 5px;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-previous-agreements .govuk-list > li:last-child {
+  margin-bottom: 0;
+}
+
+.app-selected-parcel__list .govuk-summary-list__row {
+  display: block;
+  border-bottom: 0;
+  margin-bottom: 12px;
+  padding-bottom: 0;
+}
+
+.app-selected-parcel__list .govuk-summary-list__row:last-child {
+  margin-bottom: 0;
+}
+
+.app-selected-parcel__list .govuk-summary-list__key,
+.app-selected-parcel__list .govuk-summary-list__value {
+  display: block;
+  width: auto;
+  padding: 0;
+  border: 0;
+}
+
+.app-selected-parcel__list .govuk-summary-list__key {
+  margin-bottom: 2px;
+  color: #505a5f;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-selected-parcel__list .govuk-summary-list__value {
+  margin-bottom: 0;
+  color: #0b0c0c;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-selected-parcel__change {
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.app-selected-parcel__change .govuk-link {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+/* AAC: GOV.UK summary card above Available actions */
+.app-aac-parcel-summary {
+  margin-top: 8px;
+  margin-bottom: 24px;
+  max-width: 40rem;
+}
+
+.app-aac-parcel-summary[hidden] {
+  display: none;
+}
+
+.app-aac-parcel-summary .govuk-summary-card {
+  margin-bottom: 0;
+}
+
+.app-aac-parcel-summary .govuk-summary-card__title-wrapper {
+  padding: 15px 20px;
+}
+
+.app-aac-parcel-summary .govuk-summary-card__title {
+  font-weight: 700;
+}
+
+.app-aac-parcel-summary .govuk-summary-card__content {
+  padding: 15px 20px;
+}
+
+.app-aac-parcel-summary .govuk-summary-list {
+  margin-bottom: 0;
+}
+
+.app-aac-parcel-summary .govuk-summary-list__row {
+  margin-bottom: 0;
+}
+
+.app-aac-parcel-summary .govuk-summary-list__key,
+.app-aac-parcel-summary .govuk-summary-list__value {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.app-aac-parcel-summary__previous-details-row {
+  display: block;
+}
+
+.app-aac-parcel-summary__previous-details-row .govuk-summary-list__key {
+  width: 100%;
+  max-width: none;
+  float: none;
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 8px;
+}
+
+.app-aac-parcel-summary__previous-details-row .govuk-summary-list__value {
+  display: none;
+}
+
+.app-aac-parcel-summary__hint {
+  display: block;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  margin: 0 0 4px;
+  padding: 0;
+  color: #505a5f;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.app-aac-parcel-summary__hint:last-child {
+  margin-bottom: 0;
+}
+
+/* CLIG3: stacked quantity — label, amount, then hint */
+#actions-section [data-whole-remaining-area] .govuk-label {
+  font-weight: 700;
+}
+
+#actions-section [data-whole-remaining-area] .govuk-hint {
+  color: #505a5f;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+/* AAC on: single column — no side parcel / previous-agreements panel */
+.app-bottom-panels--aac {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "actions";
+}
+
+.app-bottom-panels--aac .app-bottom-panels__parcel {
+  display: none !important;
+}
+
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item[data-available-for-parcel="false"],
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item[hidden] {
+  display: none !important;
+}
+
+/* Selection error: red bar on the checkbox list only (not intro / Available actions heading) */
+#actions-section #actions-checkboxes-container.app-actions-checkboxes--error {
+  border-left: 5px solid #d4351c;
+  padding-left: 15px;
+}
+
+#actions-section #actions-selection-error.govuk-error-message[hidden] {
+  display: none;
+}
+
+/* If an action row is hidden, never leave its quantity panel floating above the list */
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item[data-available-for-parcel="false"] + .govuk-checkboxes__conditional,
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item[hidden] + .govuk-checkboxes__conditional {
+  display: none !important;
+}
+
+/* Padding above each action; keep the absolute checkbox graphic aligned
+   with the label by shifting :before / :after by the same amount. */
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item {
+  --action-item-padding-top: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding-top: var(--action-item-padding-top);
+}
+
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__conditional + .govuk-checkboxes__item {
+  margin-top: 8px;
+  border-top: 1px solid #f3f2f1;
+}
+
+#actions-section #actions-checkboxes-container > .app-action-list-group-heading {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  padding-top: 8px;
+}
+
+#actions-section #actions-checkboxes-container > .app-action-list-group-heading:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+#actions-section #actions-checkboxes-container > .app-action-list-group-heading[hidden] {
+  display: none !important;
+}
+
+#actions-section #actions-checkboxes-container > .app-action-list-group-lead-in {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+#actions-section #actions-checkboxes-container > .app-action-list-group-lead-in[hidden] {
+  display: none !important;
+}
+
+#actions-section #actions-checkboxes-container > .app-action-list-group-heading + .govuk-checkboxes__item {
+  border-top: 0;
+  margin-top: 0;
+}
+
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item .govuk-checkboxes__label {
+  align-self: flex-start;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 0;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item .govuk-checkboxes__label:before {
+  top: calc(2px + var(--action-item-padding-top));
+}
+
+#actions-section #actions-checkboxes-container > .govuk-checkboxes__item .govuk-checkboxes__label:after {
+  top: calc(13px + var(--action-item-padding-top));
+}
+
+#actions-section .govuk-checkboxes__hint {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#actions-section .govuk-checkboxes__conditional {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 8px;
+}
+
+#actions-section .govuk-checkboxes__conditional .govuk-form-group {
+  margin-bottom: 0;
+}
+
+#actions-section .govuk-checkboxes__conditional .govuk-label {
+  margin-bottom: 4px;
+  font-weight: 400;
+  color: #0b0c0c;
+}
+
+#actions-section .govuk-checkboxes__conditional .govuk-hint {
+  margin-top: 0;
+  margin-bottom: 8px;
+  padding-left: 0;
+  color: #505a5f;
+}
+
+/* Hide conditional quantity panels even if GOV.UK JS has not added
+   .govuk-frontend-supported yet (otherwise empty panels indent the list). */
+#actions-section .govuk-checkboxes__conditional--hidden {
+  display: none;
+}
+
+#aac-actions-intro[hidden],
+#aac-actions-intro-protected-notes[hidden] {
+  display: none !important;
+}
+
+.app-action-availability-details {
+  width: 100%;
+  max-width: 100%;
+  clear: both;
+}
+
+.app-action-availability-details .govuk-details__summary {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.app-action-availability-details__list {
+  margin-bottom: 0;
+  max-width: 22rem;
+}
+
+.app-action-availability-details__list .govuk-summary-list__key,
+.app-action-availability-details__list .govuk-summary-list__value {
+  font-size: 16px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.app-action-availability-details__list .govuk-summary-list__value {
+  text-align: right;
+}
+
+/* Hidden until JS sets style.display, or the server omits this class (draft parcel). */
+.app-js-hidden {
+  display: none;
+}
+
+.app-parcels-list {
+  font-size: 0.875rem;
+}
+
+.app-application-summary {
+  background-color: #f3f2f1;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.app-application-summary__empty {
+  color: #505a5f;
+}
+
+/* Actions step: keep map JS/parcelData, hide the map shell visually */
+.app-map-shell {
+  display: none !important;
+}
+#parcels-actions-summary-section {
+  display: none !important;
+}
