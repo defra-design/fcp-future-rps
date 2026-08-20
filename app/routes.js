@@ -3605,6 +3605,14 @@ router.post('/sfi-grasslands-v2/submit-application', function (req, res) {
 })
 
 function getSfiGrasslandsV2ConfirmationNotices (req) {
+  var previewType = req.query.preview
+  if (previewType === 'sssi' || previewType === 'hefer' || previewType === 'sssi-hefer' || previewType === 'none') {
+    return {
+      showHeferNotice: previewType === 'hefer' || previewType === 'sssi-hefer',
+      showSssiNotice: previewType === 'sssi' || previewType === 'sssi-hefer'
+    }
+  }
+
   var consent = sfiGrasslandsV2Consent.getConsentRequirementsForParcels(
     sfiGrasslandsV2LandActions.buildBasketParcels(req)
   )
@@ -5512,6 +5520,14 @@ router.post('/sfi-grasslands-dev-ready/submit-application', function (req, res) 
 })
 
 function getSfiGrasslandsDevReadyConfirmationNotices (req) {
+  var previewType = req.query.preview
+  if (previewType === 'sssi' || previewType === 'hefer' || previewType === 'sssi-hefer' || previewType === 'none') {
+    return {
+      showHeferNotice: previewType === 'hefer' || previewType === 'sssi-hefer',
+      showSssiNotice: previewType === 'sssi' || previewType === 'sssi-hefer'
+    }
+  }
+
   var consent = sfiGrasslandsDevReadyConsent.getConsentRequirementsForParcels(
     sfiGrasslandsDevReadyLandActions.buildBasketParcels(req)
   )

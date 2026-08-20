@@ -39,7 +39,7 @@
         {% include "sfi-grasslands-v2/_includes/applicant-details.html" %}
       </div>
 
-      <h2 class="govuk-heading-m">Review land parcels and actions</h2>
+      <h2 class="govuk-heading-m">Land parcels and actions in application</h2>
 
       {% if parcels and parcels.length %}
         {% for parcel in parcels %}
@@ -76,9 +76,11 @@
                     </tr>
                   {% endfor %}
                   <tr class="govuk-table__row app-confirm-parcel-card__subtotal">
-                    <th scope="row" class="govuk-table__cell">Subtotal</th>
+                    <th scope="row" class="govuk-table__cell">Total yearly payment</th>
                     <td class="govuk-table__cell"></td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.yearlyPaymentFormatted }}</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                      <strong>{{ parcel.yearlyPaymentFormatted }}</strong>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -99,14 +101,14 @@
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
               <dt class="govuk-summary-list__key">Total yearly payment</dt>
-              <dd class="govuk-summary-list__value">{% if parcels and parcels.length %}{{ summary.totalYearlyPaymentFormatted }}{% else %}£0.00{% endif %}</dd>
+              <dd class="govuk-summary-list__value"><strong>{% if parcels and parcels.length %}{{ summary.totalYearlyPaymentFormatted }}{% else %}£0.00{% endif %}</strong></dd>
             </div>
           </dl>
         </div>
       </div>
 
       <button type="button" class="govuk-button govuk-button--secondary govuk-!-display-none-print" data-module="govuk-button" onclick="window.print()">
-        Print this page
+        Print
       </button>
 
     </div>
