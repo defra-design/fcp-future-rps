@@ -1913,7 +1913,7 @@ function createClig3FullAreaHint(actionCode) {
   var hint = document.createElement('span');
   hint.className = 'app-action-full-area-hint';
   hint.id = 'action-full-area-hint-' + codeLower;
-  hint.textContent = 'This action will use all the remaining available area on this land parcel.';
+  hint.textContent = 'This action will use all the available area on this land parcel.';
   return hint;
 }
 
