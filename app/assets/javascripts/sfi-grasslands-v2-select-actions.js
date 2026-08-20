@@ -3215,11 +3215,16 @@ function createActionCheckboxElements(action) {
       '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> hectares</strong>';
 
     var qtyHint = document.createElement('p');
-    qtyHint.className = 'govuk-hint govuk-!-margin-bottom-0';
+    qtyHint.className = 'govuk-hint govuk-!-margin-bottom-1';
     qtyHint.id = 'whole-remaining-hint-' + codeLower;
     qtyHint.textContent = 'CLIG3 will be applied to the full available area on this land parcel.';
 
-    amountText.setAttribute('aria-describedby', qtyHint.id);
+    var supplementHint = document.createElement('p');
+    supplementHint.className = 'govuk-hint govuk-!-margin-bottom-0';
+    supplementHint.id = 'whole-remaining-supplement-hint-' + codeLower;
+    supplementHint.textContent = 'You can add a supplement to CLIG3 on the next page.';
+
+    amountText.setAttribute('aria-describedby', qtyHint.id + ' ' + supplementHint.id);
 
     var hiddenQty = document.createElement('input');
     hiddenQty.type = 'hidden';
@@ -3231,6 +3236,7 @@ function createActionCheckboxElements(action) {
     formGroup.appendChild(qtyLabel);
     formGroup.appendChild(amountText);
     formGroup.appendChild(qtyHint);
+    formGroup.appendChild(supplementHint);
     formGroup.appendChild(hiddenQty);
     conditional.appendChild(formGroup);
     return { item: item, conditional: conditional };
