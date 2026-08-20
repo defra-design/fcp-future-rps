@@ -88,6 +88,7 @@
             <p id="clig3-supplement-hint" class="govuk-body">
               You can add one supplement to CLIG3.
             </p>
+            <p class="govuk-body">Every action has links to guidance to help you – all links open in a new tab.</p>
             {% if error and error.fieldId == 'clig3-supplement-none' %}
               <p id="clig3-supplement-error" class="govuk-error-message">
                 <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
@@ -114,7 +115,8 @@
                       href="{{ option.guidanceUrl }}"
                       target="_blank"
                       rel="noopener noreferrer"
-                    >read guidance (opens in new tab)<span class="govuk-visually-hidden"> for {{ option.name }}: {{ option.code }}</span></a>
+                      aria-label="Read guidance for {{ option.name }}: {{ option.code }} (opens in new tab)"
+                    >read guidance</a>
                     <span class="app-action-hint" id="action-hint-{{ option.code | lower }}">
                       Payment rate per year: {{ option.rateText }}
                     </span>

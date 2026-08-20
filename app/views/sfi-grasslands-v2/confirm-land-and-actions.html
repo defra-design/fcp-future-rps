@@ -50,11 +50,11 @@
         </p>
       {% else %}
         {% for parcel in parcels %}
-          {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Land parcel ', '')) or parcel.parcelName or '' %}
+          {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
           <div class="govuk-summary-card app-confirm-parcel-card" id="parcel-{{ parcel.parcelId }}">
             <div class="govuk-summary-card__title-wrapper">
               <h2 class="govuk-summary-card__title">
-                Land parcel {{ parcelRef }}
+                Parcel reference {{ parcelRef }}
               </h2>
               <ul class="govuk-summary-card__actions">
                 <li class="govuk-summary-card__action">

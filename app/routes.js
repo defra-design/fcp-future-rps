@@ -3392,28 +3392,6 @@ router.post('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
   res.redirect('/sfi-grasslands-v2/confirm-land-and-actions')
 })
 
-// Archived: consent interruption cards (reference only — not in the live journey)
-router.get('/sfi-grasslands-v2/consent-interruption', function (req, res) {
-  var sessionData = getSfiGrasslandsV2SessionData(req)
-  var previewType = req.query.preview || 'sssi-hefer'
-  var allowedPreviewTypes = ['sssi', 'hefer', 'sssi-hefer']
-
-  if (allowedPreviewTypes.indexOf(previewType) === -1) {
-    previewType = 'sssi-hefer'
-  }
-
-  res.render('sfi-grasslands-v2/consent-interruption', {
-    data: sessionData,
-    interruptionType: previewType,
-    requiresSssi: previewType === 'sssi' || previewType === 'sssi-hefer',
-    requiresHefer: previewType === 'hefer' || previewType === 'sssi-hefer'
-  })
-})
-
-router.post('/sfi-grasslands-v2/consent-interruption', function (req, res) {
-  res.redirect('/sfi-grasslands-v2/')
-})
-
 router.get('/sfi-grasslands-v2/confirm-land-and-actions', function (req, res) {
   var basketParcels = sfiGrasslandsV2LandActions.buildBasketParcels(req).map(function (parcel) {
     return Object.assign({}, parcel, {

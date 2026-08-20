@@ -590,7 +590,7 @@ function buildBasketParcels (req) {
       var reference = getParcelDisplayReference(parcel) || 'Unknown parcel'
 
       return Object.assign({}, parcel, summary, {
-        heading: 'Land parcel ' + reference,
+        heading: 'Parcel reference ' + reference,
         parcelReference: reference,
         landCoverLines: formatLandCoverLines(parcel.landCover, parcel.totalArea)
       })

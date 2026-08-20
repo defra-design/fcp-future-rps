@@ -37,7 +37,7 @@
       <h2 class="govuk-heading-m">Review land parcels and actions</h2>
 
       {% for parcel in parcels %}
-        {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Land parcel ', '')) or parcel.parcelName or '' %}
+        {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
         <div class="govuk-!-margin-bottom-9">
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">

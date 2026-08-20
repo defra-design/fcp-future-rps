@@ -3161,7 +3161,7 @@ function createActionCheckboxElements(action) {
   guidanceLink.href = getActionGuidanceUrl(action);
   guidanceLink.target = '_blank';
   guidanceLink.rel = 'noopener noreferrer';
-  guidanceLink.textContent = 'read guidance (opens in new tab)';
+  guidanceLink.textContent = 'read guidance';
   guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
   guidanceLink.addEventListener('click', function(event) {
     event.stopPropagation();
@@ -3344,7 +3344,7 @@ function appendClig3Supplements(clig3Conditional) {
     guidanceLink.href = getActionGuidanceUrl(action);
     guidanceLink.target = '_blank';
     guidanceLink.rel = 'noopener noreferrer';
-    guidanceLink.textContent = 'read guidance (opens in new tab)';
+    guidanceLink.textContent = 'read guidance';
     guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
     guidanceLink.addEventListener('click', function(event) {
       event.stopPropagation();
