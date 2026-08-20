@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v2-header.html" %}
 
 {% block pageTitle %}
-  Do you want to add a supplement to CLIG3?
+  Add a supplement to CLIG3
 {% endblock %}
 
 {% block beforeContent %}
@@ -73,7 +73,7 @@
       {% set journeySection = "Select land and actions" %}
       {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
 
-      <h1 class="govuk-heading-l">Do you want to add a supplement to CLIG3?</h1>
+      <h1 class="govuk-heading-l">Add a supplement to CLIG3</h1>
 
       <form action="/sfi-grasslands-v2/clig3-supplements" method="post" novalidate>
         {% if fromCheckYourAnswers %}
@@ -83,10 +83,10 @@
         <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
           <fieldset class="govuk-fieldset"{% if error %} aria-describedby="clig3-supplement-error clig3-supplement-hint"{% else %} aria-describedby="clig3-supplement-hint"{% endif %}>
             <legend class="govuk-fieldset__legend govuk-visually-hidden">
-              Do you want to add a supplement to CLIG3?
+              Add a supplement to CLIG3
             </legend>
             <p id="clig3-supplement-hint" class="govuk-body">
-              You can add one supplement to CLIG3.
+              Choose a supplement (you can only add one).
             </p>
             <p class="govuk-body">Every action has links to guidance to help you – all links open in a new tab.</p>
             {% if error and error.fieldId == 'clig3-supplement-none' %}
@@ -105,7 +105,7 @@
                     type="radio"
                     value="{{ option.code }}"
                     data-aria-controls="conditional-{{ option.code | lower }}"
-                    aria-describedby="action-hint-{{ option.code | lower }} action-available-hint-{{ option.code | lower }}"
+                    aria-describedby="action-hint-{{ option.code | lower }} action-available-hint-{{ option.code | lower }}{% if option.appliesFullClig3Area %} action-full-area-hint-{{ option.code | lower }}{% endif %}"
                     {% if selectedCode == option.code %}checked{% endif %}
                   >
                   <label class="govuk-label govuk-radios__label" for="clig3-supplement-{{ option.code | lower }}">
@@ -123,6 +123,11 @@
                     <span class="app-action-available-hint" id="action-available-hint-{{ option.code | lower }}">
                       {{ option.availableText }}
                     </span>
+                    {% if option.appliesFullClig3Area %}
+                      <span class="app-action-available-hint" id="action-full-area-hint-{{ option.code | lower }}">
+                        {{ option.code }} will be applied to the full available area on this land parcel.
+                      </span>
+                    {% endif %}
                   </label>
                 </div>
                 <div class="govuk-radios__conditional{% if selectedCode != option.code %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ option.code | lower }}">
@@ -155,11 +160,8 @@
                       <p class="govuk-label govuk-!-margin-bottom-1">
                         Quantity
                       </p>
-                      <p class="govuk-body govuk-!-margin-bottom-1">
+                      <p class="govuk-body govuk-!-margin-bottom-0">
                         <strong>{{ appliedAreaText }}</strong>
-                      </p>
-                      <p class="govuk-hint govuk-!-margin-bottom-0">
-                        {{ option.code }} will be applied to the full available area for CLIG3.
                       </p>
                     </div>
                   {% endif %}
@@ -176,7 +178,7 @@
                   {% if selectedCode == 'NONE' or selectedCode == 'none' %}checked{% endif %}
                 >
                 <label class="govuk-label govuk-radios__label" for="clig3-supplement-none">
-                  No supplement
+                  I do not want to add a supplement
                 </label>
               </div>
             </div>

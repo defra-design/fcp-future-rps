@@ -680,13 +680,13 @@
             {% if hasDraftParcel and draftParcel.parcelId == 'gate-field' %}
               <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
               <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                <li>Site of special scientific interest consent</li>
-                <li>Historic Environment Farm Environment Record</li>
+                <li>site of special scientific interest (SSSI) consent</li>
+                <li>a Historic Environment Farm Environment Record (HEFER)</li>
               </ul>
             {% elif hasDraftParcel and draftParcel.parcelId == 'far-meadow' %}
               <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
               <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                <li>Historic Environment Farm Environment Record</li>
+                <li>a Historic Environment Farm Environment Record (HEFER)</li>
               </ul>
             {% endif %}
           </dd>
@@ -4528,10 +4528,10 @@
       var flags = getParcelRequirementFlags(parcelId);
       var items = [];
       if (flags.sssi) {
-        items.push('Site of special scientific interest consent');
+        items.push('site of special scientific interest (SSSI) consent');
       }
       if (flags.hefer) {
-        items.push('Historic Environment Farm Environment Record');
+        items.push('a Historic Environment Farm Environment Record (HEFER)');
       }
       if (!items.length) {
         el.textContent = '';
