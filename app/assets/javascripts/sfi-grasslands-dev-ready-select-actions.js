@@ -4359,7 +4359,8 @@ function updateActionListGroupHeadingVisibility() {
     function(heading) {
       var hasVisibleAction = false;
       var sibling = heading.nextElementSibling;
-      while (sibling && !sibling.classList.contains('app-action-list-group-heading')) {
+      while (sibling && !sibling.classList.contains('app-action-list-group-heading') &&
+             !sibling.classList.contains('app-action-list-group-lead-in')) {
         if (
           sibling.classList.contains('govuk-checkboxes__item') &&
           sibling.getAttribute('data-available-for-parcel') !== 'false' &&
@@ -4372,7 +4373,7 @@ function updateActionListGroupHeadingVisibility() {
         sibling = sibling.nextElementSibling;
       }
       heading.hidden = !hasVisibleAction;
-      var leadIn = heading.nextElementSibling;
+      var leadIn = heading.previousElementSibling;
       if (leadIn && leadIn.classList.contains('app-action-list-group-lead-in')) {
         leadIn.hidden = !hasVisibleAction;
       }
@@ -4436,18 +4437,18 @@ function reorderActionOptions(sortedCodes) {
       return;
     }
 
-    var heading = document.createElement('h3');
-    heading.className = 'govuk-heading-s app-action-list-group-heading';
-    heading.setAttribute('data-action-group', group.id);
-    heading.textContent = group.heading;
-    fragment.appendChild(heading);
-
-    if (group.id === 'ha' || group.id === 'm') {
+    if (group.id === 'ha') {
       var leadIn = document.createElement('p');
       leadIn.className = 'govuk-body app-action-list-group-lead-in';
       leadIn.textContent = 'The available quantity will update as you make your selections.';
       fragment.appendChild(leadIn);
     }
+
+    var heading = document.createElement('h3');
+    heading.className = 'govuk-heading-s app-action-list-group-heading';
+    heading.setAttribute('data-action-group', group.id);
+    heading.textContent = group.heading;
+    fragment.appendChild(heading);
 
     codes.forEach(function(actionCode) {
       var item = findTopLevelActionItem(actionCode);

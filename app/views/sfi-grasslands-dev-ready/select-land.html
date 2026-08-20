@@ -671,6 +671,23 @@
           <dt class="govuk-summary-list__key">Actions available</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-sfi-actions">-</dd>
         </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
+          <dt class="govuk-summary-list__key">Requirements</dt>
+          <dd class="govuk-summary-list__value" id="summary-parcel-requirements">
+            {% if hasDraftParcel and draftParcel.parcelId == 'gate-field' %}
+              <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+              <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                <li>site of special scientific interest (SSSI) consent</li>
+                <li>a Historic Environment Farm Environment Record (HEFER)</li>
+              </ul>
+            {% elif hasDraftParcel and draftParcel.parcelId == 'far-meadow' %}
+              <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+              <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                <li>a Historic Environment Farm Environment Record (HEFER)</li>
+              </ul>
+            {% endif %}
+          </dd>
+        </div>
       </dl>
 
       <div class="govuk-inset-text govuk-!-margin-top-6" id="no-actions-available-warning" hidden>
@@ -4501,6 +4518,37 @@
       }
     }
 
+    function getParcelRequirementFlags(parcelId) {
+      if (window.SfiGrasslandsDevReadyAac && typeof window.SfiGrasslandsDevReadyAac.getParcelSssiHeferFlags === 'function') {
+        return window.SfiGrasslandsDevReadyAac.getParcelSssiHeferFlags(parcelId);
+      }
+      return { sssi: false, hefer: false };
+    }
+
+    function renderParcelRequirements(el, parcelId) {
+      if (!el) {
+        return false;
+      }
+      var flags = getParcelRequirementFlags(parcelId);
+      var items = [];
+      if (flags.sssi) {
+        items.push('site of special scientific interest (SSSI) consent');
+      }
+      if (flags.hefer) {
+        items.push('a Historic Environment Farm Environment Record (HEFER)');
+      }
+      if (!items.length) {
+        el.textContent = '';
+        return false;
+      }
+      var listItems = items.map(function(item) {
+        return '<li>' + item + '</li>';
+      }).join('');
+      el.innerHTML = '<p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>' +
+        '<ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">' + listItems + '</ul>';
+      return true;
+    }
+
     function updateSelectedParcelSummary(parcelId, parcel, osRefDisplay) {
       var summary = document.getElementById('selected-parcel-summary');
       if (!summary || !parcel) {
@@ -4534,6 +4582,17 @@
         parcelId,
         parcel
       );
+
+      var requirementsRow = document.getElementById('summary-parcel-requirements-row');
+      var requirementsEl = document.getElementById('summary-parcel-requirements');
+      if (requirementsRow && requirementsEl) {
+        if (renderParcelRequirements(requirementsEl, parcelId)) {
+          requirementsRow.classList.remove('govuk-!-display-none');
+        } else {
+          requirementsEl.textContent = '';
+          requirementsRow.classList.add('govuk-!-display-none');
+        }
+      }
 
       document.getElementById('selectedParcelId').value = parcelId || '';
       document.getElementById('selectedParcelName').value = reference || '';
@@ -4580,6 +4639,15 @@
           el.value = '';
         }
       });
+
+      var requirementsRow = document.getElementById('summary-parcel-requirements-row');
+      var requirementsEl = document.getElementById('summary-parcel-requirements');
+      if (requirementsRow) {
+        requirementsRow.classList.add('govuk-!-display-none');
+      }
+      if (requirementsEl) {
+        requirementsEl.textContent = '';
+      }
 
       updateContinueForSelectedParcel(null);
 
