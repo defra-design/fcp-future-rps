@@ -34,7 +34,8 @@ var SELECT_LAND_HREF = '/sfi-grasslands-v2/select-land'
 
 var IN_PROGRESS_TASKS = [
   TASK_IDS.checkBusinessDetails,
-  TASK_IDS.checkLandDetails
+  TASK_IDS.checkLandDetails,
+  TASK_IDS.confirmEligible
 ]
 
 function getSessionData (req) {
@@ -60,6 +61,10 @@ function ensureTasks (req) {
         data.sfiGrasslandsV2Tasks[taskId] = STATUS.INCOMPLETE
       }
     })
+    // Opening management control used to store Incomplete; treat that as In progress
+    if (data.sfiGrasslandsV2Tasks.confirmEligible === STATUS.INCOMPLETE) {
+      data.sfiGrasslandsV2Tasks.confirmEligible = STATUS.IN_PROGRESS
+    }
   }
 
   return data.sfiGrasslandsV2Tasks
@@ -174,10 +179,8 @@ function syncFromSessionAnswers (req, options) {
 
   if (data['management-answer-v2'] === 'yes') {
     tasks.confirmEligible = STATUS.COMPLETED
-  } else if (data['management-answer-v2']) {
-    if (tasks.confirmEligible !== STATUS.COMPLETED) {
-      tasks.confirmEligible = STATUS.INCOMPLETE
-    }
+  } else if (data['management-answer-v2'] === 'no' && tasks.confirmEligible !== STATUS.COMPLETED) {
+    tasks.confirmEligible = STATUS.IN_PROGRESS
   }
 
   if (hasSelectedLand && tasks.selectLand !== STATUS.COMPLETED) {
@@ -238,26 +241,11 @@ function getResolvedTaskStates (req) {
     '/sfi-grasslands-v2/check-land-details'
   )
 
-  var confirmEligible
-  if (eligibleCompleted) {
-    confirmEligible = {
-      key: STATUS.COMPLETED,
-      status: statusViewCompleted(),
-      href: '/sfi-grasslands-v2/management-control'
-    }
-  } else if (eligibleStored === STATUS.INCOMPLETE || eligibleStored === STATUS.IN_PROGRESS) {
-    confirmEligible = {
-      key: STATUS.INCOMPLETE,
-      status: statusViewIncomplete(),
-      href: '/sfi-grasslands-v2/management-control'
-    }
-  } else {
-    confirmEligible = {
-      key: STATUS.NOT_STARTED,
-      status: statusViewNotStarted(),
-      href: '/sfi-grasslands-v2/management-control'
-    }
-  }
+  var confirmEligible = resolveCheckTask(
+    eligibleStored,
+    eligibleCompleted,
+    '/sfi-grasslands-v2/management-control'
+  )
 
   // 2. Select land — locked until section 1 complete
   var selectLand
