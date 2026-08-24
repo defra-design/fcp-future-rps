@@ -1288,28 +1288,14 @@
   function buildHintText (action) {
     // Match default (AAC off) quantity copy: "X metres available" / "X.XXXX hectares available"
     // Pond actions only show an available count when protected-land rules provide one.
-    // Show remaining after this action's own entry so the checked action
-    // matches siblings (what is still available to add).
-    // CLIG3 is different: it always takes the full remaining pool, so show that
-    // pool (maxAvailable) before and after select — not 0.0000 leftover.
+    // Show remaining after this action's own entry (0 when CLIG3 has taken the full pool).
     if (!action) {
       return ''
     }
     if (action.unit === 'pond' && !Number.isFinite(Number(action.maxAvailable != null ? action.maxAvailable : action.available))) {
       return ''
     }
-    var amount
-    if (String(action.code || '').toUpperCase() === 'CLIG3') {
-      amount = Number(action.maxAvailable)
-      if (!Number.isFinite(amount) || amount < 0) {
-        amount = Number(action.available)
-      }
-      if (action.status === 'unavailable' && !(Number(action.selectedQuantity) > 0)) {
-        amount = 0
-      }
-    } else {
-      amount = action.status === 'unavailable' ? 0 : action.available
-    }
+    var amount = action.status === 'unavailable' ? 0 : action.available
     return formatAvailableHint(amount, action.unit)
   }
 

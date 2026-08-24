@@ -1748,6 +1748,14 @@ function syncClig3SupplementRadiosFromCheckboxes() {
   syncClig3SupplementCheckboxesFromRadios();
 }
 
+function getClig3AvailableHintAmount() {
+  var $clig3 = $('input[name="actions"][value="CLIG3"]');
+  if ($clig3.length && $clig3.is(':checked')) {
+    return 0;
+  }
+  return getWholeRemainingAreaHa('CLIG3');
+}
+
 function getWholeRemainingAreaHa(actionCode) {
   var code = String(actionCode || '').toUpperCase();
   if (!isWholeRemainingAreaAction(code)) {
@@ -5422,8 +5430,8 @@ $(document).ready(function(){
       }
     });
 
-    // CLIG3 has no quantity input — show the hectares it will take (exclude its own entry)
-    setActionAvailableHint('CLIG3', getWholeRemainingAreaHa('CLIG3'));
+    // CLIG3 has no quantity input — show remaining pool until selected, then 0
+    setActionAvailableHint('CLIG3', getClig3AvailableHintAmount());
     mirrorClig3SupplementAvailableHints();
 
     // Tier 1: live over-limit validation
