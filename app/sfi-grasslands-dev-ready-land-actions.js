@@ -667,6 +667,10 @@ function loadParcelIntoDraftForEdit (req, parcelId) {
   if (!parcel) {
     var draftParcel = getDraftParcel(req)
     if (draftParcel && draftParcel.parcelId === parcelId) {
+      // First parcel can still be draft-only (not committed until Continue /
+      // Add another on confirm). Snapshot it so Cancel changes / no-Back
+      // edit mode works the same as for saved parcels.
+      ensureLandActionsEditSnapshotFromDraft(req, draftParcel)
       return true
     }
     return false
@@ -697,6 +701,26 @@ function loadParcelIntoDraftForEdit (req, parcelId) {
   })
   syncParcelSelectionsData(req)
   return true
+}
+
+function ensureLandActionsEditSnapshotFromDraft (req, draftParcel) {
+  if (getLandActionsEditSnapshot(req)) {
+    return
+  }
+
+  var displayReference = getParcelDisplayReference(draftParcel)
+  getSessionData(req).sfiLandActionsEditSnapshot = {
+    parcel: JSON.parse(JSON.stringify({
+      parcelId: draftParcel.parcelId,
+      parcelName: displayReference,
+      osReference: displayReference,
+      parcelReference: displayReference,
+      totalArea: draftParcel.totalArea,
+      landCover: formatLandCover(draftParcel.landCover),
+      availableArea: draftParcel.availableArea,
+      actions: getDraftActions(req)
+    }))
+  }
 }
 
 function findBasketParcel (req, parcelId) {
