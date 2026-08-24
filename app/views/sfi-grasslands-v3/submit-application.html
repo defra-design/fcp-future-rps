@@ -1,0 +1,52 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% block pageTitle %}
+  Confirm and submit your application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v3/before-you-submit"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set journeySection = "Review and submit your application" %}
+      {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">
+        Confirm and submit your application
+      </h1>
+
+      <p class="govuk-body">
+        By submitting your application, you confirm that:
+      </p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>the information in your application is correct</li>
+        {% if requiresSssi %}
+          <li>you will get consent for actions involving sites of special scientific interest (SSSI)</li>
+        {% endif %}
+        {% if requiresHefer %}
+          <li>you will request a Historic Environment Farm Environment Record (HEFER) if required</li>
+        {% endif %}
+        <li>you have management control of the land for the required period</li>
+        <li>you will meet the requirements for the Grasslands actions you have applied for</li>
+      </ul>
+
+      <form class="form" action="/sfi-grasslands-v3/confirmation" method="post">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          I agree – submit my application
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

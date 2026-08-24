@@ -2,7 +2,7 @@
  * Session helpers for the grasslands-v2 multi-step land and actions journey.
  */
 
-var parcelReference = require('./sfi-grasslands-v2-parcel-reference')
+var parcelReference = require('./sfi-grasslands-v3-parcel-reference')
 
 function getSessionData (req) {
   req.session.data = req.session.data || {}

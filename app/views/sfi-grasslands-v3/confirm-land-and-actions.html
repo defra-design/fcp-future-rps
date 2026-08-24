@@ -1,6 +1,6 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
-{% set serviceUrl = "/sfi-grasslands-v2/task-list" %}
-{% extends "layouts/sfi-grasslands-v2-header.html" %}
+{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
 
 {% block pageTitle %}
   {% if basketSummary and basketSummary.isEmpty %}Your land and actions{% else %}Review land parcels and actions{% endif %}
@@ -8,16 +8,16 @@
 
 {% block beforeContent %}
   {{ super() }}
-  {% include "sfi-grasslands-v2/_includes/account-bar.html" %}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
   {% set parcels = basketParcels if basketParcels else [] %}
   {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
   {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
 
   {{ govukBackLink({
     text: "Back",
-    href: fromCheckYourAnswers and "/sfi-grasslands-v2/check-your-answers" or (summary.isEmpty and "/sfi-grasslands-v2/task-list" or "/sfi-grasslands-v2/select-actions")
+    href: fromCheckYourAnswers and "/sfi-grasslands-v3/check-your-answers" or (summary.isEmpty and "/sfi-grasslands-v3/task-list" or "/sfi-grasslands-v3/select-actions")
   }) }}
-  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v2-confirm-land-and-actions.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-confirm-land-and-actions.css">
 {% endblock %}
 
 {% block content %}
@@ -41,7 +41,7 @@
       {% endif %}
 
       {% set journeySection = "Select land and actions" %}
-      {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
+      {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
 
       {% if summary.isEmpty %}
         <h1 class="govuk-heading-l">Your land and actions</h1>
@@ -53,7 +53,7 @@
           <p class="govuk-body">You have not added any land parcels or actions yet.</p>
         {% endif %}
         <p class="govuk-body">
-          <a class="govuk-link" href="/sfi-grasslands-v2/select-land">Select a land parcel and add actions</a>
+          <a class="govuk-link" href="/sfi-grasslands-v3/select-land">Select a land parcel and add actions</a>
         </p>
       {% else %}
         <h1 class="govuk-heading-l">Review land parcels and actions</h1>
@@ -66,7 +66,7 @@
               </h2>
               <ul class="govuk-summary-card__actions">
                 <li class="govuk-summary-card__action">
-                  <a class="govuk-link" href="/sfi-grasslands-v2/remove-parcel-actions/{{ parcel.parcelId }}">
+                  <a class="govuk-link" href="/sfi-grasslands-v3/remove-parcel-actions/{{ parcel.parcelId }}">
                     Remove parcel<span class="govuk-visually-hidden"> {{ parcelRef }}</span>
                   </a>
                 </li>
@@ -97,7 +97,7 @@
                       <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.quantityDisplay }}</td>
                       <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.yearlyPaymentFormatted }}</td>
                       <td class="govuk-table__cell govuk-table__cell--numeric">
-                        <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
+                        <a class="govuk-link" href="/sfi-grasslands-v3/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
                           Change<span class="govuk-visually-hidden"> {{ action.name }} ({{ action.code }})</span>
                         </a>
                       </td>
@@ -113,7 +113,7 @@
               </table>
 
               <p class="govuk-body app-confirm-parcel-card__add-action">
-                <a class="govuk-link" href="/sfi-grasslands-v2/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if fromCheckYourAnswers %}?from=check-your-answers{% endif %}">
+                <a class="govuk-link" href="/sfi-grasslands-v3/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if fromCheckYourAnswers %}?from=check-your-answers{% endif %}">
                   Add more actions to this parcel<span class="govuk-visually-hidden"> {{ parcelRef }}</span>
                 </a>
               </p>
@@ -136,7 +136,7 @@
           </div>
         </div>
 
-        <form action="/sfi-grasslands-v2/confirm-land-and-actions" method="post">
+        <form action="/sfi-grasslands-v3/confirm-land-and-actions" method="post">
           {% if fromCheckYourAnswers %}
             <input type="hidden" name="from" value="check-your-answers">
           {% endif %}

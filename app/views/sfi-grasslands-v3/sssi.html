@@ -1,0 +1,81 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% block pageTitle %}
+  Sites of special scientific interest
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "sfi-grasslands-v3/_includes/eligibility-error-summary.html" %}
+
+      {% set journeySection = "Check before you start" %}
+      {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Sites of special scientific interest</h1>
+
+      <p class="govuk-body">
+        You can apply for SFI actions on land that's a site of special scientific interest (SSSI) if it's eligible for the action. You can check this for each action in the <a class="govuk-link" href="https://www.gov.uk/find-funding-for-land-or-farms" target="_blank" rel="noopener noreferrer">'Find Funding for land or farms'</a> tool.
+      </p>
+
+      <p class="govuk-body">
+        Before you do SFI actions on SSSI land, you must get SSSI consent from Natural England.
+      </p>
+
+      <p class="govuk-body">
+        Read the SFI scheme information on <a class="govuk-link" href="https://www.gov.uk/guidance/protected-areas-sites-of-special-scientific-interest#:~:text=Check%20if%20you%20need%20consent,-There%20are%20certain&text=Each%20SSSI%20has%20a%20list,additional%20permissions%20from%20other%20authorities" target="_blank" rel="noopener noreferrer">SSSI consent and how to get it.</a>
+      </p>
+
+      <p class="govuk-body">
+        If you do not want to apply for SFI actions on SSSI land, select 'yes' to continue with your application.
+      </p>
+
+      <form class="form" action="/sfi-grasslands-v3/sssi-answer" method="post">
+        {% include "sfi-grasslands-v3/_includes/eligibility-return-to.html" %}
+        <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="sssi-answer-v2-error"{% endif %}>
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              <h2 class="govuk-fieldset__heading">
+                Will you get SSSI consent if you're required to?
+              </h2>
+            </legend>
+            {% if eligibilityError %}
+              <p id="sssi-answer-v2-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
+              </p>
+            {% endif %}
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="sssi-answer-v2-yes" name="sssi-answer-v2" type="radio" value="yes" {% if data['sssi-answer-v2'] == "yes" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="sssi-answer-v2-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="sssi-answer-v2-no" name="sssi-answer-v2" type="radio" value="no" {% if data['sssi-answer-v2'] == "no" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="sssi-answer-v2-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Save and continue
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
-{% set serviceUrl = "/sfi-grasslands-v2/task-list" %}
-{% extends "layouts/sfi-grasslands-v2-header.html" %}
+{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
 
 {% block pageTitle %}
   {% if actionsError %}Error: {% endif %}Select actions for this land parcel
@@ -8,7 +8,7 @@
 
 {% block beforeContent %}
   {{ super() }}
-  {% include "sfi-grasslands-v2/_includes/account-bar.html" %}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
 
   <!-- DEFRA Interactive Map CSS -->
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/dist/css/index.css">
@@ -20,12 +20,12 @@
 
   <!-- MapLibre CSS -->
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v2-select-actions.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-select-actions.css">
 
   {% if not showCancelToLandAndActions %}
     {{ govukBackLink({
       text: "Back",
-      href: "/sfi-grasslands-v2/select-land"
+      href: "/sfi-grasslands-v3/select-land"
     }) }}
   {% endif %}
 {% endblock %}
@@ -61,7 +61,7 @@
     </div>
 
     {% set journeySection = "Select land and actions" %}
-    {% include "sfi-grasslands-v2/_includes/journey-caption.html" %}
+    {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
     <h1 class="govuk-heading-l" id="page-heading">Select actions for this land parcel</h1>
     <div id="select-parcel-text">
       <div id="actions-mode-intro">
@@ -77,7 +77,7 @@
 
     {% if not draftParcel %}
       <div class="govuk-inset-text">
-        No land parcel has been selected yet. <a class="govuk-link" href="/sfi-grasslands-v2/select-land">Select a land parcel</a> first.
+        No land parcel has been selected yet. <a class="govuk-link" href="/sfi-grasslands-v3/select-land">Select a land parcel</a> first.
       </div>
     {% endif %}
 
@@ -165,7 +165,7 @@
                 {% if not showCancelToLandAndActions %}
                   <ul class="govuk-summary-card__actions">
                     <li class="govuk-summary-card__action">
-                      <a class="govuk-link" href="/sfi-grasslands-v2/select-land">Change<span class="govuk-visually-hidden" id="aac-parcel-change-hidden"> land parcel</span></a>
+                      <a class="govuk-link" href="/sfi-grasslands-v3/select-land">Change<span class="govuk-visually-hidden" id="aac-parcel-change-hidden"> land parcel</span></a>
                     </li>
                   </ul>
                 {% endif %}
@@ -239,7 +239,7 @@
             </div>
           </div>
 
-          <form action="/sfi-grasslands-v2/select-actions" method="post" id="continue-form">
+          <form action="/sfi-grasslands-v3/select-actions" method="post" id="continue-form">
             <input type="hidden" name="draftLandActions" id="draftLandActions" value="">
             <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
             <div class="govuk-button-group govuk-!-margin-top-6">
@@ -249,7 +249,7 @@
             </div>
             {% if showCancelToLandAndActions %}
               <p class="govuk-body">
-                <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v2/cancel-land-actions-draft">
+                <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v3/cancel-land-actions-draft">
                   Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
                 </a>
               </p>
@@ -300,7 +300,7 @@
               </dl>
               {% if not showCancelToLandAndActions %}
                 <p class="govuk-body app-selected-parcel__change">
-                  <a class="govuk-link" href="/sfi-grasslands-v2/select-land">Change parcel</a>
+                  <a class="govuk-link" href="/sfi-grasslands-v3/select-land">Change parcel</a>
                 </p>
               {% endif %}
             </div>
@@ -370,11 +370,11 @@
   <!-- MapLibre JS -->
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
   <script src="/public/javascripts/sfi-scheme-2026.js"></script>
-  <script src="/public/javascripts/sfi-grasslands-v2-mvp-actions.js"></script>
-  <script src="/public/javascripts/sfi-grasslands-v2-parcel-reference.js"></script>
-  <script src="/public/javascripts/sfi-grasslands-v2-existing-agreements.js"></script>
-  <script src="/public/javascripts/sfi-grasslands-v2-actions-compatibility-loading.js"></script>
-  <script src="/public/javascripts/sfi-grasslands-v2-aac.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-mvp-actions.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-parcel-reference.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-existing-agreements.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-actions-compatibility-loading.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-aac.js"></script>
 
   <!-- Pass server data to JavaScript -->
   {% if data['parcelSelectionsData'] %}
@@ -385,6 +385,6 @@
   <script id="compatibility-client-config" type="application/json">{{ compatibilityClientConfig | safe }}</script>
   {% endif %}
 
-  <script src="/public/javascripts/sfi-grasslands-v2-select-actions.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-select-actions.js"></script>
 {% endblock %}
 

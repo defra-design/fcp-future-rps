@@ -1,0 +1,116 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% block pageTitle %}
+  View your application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: backHref or "/sfi-grasslands-v3/confirmation",
+    classes: "govuk-!-display-none-print"
+  }) }}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-confirm-land-and-actions.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-view-application.css">
+{% endblock %}
+
+{% block content %}
+  {% set parcels = reviewParcels if reviewParcels else [] %}
+  {% set summary = reviewSummary if reviewSummary else { totalYearlyPaymentFormatted: '£0.00' } %}
+
+  <div class="govuk-grid-row app-view-application" role="main">
+    <div class="govuk-grid-column-full">
+
+      <span class="govuk-caption-l">Apply for a grasslands agreement</span>
+      <h1 class="govuk-heading-l">View your application</h1>
+
+      {% if applicationSubmittedAtFormatted %}
+        <p class="govuk-body">
+          Submitted on {{ applicationSubmittedAtFormatted }}
+        </p>
+      {% endif %}
+
+      <div class="app-view-application__applicant">
+        {% include "sfi-grasslands-v3/_includes/applicant-details.html" %}
+      </div>
+
+      <h2 class="govuk-heading-m">Land parcels and actions in application</h2>
+
+      {% if parcels and parcels.length %}
+        {% for parcel in parcels %}
+          {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
+          <div class="govuk-summary-card app-confirm-parcel-card" id="parcel-{{ parcel.parcelId }}">
+            <div class="govuk-summary-card__title-wrapper">
+              <h3 class="govuk-summary-card__title">
+                Parcel reference <span class="app-confirm-parcel-card__title-ref">{{ parcelRef }}</span>
+              </h3>
+            </div>
+            <div class="govuk-summary-card__content">
+              <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-visually-hidden">
+                  Actions on land parcel {{ parcelRef }}
+                </caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Action</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Quantity</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Yearly payment</th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  {% for action in parcel.actions %}
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">
+                        {{ action.name }} ({{ action.code }})
+                        {% if action.consentHint %}
+                          <span class="app-confirm-parcel-card__hint">{{ action.consentHint }}</span>
+                        {% endif %}
+                      </td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.quantityDisplay }}</td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.yearlyPaymentFormatted }}</td>
+                    </tr>
+                  {% endfor %}
+                  <tr class="govuk-table__row app-confirm-parcel-card__subtotal">
+                    <th scope="row" class="govuk-table__cell">Total yearly payment</th>
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                      <strong>{{ parcel.yearlyPaymentFormatted }}</strong>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="govuk-body">No land parcels or actions have been added yet.</p>
+      {% endif %}
+
+      <div class="govuk-summary-card app-confirm-parcel-card govuk-!-margin-bottom-9">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Payment summary
+          </h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Total yearly payment</dt>
+              <dd class="govuk-summary-list__value"><strong>{% if parcels and parcels.length %}{{ summary.totalYearlyPaymentFormatted }}{% else %}£0.00{% endif %}</strong></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <button type="button" class="govuk-button govuk-button--secondary govuk-!-display-none-print" data-module="govuk-button" onclick="window.print()">
+        Print
+      </button>
+
+    </div>
+  </div>
+{% endblock %}

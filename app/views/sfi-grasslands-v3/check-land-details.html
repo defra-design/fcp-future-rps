@@ -1,0 +1,86 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% block pageTitle %}
+  Check your digital maps are correct
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v3/check-business-details"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "sfi-grasslands-v3/_includes/eligibility-error-summary.html" %}
+
+      {% set journeySection = "Check before you start" %}
+      {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">
+        Check your digital maps are correct
+      </h1>
+
+      <p class="govuk-body">
+        Before you continue, check that the land details on your digital maps are up to date. If they are not, you may not be able to apply for the Grasslands actions you select. Read the guidance on
+        <a class="govuk-link" href="https://www.gov.uk/guidance/digital-maps-in-the-rural-payments-service-check-and-change-mapping-updates" target="_blank" rel="noopener noreferrer">how to check your digital maps (opens in new tab)</a>.
+      </p>
+
+      <p class="govuk-body">Check that your digital maps show:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>all the land parcels you want to include in this application</li>
+        <li>the correct total area (in hectares) for each land parcel</li>
+        <li>the correct land covers for each land parcel (for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover)</li>
+      </ul>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="#" target="_blank" rel="noopener noreferrer">Check your digital maps (opens in new tab)</a>
+      </p>
+
+      <form class="form" action="/sfi-grasslands-v3/check-land-details-answer" method="post">
+        {% include "sfi-grasslands-v3/_includes/eligibility-return-to.html" %}
+        <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="land-details-answer-error"{% endif %}>
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              Do your digital maps show the correct land details?
+            </legend>
+            {% if eligibilityError %}
+              <p id="land-details-answer-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
+              </p>
+            {% endif %}
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="land-details-answer-yes" name="land-details-answer" type="radio" value="yes" {% if data['land-details-answer'] == "yes" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="land-details-answer-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="land-details-answer-no" name="land-details-answer" type="radio" value="no" {% if data['land-details-answer'] == "no" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="land-details-answer-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Save and continue
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,214 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% block pageTitle %}
+  Add a supplement to CLIG3
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backHref or "/sfi-grasslands-v3/select-actions"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  {% set options = supplementOptions or [] %}
+  {% set selectedCode = selectedSupplementCode or '' %}
+  {% set selectedQuantity = selectedSupplementQuantity or '' %}
+  {% set appliedAreaText = clig3AreaFormatted or '0.0000 hectares' %}
+  {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or false %}
+  {% set error = quantityError or null %}
+
+  <style>
+    .app-action-hint,
+    .app-action-available-hint {
+      display: block;
+      margin-top: 2px;
+      margin-bottom: 0;
+      padding: 0;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-action-full-area-hint {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 0;
+      padding: 0;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-action-guidance-link {
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 400;
+    }
+
+    [data-whole-remaining-area] .govuk-label {
+      font-weight: 400;
+    }
+
+    [data-whole-remaining-area] .govuk-hint {
+      color: #505a5f;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+  </style>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if error %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary" tabindex="-1" role="alert" aria-labelledby="error-summary-title">
+          <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+              <li>
+                <a href="#{{ error.fieldId }}">{{ error.text }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+
+      {% set journeySection = "Select land and actions" %}
+      {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
+
+      <h1 class="govuk-heading-l">Add a supplement to CLIG3</h1>
+
+      <form action="/sfi-grasslands-v3/clig3-supplements" method="post" novalidate>
+        {% if fromCheckYourAnswers %}
+          <input type="hidden" name="from" value="check-your-answers">
+        {% endif %}
+
+        <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset"{% if error %} aria-describedby="clig3-supplement-error clig3-supplement-hint"{% else %} aria-describedby="clig3-supplement-hint"{% endif %}>
+            <legend class="govuk-fieldset__legend govuk-visually-hidden">
+              Add a supplement to CLIG3
+            </legend>
+            <p id="clig3-supplement-hint" class="govuk-body">
+              Choose a supplement (you can only add one).
+            </p>
+            <p class="govuk-body">Every action has links to guidance to help you – all links open in a new tab.</p>
+            {% if error and error.fieldId == 'clig3-supplement-none' %}
+              <p id="clig3-supplement-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
+              </p>
+            {% endif %}
+
+            <div class="govuk-radios" data-module="govuk-radios">
+              {% for option in options %}
+                <div class="govuk-radios__item">
+                  <input
+                    class="govuk-radios__input"
+                    id="clig3-supplement-{{ option.code | lower }}"
+                    name="clig3Supplement"
+                    type="radio"
+                    value="{{ option.code }}"
+                    data-aria-controls="conditional-{{ option.code | lower }}"
+                    aria-describedby="action-hint-{{ option.code | lower }} action-available-hint-{{ option.code | lower }}{% if option.appliesFullClig3Area %} action-full-area-hint-{{ option.code | lower }}{% endif %}"
+                    {% if selectedCode == option.code %}checked{% endif %}
+                  >
+                  <label class="govuk-label govuk-radios__label" for="clig3-supplement-{{ option.code | lower }}">
+                    {{ option.name }}: {{ option.code }} -
+                    <a
+                      class="govuk-link app-action-guidance-link"
+                      href="{{ option.guidanceUrl }}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Read guidance for {{ option.name }}: {{ option.code }} (opens in new tab)"
+                    >read guidance</a>
+                    <span class="app-action-hint" id="action-hint-{{ option.code | lower }}">
+                      Payment rate per year: {{ option.rateText }}
+                    </span>
+                    <span class="app-action-available-hint" id="action-available-hint-{{ option.code | lower }}">
+                      {{ option.availableText }}
+                    </span>
+                    {% if option.appliesFullClig3Area %}
+                      <span class="app-action-full-area-hint" id="action-full-area-hint-{{ option.code | lower }}">
+                        This action will use all the available area on this land parcel.
+                      </span>
+                    {% endif %}
+                  </label>
+                </div>
+                <div class="govuk-radios__conditional{% if selectedCode != option.code %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ option.code | lower }}">
+                  {% if option.requiresQuantityInput %}
+                    <div class="govuk-form-group{% if error and error.fieldId == ('quantity-' + (option.code | lower)) %} govuk-form-group--error{% endif %} govuk-!-margin-bottom-0">
+                      <label class="govuk-label" for="quantity-{{ option.code | lower }}">
+                        Quantity
+                      </label>
+                      {% if error and error.fieldId == ('quantity-' + (option.code | lower)) %}
+                        <p id="quantity-{{ option.code | lower }}-error" class="govuk-error-message">
+                          <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
+                        </p>
+                      {% endif %}
+                      <div class="govuk-input__wrapper">
+                        <input
+                          class="govuk-input govuk-input--width-5{% if error and error.fieldId == ('quantity-' + (option.code | lower)) %} govuk-input--error{% endif %}"
+                          id="quantity-{{ option.code | lower }}"
+                          name="quantity-{{ option.code | lower }}"
+                          type="text"
+                          inputmode="decimal"
+                          spellcheck="false"
+                          value="{% if selectedCode == option.code %}{{ selectedQuantity }}{% endif %}"
+                          {% if error and error.fieldId == ('quantity-' + (option.code | lower)) %}aria-describedby="quantity-{{ option.code | lower }}-error"{% endif %}
+                        >
+                        <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+                      </div>
+                    </div>
+                  {% elif option.appliesFullClig3Area %}
+                    <div class="govuk-form-group govuk-!-margin-bottom-0" data-whole-remaining-area="true">
+                      <p class="govuk-label govuk-!-margin-bottom-1">
+                        Quantity
+                      </p>
+                      <p class="govuk-body govuk-!-margin-bottom-0">
+                        <strong>{{ appliedAreaText }}</strong>
+                      </p>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+
+              <div class="govuk-radios__item">
+                <input
+                  class="govuk-radios__input"
+                  id="clig3-supplement-none"
+                  name="clig3Supplement"
+                  type="radio"
+                  value="none"
+                  {% if selectedCode == 'NONE' or selectedCode == 'none' %}checked{% endif %}
+                >
+                <label class="govuk-label govuk-radios__label" for="clig3-supplement-none">
+                  I do not want to add a supplement
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Save and continue
+          </button>
+        </div>
+        {% if showCancelToLandAndActions %}
+          <p class="govuk-body">
+            <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v3/cancel-land-actions-draft">
+              Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+            </a>
+          </p>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

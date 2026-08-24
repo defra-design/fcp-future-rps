@@ -1,0 +1,60 @@
+{% set serviceName = "SFI prototypes" %}
+{% set serviceUrl = "/index" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% set pageName="Manage land based actions" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/index">SFI prototypes</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">
+      SFI Grasslands
+      <span class="govuk-caption-l">Application journey V3</span>
+    </h1>
+
+    <p class="govuk-body">
+      Design and testing workspace (W/C 24 August 2026). When a version is ready for developers, copy it into
+      <a class="govuk-link" href="/sfi-grasslands-dev-ready/index">SFI Grasslands dev</a>.
+    </p>
+
+
+    <h2 class="govuk-heading-m">All pages</h2>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/start">Start page</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/sign-in">Sign in</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/singlefrontdoor/start/your-businesses-list">Your businesses list</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/singlefrontdoor/landing/landing">Single front door landing</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/task-list">Task list</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/check-business-details">Check your details</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/check-land-details">Check land details</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/management-control">Confirm management control of the land</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/select-land">Select land</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/select-actions">Select actions</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/confirm-land-and-actions">Confirm land and actions</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/check-your-answers">Check your answers</a></li>
+      <li><a class="govuk-link" href="/clear-session-data?returnUrl=/sfi-grasslands-v3/before-you-submit">Before you submit</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/submit-application?preview=sssi">Confirm and submit — SSSI declaration only</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/submit-application?preview=hefer">Confirm and submit — HEFER declaration only</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/submit-application?preview=sssi-hefer">Confirm and submit — SSSI and HEFER declaration</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/submit-application?preview=none">Confirm and submit — no SSSI/HEFER declaration</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/confirmation?preview=sssi">Confirmation — SSSI only</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/confirmation?preview=hefer">Confirmation — HEFER only</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/confirmation?preview=sssi-hefer">Confirmation — SSSI and HEFER</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/confirmation?preview=none">Confirmation — no SSSI/HEFER</a></li>
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

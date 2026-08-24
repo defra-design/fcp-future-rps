@@ -1,0 +1,70 @@
+// View application — sfi-grasslands-v3/view-application.html
+
+@media print {
+  .app-view-application {
+    color: #0b0c0c;
+  }
+
+  .app-view-application .govuk-summary-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 0;
+    box-shadow: none;
+    background: none;
+    margin-bottom: 20px;
+  }
+
+  .app-view-application .govuk-summary-card__title-wrapper {
+    background: none;
+    border: 0;
+    border-bottom: 0;
+    padding: 0 0 8px;
+  }
+
+  .app-view-application .govuk-summary-card__title {
+    color: #0b0c0c;
+  }
+
+  .app-view-application .govuk-summary-card__content {
+    border: 0;
+    padding: 0;
+  }
+
+  .app-view-application .govuk-table {
+    width: 100%;
+    border: 0;
+  }
+
+  .app-view-application .govuk-table__header,
+  .app-view-application .govuk-table__cell,
+  .app-view-application .govuk-summary-list__key,
+  .app-view-application .govuk-summary-list__value,
+  .app-view-application .app-confirm-parcel-card__hint {
+    color: #0b0c0c;
+    border: 0;
+    border-bottom: 0;
+  }
+
+  .app-view-application .govuk-table__row,
+  .app-view-application .govuk-summary-list__row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 0;
+    border-bottom: 0;
+  }
+
+  .app-view-application .govuk-summary-list {
+    border: 0;
+  }
+
+  // Keep applicant details with the heading where possible
+  .app-view-application__applicant {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .app-view-application__applicant .govuk-summary-list__row {
+    border: 0;
+    border-bottom: 0;
+  }
+}
