@@ -363,6 +363,23 @@
 {% endblock %}
 
 {% block pageScripts %}
+  <script>
+    // Restore map/list view when returning to select land (Back / Change)
+    (function() {
+      var SELECT_LAND_PATH = '/sfi-grasslands-v3/select-land';
+      var view = 'map';
+      try {
+        view = sessionStorage.getItem('sfiGrasslandsV3ParcelView') || 'map';
+      } catch (e) {}
+      var href = view === 'list' ? (SELECT_LAND_PATH + '?view=list') : SELECT_LAND_PATH;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('a[href="' + SELECT_LAND_PATH + '"], a[href^="' + SELECT_LAND_PATH + '?"]'),
+        function(link) {
+          link.setAttribute('href', href);
+        }
+      );
+    })();
+  </script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/scale-bar/dist/umd/index.js"></script>

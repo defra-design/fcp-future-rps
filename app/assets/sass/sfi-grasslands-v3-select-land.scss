@@ -1,0 +1,169 @@
+// Loaded by sfi-grasslands-v3/select-land.html
+
+.app-parcel-view-toggle {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.app-land-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
+  gap: 24px;
+  align-items: start;
+}
+
+// List view uses normal GOV.UK width — slightly tighter aside column
+body:not(.app-select-land--wide) .app-land-layout {
+  grid-template-columns: minmax(0, 2fr) minmax(10rem, 14rem);
+}
+
+.app-land-layout__main,
+.app-land-layout__aside {
+  min-width: 0;
+}
+
+@media (max-width: 40.0625em) {
+  .app-land-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.app-parcel-list-view {
+  max-width: 40rem;
+}
+
+.app-map-shell[hidden],
+.app-parcel-list-view[hidden] {
+  display: none !important;
+}
+
+.app-parcel-list__details {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+  // Sit the summary table 16px in from the radio / conditional edge
+  padding-left: 16px;
+  color: #0b0c0c;
+}
+
+.app-parcel-list__summary {
+  margin-bottom: 0;
+}
+
+.app-parcel-list__summary .govuk-summary-list__key,
+.app-parcel-list__summary .govuk-summary-list__value {
+  width: auto;
+  display: table-cell;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #b1b4b6;
+  vertical-align: top;
+}
+
+.app-parcel-list__summary .govuk-summary-list__key {
+  width: 40%;
+  padding-right: 20px;
+  font-weight: 700;
+}
+
+.app-parcel-list__summary .govuk-summary-list__row:last-child .govuk-summary-list__key,
+.app-parcel-list__summary .govuk-summary-list__row:last-child .govuk-summary-list__value {
+  border-bottom: 0;
+}
+
+.app-parcel-list__summary .govuk-body,
+.app-parcel-list__summary .govuk-list {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.app-parcel-list__no-actions {
+  max-width: 100%;
+}
+
+// Keep status tags on one line in list + selected-parcel summary
+#summary-parcel-added-tag,
+#summary-parcel-unavailable-tag,
+.app-parcel-list-view .govuk-tag,
+.app-parcel-status-tag {
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 1.25;
+  vertical-align: middle;
+}
+
+.app-parcel-list-view .govuk-radios__hint .app-parcel-status-tag + .app-parcel-status-tag {
+  margin-left: 8px;
+}
+
+// Match map key colours
+.app-parcel-status-tag--added {
+  background-color: #CFE4DC;
+  color: #0b0c0c;
+}
+
+.app-parcel-status-tag--unavailable {
+  background-color: #E5E6E7;
+  color: #0b0c0c;
+}
+
+// Map key sits under the farm summary (map view only)
+html[data-parcel-view="list"] #parcel-map-key {
+  display: none !important;
+}
+
+.app-map-key {
+  margin-top: 25px;
+}
+
+.app-map-key__heading {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.31579;
+  color: #0b0c0c;
+}
+
+.app-map-key__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-map-key__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.app-map-key__item:last-child {
+  margin-bottom: 0;
+}
+
+.app-map-key__swatch {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: 2px solid;
+}
+
+.app-map-key__swatch--available {
+  background-color: #F1DEB8;
+  border-color: #AE7C60;
+}
+
+.app-map-key__swatch--added {
+  background-color: #CFE4DC;
+  border-color: #083D29;
+}
+
+.app-map-key__swatch--unavailable {
+  background-color: #E5E6E7;
+  border-color: #5E6264;
+}

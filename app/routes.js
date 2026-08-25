@@ -5388,7 +5388,9 @@ router.post('/sfi-grasslands-v3/confirm-land-and-actions', function (req, res) {
     if (req.body.from === 'check-your-answers') {
       sessionData.returnToCheckYourAnswers = true
     }
-    return res.redirect('/sfi-grasslands-v3/select-land?addAnother=1')
+    var parcelView = req.body && req.body.parcelView === 'list' ? 'list' : 'map'
+    var addAnotherQuery = 'addAnother=1' + (parcelView === 'list' ? '&view=list' : '')
+    return res.redirect('/sfi-grasslands-v3/select-land?' + addAnotherQuery)
   }
 
   var goingToCya = action === 'returnToCya' ||

@@ -136,10 +136,11 @@
           </div>
         </div>
 
-        <form action="/sfi-grasslands-v3/confirm-land-and-actions" method="post">
+        <form action="/sfi-grasslands-v3/confirm-land-and-actions" method="post" id="confirm-land-actions-form">
           {% if fromCheckYourAnswers %}
             <input type="hidden" name="from" value="check-your-answers">
           {% endif %}
+          <input type="hidden" name="parcelView" id="parcel-view-preference" value="map">
           <div class="govuk-button-group">
             {% if fromCheckYourAnswers %}
               <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="returnToCya">
@@ -158,4 +159,29 @@
       {% endif %}
     </div>
   </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script>
+    (function() {
+      var SELECT_LAND_PATH = '/sfi-grasslands-v3/select-land';
+      var view = 'map';
+      try {
+        view = sessionStorage.getItem('sfiGrasslandsV3ParcelView') || 'map';
+      } catch (e) {}
+
+      var preference = document.getElementById('parcel-view-preference');
+      if (preference) {
+        preference.value = view === 'list' ? 'list' : 'map';
+      }
+
+      var href = view === 'list' ? (SELECT_LAND_PATH + '?view=list') : SELECT_LAND_PATH;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('a[href="' + SELECT_LAND_PATH + '"], a[href^="' + SELECT_LAND_PATH + '?"]'),
+        function(link) {
+          link.setAttribute('href', href);
+        }
+      );
+    })();
+  </script>
 {% endblock %}
