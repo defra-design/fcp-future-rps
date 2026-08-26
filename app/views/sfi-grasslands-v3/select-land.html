@@ -55,7 +55,6 @@
     }
 
     #summary-parcel-added-tag,
-    #summary-parcel-unavailable-tag,
     .app-parcel-list-view .govuk-tag,
     .app-parcel-status-tag {
       white-space: nowrap;
@@ -64,8 +63,44 @@
       vertical-align: middle;
     }
 
+    /* .govuk-tag { display: inline-block } overrides the HTML hidden attribute */
+    .app-parcel-status-tag[hidden] {
+      display: none !important;
+    }
+
     .app-parcel-list-view .govuk-radios__hint .app-parcel-status-tag + .app-parcel-status-tag {
       margin-left: 8px;
+    }
+
+    /* Exact match for select-actions payment rate / hectares available hints */
+    .app-parcel-list-view .app-action-hint,
+    .app-parcel-list-view .app-action-available-hint {
+      display: block;
+      margin-top: 2px;
+      margin-bottom: 0;
+      padding: 0;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-parcel-list-view .app-parcel-list__added-tag {
+      display: inline-block;
+      margin-top: 10px;
+      margin-left: 0;
+      vertical-align: middle;
+    }
+
+    .app-parcel-list__requirements-intro,
+    .app-parcel-list__requirements-list,
+    .app-parcel-list__requirements-list > li,
+    .app-parcel-list__no-actions {
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1.31579;
+      color: #0b0c0c;
     }
 
     /* Match map key colours */
@@ -201,7 +236,7 @@
     }
 
     body:not(.app-select-land--wide) .app-land-layout {
-      grid-template-columns: minmax(0, 2fr) minmax(10rem, 14rem);
+      grid-template-columns: minmax(0, 2fr) minmax(14rem, 18rem);
     }
 
     .app-land-layout__main {
@@ -244,6 +279,15 @@
       border-bottom: 1px solid #b1b4b6;
       padding-top: 10px;
       padding-bottom: 10px;
+    }
+
+    .app-application-summary .govuk-table__cell:first-child {
+      white-space: nowrap;
+      padding-right: 15px;
+    }
+
+    .app-application-summary .govuk-table__cell--numeric {
+      white-space: nowrap;
     }
 
     @media (max-width: 40.0625em) {
@@ -655,7 +699,7 @@
   </style>
 
   {{ govukBackLink({
-    text: "Back",
+    text: showCancelToLandAndActions and "Back to your land and actions" or "Back to task list",
     href: showCancelToLandAndActions and "/sfi-grasslands-v3/cancel-land-actions-draft" or "/sfi-grasslands-v3/task-list"
   }) }}
 {% endblock %}
@@ -795,14 +839,13 @@
           <dd class="govuk-summary-list__value">
             <span id="summary-parcel-reference">{% if hasDraftParcel %}{{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}{% else %}-{% endif %}</span>
             <strong class="govuk-tag app-parcel-status-tag app-parcel-status-tag--added govuk-!-margin-left-2" id="summary-parcel-added-tag" hidden>Added to application</strong>
-            <strong class="govuk-tag app-parcel-status-tag app-parcel-status-tag--unavailable govuk-!-margin-left-2" id="summary-parcel-unavailable-tag" hidden>No actions available</strong>
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="#" id="clear-parcel-selection-link">Change<span class="govuk-visually-hidden"> parcel selection</span></a>
           </dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Land cover</dt>
+          <dt class="govuk-summary-list__key">Land covers</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-land-cover">
             {% if hasDraftParcel %}
               {% set draftCovers = [] %}
@@ -836,7 +879,7 @@
           <dd class="govuk-summary-list__value" id="summary-parcel-total-area">{% if hasDraftParcel %}{{ draftParcel.totalArea }} ha{% else %}-{% endif %}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Actions available</dt>
+          <dt class="govuk-summary-list__key">Available actions</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-sfi-actions">-</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
@@ -2751,13 +2794,15 @@
     function getAvailableHintText(actionCode, availableAmount) {
       var unit = getQuantityUnitForAction(actionCode);
       var numericAmount = Number(availableAmount);
+      // HEF1 building area has no reliable AAC — user enters what they want
+      if (unit === 'm²') {
+        return '';
+      }
       if (isMetreBasedUnit(unit)) {
         var metresValue = Number.isFinite(numericAmount)
           ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
           : '0';
-        return unit === 'm²'
-          ? metresValue + ' square metres available'
-          : metresValue + ' metres available';
+        return metresValue + ' metres available';
       }
 
       if (Number.isFinite(numericAmount)) {
@@ -4164,13 +4209,13 @@
     }
 
     function buildParcelPopupContent(parcelId, data) {
-      var html = '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
-        '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
-        '<p>Actions available: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
-      if (isParcelAlreadyAdded(parcelId)) {
-        html += '<p>Added to application</p>';
-      }
-      return html;
+      var totalAreaText = data.totalArea
+        ? (formatHaFourDecimals(data.totalArea) + ' ha')
+        : '-';
+      return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
+        '<p>Land covers: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
+        '<p>Total area: ' + totalAreaText + '</p>' +
+        '<p>Available actions: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
     }
 
     function createParcelOverlay(parcelId, data) {
@@ -4577,54 +4622,10 @@
     }
 
     function buildParcelListDetails(parcelId, parcel) {
+      // Revealed on select only — requirements (+ zero-actions).
+      // Total area / available actions / land covers stay on the radio label.
       var details = document.createElement('div');
       details.className = 'app-parcel-list__details';
-
-      var dl = document.createElement('dl');
-      dl.className = 'govuk-summary-list govuk-summary-list--no-border app-parcel-list__summary';
-
-      function addRow(keyText, valueNode) {
-        var row = document.createElement('div');
-        row.className = 'govuk-summary-list__row';
-
-        var key = document.createElement('dt');
-        key.className = 'govuk-summary-list__key';
-        key.textContent = keyText;
-
-        var value = document.createElement('dd');
-        value.className = 'govuk-summary-list__value';
-        if (typeof valueNode === 'string') {
-          value.textContent = valueNode;
-        } else if (valueNode) {
-          value.appendChild(valueNode);
-        } else {
-          value.textContent = '-';
-        }
-
-        row.appendChild(key);
-        row.appendChild(value);
-        dl.appendChild(row);
-      }
-
-      var landCoverValue = document.createElement('span');
-      renderLandCoverSummary(
-        landCoverValue,
-        parcel.landCover,
-        parcel.totalArea,
-        parcelId,
-        parcel
-      );
-      addRow('Land cover', landCoverValue);
-
-      addRow(
-        'Total area',
-        parcel.totalArea ? (formatHaFourDecimals(parcel.totalArea) + ' ha') : '-'
-      );
-
-      addRow(
-        'Action available',
-        String(getParcelAvailableActionsCount(parcelId, parcel))
-      );
 
       var flags = getParcelRequirementFlags(parcelId);
       var requirementItems = [];
@@ -4635,33 +4636,32 @@
         requirementItems.push('a Historic Environment Farm Environment Record (HEFER)');
       }
       if (requirementItems.length) {
-        var requirements = document.createElement('div');
         var intro = document.createElement('p');
-        intro.className = 'govuk-body govuk-!-margin-bottom-1';
+        intro.className = 'govuk-body govuk-!-margin-bottom-1 app-parcel-list__requirements-intro';
         intro.textContent = 'Some actions require:';
+        details.appendChild(intro);
+
         var list = document.createElement('ul');
-        list.className = 'govuk-list govuk-list--bullet govuk-!-margin-bottom-0';
+        list.className = 'govuk-list govuk-list--bullet govuk-!-margin-bottom-2 app-parcel-list__requirements-list';
         requirementItems.forEach(function(itemText) {
           var li = document.createElement('li');
           li.textContent = itemText;
           list.appendChild(li);
         });
-        requirements.appendChild(intro);
-        requirements.appendChild(list);
-        addRow('Requirements', requirements);
+        details.appendChild(list);
       }
 
-      details.appendChild(dl);
-
       if (getParcelAvailableActionsCount(parcelId, parcel) === 0) {
-        var inset = document.createElement('div');
-        inset.className = 'govuk-inset-text app-parcel-list__no-actions govuk-!-margin-top-4 govuk-!-margin-bottom-2';
-        var insetText = document.createElement('p');
-        insetText.className = 'govuk-body govuk-!-margin-bottom-0';
-        insetText.textContent =
+        var noActions = document.createElement('p');
+        noActions.className = 'govuk-body govuk-!-margin-bottom-2 app-parcel-list__no-actions';
+        noActions.textContent =
           'There are no actions available for this land parcel. This may be because of the land cover. Select another land parcel to continue.';
-        inset.appendChild(insetText);
-        details.appendChild(inset);
+        details.appendChild(noActions);
+      }
+
+      // Empty reveal when there is nothing extra to show
+      if (!details.childNodes.length) {
+        details.hidden = true;
       }
 
       return details;
@@ -4704,42 +4704,67 @@
         var label = document.createElement('label');
         label.className = 'govuk-label govuk-radios__label';
         label.setAttribute('for', input.id);
-        label.textContent = reference;
+        label.appendChild(document.createTextNode(reference));
+
+        var describedByParts = [];
+
+        // Same hint pattern as select-actions (payment rate / hectares available)
+        var landCoversId = 'parcel-list-land-covers-' + parcelId;
+        var totalAreaId = 'parcel-list-total-area-' + parcelId;
+        var actionsId = 'parcel-list-available-actions-' + parcelId;
+
+        var landCoversLine = document.createElement('span');
+        landCoversLine.className = 'app-action-hint';
+        landCoversLine.id = landCoversId;
+        var coverNames = getParcelLandCovers(parcel.landCover);
+        landCoversLine.textContent = 'Land covers: ' +
+          (coverNames.length ? coverNames.join(', ') : '-');
+        label.appendChild(landCoversLine);
+
+        var totalAreaLine = document.createElement('span');
+        totalAreaLine.className = 'app-action-hint';
+        totalAreaLine.id = totalAreaId;
+        totalAreaLine.textContent = 'Total area: ' +
+          (parcel.totalArea ? (formatHaFourDecimals(parcel.totalArea) + ' ha') : '-');
+        label.appendChild(totalAreaLine);
+
+        var actionsLine = document.createElement('span');
+        actionsLine.className = 'app-action-available-hint';
+        actionsLine.id = actionsId;
+        actionsLine.textContent = 'Available actions: ' +
+          String(getParcelAvailableActionsCount(parcelId, parcel));
+        label.appendChild(actionsLine);
+
+        describedByParts.push(landCoversId, totalAreaId, actionsId);
+
+        if (isParcelAlreadyAdded(parcelId)) {
+          var addedTagId = 'parcel-list-added-' + parcelId;
+          var addedTag = document.createElement('strong');
+          addedTag.className = 'govuk-tag app-parcel-status-tag app-parcel-status-tag--added app-parcel-list__added-tag';
+          addedTag.id = addedTagId;
+          addedTag.textContent = 'Added to application';
+          label.appendChild(addedTag);
+          describedByParts.push(addedTagId);
+        }
 
         item.appendChild(input);
         item.appendChild(label);
 
-        if (isParcelAlreadyAdded(parcelId) || !parcelHasAvailableActions(parcelId)) {
-          var hintId = 'parcel-list-hint-' + parcelId;
-          var hint = document.createElement('div');
-          hint.className = 'govuk-radios__hint';
-          hint.id = hintId;
-
-          if (isParcelAlreadyAdded(parcelId)) {
-            var addedTag = document.createElement('strong');
-            addedTag.className = 'govuk-tag app-parcel-status-tag app-parcel-status-tag--added';
-            addedTag.textContent = 'Added to application';
-            hint.appendChild(addedTag);
-          }
-
-          if (!parcelHasAvailableActions(parcelId)) {
-            var unavailableTag = document.createElement('strong');
-            unavailableTag.className = 'govuk-tag app-parcel-status-tag app-parcel-status-tag--unavailable';
-            unavailableTag.textContent = 'No actions available';
-            hint.appendChild(unavailableTag);
-          }
-
-          input.setAttribute('aria-describedby', hintId);
-          item.appendChild(hint);
-        }
-
-        var conditional = document.createElement('div');
-        conditional.className = 'govuk-radios__conditional govuk-radios__conditional--hidden';
-        conditional.id = conditionalId;
-        conditional.appendChild(buildParcelListDetails(parcelId, parcel));
+        input.setAttribute('aria-describedby', describedByParts.join(' '));
 
         container.appendChild(item);
-        container.appendChild(conditional);
+
+        var details = buildParcelListDetails(parcelId, parcel);
+        if (details && !details.hidden) {
+          var conditional = document.createElement('div');
+          conditional.className = 'govuk-radios__conditional govuk-radios__conditional--hidden';
+          conditional.id = conditionalId;
+          conditional.appendChild(details);
+          container.appendChild(conditional);
+        } else {
+          input.removeAttribute('aria-controls');
+          input.removeAttribute('aria-expanded');
+        }
       });
 
       syncParcelListConditionals();
@@ -5166,13 +5191,10 @@
       updatePreviousAgreementsSummary(parcelId);
       updateContinueForSelectedParcel(parcelId);
 
+      var added = isParcelAlreadyAdded(parcelId);
       var addedTag = document.getElementById('summary-parcel-added-tag');
       if (addedTag) {
-        addedTag.hidden = !isParcelAlreadyAdded(parcelId);
-      }
-      var unavailableTag = document.getElementById('summary-parcel-unavailable-tag');
-      if (unavailableTag) {
-        unavailableTag.hidden = parcelHasAvailableActions(parcelId);
+        addedTag.hidden = !added;
       }
 
       // List view: details live in the radio conditional (Figma). Map view: show summary below.
@@ -5205,10 +5227,6 @@
       var addedTag = document.getElementById('summary-parcel-added-tag');
       if (addedTag) {
         addedTag.hidden = true;
-      }
-      var unavailableTag = document.getElementById('summary-parcel-unavailable-tag');
-      if (unavailableTag) {
-        unavailableTag.hidden = true;
       }
 
       ['selectedParcelId', 'selectedParcelName', 'selectedParcelOsRef', 'selectedParcelReference', 'selectedParcelTotalArea', 'selectedParcelLandCover', 'selectedParcelAvailableArea'].forEach(function(id) {
@@ -5345,7 +5363,7 @@
       }
 
       // Keep land-selection heading; fill summary panel instead of showing actions
-      document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
+      document.getElementById('page-heading').textContent = 'Select your land parcels';
       document.getElementById('select-parcel-text').style.display = 'block';
       document.getElementById('choose-parcel-text').style.display = 'none';
       document.getElementById('selected-parcel-text').style.display = 'none';
@@ -6708,7 +6726,7 @@
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
         // Keep the canonical land-page heading (do not flash a shorter title)
-        document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
+        document.getElementById('page-heading').textContent = 'Select your land parcels';
 
         var parcelInfoContainer = document.getElementById('parcel-info-container');
         if (parcelInfoContainer) {
@@ -6842,7 +6860,7 @@
           document.getElementById('parcels-list-section').style.display = 'none';
           
           // Reset page heading
-          document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
+          document.getElementById('page-heading').textContent = 'Select your land parcels';
           document.getElementById('select-parcel-text').style.display = 'block';
           document.getElementById('choose-parcel-text').style.display = 'none';
           document.getElementById('selected-parcel-text').style.display = 'none';

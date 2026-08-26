@@ -634,7 +634,7 @@
           </dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Land cover</dt>
+          <dt class="govuk-summary-list__key">Land covers</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-land-cover">
             {% if hasDraftParcel %}
               {% set draftCovers = [] %}
@@ -668,7 +668,7 @@
           <dd class="govuk-summary-list__value" id="summary-parcel-total-area">{% if hasDraftParcel %}{{ draftParcel.totalArea }} ha{% else %}-{% endif %}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Actions available</dt>
+          <dt class="govuk-summary-list__key">Available actions</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-sfi-actions">-</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
@@ -2584,13 +2584,15 @@
     function getAvailableHintText(actionCode, availableAmount) {
       var unit = getQuantityUnitForAction(actionCode);
       var numericAmount = Number(availableAmount);
+      // HEF1 building area has no reliable AAC — user enters what they want
+      if (unit === 'm²') {
+        return '';
+      }
       if (isMetreBasedUnit(unit)) {
         var metresValue = Number.isFinite(numericAmount)
           ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
           : '0';
-        return unit === 'm²'
-          ? metresValue + ' square metres available'
-          : metresValue + ' metres available';
+        return metresValue + ' metres available';
       }
 
       if (Number.isFinite(numericAmount)) {
@@ -3973,8 +3975,8 @@
 
     function buildParcelPopupContent(parcelId, data) {
       var html = '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
-        '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
-        '<p>Actions available: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
+        '<p>Land covers: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
+        '<p>Available actions: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
       if (isParcelAlreadyAdded(parcelId)) {
         html += '<p>Already in your application</p>';
       }
@@ -4765,7 +4767,7 @@
       }
 
       // Keep land-selection heading; fill summary panel instead of showing actions
-      document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
+      document.getElementById('page-heading').textContent = 'Select your land parcels';
       document.getElementById('select-parcel-text').style.display = 'block';
       document.getElementById('choose-parcel-text').style.display = 'none';
       document.getElementById('selected-parcel-text').style.display = 'none';
@@ -6127,7 +6129,7 @@
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
         // Keep the canonical land-page heading (do not flash a shorter title)
-        document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
+        document.getElementById('page-heading').textContent = 'Select your land parcels';
 
         var parcelInfoContainer = document.getElementById('parcel-info-container');
         if (parcelInfoContainer) {
@@ -6261,7 +6263,7 @@
           document.getElementById('parcels-list-section').style.display = 'none';
           
           // Reset page heading
-          document.getElementById('page-heading').textContent = 'Select the land you want to do your actions on';
+          document.getElementById('page-heading').textContent = 'Select your land parcels';
           document.getElementById('select-parcel-text').style.display = 'block';
           document.getElementById('choose-parcel-text').style.display = 'none';
           document.getElementById('selected-parcel-text').style.display = 'none';

@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v3-header.html" %}
 
 {% block pageTitle %}
-  Check your digital maps are correct
+  Before you make an application
 {% endblock %}
 
 {% block beforeContent %}
@@ -22,11 +22,9 @@
       href: "/sfi-grasslands-v3/task-list"
     }) }}
   {% endif %}
-
 {% endblock %}
 
 {% block content %}
-
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
@@ -35,47 +33,40 @@
       {% set journeySection = "Check before you start" %}
       {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">
-        Check your digital maps are correct
+        Before you make an application
       </h1>
 
-      <p class="govuk-body">
-        Before you continue, check that the land details on your digital maps are up to date. If they are not, you may not be able to apply for the Grasslands actions you select. Read the guidance on
-        <a class="govuk-link" href="https://www.gov.uk/guidance/digital-maps-in-the-rural-payments-service-check-and-change-mapping-updates" target="_blank" rel="noopener noreferrer">how to check your digital maps (opens in new tab)</a>.
-      </p>
-
-      <p class="govuk-body">Check that your digital maps show:</p>
+      <p class="govuk-body">You confirm you will:</p>
       <ul class="govuk-list govuk-list--bullet">
-        <li>all the land parcels you want to include in this application</li>
-        <li>the correct total area (in hectares) for each land parcel</li>
-        <li>the correct land covers for each land parcel (for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover)</li>
+        <li>make sure your land remains eligible for the duration of your agreement</li>
+        <li>get an SFI Historic Environment Farm Environment Record (SFI HEFER) from Historic England if you apply for actions on land with historic or archaeological features — you must have this in place before the RPA can offer you an agreement</li>
+        <li>get site of special scientific interest (SSSI) consent from Natural England if you select to do actions on SSSI land — you must not start doing these actions until you have your SSSI consent</li>
+        <li>check if you can do your selected actions on your land if you have land with a conditional exemption from inheritance tax or maintenance fund</li>
+        <li>not apply for actions that include activities you are legally required to carry out or are already funded by other sources</li>
       </ul>
 
-      <p class="govuk-body">
-        <a class="govuk-link" href="#" target="_blank" rel="noopener noreferrer">Check your digital maps (opens in new tab)</a>
-      </p>
-
-      <form class="form" action="/sfi-grasslands-v3/check-land-details-answer" method="post">
+      <form class="form" action="/sfi-grasslands-v3/before-you-make-an-application-answer" method="post">
         {% include "sfi-grasslands-v3/_includes/eligibility-return-to.html" %}
         <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
-          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="land-details-answer-error"{% endif %}>
+          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="land-eligible-answer-error"{% endif %}>
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-              Do your digital maps show the correct land details?
+              Do you confirm this?
             </legend>
             {% if eligibilityError %}
-              <p id="land-details-answer-error" class="govuk-error-message">
+              <p id="land-eligible-answer-error" class="govuk-error-message">
                 <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
               </p>
             {% endif %}
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="land-details-answer-yes" name="land-details-answer" type="radio" value="yes" {% if data['land-details-answer'] == "yes" %}checked{% endif %}>
-                <label class="govuk-label govuk-radios__label" for="land-details-answer-yes">
+                <input class="govuk-radios__input" id="land-eligible-answer-yes" name="land-eligible-answer" type="radio" value="yes" {% if data['land-eligible-answer'] == "yes" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="land-eligible-answer-yes">
                   Yes
                 </label>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="land-details-answer-no" name="land-details-answer" type="radio" value="no" {% if data['land-details-answer'] == "no" %}checked{% endif %}>
-                <label class="govuk-label govuk-radios__label" for="land-details-answer-no">
+                <input class="govuk-radios__input" id="land-eligible-answer-no" name="land-eligible-answer" type="radio" value="no" {% if data['land-eligible-answer'] == "no" %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="land-eligible-answer-no">
                   No
                 </label>
               </div>
@@ -87,8 +78,6 @@
           Save and continue
         </button>
       </form>
-
     </div>
   </div>
-
 {% endblock %}

@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v3-header.html" %}
 
 {% block pageTitle %}
-  Confirm and submit your application
+  Submit your application
 {% endblock %}
 
 {% block beforeContent %}
@@ -11,8 +11,8 @@
   {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
 
   {{ govukBackLink({
-    text: "Back",
-    href: "/sfi-grasslands-v3/before-you-submit"
+    text: "Back to task list",
+    href: "/sfi-grasslands-v3/task-list"
   }) }}
 {% endblock %}
 
@@ -23,7 +23,7 @@
       {% set journeySection = "Review and submit your application" %}
       {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">
-        Confirm and submit your application
+        Submit your application
       </h1>
 
       <p class="govuk-body">

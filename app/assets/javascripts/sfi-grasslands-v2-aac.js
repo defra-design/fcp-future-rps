@@ -1261,8 +1261,8 @@
       return metres.toLocaleString('en-GB') + ' metres available'
     }
     if (unit === 'm²') {
-      var sq = Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0
-      return sq.toLocaleString('en-GB') + ' square metres available'
+      // HEF1 building area has no reliable AAC — user enters what they want
+      return ''
     }
     var ha = Number.isFinite(amount) ? Math.max(0, amount) : 0
     return ha.toFixed(4) + ' hectares available'

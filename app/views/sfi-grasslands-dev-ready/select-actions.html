@@ -108,7 +108,7 @@
                   <td class="govuk-table__cell" id="os-ref">-</td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Land cover</td>
+                  <td class="govuk-table__cell">Land covers</td>
                   <td class="govuk-table__cell" id="land-cover">-</td>
                 </tr>
                 <tr class="govuk-table__row">
@@ -177,7 +177,7 @@
                     <dd class="govuk-summary-list__value" id="aac-parcel-reference">—</dd>
                   </div>
                   <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Land cover</dt>
+                    <dt class="govuk-summary-list__key">Land covers</dt>
                     <dd class="govuk-summary-list__value" id="aac-parcel-land-cover">—</dd>
                   </div>
                   <div class="govuk-summary-list__row">
@@ -266,7 +266,7 @@
               <h2 class="govuk-heading-m app-selected-parcel__name">{{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}</h2>
               <dl class="govuk-summary-list govuk-summary-list--no-border app-selected-parcel__list">
                 <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Land cover</dt>
+                  <dt class="govuk-summary-list__key">Land covers</dt>
                   <dd class="govuk-summary-list__value">
                     {% set draftCovers = [] %}
                     {% if draftParcel.landCover is string %}

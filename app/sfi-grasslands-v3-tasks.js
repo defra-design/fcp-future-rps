@@ -5,6 +5,7 @@
  */
 
 var TASK_IDS = {
+  beforeYouStart: 'beforeYouStart',
   checkBusinessDetails: 'checkBusinessDetails',
   checkLandDetails: 'checkLandDetails',
   confirmEligible: 'confirmEligible',
@@ -22,6 +23,7 @@ var STATUS = {
 }
 
 var DEFAULT_TASKS = {
+  beforeYouStart: STATUS.NOT_STARTED,
   checkBusinessDetails: STATUS.NOT_STARTED,
   checkLandDetails: STATUS.NOT_STARTED,
   confirmEligible: STATUS.NOT_STARTED,
@@ -33,6 +35,7 @@ var DEFAULT_TASKS = {
 var SELECT_LAND_HREF = '/sfi-grasslands-v3/select-land'
 
 var IN_PROGRESS_TASKS = [
+  TASK_IDS.beforeYouStart,
   TASK_IDS.checkBusinessDetails,
   TASK_IDS.checkLandDetails,
   TASK_IDS.confirmEligible
@@ -165,6 +168,12 @@ function syncFromSessionAnswers (req, options) {
   var tasks = ensureTasks(req)
   var hasSelectedLand = options && options.hasSelectedLand
 
+  if (data['land-eligible-answer'] === 'yes') {
+    tasks.beforeYouStart = STATUS.COMPLETED
+  } else if (data['land-eligible-answer'] === 'no' && tasks.beforeYouStart !== STATUS.COMPLETED) {
+    tasks.beforeYouStart = STATUS.IN_PROGRESS
+  }
+
   if (data['business-details-answer'] === 'yes') {
     tasks.checkBusinessDetails = STATUS.COMPLETED
   } else if (data['business-details-answer'] === 'no' && tasks.checkBusinessDetails !== STATUS.COMPLETED) {
@@ -213,6 +222,7 @@ function resolveCheckTask (stored, completed, href) {
 }
 
 function getResolvedTaskStates (req) {
+  var beforeYouStartStored = getStoredStatus(req, TASK_IDS.beforeYouStart)
   var businessStored = getStoredStatus(req, TASK_IDS.checkBusinessDetails)
   var landDetailsStored = getStoredStatus(req, TASK_IDS.checkLandDetails)
   var eligibleStored = getStoredStatus(req, TASK_IDS.confirmEligible)
@@ -220,15 +230,22 @@ function getResolvedTaskStates (req) {
   var checkAnswersStored = getStoredStatus(req, TASK_IDS.checkAnswers)
   var submitStored = getStoredStatus(req, TASK_IDS.submitApplication)
 
+  var beforeYouStartCompleted = beforeYouStartStored === STATUS.COMPLETED
   var businessCompleted = businessStored === STATUS.COMPLETED
   var landDetailsCompleted = landDetailsStored === STATUS.COMPLETED
   var eligibleCompleted = eligibleStored === STATUS.COMPLETED
-  var section1Complete = businessCompleted && landDetailsCompleted && eligibleCompleted
+  var section1Complete = beforeYouStartCompleted && businessCompleted && landDetailsCompleted && eligibleCompleted
   var selectLandCompleted = selectLandStored === STATUS.COMPLETED
   var checkAnswersCompleted = checkAnswersStored === STATUS.COMPLETED
   var submitCompleted = submitStored === STATUS.COMPLETED
 
   // Check before you start — available in any order
+  var beforeYouStart = resolveCheckTask(
+    beforeYouStartStored,
+    beforeYouStartCompleted,
+    '/sfi-grasslands-v3/before-you-make-an-application'
+  )
+
   var checkBusinessDetails = resolveCheckTask(
     businessStored,
     businessCompleted,
@@ -303,13 +320,13 @@ function getResolvedTaskStates (req) {
     submitApplication = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      href: '/sfi-grasslands-v3/before-you-submit'
+      href: '/sfi-grasslands-v3/submit-application'
     }
   } else {
     submitApplication = {
       key: STATUS.INCOMPLETE,
       status: statusViewIncomplete(),
-      href: '/sfi-grasslands-v3/before-you-submit'
+      href: '/sfi-grasslands-v3/submit-application'
     }
   }
 
@@ -322,6 +339,7 @@ function getResolvedTaskStates (req) {
   if (section3Complete) completedSections += 1
 
   return {
+    beforeYouStart: beforeYouStart,
     checkBusinessDetails: checkBusinessDetails,
     checkLandDetails: checkLandDetails,
     confirmEligible: confirmEligible,
@@ -345,6 +363,11 @@ function getTaskListPageData (req) {
     totalSections: states.totalSections,
     applicationComplete: states.applicationComplete,
     section1Items: [
+      buildTaskItem({
+        title: 'Before you make an application',
+        href: states.beforeYouStart.href,
+        status: states.beforeYouStart.status
+      }),
       buildTaskItem({
         title: 'Check your details',
         href: states.checkBusinessDetails.href,
@@ -387,6 +410,7 @@ function getTaskListPageData (req) {
 function getTaskStatusesForView (req) {
   var states = getResolvedTaskStates(req)
   return {
+    beforeYouStart: states.beforeYouStart.status,
     checkBusinessDetails: states.checkBusinessDetails.status,
     checkLandDetails: states.checkLandDetails.status,
     confirmEligible: states.confirmEligible.status,

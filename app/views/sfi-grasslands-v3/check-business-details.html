@@ -10,10 +10,18 @@
   {{ super() }}
   {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
 
-  {{ govukBackLink({
-    text: "Back",
-    href: "/sfi-grasslands-v3/task-list"
-  }) }}
+  {% set fromCheckYourAnswers = (returnTo == 'check-your-answers') or (data['sfiEligibilityReturnTo'] == 'check-your-answers') %}
+  {% if fromCheckYourAnswers %}
+    {{ govukBackLink({
+      text: "Back to check your answers",
+      href: "/sfi-grasslands-v3/check-your-answers"
+    }) }}
+  {% else %}
+    {{ govukBackLink({
+      text: "Back to task list",
+      href: "/sfi-grasslands-v3/task-list"
+    }) }}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -104,7 +112,7 @@
         </div>
 
         <button type="submit" class="govuk-button" data-module="govuk-button">
-          Continue
+          Save and continue
         </button>
       </form>
 

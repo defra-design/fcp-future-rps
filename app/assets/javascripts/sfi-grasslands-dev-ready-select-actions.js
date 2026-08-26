@@ -1853,13 +1853,15 @@ function getAvailableHintText(actionCode, availableAmount) {
   if (isPondUnit(unit)) {
     return '';
   }
+  // HEF1 building area has no reliable AAC — user enters what they want
+  if (unit === 'm²') {
+    return '';
+  }
   if (isMetreBasedUnit(unit)) {
     var metresValue = Number.isFinite(numericAmount)
       ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
       : '0';
-    return unit === 'm²'
-      ? metresValue + ' square metres available'
-      : metresValue + ' metres available';
+    return metresValue + ' metres available';
   }
 
   if (Number.isFinite(numericAmount)) {
@@ -1879,7 +1881,7 @@ function setActionAvailableHint(actionCode, availableAmount) {
     return;
   }
   var unit = getQuantityUnitForAction(actionCode);
-  if (isPondUnit(unit)) {
+  if (isPondUnit(unit) || unit === 'm²') {
     hintEl.textContent = '';
     hintEl.hidden = true;
     return;
@@ -1899,7 +1901,7 @@ function createActionAvailableHint(actionCode) {
   availableHint.className = 'app-action-available-hint';
   availableHint.id = 'action-available-hint-' + codeLower;
   availableHint.setAttribute('data-action-available-hint', String(actionCode || '').toUpperCase());
-  if (isPondUnit(getQuantityUnitForAction(actionCode))) {
+  if (isPondUnit(getQuantityUnitForAction(actionCode)) || getQuantityUnitForAction(actionCode) === 'm²') {
     availableHint.hidden = true;
   } else if (isWholeRemainingAreaAction(actionCode)) {
     // CLIG3: show the pool it will take (not a misleading 0.0000 placeholder)
@@ -3725,7 +3727,7 @@ function getParcelPopupAnchor(mapInstance, lngLat) {
 
 function formatAvailableActionsCountLabel(count) {
   var n = Math.max(0, Math.round(Number(count) || 0));
-  return 'Actions available: ' + n;
+  return 'Available actions: ' + n;
 }
 
 function getParcelAvailableActionsCount(parcelId, data) {
@@ -3738,7 +3740,7 @@ function getParcelAvailableActionsCount(parcelId, data) {
 
 function buildParcelPopupContent(parcelId, data) {
   return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
-    '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
+    '<p>Land covers: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
     '<p>' + formatAvailableActionsCountLabel(getParcelAvailableActionsCount(parcelId, data)) + '</p>';
 }
 
@@ -5454,8 +5456,8 @@ $(document).ready(function(){
           errors.overLimit = 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
         } else if (suffix === 'm' && isOverLimitM) {
           errors.overLimit = 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel';
-        } else if (suffix === 'm²' && isOverLimitM2) {
-          errors.overLimit = 'Total square metres exceeds ' + Math.max(0, Math.round(totalAreaM2)).toLocaleString('en-GB') + ' available on this parcel';
+        } else if (suffix === 'm²') {
+          // HEF1 has no known available AAC — do not block on a prototype estimate
         }
       }
 
@@ -6545,9 +6547,9 @@ $(document).ready(function(){
             Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
             ' metres';
         } else if (action.unit === 'm²') {
-          errors.overLimit = 'Enter up to ' +
-            Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
-            ' square metres';
+          // HEF1 has no known available AAC — do not cap against an estimate
+          refreshQuantityFieldDisplay($input);
+          return;
         } else {
           errors.overLimit = 'Enter up to ' + Number(maxAllowed).toFixed(4) + ' hectares';
         }

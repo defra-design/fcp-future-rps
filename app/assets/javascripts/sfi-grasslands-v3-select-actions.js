@@ -1779,9 +1779,15 @@ function getWholeRemainingAreaHa(actionCode) {
     var match = (calculation.actions || []).filter(function(action) {
       return action.code === code;
     })[0];
-    return match && Number.isFinite(Number(match.available))
-      ? Math.max(0, Number(match.available))
-      : 0;
+    if (!match) {
+      return 0;
+    }
+    // Prefer the pool CLIG3 can take (maxAvailable), not "remaining after itself" (often 0)
+    var pool = Number(match.maxAvailable);
+    if (!Number.isFinite(pool) || pool <= 0) {
+      pool = Number(match.available);
+    }
+    return Number.isFinite(pool) ? Math.max(0, pool) : 0;
   }
 
   if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) {
@@ -1853,13 +1859,15 @@ function getAvailableHintText(actionCode, availableAmount) {
   if (isPondUnit(unit)) {
     return '';
   }
+  // HEF1 building area has no reliable AAC — user enters what they want
+  if (unit === 'm²') {
+    return '';
+  }
   if (isMetreBasedUnit(unit)) {
     var metresValue = Number.isFinite(numericAmount)
       ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
       : '0';
-    return unit === 'm²'
-      ? metresValue + ' square metres available'
-      : metresValue + ' metres available';
+    return metresValue + ' metres available';
   }
 
   if (Number.isFinite(numericAmount)) {
@@ -1879,7 +1887,7 @@ function setActionAvailableHint(actionCode, availableAmount) {
     return;
   }
   var unit = getQuantityUnitForAction(actionCode);
-  if (isPondUnit(unit)) {
+  if (isPondUnit(unit) || unit === 'm²') {
     hintEl.textContent = '';
     hintEl.hidden = true;
     return;
@@ -1899,7 +1907,7 @@ function createActionAvailableHint(actionCode) {
   availableHint.className = 'app-action-available-hint';
   availableHint.id = 'action-available-hint-' + codeLower;
   availableHint.setAttribute('data-action-available-hint', String(actionCode || '').toUpperCase());
-  if (isPondUnit(getQuantityUnitForAction(actionCode))) {
+  if (isPondUnit(getQuantityUnitForAction(actionCode)) || getQuantityUnitForAction(actionCode) === 'm²') {
     availableHint.hidden = true;
   } else if (isWholeRemainingAreaAction(actionCode)) {
     // CLIG3: show the pool it will take (not a misleading 0.0000 placeholder)
@@ -3725,7 +3733,7 @@ function getParcelPopupAnchor(mapInstance, lngLat) {
 
 function formatAvailableActionsCountLabel(count) {
   var n = Math.max(0, Math.round(Number(count) || 0));
-  return 'Actions available: ' + n;
+  return 'Available actions: ' + n;
 }
 
 function getParcelAvailableActionsCount(parcelId, data) {
@@ -3738,7 +3746,7 @@ function getParcelAvailableActionsCount(parcelId, data) {
 
 function buildParcelPopupContent(parcelId, data) {
   return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
-    '<p>Land cover: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
+    '<p>Land covers: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
     '<p>' + formatAvailableActionsCountLabel(getParcelAvailableActionsCount(parcelId, data)) + '</p>';
 }
 
@@ -3922,6 +3930,8 @@ onMapStyleReady(function(mapInstance) {
 });
 
 // Function to restore parcel state from saved selections
+var isRestoringActionSelections = false;
+
 function restoreParcelState(parcelId) {
   if (currentSelectedParcel !== parcelId) {
     return;
@@ -3945,46 +3955,41 @@ function restoreParcelState(parcelId) {
     window.SfiGrasslandsV3ActionsCompatibilityLoading.setSuspended(true);
   }
 
+  isRestoringActionSelections = true;
   try {
-    // Restore each saved action
+    // Restore each saved action without firing change handlers (avoids AAC “Updating…”
+    // and GOV.UK checkbox desync that makes uncheck take two clicks).
     savedSelections.actions.forEach(function(action) {
       if (isClig3Supplement(action.code)) {
         return;
       }
       console.log('Restoring action:', action.code, 'quantity:', action.quantity);
-      
-      // Check the checkbox
+
       var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
       if ($checkbox.length > 0) {
         $checkbox.prop('checked', true);
         $checkbox.attr('aria-expanded', 'true');
-        
-        // Show the conditional content by removing the hidden class
+
         var conditionalId = 'conditional-' + action.code.toLowerCase();
         var $conditional = $('#' + conditionalId);
         if ($conditional.length > 0) {
           $conditional
             .removeClass('govuk-checkboxes__conditional--hidden')
             .removeClass('govuk-radios__conditional--hidden');
-          console.log('Showed conditional for:', action.code);
         }
-        
-        // Restore the quantity if it exists
+
         if (action.quantity) {
           var $quantityInput = $('#quantity-' + action.code.toLowerCase());
           if ($quantityInput.length > 0) {
             $quantityInput.val(action.quantity);
-            console.log('Set quantity for:', action.code, 'to:', action.quantity);
           }
         }
-
-        // Sync GOV.UK conditional behaviour, compatibility and area hints
-        $checkbox.trigger('change');
       } else {
         console.log('Checkbox not found for:', action.code);
       }
     });
   } finally {
+    isRestoringActionSelections = false;
     if (window.SfiGrasslandsV3ActionsCompatibilityLoading) {
       // Keep suspended if AAC mode is on — AAC owns availability while enabled
       if (!(window.SfiGrasslandsV3Aac && window.SfiGrasslandsV3Aac.isEnabled())) {
@@ -3992,11 +3997,13 @@ function restoreParcelState(parcelId) {
       }
     }
     syncClig3SupplementRadiosFromCheckboxes();
+    // AAC first so CLIG3 quantity sync can read the real available pool
     if (window.SfiGrasslandsV3Aac && window.SfiGrasslandsV3Aac.isEnabled()) {
       window.SfiGrasslandsV3Aac.render();
     }
+    syncAllWholeRemainingAreaActions();
   }
-  
+
   var hasQueuedActionFocus = Boolean(pendingActionFocusCode);
 
   // Scroll to the actions section only when no specific action focus is queued.
@@ -4006,12 +4013,6 @@ function restoreParcelState(parcelId) {
     $('html, body').animate({
       scrollTop: $actionsSection.offset().top - 20
     }, 500);
-  }
-
-  // Ensure hectare hints are recalculated immediately after state restore.
-  var $anyQuantityInput = $('input[id^="quantity-"]').first();
-  if ($anyQuantityInput.length > 0) {
-    $anyQuantityInput.trigger('input');
   }
 }
 
@@ -5454,8 +5455,8 @@ $(document).ready(function(){
           errors.overLimit = 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
         } else if (suffix === 'm' && isOverLimitM) {
           errors.overLimit = 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel';
-        } else if (suffix === 'm²' && isOverLimitM2) {
-          errors.overLimit = 'Total square metres exceeds ' + Math.max(0, Math.round(totalAreaM2)).toLocaleString('en-GB') + ' available on this parcel';
+        } else if (suffix === 'm²') {
+          // HEF1 has no known available AAC — do not block on a prototype estimate
         }
       }
 
@@ -6438,7 +6439,11 @@ $(document).ready(function(){
     // AAC mode: checking a box is instant — only quantity entry simulates the API wait
     // (CLIG3 commits quantity on check, so conflicts update immediately)
     if (window.SfiGrasslandsV3Aac && window.SfiGrasslandsV3Aac.isEnabled()) {
-      if (isWholeRemainingAreaAction(actionCode) && $(changedCheckbox).is(':checked')) {
+      if (
+        !isRestoringActionSelections &&
+        isWholeRemainingAreaAction(actionCode) &&
+        $(changedCheckbox).is(':checked')
+      ) {
         window.SfiGrasslandsV3Aac.runUpdate(actionCode);
       } else {
         window.SfiGrasslandsV3Aac.render();
@@ -6545,9 +6550,9 @@ $(document).ready(function(){
             Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
             ' metres';
         } else if (action.unit === 'm²') {
-          errors.overLimit = 'Enter up to ' +
-            Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
-            ' square metres';
+          // HEF1 has no known available AAC — do not cap against an estimate
+          refreshQuantityFieldDisplay($input);
+          return;
         } else {
           errors.overLimit = 'Enter up to ' + Number(maxAllowed).toFixed(4) + ' hectares';
         }

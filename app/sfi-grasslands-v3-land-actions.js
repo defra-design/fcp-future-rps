@@ -134,24 +134,9 @@ function markClig3SupplementsComplete (req, actions) {
 }
 
 function shouldShowClig3Supplements (req, actions) {
-  if (!draftHasClig3(actions)) {
-    return false
-  }
-  var data = getSessionData(req)
-  var parcel = getDraftParcel(req)
-  if (!parcel || !parcel.parcelId) {
-    return true
-  }
-  if (data.clig3SupplementsCompleteParcelId !== parcel.parcelId) {
-    return true
-  }
-  var completeQty = Number(data.clig3SupplementsCompleteQuantity)
-  var currentQty = getClig3AppliedQuantity(actions)
-  if (!Number.isFinite(completeQty)) {
-    return true
-  }
-  // Only return to the supplements page when CLIG3 quantity has changed
-  return Math.abs(completeQty - currentQty) > 0.0001
+  // Always take people through supplements when CLIG3 is selected —
+  // including after they previously chose “no supplement”.
+  return draftHasClig3(actions)
 }
 
 function formatLandCover (landCover) {
@@ -693,8 +678,8 @@ function loadParcelIntoDraftForEdit (req, parcelId) {
     parcel: JSON.parse(JSON.stringify(parcel))
   }
 
-  // Already chose supplements for this saved parcel — only revisit if CLIG3 quantity changes
-  markClig3SupplementsComplete(req, getDraftActions(req))
+  // Re-ask supplements on Save and continue when CLIG3 is (or becomes) selected
+  clearClig3SupplementsComplete(req)
 
   getSessionData(req).sfiApplicationParcels = parcels.filter(function (entry) {
     return entry.parcelId !== parcelId
@@ -823,6 +808,7 @@ module.exports = {
   clearDraft: clearDraft,
   cancelLandActionsDraft: cancelLandActionsDraft,
   shouldShowCancelLandActions: shouldShowCancelLandActions,
+  getLandActionsEditSnapshot: getLandActionsEditSnapshot,
   formatLandCover: formatLandCover,
   getParcelDisplayReference: getParcelDisplayReference,
   upsertApplicationParcel: upsertApplicationParcel,

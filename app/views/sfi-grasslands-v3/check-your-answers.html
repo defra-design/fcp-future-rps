@@ -11,6 +11,10 @@
   {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-confirm-land-and-actions.css">
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-check-your-answers.css">
+  {{ govukBackLink({
+    text: "Back to task list",
+    href: "/sfi-grasslands-v3/task-list"
+  }) }}
 {% endblock %}
 
 {% block content %}
@@ -24,6 +28,17 @@
 
     <h2 class="govuk-heading-m">Before you start</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Before you make an application
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['land-eligible-answer'] | capitalize if data['land-eligible-answer'] else 'Yes' }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="/sfi-grasslands-v3/before-you-make-an-application?from=check-your-answers">Change<span class="govuk-visually-hidden"> before you make an application</span></a>
+        </dd>
+      </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           Details are correct
@@ -197,7 +212,7 @@
       </div>
     </div>
       
-         <form class="form" action="/sfi-grasslands-v3/before-you-submit" method="post">
+         <form class="form" action="/sfi-grasslands-v3/check-your-answers" method="post">
 <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
   Save and continue
 </button>
