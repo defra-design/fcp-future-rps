@@ -13,10 +13,17 @@
   {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
   {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
 
-  {{ govukBackLink({
-    text: "Back",
-    href: fromCheckYourAnswers and "/sfi-grasslands-dev-ready/check-your-answers" or (summary.isEmpty and "/sfi-grasslands-dev-ready/task-list" or "/sfi-grasslands-dev-ready/select-actions")
-  }) }}
+  {% if fromCheckYourAnswers %}
+    {{ govukBackLink({
+      text: "Back to check your answers",
+      href: "/sfi-grasslands-dev-ready/check-your-answers"
+    }) }}
+  {% else %}
+    {{ govukBackLink({
+      text: "Back to task list",
+      href: "/sfi-grasslands-dev-ready/task-list"
+    }) }}
+  {% endif %}
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-dev-ready-confirm-land-and-actions.css">
 {% endblock %}
 

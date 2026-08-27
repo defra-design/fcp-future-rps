@@ -10,7 +10,7 @@
   {{ super() }}
   {% include "sfi-grasslands-dev-ready/_includes/account-bar.html" %}
   {{ govukBackLink({
-    text: "Back",
+    text: backLinkText or "Back to select actions",
     href: backHref or "/sfi-grasslands-dev-ready/select-actions"
   }) }}
 {% endblock %}
@@ -85,6 +85,12 @@
       {% include "sfi-grasslands-dev-ready/_includes/journey-caption.html" %}
 
       <h1 class="govuk-heading-l">Add a supplement to CLIG3</h1>
+
+      {% if draftParcel %}
+        <p class="govuk-body">
+          <strong>Parcel reference:</strong> {{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}
+        </p>
+      {% endif %}
 
       <form action="/sfi-grasslands-dev-ready/clig3-supplements" method="post" novalidate>
         {% if fromCheckYourAnswers %}
@@ -204,7 +210,7 @@
         {% if showCancelToLandAndActions %}
           <p class="govuk-body">
             <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-dev-ready/cancel-land-actions-draft">
-              Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+              Cancel<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
             </a>
           </p>
         {% endif %}

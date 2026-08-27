@@ -22,9 +22,14 @@
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-dev-ready-select-actions.css">
 
-  {% if not showCancelToLandAndActions %}
+  {% if isEditingLandActions %}
     {{ govukBackLink({
-      text: "Back",
+      text: "Back to your land and actions",
+      href: "/sfi-grasslands-dev-ready/cancel-land-actions-draft"
+    }) }}
+  {% else %}
+    {{ govukBackLink({
+      text: "Back to select your land parcels",
       href: "/sfi-grasslands-dev-ready/select-land"
     }) }}
   {% endif %}
@@ -250,7 +255,7 @@
             {% if showCancelToLandAndActions %}
               <p class="govuk-body">
                 <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-dev-ready/cancel-land-actions-draft">
-                  Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+                  Cancel<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
                 </a>
               </p>
             {% endif %}

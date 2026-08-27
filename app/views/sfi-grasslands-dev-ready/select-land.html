@@ -508,7 +508,7 @@
   </style>
 
   {{ govukBackLink({
-    text: "Back",
+    text: showCancelToLandAndActions and "Back to your land and actions" or "Back to task list",
     href: showCancelToLandAndActions and "/sfi-grasslands-dev-ready/cancel-land-actions-draft" or "/sfi-grasslands-dev-ready/task-list"
   }) }}
 {% endblock %}
@@ -712,7 +712,7 @@
       {% if showCancelToLandAndActions %}
         <p class="govuk-body">
           <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-dev-ready/cancel-land-actions-draft">
-            Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+            Cancel<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
           </a>
         </p>
       {% endif %}

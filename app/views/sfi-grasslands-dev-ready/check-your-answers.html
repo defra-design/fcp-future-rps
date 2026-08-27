@@ -9,6 +9,11 @@
 {% block beforeContent %}
   {{ super() }}
   {% include "sfi-grasslands-dev-ready/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back to task list",
+    href: "/sfi-grasslands-dev-ready/task-list"
+  }) }}
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-dev-ready-confirm-land-and-actions.css">
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-dev-ready-check-your-answers.css">
 {% endblock %}

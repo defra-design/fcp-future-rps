@@ -343,7 +343,7 @@
 
     .app-map-key__swatch--available {
       background-color: #F1DEB8;
-      border-color: #AE7C60;
+      border-color: #8A5A44;
     }
 
     .app-map-key__swatch--added {
@@ -353,7 +353,7 @@
 
     .app-map-key__swatch--unavailable {
       background-color: #E5E6E7;
-      border-color: #5E6264;
+      border-color: #505A5F;
     }
 
     .app-application-summary__selected {
@@ -922,7 +922,7 @@
       {% if showCancelToLandAndActions %}
         <p class="govuk-body">
           <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v3/cancel-land-actions-draft">
-            Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+            Cancel<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
           </a>
         </p>
       {% endif %}
@@ -3851,12 +3851,12 @@
     // Status colours matched to map legend (selected stays GOV.UK yellow)
     var PARCEL_STATUS_COLOURS = {
       availableFill: '#F1DEB8',
-      availableBorder: '#AE7C60',
+      availableBorder: '#8A5A44',
       selectedFill: '#FFDD00',
       addedFill: '#CFE4DC',
       addedBorder: '#083D29',
       unavailableFill: '#E5E6E7',
-      unavailableBorder: '#5E6264',
+      unavailableBorder: '#505A5F',
       darkBorder: '#0b0c0c'
     };
 
@@ -5043,8 +5043,8 @@
       }
     }
 
-    function showParcelSelectionError() {
-      var errorMessage = 'Select a land parcel before you continue.';
+    function showParcelSelectionError(message) {
+      var errorMessage = message || 'Select a land parcel before you continue.';
       var $summary = $('#parcel-selection-error-summary');
       var $list = $('#parcel-selection-error-summary-list');
       var formGroup = document.getElementById(
@@ -5084,19 +5084,17 @@
       var continueButton = document.getElementById('continue-button');
       var continueForm = document.getElementById('continue-form');
       var noticeEl = document.getElementById('no-actions-available-warning');
-      var hasParcel = Boolean(parcelId && parcelData[parcelId]);
-      var hasActions = hasParcel && parcelHasAvailableActions(parcelId);
-      var blockContinue = hasParcel && !hasActions;
 
+      // Keep Continue visible even when the parcel has no actions — validate on submit instead
       if (noticeEl) {
-        noticeEl.hidden = !blockContinue;
+        noticeEl.hidden = true;
       }
       if (continueButton) {
-        continueButton.hidden = blockContinue;
-        continueButton.disabled = blockContinue;
+        continueButton.hidden = false;
+        continueButton.disabled = false;
       }
       if (continueForm) {
-        continueForm.hidden = blockContinue;
+        continueForm.hidden = false;
       }
     }
 
@@ -6890,12 +6888,9 @@
           }
           if (!parcelHasAvailableActions(parcelId)) {
             e.preventDefault();
-            updateContinueForSelectedParcel(parcelId);
-            var warningEl = document.getElementById('no-actions-available-warning');
-            if (warningEl && typeof warningEl.focus === 'function') {
-              warningEl.setAttribute('tabindex', '-1');
-              warningEl.focus();
-            }
+            showParcelSelectionError(
+              'There are no actions available for this land parcel. This may be because of the land cover. Select another land parcel to continue.'
+            );
             return false;
           }
           hideParcelSelectionError();
@@ -6903,12 +6898,22 @@
           sessionStorage.removeItem('editingFromCheckYourAnswers');
         });
 
-        // Error summary link focuses the map field (required control)
+        // Error summary link focuses the selected control (map or list)
         $(document).on('click', '#parcel-selection-error-summary a[href="#map-field"]', function(e) {
           e.preventDefault();
           var mapField = document.getElementById('map-field');
           if (mapField) {
             mapField.focus();
+          }
+        });
+        $(document).on('click', '#parcel-selection-error-summary a[href="#parcel-list-fieldset"]', function(e) {
+          e.preventDefault();
+          var listFieldset = document.getElementById('parcel-list-fieldset');
+          var checked = listFieldset && listFieldset.querySelector('input[type="radio"]:checked');
+          if (checked) {
+            checked.focus();
+          } else if (listFieldset) {
+            listFieldset.focus();
           }
         });
 

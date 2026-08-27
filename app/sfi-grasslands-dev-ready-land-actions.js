@@ -807,6 +807,7 @@ module.exports = {
   setDraftActions: setDraftActions,
   clearDraft: clearDraft,
   cancelLandActionsDraft: cancelLandActionsDraft,
+  getLandActionsEditSnapshot: getLandActionsEditSnapshot,
   shouldShowCancelLandActions: shouldShowCancelLandActions,
   formatLandCover: formatLandCover,
   getParcelDisplayReference: getParcelDisplayReference,

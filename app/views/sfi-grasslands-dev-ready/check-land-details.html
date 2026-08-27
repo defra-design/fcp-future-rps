@@ -10,10 +10,18 @@
   {{ super() }}
   {% include "sfi-grasslands-dev-ready/_includes/account-bar.html" %}
 
-  {{ govukBackLink({
-    text: "Back",
-    href: "/sfi-grasslands-dev-ready/check-business-details"
-  }) }}
+  {% set fromCheckYourAnswers = (returnTo == 'check-your-answers') or (data['sfiEligibilityReturnTo'] == 'check-your-answers') %}
+  {% if fromCheckYourAnswers %}
+    {{ govukBackLink({
+      text: "Back to check your answers",
+      href: "/sfi-grasslands-dev-ready/check-your-answers"
+    }) }}
+  {% else %}
+    {{ govukBackLink({
+      text: "Back to task list",
+      href: "/sfi-grasslands-dev-ready/task-list"
+    }) }}
+  {% endif %}
 
 {% endblock %}
 

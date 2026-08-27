@@ -86,6 +86,12 @@
 
       <h1 class="govuk-heading-l">Add a supplement to CLIG3</h1>
 
+      {% if draftParcel %}
+        <p class="govuk-body">
+          <strong>Parcel reference:</strong> {{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}
+        </p>
+      {% endif %}
+
       <form action="/sfi-grasslands-v3/clig3-supplements" method="post" novalidate>
         {% if fromCheckYourAnswers %}
           <input type="hidden" name="from" value="check-your-answers">
@@ -204,7 +210,7 @@
         {% if showCancelToLandAndActions %}
           <p class="govuk-body">
             <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v3/cancel-land-actions-draft">
-              Cancel changes<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+              Cancel<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
             </a>
           </p>
         {% endif %}

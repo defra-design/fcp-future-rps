@@ -86,6 +86,12 @@
 
       <h1 class="govuk-heading-l">Add a supplement to CLIG3</h1>
 
+      {% if draftParcel %}
+        <p class="govuk-body">
+          <strong>Parcel reference:</strong> {{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}
+        </p>
+      {% endif %}
+
       <form action="/sfi-grasslands-v2/clig3-supplements" method="post" novalidate>
         {% if fromCheckYourAnswers %}
           <input type="hidden" name="from" value="check-your-answers">
