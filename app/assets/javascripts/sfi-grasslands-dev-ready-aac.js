@@ -672,6 +672,15 @@
     return SUPPLEMENT_BASE_BY_CODE[String(code || '').toUpperCase()] || null
   }
 
+  // User-entered quantity only — no shared land pool or available-land hint to recalculate.
+  var ACTIONS_WITHOUT_AAC_LAND_POOL = {
+    HEF1: true
+  }
+
+  function actionSkipsAacLandUpdate (code) {
+    return Boolean(ACTIONS_WITHOUT_AAC_LAND_POOL[String(code || '').toUpperCase()])
+  }
+
   function actionsShareStackingLand (codeA, codeB) {
     var a = String(codeA || '').toUpperCase()
     var b = String(codeB || '').toUpperCase()
@@ -1537,6 +1546,15 @@
     var requestId = state.requestId
 
     syncSelectionsFromDom()
+
+    if (actionSkipsAacLandUpdate(editedCode)) {
+      var immediate = render()
+      if (typeof state.onAfterRecalculate === 'function') {
+        state.onAfterRecalculate(immediate)
+      }
+      return Promise.resolve(immediate)
+    }
+
     setBusy(true, editedCode)
 
     return new Promise(function (resolve) {
