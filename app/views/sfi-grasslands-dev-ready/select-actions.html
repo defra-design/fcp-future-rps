@@ -167,7 +167,7 @@
             <div class="govuk-summary-card">
               <div class="govuk-summary-card__title-wrapper">
                 <h2 class="govuk-summary-card__title">Selected land parcel</h2>
-                {% if not showCancelToLandAndActions %}
+                {% if not isEditingLandActions %}
                   <ul class="govuk-summary-card__actions">
                     <li class="govuk-summary-card__action">
                       <a class="govuk-link" href="/sfi-grasslands-dev-ready/select-land">Change<span class="govuk-visually-hidden" id="aac-parcel-change-hidden"> land parcel</span></a>
@@ -303,7 +303,7 @@
                   </dd>
                 </div>
               </dl>
-              {% if not showCancelToLandAndActions %}
+              {% if not isEditingLandActions %}
                 <p class="govuk-body app-selected-parcel__change">
                   <a class="govuk-link" href="/sfi-grasslands-dev-ready/select-land">Change parcel</a>
                 </p>

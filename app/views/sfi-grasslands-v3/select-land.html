@@ -68,6 +68,12 @@
       display: none !important;
     }
 
+    /* .govuk-error-message { display: block } overrides the HTML hidden attribute */
+    #map-field-error[hidden],
+    #parcel-list-field-error[hidden] {
+      display: none !important;
+    }
+
     .app-parcel-list-view .govuk-radios__hint .app-parcel-status-tag + .app-parcel-status-tag {
       margin-left: 8px;
     }
@@ -94,8 +100,7 @@
 
     .app-parcel-list__requirements-intro,
     .app-parcel-list__requirements-list,
-    .app-parcel-list__requirements-list > li,
-    .app-parcel-list__no-actions {
+    .app-parcel-list__requirements-list > li {
       font-family: "GDS Transport", arial, sans-serif;
       font-size: 19px;
       font-weight: 400;
@@ -744,6 +749,10 @@
             <span class="govuk-label govuk-visually-hidden" id="map-field-label">
               Select a land parcel on the map
             </span>
+            <p class="govuk-error-message" id="map-field-error" hidden>
+              <span class="govuk-visually-hidden">Error:</span>
+              <span id="map-field-error-text">Select a land parcel before you continue.</span>
+            </p>
             <div
               id="map-field"
               class="app-map-field map-viewport"
@@ -774,6 +783,10 @@
               <legend class="govuk-fieldset__legend govuk-visually-hidden">
                 Select a land parcel
               </legend>
+              <p class="govuk-error-message" id="parcel-list-field-error" hidden>
+                <span class="govuk-visually-hidden">Error:</span>
+                <span id="parcel-list-field-error-text">Select a land parcel before you continue.</span>
+              </p>
               <div class="govuk-radios" id="parcel-list-radios">
                 {# Populated from the same parcelData as the map #}
               </div>
@@ -900,10 +913,6 @@
           </dd>
         </div>
       </dl>
-
-      <div class="govuk-inset-text govuk-!-margin-top-6" id="no-actions-available-warning" hidden>
-        <p class="govuk-body govuk-!-margin-bottom-0">There are no actions available for this land parcel. This may be because of the land cover. Select another land parcel to continue.</p>
-      </div>
     </div>
 
     <form action="/sfi-grasslands-v3/select-land" method="post" id="continue-form" class="govuk-!-margin-top-6">
@@ -4653,17 +4662,6 @@
         details.appendChild(list);
       }
 
-      if (getParcelAvailableActionsCount(parcelId, parcel) === 0) {
-        var noActions = document.createElement('div');
-        noActions.className = 'govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2 app-parcel-list__no-actions';
-        var noActionsText = document.createElement('p');
-        noActionsText.className = 'govuk-body govuk-!-margin-bottom-0';
-        noActionsText.textContent =
-          'There are no actions available for this land parcel. This may be because of the land cover. Select another land parcel to continue.';
-        noActions.appendChild(noActionsText);
-        details.appendChild(noActions);
-      }
-
       // Empty reveal when there is nothing extra to show
       if (!details.childNodes.length) {
         details.hidden = true;
@@ -5028,6 +5026,8 @@
       var mapFormGroup = document.getElementById('map-form-group');
       var listFormGroup = document.getElementById('parcel-list-form-group');
       var mapField = document.getElementById('map-field');
+      var mapFieldError = document.getElementById('map-field-error');
+      var listFieldError = document.getElementById('parcel-list-field-error');
 
       $summary.prop('hidden', true).attr('aria-hidden', 'true');
 
@@ -5036,6 +5036,12 @@
       }
       if (listFormGroup) {
         listFormGroup.classList.remove('govuk-form-group--error');
+      }
+      if (mapFieldError) {
+        mapFieldError.hidden = true;
+      }
+      if (listFieldError) {
+        listFieldError.hidden = true;
       }
       if (mapField) {
         mapField.removeAttribute('aria-invalid');
@@ -5058,6 +5064,12 @@
       var mapField = document.getElementById('map-field');
       var errorTarget = currentParcelView === 'list' ? '#parcel-list-fieldset' : '#map-field';
       var errorLink = document.getElementById('parcel-selection-error-link');
+      var inlineError = document.getElementById(
+        currentParcelView === 'list' ? 'parcel-list-field-error' : 'map-field-error'
+      );
+      var inlineErrorText = document.getElementById(
+        currentParcelView === 'list' ? 'parcel-list-field-error-text' : 'map-field-error-text'
+      );
 
       $list.html(
         '<li><a href="' + errorTarget + '" id="parcel-selection-error-link">' + errorMessage + '</a></li>'
@@ -5067,12 +5079,19 @@
       if (errorLink) {
         errorLink.setAttribute('href', errorTarget);
       }
+      if (inlineErrorText) {
+        inlineErrorText.textContent = errorMessage;
+      }
+      if (inlineError) {
+        inlineError.hidden = false;
+      }
 
       if (formGroup) {
         formGroup.classList.add('govuk-form-group--error');
       }
       if (mapField && currentParcelView === 'map') {
         mapField.setAttribute('aria-invalid', 'true');
+        mapField.setAttribute('aria-describedby', 'map-field-error select-parcel-text map-keyboard-hint');
       }
 
       var pageTitle = document.title || '';
@@ -5088,16 +5107,10 @@
     function updateContinueForSelectedParcel(parcelId) {
       var continueButton = document.getElementById('continue-button');
       var continueForm = document.getElementById('continue-form');
-      var noticeEl = document.getElementById('no-actions-available-warning');
-      var hasParcel = Boolean(parcelId && parcelData[parcelId]);
-      var noActions = hasParcel && !parcelHasAvailableActions(parcelId);
 
-      if (noticeEl) {
-        noticeEl.hidden = !noActions;
-      }
       if (continueButton) {
         continueButton.hidden = false;
-        continueButton.disabled = noActions;
+        continueButton.disabled = false;
       }
       if (continueForm) {
         continueForm.hidden = false;
@@ -5250,6 +5263,7 @@
       }
 
       updateContinueForSelectedParcel(null);
+      hideParcelSelectionError();
 
       syncParcelListSelection(null);
 
@@ -6895,7 +6909,7 @@
           if (!parcelHasAvailableActions(parcelId)) {
             e.preventDefault();
             showParcelSelectionError(
-              'There are no actions available for this land parcel. This may be because of the land cover. Select another land parcel to continue.'
+              'There are no actions available for this land parcel. Select another land parcel to continue.'
             );
             return false;
           }

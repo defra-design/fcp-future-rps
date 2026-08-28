@@ -47,6 +47,12 @@ body:not(.app-select-land--wide) .app-land-layout {
   display: none !important;
 }
 
+// .govuk-error-message { display: block } overrides the HTML hidden attribute
+#map-field-error[hidden],
+#parcel-list-field-error[hidden] {
+  display: none !important;
+}
+
 .app-parcel-list__details {
   display: block;
   margin-top: 0;

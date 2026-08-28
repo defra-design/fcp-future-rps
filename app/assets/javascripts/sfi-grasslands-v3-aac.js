@@ -877,9 +877,25 @@
       })
     })
 
+    var availableHaRemaining = Math.max(0, roundHa(profile.availableHa - haUsedBySelections))
+
+    // When selected actions use the full parcel hectare pool, do not leave
+    // residual "available" on other ha actions because of per-action eligible overlap.
+    if (availableHaRemaining <= 0.0001) {
+      results.forEach(function (action) {
+        if (action.unit !== 'ha' || action.selectedQuantity > 0 || action.hardConflict) {
+          return
+        }
+        action.status = 'unavailable'
+        action.statusText = 'Unavailable'
+        action.available = 0
+        action.summaryReason = 'No land is left for this action. The remaining eligible land is being used by your other selected actions.'
+      })
+    }
+
     return {
       profile: profile,
-      availableHaRemaining: Math.max(0, roundHa(profile.availableHa - haUsedBySelections)),
+      availableHaRemaining: availableHaRemaining,
       actions: results
     }
   }

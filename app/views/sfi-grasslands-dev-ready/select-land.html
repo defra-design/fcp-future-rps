@@ -131,6 +131,11 @@
       min-width: 0;
     }
 
+    /* .govuk-error-message { display: block } overrides the HTML hidden attribute */
+    #map-field-error[hidden] {
+      display: none !important;
+    }
+
     .app-application-summary {
       display: block;
       margin-top: 0;
@@ -547,6 +552,10 @@
         <span class="govuk-label govuk-visually-hidden" id="map-field-label">
           Select a land parcel on the map
         </span>
+        <p class="govuk-error-message" id="map-field-error" hidden>
+          <span class="govuk-visually-hidden">Error:</span>
+          <span id="map-field-error-text">Select a land parcel on the map before you continue.</span>
+        </p>
         <div
           id="map-field"
           class="app-map-field map-viewport"
@@ -689,11 +698,6 @@
           </dd>
         </div>
       </dl>
-
-      <div class="govuk-inset-text govuk-!-margin-top-6" id="no-actions-available-warning" hidden>
-        <p class="govuk-body">There are no actions available for this land parcel in this application.</p>
-        <p class="govuk-body govuk-!-margin-bottom-0">This may be because of the land cover on the parcel. Select another land parcel to continue.</p>
-      </div>
     </div>
 
     <form action="/sfi-grasslands-dev-ready/select-land" method="post" id="continue-form" class="govuk-!-margin-top-6">
@@ -3974,13 +3978,13 @@
     }
 
     function buildParcelPopupContent(parcelId, data) {
-      var html = '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
+      var totalAreaText = data.totalArea
+        ? (formatHaFourDecimals(data.totalArea) + ' ha')
+        : '-';
+      return '<h3>' + formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, data)) + '</h3>' +
         '<p>Land covers: ' + formatLandCoverDisplay(data.landCover) + '</p>' +
+        '<p>Total area: ' + totalAreaText + '</p>' +
         '<p>Available actions: ' + getParcelAvailableActionsCount(parcelId, data) + '</p>';
-      if (isParcelAlreadyAdded(parcelId)) {
-        html += '<p>Already in your application</p>';
-      }
-      return html;
     }
 
     function createParcelOverlay(parcelId, data) {
@@ -4446,11 +4450,15 @@
       var $summary = $('#parcel-selection-error-summary');
       var formGroup = document.getElementById('map-form-group');
       var mapField = document.getElementById('map-field');
+      var mapFieldError = document.getElementById('map-field-error');
 
       $summary.prop('hidden', true).attr('aria-hidden', 'true');
 
       if (formGroup) {
         formGroup.classList.remove('govuk-form-group--error');
+      }
+      if (mapFieldError) {
+        mapFieldError.hidden = true;
       }
       if (mapField) {
         mapField.removeAttribute('aria-invalid');
@@ -4463,23 +4471,33 @@
       }
     }
 
-    function showParcelSelectionError() {
-      var errorMessage = 'Select a land parcel on the map before you continue.';
+    function showParcelSelectionError(message) {
+      var errorMessage = message || 'Select a land parcel on the map before you continue.';
       var $summary = $('#parcel-selection-error-summary');
       var $list = $('#parcel-selection-error-summary-list');
       var formGroup = document.getElementById('map-form-group');
       var mapField = document.getElementById('map-field');
+      var mapFieldError = document.getElementById('map-field-error');
+      var mapFieldErrorText = document.getElementById('map-field-error-text');
 
       $list.html(
         '<li><a href="#map-field">' + errorMessage + '</a></li>'
       );
       $summary.prop('hidden', false).attr('aria-hidden', 'false');
 
+      if (mapFieldErrorText) {
+        mapFieldErrorText.textContent = errorMessage;
+      }
+      if (mapFieldError) {
+        mapFieldError.hidden = false;
+      }
+
       if (formGroup) {
         formGroup.classList.add('govuk-form-group--error');
       }
       if (mapField) {
         mapField.setAttribute('aria-invalid', 'true');
+        mapField.setAttribute('aria-describedby', 'map-field-error select-parcel-text map-keyboard-hint');
       }
 
       var pageTitle = document.title || '';
@@ -4503,20 +4521,13 @@
     function updateContinueForSelectedParcel(parcelId) {
       var continueButton = document.getElementById('continue-button');
       var continueForm = document.getElementById('continue-form');
-      var noticeEl = document.getElementById('no-actions-available-warning');
-      var hasParcel = Boolean(parcelId && parcelData[parcelId]);
-      var hasActions = hasParcel && parcelHasAvailableActions(parcelId);
-      var blockContinue = hasParcel && !hasActions;
 
-      if (noticeEl) {
-        noticeEl.hidden = !blockContinue;
-      }
       if (continueButton) {
-        continueButton.hidden = blockContinue;
-        continueButton.disabled = blockContinue;
+        continueButton.hidden = false;
+        continueButton.disabled = false;
       }
       if (continueForm) {
-        continueForm.hidden = blockContinue;
+        continueForm.hidden = false;
       }
     }
 
@@ -4652,6 +4663,7 @@
       }
 
       updateContinueForSelectedParcel(null);
+      hideParcelSelectionError();
 
       Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
         panel.style.display = '';
@@ -6293,12 +6305,9 @@
           }
           if (!parcelHasAvailableActions(parcelId)) {
             e.preventDefault();
-            updateContinueForSelectedParcel(parcelId);
-            var warningEl = document.getElementById('no-actions-available-warning');
-            if (warningEl && typeof warningEl.focus === 'function') {
-              warningEl.setAttribute('tabindex', '-1');
-              warningEl.focus();
-            }
+            showParcelSelectionError(
+              'There are no actions available for this land parcel. Select another land parcel to continue.'
+            );
             return false;
           }
           hideParcelSelectionError();
