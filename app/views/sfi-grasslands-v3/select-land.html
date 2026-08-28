@@ -4529,6 +4529,7 @@
         if (listSummary) {
           listSummary.hidden = true;
         }
+        updateContinueForSelectedParcel(currentSelectedParcel);
       } else {
         listView.hidden = true;
         listView.style.display = 'none';
@@ -4543,6 +4544,7 @@
         if (mapSummary && currentSelectedParcel) {
           mapSummary.hidden = false;
         }
+        updateContinueForSelectedParcel(currentSelectedParcel);
         window.setTimeout(function() {
           if (typeof map !== 'undefined' && map) {
             if (typeof map.resize === 'function') {
@@ -4652,10 +4654,13 @@
       }
 
       if (getParcelAvailableActionsCount(parcelId, parcel) === 0) {
-        var noActions = document.createElement('p');
-        noActions.className = 'govuk-body govuk-!-margin-bottom-2 app-parcel-list__no-actions';
-        noActions.textContent =
+        var noActions = document.createElement('div');
+        noActions.className = 'govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2 app-parcel-list__no-actions';
+        var noActionsText = document.createElement('p');
+        noActionsText.className = 'govuk-body govuk-!-margin-bottom-0';
+        noActionsText.textContent =
           'There are no actions available for this land parcel. This may be because of the land cover. Select another land parcel to continue.';
+        noActions.appendChild(noActionsText);
         details.appendChild(noActions);
       }
 
@@ -5084,14 +5089,15 @@
       var continueButton = document.getElementById('continue-button');
       var continueForm = document.getElementById('continue-form');
       var noticeEl = document.getElementById('no-actions-available-warning');
+      var hasParcel = Boolean(parcelId && parcelData[parcelId]);
+      var noActions = hasParcel && !parcelHasAvailableActions(parcelId);
 
-      // Keep Continue visible even when the parcel has no actions — validate on submit instead
       if (noticeEl) {
-        noticeEl.hidden = true;
+        noticeEl.hidden = !noActions;
       }
       if (continueButton) {
         continueButton.hidden = false;
-        continueButton.disabled = false;
+        continueButton.disabled = noActions;
       }
       if (continueForm) {
         continueForm.hidden = false;
