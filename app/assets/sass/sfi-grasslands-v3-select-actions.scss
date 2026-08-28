@@ -525,6 +525,14 @@
   display: none;
 }
 
+.app-existing-agreement .govuk-heading-s {
+  margin-top: 0;
+}
+
+.app-existing-agreement .govuk-summary-list {
+  margin-bottom: 0;
+}
+
 .app-aac-parcel-summary .govuk-summary-card {
   margin-bottom: 0;
 }
@@ -670,7 +678,8 @@
   display: none !important;
 }
 
-#actions-section #actions-checkboxes-container > .app-action-list-group-heading + .govuk-checkboxes__item {
+#actions-section #actions-checkboxes-container > .app-action-list-group-heading + .govuk-checkboxes__item,
+#actions-section #actions-checkboxes-container > .app-action-list-group-lead-in + .govuk-checkboxes__item {
   border-top: 0;
   margin-top: 0;
 }
@@ -728,7 +737,8 @@
 }
 
 #aac-actions-intro[hidden],
-#aac-actions-intro-protected-notes[hidden] {
+#aac-actions-intro-protected-notes[hidden],
+#aac-actions-intro #aac-parcel-area-details[hidden] {
   display: none !important;
 }
 
@@ -743,20 +753,22 @@
   font-weight: 400;
 }
 
-.app-action-availability-details__list {
+.app-action-availability-details__table {
   margin-bottom: 0;
-  max-width: 22rem;
+  max-width: 340px;
 }
 
-.app-action-availability-details__list .govuk-summary-list__key,
-.app-action-availability-details__list .govuk-summary-list__value {
+.app-action-availability-details__table .govuk-table__header,
+.app-action-availability-details__table .govuk-table__cell {
   font-size: 16px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
-.app-action-availability-details__list .govuk-summary-list__value {
-  text-align: right;
+.app-action-availability-details__total-row .govuk-table__header,
+.app-action-availability-details__total-row .govuk-table__cell {
+  font-weight: 700;
+  border-bottom: 0;
 }
 
 /* Hidden until JS sets style.display, or the server omits this class (draft parcel). */

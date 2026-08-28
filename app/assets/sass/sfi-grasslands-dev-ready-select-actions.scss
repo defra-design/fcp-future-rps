@@ -745,7 +745,7 @@
 
 .app-action-availability-details__list {
   margin-bottom: 0;
-  max-width: 22rem;
+  max-width: 340px;
 }
 
 .app-action-availability-details__list .govuk-summary-list__key,
@@ -753,6 +753,12 @@
   font-size: 16px;
   padding-top: 10px;
   padding-bottom: 10px;
+  width: auto;
+  white-space: nowrap;
+}
+
+.app-action-availability-details__list .govuk-summary-list__key {
+  padding-right: 20px;
 }
 
 .app-action-availability-details__list .govuk-summary-list__value {

@@ -100,7 +100,8 @@
 
     .app-parcel-list__requirements-intro,
     .app-parcel-list__requirements-list,
-    .app-parcel-list__requirements-list > li {
+    .app-parcel-list__requirements-list > li,
+    .app-parcel-list__no-actions {
       font-family: "GDS Transport", arial, sans-serif;
       font-size: 19px;
       font-weight: 400;
@@ -802,11 +803,11 @@
             <tbody class="govuk-table__body">
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Available land parcels</td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">31</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric" id="farm-available-parcel-count">—</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Total area (hectares)</td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">80.3160</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric" id="farm-total-area-ha">—</td>
               </tr>
             </tbody>
           </table>
@@ -3378,6 +3379,17 @@
       return numeric.toFixed(4);
     }
 
+    function formatHaSummaryTotal(value) {
+      var numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return '0.0000';
+      }
+      return numeric.toLocaleString('en-GB', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      });
+    }
+
     // Match select-actions AAC card: total minus SSSI only (not previous agreements / HEFER).
     function getAreaAvailableForActions(parcelId, parcel) {
       // Prototype OS refs use fixed available areas for user testing.
@@ -3847,6 +3859,35 @@
 
     function isParcelAlreadyAdded(parcelId) {
       return !!applicationParcelIds[String(parcelId || '')];
+    }
+
+    function updateFarmSummary() {
+      var parcelCountEl = document.getElementById('farm-available-parcel-count');
+      var totalAreaEl = document.getElementById('farm-total-area-ha');
+      if (!parcelCountEl && !totalAreaEl) {
+        return;
+      }
+
+      var count = 0;
+      var totalHa = 0;
+      Object.keys(parcelData).forEach(function(parcelId) {
+        var parcel = parcelData[parcelId];
+        if (!parcel) {
+          return;
+        }
+        count += 1;
+        var ha = Number(parcel.totalArea);
+        if (Number.isFinite(ha)) {
+          totalHa += ha;
+        }
+      });
+
+      if (parcelCountEl) {
+        parcelCountEl.textContent = String(count);
+      }
+      if (totalAreaEl) {
+        totalAreaEl.textContent = formatHaSummaryTotal(totalHa);
+      }
     }
 
     function parcelHasAvailableActions(parcelId) {
@@ -4662,6 +4703,17 @@
         details.appendChild(list);
       }
 
+      if (getParcelAvailableActionsCount(parcelId, parcel) === 0) {
+        var noActions = document.createElement('div');
+        noActions.className = 'govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2 app-parcel-list__no-actions';
+        var noActionsText = document.createElement('p');
+        noActionsText.className = 'govuk-body govuk-!-margin-bottom-0';
+        noActionsText.textContent =
+          'There are no actions available for this land parcel. Select another land parcel to continue.';
+        noActions.appendChild(noActionsText);
+        details.appendChild(noActions);
+      }
+
       // Empty reveal when there is nothing extra to show
       if (!details.childNodes.length) {
         details.hidden = true;
@@ -4775,6 +4827,7 @@
 
     buildParcelList();
     initParcelViewToggle();
+    updateFarmSummary();
 
     // Function to restore parcel state from saved selections
     function restoreParcelState(parcelId) {
@@ -4851,174 +4904,6 @@
     function formatLandCoverForSummary(landCoverValue) {
       var lines = getParcelLandCovers(landCoverValue);
       return lines.join(', ');
-    }
-
-    function getExistingAgreementFieldValue(sourceDl, labelText) {
-      if (!sourceDl) {
-        return '';
-      }
-
-      var rows = sourceDl.querySelectorAll('.govuk-summary-list__row');
-      for (var i = 0; i < rows.length; i++) {
-        var key = rows[i].querySelector('.govuk-summary-list__key');
-        var value = rows[i].querySelector('.govuk-summary-list__value');
-        if (!key || !value) {
-          continue;
-        }
-        if ((key.textContent || '').trim() === labelText) {
-          return (value.textContent || '').replace(/\s+/g, ' ').trim();
-        }
-      }
-      return '';
-    }
-
-    function getExistingAgreementActionLabels(sourceDl) {
-      if (!sourceDl) {
-        return [];
-      }
-
-      var labels = [];
-      sourceDl.querySelectorAll('ul.govuk-list li').forEach(function(item) {
-        var text = (item.textContent || '').replace(/\s+/g, ' ').trim();
-        if (!text) {
-          return;
-        }
-
-        var parts = text.split(':');
-        if (parts.length >= 2 && !/\([A-Z0-9]+\)$/.test(text)) {
-          var code = parts[parts.length - 1].trim();
-          var name = parts.slice(0, -1).join(':').trim();
-          labels.push(name + ' (' + code + ')');
-        } else {
-          labels.push(text);
-        }
-      });
-      return labels;
-    }
-
-    function appendSummaryRow(listEl, keyText, valueText) {
-      var row = document.createElement('div');
-      row.className = 'govuk-summary-list__row';
-
-      var key = document.createElement('dt');
-      key.className = 'govuk-summary-list__key';
-      key.textContent = keyText;
-
-      var value = document.createElement('dd');
-      value.className = 'govuk-summary-list__value';
-      value.textContent = valueText;
-
-      row.appendChild(key);
-      row.appendChild(value);
-      listEl.appendChild(row);
-    }
-
-    function formatPreviousAgreementsCountSummary(agreementCount) {
-      if (agreementCount === 1) {
-        return '1 previous agreement';
-      }
-
-      return agreementCount + ' previous agreements';
-    }
-
-    function formatPreviousAgreementsDetailsLabel(agreementCount) {
-      return 'View ' + agreementCount + ' previous agreement actions';
-    }
-
-    function updatePreviousAgreementsSummary(parcelId) {
-      // Prototype: previous-agreement actions UI removed from this journey
-      return;
-      var sectionEl = document.getElementById('previous-agreements-section');
-      var summaryEl = document.getElementById('previous-agreements-summary');
-      var summaryTextEl = document.getElementById('previous-agreements-summary-text');
-      var detailsEl = document.getElementById('previous-agreements-details');
-      var detailEl = document.getElementById('previous-agreements-detail');
-      if (!sectionEl || !summaryEl || !detailsEl || !detailEl) {
-        return;
-      }
-
-      detailEl.innerHTML = '';
-      detailsEl.removeAttribute('open');
-      detailsEl.hidden = true;
-      sectionEl.hidden = true;
-      if (summaryTextEl) {
-        summaryTextEl.textContent = 'View previous agreement actions';
-      }
-
-      var sourceHeading = document.getElementById('existing-' + parcelId);
-      var agreementBlocks = [];
-      var sourceEl = sourceHeading ? sourceHeading.nextElementSibling : null;
-      while (sourceEl && sourceEl.tagName === 'DL') {
-        agreementBlocks.push(sourceEl);
-        sourceEl = sourceEl.nextElementSibling;
-      }
-
-      var agreements = agreementBlocks.map(function(sourceDl) {
-        return {
-          scheme: getExistingAgreementFieldValue(sourceDl, 'Scheme'),
-          endDate: getExistingAgreementFieldValue(sourceDl, 'Agreement end date') ||
-            getExistingAgreementFieldValue(sourceDl, 'End date'),
-          availableArea: getExistingAgreementFieldValue(sourceDl, 'Available area'),
-          actionLabels: getExistingAgreementActionLabels(sourceDl)
-        };
-      }).filter(function(agreement) {
-        return agreement.actionLabels.length > 0;
-      });
-
-      if (!agreements.length) {
-        return;
-      }
-
-      summaryEl.textContent = formatPreviousAgreementsCountSummary(agreements.length);
-      if (summaryTextEl) {
-        summaryTextEl.textContent = formatPreviousAgreementsDetailsLabel(agreements.length);
-      }
-      sectionEl.hidden = false;
-
-      agreements.forEach(function(agreement, index) {
-        var list = document.createElement('dl');
-        list.className = 'govuk-summary-list';
-        if (index > 0) {
-          list.className += ' govuk-!-margin-top-6';
-        }
-
-        if (agreement.scheme) {
-          appendSummaryRow(list, 'Scheme', agreement.scheme);
-        }
-        if (agreement.endDate) {
-          appendSummaryRow(list, 'Agreement end date', agreement.endDate);
-        }
-        if (agreement.availableArea) {
-          appendSummaryRow(list, 'Available area', agreement.availableArea);
-        }
-
-        var actionsRow = document.createElement('div');
-        actionsRow.className = 'govuk-summary-list__row';
-
-        var actionsKey = document.createElement('dt');
-        actionsKey.className = 'govuk-summary-list__key';
-        actionsKey.textContent = 'Existing actions';
-
-        var actionsValue = document.createElement('dd');
-        actionsValue.className = 'govuk-summary-list__value';
-
-        var actionsList = document.createElement('ul');
-        actionsList.className = 'govuk-list';
-        agreement.actionLabels.forEach(function(label) {
-          var item = document.createElement('li');
-          item.textContent = label;
-          actionsList.appendChild(item);
-        });
-
-        actionsValue.appendChild(actionsList);
-        actionsRow.appendChild(actionsKey);
-        actionsRow.appendChild(actionsValue);
-        list.appendChild(actionsRow);
-
-        detailEl.appendChild(list);
-      });
-
-      detailsEl.hidden = false;
     }
 
     function hideParcelSelectionError() {
@@ -5205,7 +5090,6 @@
       document.getElementById('selectedParcelAvailableArea').value =
         availableForActions != null ? formatHaFourDecimals(availableForActions) : (parcel.availableArea || '');
 
-      updatePreviousAgreementsSummary(parcelId);
       updateContinueForSelectedParcel(parcelId);
 
       var added = isParcelAlreadyAdded(parcelId);

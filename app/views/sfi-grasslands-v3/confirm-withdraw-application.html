@@ -1,9 +1,9 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
-{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% set serviceUrl = "/sfi-grasslands-v3/applications-and-agreements" %}
 {% extends "layouts/sfi-grasslands-v3-header.html" %}
 
 {% block pageTitle %}
-  Are you sure you want to withdraw your application?
+  {% if withdrawError %}Error: {% endif %}Withdraw application
 {% endblock %}
 
 {% block beforeContent %}
@@ -12,7 +12,7 @@
 
   {{ govukBackLink({
     text: "Back",
-    href: "javascript:window.history.back()"
+    href: "/sfi-grasslands-v3/view-woodlands-application"
   }) }}
 {% endblock %}
 
@@ -20,30 +20,65 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
-      {% set journeySection = "Review and submit your application" %}
-      {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
-      <h1 class="govuk-heading-l">Are you sure you want to withdraw your application?</h1>
+      {% if withdrawError %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [
+            {
+              text: withdrawErrorMessage,
+              href: "#withdraw-application"
+            }
+          ]
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">Withdraw application</h1>
 
       <p class="govuk-body">
-        A record of your withdrawn application will show on your applications page.
+        You are about to withdraw application {{ woodlandsApplication.applicationNumber }} for {{ woodlandsApplication.scheme }}.
       </p>
 
       <p class="govuk-body">
-        You will not be able to reopen it or view related documents.
+        If you withdraw this application, it will no longer be considered.
       </p>
 
       <p class="govuk-body">
-        If you want to apply in the future, you will need to complete a new application.
+        You will not be able to continue or resubmit this application.
       </p>
 
-      <form class="form" action="application-withdrawn" method="post">
-        <div class="govuk-button-group">
-          <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
-            Yes, withdraw application
-          </button>
-          <a class="govuk-link" href="javascript:window.history.back()">Cancel</a>
-        </div>
+      <form class="form" action="/sfi-grasslands-v3/withdraw-application" method="post" novalidate>
+        {{ govukRadios({
+          name: "withdrawApplication",
+          idPrefix: "withdraw-application",
+          fieldset: {
+            legend: {
+              text: "Are you sure you want to withdraw this application?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          errorMessage: withdrawError and {
+            text: withdrawErrorMessage
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes, withdraw the application",
+              checked: data.withdrawApplication == "yes"
+            },
+            {
+              value: "no",
+              text: "No, keep the application",
+              checked: data.withdrawApplication == "no"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
       </form>
+
     </div>
   </div>
 {% endblock %}

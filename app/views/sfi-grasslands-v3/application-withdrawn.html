@@ -1,5 +1,5 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
-{% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% set serviceUrl = "/sfi-grasslands-v3/applications-and-agreements" %}
 {% extends "layouts/sfi-grasslands-v3-header.html" %}
 
 {% block pageTitle %}
@@ -19,15 +19,22 @@
         <h1 class="govuk-panel__title">
           Application withdrawn
         </h1>
+        <div class="govuk-panel__body">
+          Application number<br><strong>{{ woodlandsApplication.applicationNumber }}</strong>
+        </div>
       </div>
 
       <p class="govuk-body">
-        Your application has been withdrawn.
+        Your {{ woodlandsApplication.scheme }} application has been withdrawn.
       </p>
 
-      <a href="/sfi-grasslands-v3/singlefrontdoor/landing/landing" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-        Back to Farm and Land Service
-      </a>
+      <p class="govuk-body">
+        It will no longer be considered.
+      </p>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="/sfi-grasslands-v3/applications-and-agreements">Return to applications and agreements</a>
+      </p>
 
     </div>
   </div>

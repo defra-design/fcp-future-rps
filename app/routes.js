@@ -5748,24 +5748,112 @@ function getSfiGrasslandsV3ReviewApplicationData (req) {
   }
 }
 
+function getSfiGrasslandsV3WoodlandsApplication (req) {
+  var data = getSfiGrasslandsV3SessionData(req)
+  var status = data.sfiGrasslandsV3WoodlandsAppStatus === 'withdrawn' ? 'withdrawn' : 'submitted'
+  return {
+    scheme: 'Woodlands',
+    applicationNumber: 'WS14JSW2',
+    status: status,
+    submittedDate: '17 July 2026',
+    lastUpdated: status === 'withdrawn' ? '28 August 2026' : '17 July 2026',
+    canWithdraw: status === 'submitted'
+  }
+}
+
+router.get('/sfi-grasslands-v3/applications-and-agreements', function (req, res) {
+  res.render('sfi-grasslands-v3/applications-and-agreements', {
+    data: getSfiGrasslandsV3SessionData(req),
+    woodlandsApplication: getSfiGrasslandsV3WoodlandsApplication(req)
+  })
+})
+
+router.get('/sfi-grasslands-v3/view-woodlands-application', function (req, res) {
+  res.render('sfi-grasslands-v3/view-woodlands-application', {
+    data: getSfiGrasslandsV3SessionData(req),
+    woodlandsApplication: getSfiGrasslandsV3WoodlandsApplication(req)
+  })
+})
+
+router.get('/sfi-grasslands-v3/withdraw-application', function (req, res) {
+  var woodlandsApplication = getSfiGrasslandsV3WoodlandsApplication(req)
+  if (!woodlandsApplication.canWithdraw) {
+    return res.redirect('/sfi-grasslands-v3/view-woodlands-application')
+  }
+
+  delete req.session.data.withdrawApplication
+
+  res.render('sfi-grasslands-v3/confirm-withdraw-application', {
+    data: getSfiGrasslandsV3SessionData(req),
+    woodlandsApplication: woodlandsApplication
+  })
+})
+
+router.post('/sfi-grasslands-v3/withdraw-application', function (req, res) {
+  var woodlandsApplication = getSfiGrasslandsV3WoodlandsApplication(req)
+  if (!woodlandsApplication.canWithdraw) {
+    return res.redirect('/sfi-grasslands-v3/view-woodlands-application')
+  }
+
+  var answer = String((req.body && req.body.withdrawApplication) || '').trim().toLowerCase()
+  if (answer !== 'yes' && answer !== 'no') {
+    return res.render('sfi-grasslands-v3/confirm-withdraw-application', {
+      data: getSfiGrasslandsV3SessionData(req),
+      woodlandsApplication: woodlandsApplication,
+      withdrawError: true,
+      withdrawErrorMessage: 'Select whether you want to withdraw the application'
+    })
+  }
+
+  delete req.session.data.withdrawApplication
+
+  if (answer === 'no') {
+    return res.redirect('/sfi-grasslands-v3/view-woodlands-application')
+  }
+
+  req.session.data.sfiGrasslandsV3WoodlandsAppStatus = 'withdrawn'
+  req.session.data.sfiGrasslandsV3WoodlandsAppLastUpdated = '28 August 2026'
+
+  return res.redirect('/sfi-grasslands-v3/application-withdrawn')
+})
+
+router.get('/sfi-grasslands-v3/application-withdrawn', function (req, res) {
+  var woodlandsApplication = getSfiGrasslandsV3WoodlandsApplication(req)
+  if (woodlandsApplication.status !== 'withdrawn') {
+    return res.redirect('/sfi-grasslands-v3/applications-and-agreements')
+  }
+
+  res.render('sfi-grasslands-v3/application-withdrawn', {
+    data: getSfiGrasslandsV3SessionData(req),
+    woodlandsApplication: woodlandsApplication
+  })
+})
+
 router.get('/sfi-grasslands-v3/view-application', function (req, res) {
   var review = getSfiGrasslandsV3ReviewApplicationData(req)
   var fromLanding = req.query.from === 'landing'
+  var fromApplicationsAndAgreements = req.query.from === 'applications-and-agreements'
   var sessionData = getSfiGrasslandsV3SessionData(req)
   var submittedAt = sessionData.sfiGrasslandsV3ApplicationSubmittedAt || new Date().toISOString()
+  var backHref = '/sfi-grasslands-v3/confirmation'
+  var backButtonText = 'Back to confirmation'
+
+  if (fromApplicationsAndAgreements) {
+    backHref = '/sfi-grasslands-v3/applications-and-agreements'
+    backButtonText = 'Back to applications and agreements'
+  } else if (fromLanding) {
+    backHref = '/sfi-grasslands-v3/singlefrontdoor/landing/landing'
+    backButtonText = 'Back to Farm and Land Service'
+  }
 
   res.render('sfi-grasslands-v3/view-application', {
     data: sessionData,
     reviewParcels: review.reviewParcels,
     reviewSummary: review.reviewSummary,
-    applicationReference: 'HDJ2123F',
+    applicationReference: 'HDJ2I23F',
     applicationSubmittedAtFormatted: formatSfiGrasslandsV3SubmittedAt(submittedAt),
-    backHref: fromLanding
-      ? '/sfi-grasslands-v3/singlefrontdoor/landing/landing'
-      : '/sfi-grasslands-v3/confirmation',
-    backButtonText: fromLanding
-      ? 'Back to Farm and Land Service'
-      : 'Back to confirmation'
+    backHref: backHref,
+    backButtonText: backButtonText
   })
 })
 

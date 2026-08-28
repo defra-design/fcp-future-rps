@@ -587,11 +587,11 @@
             <tbody class="govuk-table__body">
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Available land parcels</td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">31</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric" id="farm-available-parcel-count">—</td>
               </tr>
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Total area (hectares)</td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">80.3160</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric" id="farm-total-area-ha">—</td>
               </tr>
             </tbody>
           </table>
@@ -3163,6 +3163,17 @@
       return numeric.toFixed(4);
     }
 
+    function formatHaSummaryTotal(value) {
+      var numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return '0.0000';
+      }
+      return numeric.toLocaleString('en-GB', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      });
+    }
+
     // Match select-actions AAC card: total minus SSSI only (not previous agreements / HEFER).
     function getAreaAvailableForActions(parcelId, parcel) {
       // Prototype OS refs use fixed available areas for user testing.
@@ -3632,6 +3643,35 @@
 
     function isParcelAlreadyAdded(parcelId) {
       return !!applicationParcelIds[String(parcelId || '')];
+    }
+
+    function updateFarmSummary() {
+      var parcelCountEl = document.getElementById('farm-available-parcel-count');
+      var totalAreaEl = document.getElementById('farm-total-area-ha');
+      if (!parcelCountEl && !totalAreaEl) {
+        return;
+      }
+
+      var count = 0;
+      var totalHa = 0;
+      Object.keys(parcelData).forEach(function(parcelId) {
+        var parcel = parcelData[parcelId];
+        if (!parcel) {
+          return;
+        }
+        count += 1;
+        var ha = Number(parcel.totalArea);
+        if (Number.isFinite(ha)) {
+          totalHa += ha;
+        }
+      });
+
+      if (parcelCountEl) {
+        parcelCountEl.textContent = String(count);
+      }
+      if (totalAreaEl) {
+        totalAreaEl.textContent = formatHaSummaryTotal(totalHa);
+      }
     }
 
     function defaultStyle(feature) {
@@ -4200,6 +4240,7 @@
     }
 
     markAddedParcelsInList();
+    updateFarmSummary();
 
     // Function to restore parcel state from saved selections
     function restoreParcelState(parcelId) {

@@ -674,7 +674,8 @@
 
   // User-entered quantity only — no shared land pool or available-land hint to recalculate.
   var ACTIONS_WITHOUT_AAC_LAND_POOL = {
-    HEF1: true
+    HEF1: true,
+    WBD1: true
   }
 
   function actionSkipsAacLandUpdate (code) {
@@ -1084,7 +1085,7 @@
     return rows
   }
 
-  var PROTECTED_LAND_DETAILS_TITLE = 'Show deductions from available quantity'
+  var PROTECTED_LAND_DETAILS_TITLE = 'Why some land is not available'
 
   function isActionDeductionBreakdownEnabled () {
     if (window.SfiGrasslandsDevReadyFeatureToggles &&

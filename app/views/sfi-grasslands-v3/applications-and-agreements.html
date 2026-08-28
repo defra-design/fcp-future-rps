@@ -1,0 +1,116 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v3/applications-and-agreements" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% block pageTitle %}
+  Applications and agreements
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+{% endblock %}
+
+{% block content %}
+{% set applicationSubmitted = data.sfiGrasslandsV3ApplicationSubmitted or (data.sfiGrasslandsV3Tasks and data.sfiGrasslandsV3Tasks.submitApplication == 'completed') %}
+
+{% if applicationSubmitted %}
+  {% set grasslandsAppStatusHtml %}
+    {{ govukTag({ text: "Submitted", classes: "govuk-tag--green" }) }}
+  {% endset %}
+  {% set grasslandsAppActionHtml = '<a class="govuk-link" href="/sfi-grasslands-v3/view-application?from=applications-and-agreements">View application<span class="govuk-visually-hidden"> HDJ2I23F</span></a>' %}
+{% else %}
+  {% set grasslandsAppStatusHtml %}
+    {{ govukTag({ text: "In progress", classes: "govuk-tag--blue" }) }}
+  {% endset %}
+  {% set grasslandsAppActionHtml = '<a class="govuk-link" href="/sfi-grasslands-v3/task-list">Continue application<span class="govuk-visually-hidden"> HDJ2I23F</span></a>' %}
+{% endif %}
+
+{% set woodlandsWithdrawn = woodlandsApplication and woodlandsApplication.status == 'withdrawn' %}
+{% if woodlandsWithdrawn %}
+  {% set woodlandsAppStatusHtml %}
+    {{ govukTag({ text: "Withdrawn", classes: "govuk-tag--grey" }) }}
+  {% endset %}
+  {% set woodlandsLastUpdated = woodlandsApplication.lastUpdated %}
+{% else %}
+  {% set woodlandsAppStatusHtml %}
+    {{ govukTag({ text: "Submitted", classes: "govuk-tag--green" }) }}
+  {% endset %}
+  {% set woodlandsLastUpdated = woodlandsApplication.lastUpdated if woodlandsApplication else "17 July 2026" %}
+{% endif %}
+
+{% set offeredTagHtml %}
+  {{ govukTag({ text: "Offered", classes: "govuk-tag--blue" }) }}
+{% endset %}
+{% set activeTagHtml %}
+  {{ govukTag({ text: "Active", classes: "govuk-tag--green" }) }}
+{% endset %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <h1 class="govuk-heading-l">Applications and agreements</h1>
+
+    <p class="govuk-body">View and manage your applications and agreements.</p>
+
+    <h2 class="govuk-heading-m">Applications</h2>
+
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Scheme" },
+        { text: "Application number" },
+        { text: "Last updated" },
+        { text: "Status" },
+        { text: "Action" }
+      ],
+      rows: [
+        [
+          { text: "Grasslands" },
+          { text: "HDJ2I23F" },
+          { text: "18 July 2026" },
+          { html: grasslandsAppStatusHtml },
+          { html: grasslandsAppActionHtml }
+        ],
+        [
+          { text: "Woodlands" },
+          { text: "WS14JSW2" },
+          { text: woodlandsLastUpdated },
+          { html: woodlandsAppStatusHtml },
+          { html: '<a class="govuk-link" href="/sfi-grasslands-v3/view-woodlands-application">View application<span class="govuk-visually-hidden"> WS14JSW2</span></a>' }
+        ]
+      ]
+    }) }}
+
+    <h2 class="govuk-heading-m">Agreements</h2>
+
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Scheme" },
+        { text: "Agreement number" },
+        { text: "Agreement ends" },
+        { text: "Status" },
+        { text: "Action" }
+      ],
+      rows: [
+        [
+          { text: "Grasslands" },
+          { text: "AG-HDJ2I23F" },
+          { text: "-" },
+          { html: offeredTagHtml },
+          { html: '<a class="govuk-link" href="/sfi-grasslands-v3/view-application?from=applications-and-agreements">Review agreement<span class="govuk-visually-hidden"> AG-HDJ2I23F</span></a>' }
+        ],
+        [
+          { text: "Woodlands" },
+          { text: "WS14JSW2" },
+          { text: "30 September 2029" },
+          { html: activeTagHtml },
+          { html: '<a class="govuk-link" href="#">View agreement<span class="govuk-visually-hidden"> WS14JSW2</span></a>' }
+        ]
+      ]
+    }) }}
+
+  </div>
+</div>
+{% endblock %}

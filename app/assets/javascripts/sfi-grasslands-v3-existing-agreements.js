@@ -44,10 +44,24 @@
     ],
     'gate-field': [
       {
-        scheme: 'Sustainable Farming Incentive',
+        scheme: 'Sustainable Farming Incentive 2024',
+        shortScheme: 'SFI 2024',
         endDate: '30 September 2027',
-        availableArea: '10.0000 hectares',
-        actions: [{ code: 'CSAM3', name: 'Herbal leys', ha: 1 }]
+        actions: [{
+          code: 'CSAM3',
+          name: 'Herbal leys',
+          ha: 2.1
+        }]
+      },
+      {
+        scheme: 'Sustainable Farming Incentive 2023',
+        shortScheme: 'SFI 2023',
+        endDate: '1 November 2026',
+        actions: [{
+          code: 'CIGL1',
+          name: 'Grassland field corners or blocks out of management',
+          ha: 3.6
+        }]
       }
     ],
     'chalk-field': [
@@ -103,16 +117,24 @@
     ],
     'far-meadow': [
       {
-        scheme: 'Sustainable Farming Incentive',
+        scheme: 'Sustainable Farming Incentive 2024',
+        shortScheme: 'SFI 2024',
         endDate: '30 September 2027',
-        availableArea: '56.3210 hectares',
-        actions: [{ code: 'CSAM3', name: 'Herbal leys', ha: 1.2 }]
+        actions: [{
+          code: 'CSAM3',
+          name: 'Herbal leys',
+          ha: 2.1
+        }]
       },
       {
-        scheme: 'Sustainable Farming Incentive',
+        scheme: 'Sustainable Farming Incentive 2023',
+        shortScheme: 'SFI 2023',
         endDate: '1 November 2026',
-        availableArea: '56.3210 hectares',
-        actions: [{ code: 'CIGL1', name: 'Grassland field corners', ha: 0.8 }]
+        actions: [{
+          code: 'CIGL1',
+          name: 'Grassland field corners or blocks out of management',
+          ha: 3.6
+        }]
       }
     ]
   }
@@ -132,6 +154,7 @@
     return agreements.map(function (agreement) {
       return {
         scheme: agreement.scheme || '',
+        shortScheme: agreement.shortScheme || '',
         endDate: agreement.endDate || '',
         availableArea: agreement.availableArea || '',
         actions: (agreement.actions || []).map(normaliseAction)
@@ -141,11 +164,19 @@
     })
   }
 
+  function countExistingAgreements (parcelId) {
+    return getAgreements(parcelId).length
+  }
+
   function getExistingAgreementActions (parcelId) {
     var actions = []
     getAgreements(parcelId).forEach(function (agreement) {
       agreement.actions.forEach(function (action) {
-        actions.push(action)
+        actions.push(Object.assign({}, action, {
+          scheme: agreement.scheme,
+          shortScheme: agreement.shortScheme,
+          endDate: agreement.endDate
+        }))
       })
     })
     return actions
@@ -169,15 +200,27 @@
     if (!action) {
       return ''
     }
+    var base = formatExistingActionLabel(action)
+    var schemeShort = action.shortScheme || ''
+    if (base && schemeShort) {
+      return base + ' – ' + schemeShort
+    }
     if (action.code && action.name) {
       return action.code + ' – ' + action.name
     }
-    return formatExistingActionLabel(action)
+    return base
   }
 
   function getPreviousAgreementDeductions (parcelId) {
     return getExistingAgreementActions(parcelId).filter(function (action) {
       return action.ha != null && action.ha > 0
+    })
+  }
+
+  function getDeductionsForAction (parcelId, actionCode) {
+    var code = String(actionCode || '').toUpperCase()
+    return getPreviousAgreementDeductions(parcelId).filter(function (action) {
+      return String(action.code || '').toUpperCase() === code
     })
   }
 
@@ -190,10 +233,12 @@
   window.SfiGrasslandsV3ExistingAgreements = {
     get: getExistingAgreementActions,
     getAgreements: getAgreements,
-    count: countExistingAgreementActions,
+    count: countExistingAgreements,
+    countActions: countExistingAgreementActions,
     formatLabel: formatExistingActionLabel,
     formatDeductionLabel: formatDeductionLabel,
     getDeductions: getPreviousAgreementDeductions,
+    getDeductionsForAction: getDeductionsForAction,
     getTotalHa: getPreviousAgreementTotalHa
   }
 })(window)

@@ -1,0 +1,89 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v3/applications-and-agreements" %}
+{% extends "layouts/sfi-grasslands-v3-header.html" %}
+
+{% block pageTitle %}
+  Woodlands application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v3/applications-and-agreements",
+    classes: "govuk-!-display-none-print"
+  }) }}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-view-application.css">
+{% endblock %}
+
+{% block content %}
+  {% set isWithdrawn = woodlandsApplication.status == 'withdrawn' %}
+  {% set statusTagClasses = "govuk-tag--grey" if isWithdrawn else "govuk-tag--green" %}
+  {% set statusLabel = "Withdrawn" if isWithdrawn else "Submitted" %}
+
+  <div class="govuk-grid-row app-view-application" role="main">
+    <div class="govuk-grid-column-full">
+
+      <h1 class="govuk-heading-l">Woodlands application</h1>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Application number</dt>
+          <dd class="govuk-summary-list__value">{{ woodlandsApplication.applicationNumber }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Status</dt>
+          <dd class="govuk-summary-list__value">
+            {{ govukTag({ text: statusLabel, classes: statusTagClasses }) }}
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Submitted</dt>
+          <dd class="govuk-summary-list__value">{{ woodlandsApplication.submittedDate }}</dd>
+        </div>
+      </dl>
+
+      <div class="app-view-application__applicant">
+        {% include "sfi-grasslands-v3/_includes/applicant-details.html" %}
+      </div>
+
+      <h2 class="govuk-heading-m">What you applied for</h2>
+
+      <p class="govuk-body">
+        This is a summary of the Woodlands application you submitted.
+      </p>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Scheme</dt>
+          <dd class="govuk-summary-list__value">Woodlands</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Actions</dt>
+          <dd class="govuk-summary-list__value">
+            Create a woodland management plan (WMP1)<br>
+            Manage woodland edges (WME2)
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Total area</dt>
+          <dd class="govuk-summary-list__value">12.4500 ha</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Total yearly payment</dt>
+          <dd class="govuk-summary-list__value"><strong>£1,245.00</strong></dd>
+        </div>
+      </dl>
+
+      {% if woodlandsApplication.canWithdraw %}
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-display-none-print">
+        <p class="govuk-body govuk-!-display-none-print">
+          <a class="govuk-link" href="/sfi-grasslands-v3/withdraw-application">Withdraw application</a>
+        </p>
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}
