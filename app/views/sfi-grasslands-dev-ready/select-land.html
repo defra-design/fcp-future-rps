@@ -698,6 +698,9 @@
           </dd>
         </div>
       </dl>
+      <div id="summary-parcel-no-actions" class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0" hidden>
+        <p class="govuk-body govuk-!-margin-bottom-0">There are no actions available for this land parcel. Select another land parcel to continue.</p>
+      </div>
     </div>
 
     <form action="/sfi-grasslands-dev-ready/select-land" method="post" id="continue-form" class="govuk-!-margin-top-6">
@@ -4603,6 +4606,18 @@
       return true;
     }
 
+    function updateSelectedParcelNoActionsInset(parcelId, parcel) {
+      var inset = document.getElementById('summary-parcel-no-actions');
+      if (!inset) {
+        return;
+      }
+      if (!parcelId || !parcel) {
+        inset.hidden = true;
+        return;
+      }
+      inset.hidden = getParcelAvailableActionsCount(parcelId, parcel) !== 0;
+    }
+
     function updateSelectedParcelSummary(parcelId, parcel, osRefDisplay) {
       var summary = document.getElementById('selected-parcel-summary');
       if (!summary || !parcel) {
@@ -4647,6 +4662,8 @@
           requirementsRow.classList.add('govuk-!-display-none');
         }
       }
+
+      updateSelectedParcelNoActionsInset(parcelId, parcel);
 
       document.getElementById('selectedParcelId').value = parcelId || '';
       document.getElementById('selectedParcelName').value = reference || '';
@@ -4702,6 +4719,8 @@
       if (requirementsEl) {
         requirementsEl.textContent = '';
       }
+
+      updateSelectedParcelNoActionsInset(null, null);
 
       updateContinueForSelectedParcel(null);
       hideParcelSelectionError();

@@ -3303,9 +3303,7 @@ function createActionCheckboxElements(action) {
   var quantityLabel = document.createElement('label');
   quantityLabel.className = 'govuk-label';
   quantityLabel.setAttribute('for', 'quantity-' + codeLower);
-  quantityLabel.textContent = isPondUnit(getQuantityUnitForAction(action.code))
-    ? 'Number of ponds'
-    : 'Quantity';
+  quantityLabel.textContent = 'Quantity';
 
   var wrapper = document.createElement('div');
   wrapper.className = 'govuk-input__wrapper';
