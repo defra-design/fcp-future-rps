@@ -1547,12 +1547,6 @@ var defaultActionOrderByCode = ACTION_CATALOG.reduce(function(lookup, action, in
   return lookup;
 }, {});
 
-// Mock durations for now: deterministic values for sort testing.
-var mockDurationByCode = ACTION_CATALOG.reduce(function(lookup, action, index) {
-  lookup[action.code] = (index % 5) + 1;
-  return lookup;
-}, {});
-
 // SFI 2026 frequently used ranking mapped to this page's action codes.
 var frequentlyUsedPriority = [
   'CIPM4',
@@ -1610,8 +1604,13 @@ function getQuantityUnitForAction(actionCode) {
   return LINEAR_ACTION_CODES[normalizedCode] ? 'm' : 'ha';
 }
 
+function getQuantitySuffixForAction(actionCode) {
+  var unit = getQuantityUnitForAction(actionCode);
+  return unit === 'pond' ? 'ponds' : unit;
+}
+
 function isPondUnit(unit) {
-  return unit === 'pond';
+  return unit === 'pond' || unit === 'ponds';
 }
 
 function formatPondCount(count) {
@@ -2003,7 +2002,7 @@ function getFormatErrorMessage(unit, reason) {
     return 'Enter a whole number of ponds, for example 1 or 2';
   }
 
-  if (unit === 'pond') {
+  if (isPondUnit(unit)) {
     return 'Enter a number of ponds, for example 1 or 2';
   }
 
@@ -3020,7 +3019,11 @@ function createConsentGuidanceLink(href, text) {
   link.href = href;
   link.target = '_blank';
   link.rel = 'noreferrer noopener';
-  link.textContent = text + ' (opens in new tab)';
+  link.appendChild(document.createTextNode(text));
+  var hidden = document.createElement('span');
+  hidden.className = 'govuk-visually-hidden';
+  hidden.textContent = ' (opens in new tab)';
+  link.appendChild(hidden);
   return link;
 }
 
@@ -3318,7 +3321,7 @@ function createActionCheckboxElements(action) {
   var suffix = document.createElement('div');
   suffix.className = 'govuk-input__suffix';
   suffix.setAttribute('aria-hidden', 'true');
-  suffix.textContent = getQuantityUnitForAction(action.code);
+  suffix.textContent = getQuantitySuffixForAction(action.code);
 
   wrapper.appendChild(qtyInput);
   wrapper.appendChild(suffix);
@@ -4295,20 +4298,6 @@ function sortActionCodes(actionCodes, sortOption) {
     });
   }
 
-  if (sortOption === 'duration-asc' || sortOption === 'duration-desc') {
-    var highToLow = sortOption === 'duration-desc';
-    return codes.sort(function(codeA, codeB) {
-      var durationA = mockDurationByCode[codeA] || 0;
-      var durationB = mockDurationByCode[codeB] || 0;
-
-      if (durationA !== durationB) {
-        return highToLow ? durationB - durationA : durationA - durationB;
-      }
-
-      return compareByActionName(codeA, codeB);
-    });
-  }
-
   if (sortOption === 'frequently-used') {
     return codes.sort(function(codeA, codeB) {
       var rankA = getFrequentlyUsedRank(codeA);
@@ -4885,7 +4874,7 @@ function hideAacPreviousAgreementsDetails() {
     listEl.innerHTML = '';
   }
   if (summaryEl) {
-    summaryEl.textContent = 'Existing agreements';
+    summaryEl.textContent = 'View existing agreements';
   }
 }
 
@@ -4981,7 +4970,7 @@ function updateAacParcelAreaBreakdown() {
     listEl.innerHTML = '';
     if (showPreviousAgreements && hasPrevious) {
       if (detailsSummaryEl) {
-        detailsSummaryEl.textContent = 'Existing agreements (' + previousAgreements.length + ')';
+        detailsSummaryEl.textContent = 'View existing agreements';
       }
       previousAgreements.forEach(function(agreement, index) {
         var block = document.createElement('div');
@@ -5539,7 +5528,7 @@ $(document).ready(function(){
         return;
       }
 
-      if ($suffix.text() === 'pond') {
+      if (isPondUnit($suffix.text())) {
         setActionAvailableHint(actionCode, null);
         return;
       }
@@ -5767,7 +5756,7 @@ $(document).ready(function(){
 
         if (isCnum2UnavailableToggleOn() && actionCode === 'CNUM2') {
           setActionAvailableHint(actionCode, 0);
-        } else if ($suffix.text() === 'pond') {
+        } else if (isPondUnit($suffix.text())) {
           setActionAvailableHint(actionCode, null);
         } else if ($suffix.text() === 'ha') {
           setActionAvailableHint(actionCode, parcel.availableArea);

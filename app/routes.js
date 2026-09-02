@@ -5518,27 +5518,9 @@ router.get('/sfi-grasslands-v3/before-you-submit', function (req, res) {
 })
 
 router.post('/sfi-grasslands-v3/before-you-make-an-application-answer', function (req, res) {
-  var landEligibleAnswer = req.body['land-eligible-answer']
   var returnTo = getSfiV3EligibilityReturnTo(req, req.body.returnTo)
 
-  if (!landEligibleAnswer) {
-    return renderSfiGrasslandsV3EligibilityPage(req, res, 'sfi-grasslands-v3/before-you-make-an-application', {
-      returnTo: returnTo,
-      eligibilityError: true,
-      eligibilityErrorMessage: 'Select if you confirm this',
-      eligibilityErrorFieldId: 'land-eligible-answer-error'
-    })
-  }
-
-  saveSfiGrasslandsV3Answer(req, 'land-eligible-answer', landEligibleAnswer)
-
-  if (landEligibleAnswer === 'no') {
-    clearSfiV3EligibilityReturnTo(req)
-    setSfiV3CheckBeforeYouStartLinearFlow(req, false)
-    sfiGrasslandsV3Tasks.markInProgress(req, sfiGrasslandsV3Tasks.TASK_IDS.beforeYouStart)
-    return res.redirect('/sfi-grasslands-v3/eligibility-not-confirmed')
-  }
-
+  saveSfiGrasslandsV3Answer(req, 'land-eligible-answer', 'yes')
   sfiGrasslandsV3Tasks.markCompleted(req, sfiGrasslandsV3Tasks.TASK_IDS.beforeYouStart)
 
   if (returnTo === 'check-your-answers') {

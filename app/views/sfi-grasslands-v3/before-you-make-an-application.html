@@ -28,54 +28,25 @@
   <div class="govuk-grid-row" role="main">
     <div class="govuk-grid-column-two-thirds">
 
-      {% include "sfi-grasslands-v3/_includes/eligibility-error-summary.html" %}
-
       {% set journeySection = "Check before you start" %}
       {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">
         Before you make an application
       </h1>
 
-      <p class="govuk-body">You confirm you will:</p>
+      <p class="govuk-body">Some of these only apply depending on your land and the actions you choose.</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>make sure your land remains eligible for the duration of your agreement</li>
-        <li>get an SFI Historic Environment Farm Environment Record (SFI HEFER) from Historic England if you apply for actions on land with historic or archaeological features — you must have this in place before the RPA can offer you an agreement</li>
-        <li>get site of special scientific interest (SSSI) consent from Natural England if you select to do actions on SSSI land — you must not start doing these actions until you have your SSSI consent</li>
-        <li>check if you can do your selected actions on your land if you have land with a conditional exemption from inheritance tax or maintenance fund</li>
+        <li>if you apply for actions on land with historic or archaeological features, get an <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">SFI Historic Environment Farm Environment Record (SFI HEFER)<span class="govuk-visually-hidden"> (opens in new tab)</span></a> from Historic England. You must not start the actions until you have your HEFER</li>
+        <li>if you select actions on SSSI land, get <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">site of special scientific interest (SSSI) consent<span class="govuk-visually-hidden"> (opens in new tab)</span></a> from Natural England. You must have this before the RPA can offer you an agreement</li>
+        <li>if any of your land has a conditional exemption from inheritance tax or is the object of a maintenance fund, check your selected actions are allowed on that land. Read the <a class="govuk-link" href="https://www.gov.uk/guidance/eligible-funding-on-land-conditionally-exempt-from-inheritance-tax" target="_blank" rel="noopener noreferrer">guidance on eligible funding<span class="govuk-visually-hidden"> (opens in new tab)</span></a></li>
         <li>not apply for actions that include activities you are legally required to carry out or are already funded by other sources</li>
       </ul>
 
       <form class="form" action="/sfi-grasslands-v3/before-you-make-an-application-answer" method="post">
         {% include "sfi-grasslands-v3/_includes/eligibility-return-to.html" %}
-        <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
-          <fieldset class="govuk-fieldset"{% if eligibilityError %} aria-describedby="land-eligible-answer-error"{% endif %}>
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-              Do you confirm this?
-            </legend>
-            {% if eligibilityError %}
-              <p id="land-eligible-answer-error" class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span> {{ eligibilityErrorMessage }}
-              </p>
-            {% endif %}
-            <div class="govuk-radios" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="land-eligible-answer-yes" name="land-eligible-answer" type="radio" value="yes" {% if data['land-eligible-answer'] == "yes" %}checked{% endif %}>
-                <label class="govuk-label govuk-radios__label" for="land-eligible-answer-yes">
-                  Yes
-                </label>
-              </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="land-eligible-answer-no" name="land-eligible-answer" type="radio" value="no" {% if data['land-eligible-answer'] == "no" %}checked{% endif %}>
-                <label class="govuk-label govuk-radios__label" for="land-eligible-answer-no">
-                  No
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-
         <button type="submit" class="govuk-button" data-module="govuk-button">
-          Save and continue
+          Continue
         </button>
       </form>
     </div>
