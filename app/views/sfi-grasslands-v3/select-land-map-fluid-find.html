@@ -5169,7 +5169,8 @@
             } else if ($suffix.text() === 'm') {
               $hint.text(getAvailableHintText(actionCode, getLinearAvailableMetres(parcel)));
             } else if ($suffix.text() === 'pond') {
-              $hint.text('3 ponds available');
+              $hint.text('');
+              $hint.prop('hidden', true);
             }
           });
         }

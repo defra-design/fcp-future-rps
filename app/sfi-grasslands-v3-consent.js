@@ -10,6 +10,7 @@
  */
 
 var PARCEL_CONSENT_FLAGS = {
+  'church-field': { sssi: true, hefer: true }, // SO3757 3190
   'far-meadow': { sssi: false, hefer: true }, // SO3757 3193
   'gate-field': { sssi: true, hefer: true } // SO3757 3194
 }

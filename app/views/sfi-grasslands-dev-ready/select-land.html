@@ -680,10 +680,10 @@
           <dt class="govuk-summary-list__key">Available actions</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-sfi-actions">-</dd>
         </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions{% if not hasDraftParcel or (draftParcel.parcelId != 'gate-field' and draftParcel.parcelId != 'far-meadow' and draftParcel.parcelId != 'church-field') %} govuk-!-display-none{% endif %}" id="summary-parcel-requirements-row">
           <dt class="govuk-summary-list__key">Requirements</dt>
           <dd class="govuk-summary-list__value" id="summary-parcel-requirements">
-            {% if hasDraftParcel and draftParcel.parcelId == 'gate-field' %}
+            {% if hasDraftParcel and (draftParcel.parcelId == 'gate-field' or draftParcel.parcelId == 'church-field') %}
               <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
               <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
                 <li>site of special scientific interest (SSSI) consent</li>
@@ -6028,7 +6028,8 @@
             } else if ($suffix.text() === 'm²') {
               $hint.text(getAvailableHintText(actionCode, getBuildingSquareMetresAvailable(parcel)));
             } else if ($suffix.text() === 'pond') {
-              $hint.text('3 ponds available');
+              $hint.text('');
+              $hint.prop('hidden', true);
             }
           });
         }

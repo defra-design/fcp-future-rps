@@ -127,21 +127,7 @@
             </div>
           </div>
         {% endfor %}
-        <div class="govuk-summary-card app-confirm-parcel-card govuk-!-margin-bottom-9">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">
-              Payment summary
-            </h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                <dt class="govuk-summary-list__key">Total yearly payment</dt>
-                <dd class="govuk-summary-list__value">{{ summary.totalYearlyPaymentFormatted }}</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
+        {% include "sfi-grasslands-v3/_includes/payment-summary-card.html" %}
 
         <form action="/sfi-grasslands-v3/confirm-land-and-actions" method="post" id="confirm-land-actions-form">
           {% if fromCheckYourAnswers %}

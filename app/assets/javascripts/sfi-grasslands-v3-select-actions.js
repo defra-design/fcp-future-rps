@@ -1925,10 +1925,10 @@ function createActionAvailableHint(actionCode) {
 
 function createClig3FullAreaHint(actionCode) {
   var codeLower = String(actionCode || '').toLowerCase();
-  var hint = document.createElement('span');
-  hint.className = 'app-action-full-area-hint';
+  var hint = document.createElement('p');
+  hint.className = 'govuk-hint app-action-full-area-hint';
   hint.id = 'action-full-area-hint-' + codeLower;
-  hint.textContent = 'This action will use all the available area on this land parcel.';
+  hint.innerHTML = '<strong>This action uses all the available area.</strong><br>To add another grassland action, deselect this action and select the other action first. You can then select this action again to use the remaining area.';
   return hint;
 }
 
@@ -3003,9 +3003,10 @@ function applyPrototypeParcelAreas(parcelId) {
   parcelData[parcelId].availableArea = areas.availableArea;
 }
 
-// Prototype: which constraints the parcel has (SO3757 3193 / 3194 for user testing).
+// Prototype: which constraints the parcel has (SO3757 3190 / 3193 / 3194 for user testing).
 // Action-level ineligibility deducts area; consent / HEFER-required does not.
 var PARCEL_CONSENT_FLAGS = {
+  'church-field': { sssi: true, hefer: true }, // SO3757 3190
   'gate-field': { sssi: true, hefer: true }, // SO3757 3194
   'far-meadow': { sssi: false, hefer: true } // SO3757 3193
 };
@@ -3240,12 +3241,6 @@ function createActionCheckboxElements(action) {
   var availableHintId = availableHint.id;
   label.appendChild(availableHint);
   describedBy += ' ' + availableHintId;
-  // Outside the conditional so people see it before they select CLIG3
-  if (isWholeRemainingAreaAction(action.code)) {
-    var fullAreaHint = createClig3FullAreaHint(action.code);
-    label.appendChild(fullAreaHint);
-    describedBy += ' ' + fullAreaHint.id;
-  }
   // Nested supplements already sit under a “supplements for CLIG3” legend —
   // no need to repeat the relationship on every label.
   input.setAttribute('aria-describedby', describedBy);
@@ -3273,14 +3268,11 @@ function createActionCheckboxElements(action) {
     amountText.id = 'whole-remaining-summary-' + codeLower;
     amountText.setAttribute('aria-labelledby', qtyLabel.id);
     amountText.innerHTML =
-      '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> hectares</strong>';
+      '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> ha</strong>';
 
-    var supplementHint = document.createElement('p');
-    supplementHint.className = 'govuk-hint govuk-!-margin-bottom-0';
-    supplementHint.id = 'whole-remaining-supplement-hint-' + codeLower;
-    supplementHint.textContent = 'You can add a supplement to CLIG3 on the next page.';
-
-    amountText.setAttribute('aria-describedby', supplementHint.id);
+    // Shown only when selected (conditional panel) — these actions always take the full pool
+    var fullAreaHint = createClig3FullAreaHint(action.code);
+    amountText.setAttribute('aria-describedby', fullAreaHint.id);
 
     var hiddenQty = document.createElement('input');
     hiddenQty.type = 'hidden';
@@ -3291,7 +3283,7 @@ function createActionCheckboxElements(action) {
 
     formGroup.appendChild(qtyLabel);
     formGroup.appendChild(amountText);
-    formGroup.appendChild(supplementHint);
+    formGroup.appendChild(fullAreaHint);
     formGroup.appendChild(hiddenQty);
     conditional.appendChild(formGroup);
     return { item: item, conditional: conditional };
@@ -4394,8 +4386,9 @@ function updateActionListGroupHeadingVisibility() {
       }
       heading.hidden = !hasVisibleAction;
       var leadIn = heading.nextElementSibling;
-      if (leadIn && leadIn.classList.contains('app-action-list-group-lead-in')) {
+      while (leadIn && leadIn.classList.contains('app-action-list-group-lead-in')) {
         leadIn.hidden = !hasVisibleAction;
+        leadIn = leadIn.nextElementSibling;
       }
     }
   );
@@ -4464,12 +4457,22 @@ function reorderActionOptions(sortedCodes) {
     fragment.appendChild(heading);
 
     if (group.id === 'ha' || group.id === 'm') {
-      var leadIn = document.createElement('p');
-      leadIn.className = 'govuk-body app-action-list-group-lead-in';
-      leadIn.textContent = group.id === 'm'
-        ? 'The available length will update as you make your selections.'
-        : 'The available area will update as you make your selections.';
-      fragment.appendChild(leadIn);
+      if (group.id === 'ha') {
+        var leadInArea = document.createElement('p');
+        leadInArea.className = 'govuk-body app-action-list-group-lead-in';
+        leadInArea.textContent = 'The available area will update as you make your selections.';
+        fragment.appendChild(leadInArea);
+
+        var leadInSupplements = document.createElement('p');
+        leadInSupplements.className = 'govuk-body app-action-list-group-lead-in';
+        leadInSupplements.textContent = 'If you select an action that has supplements, you can choose these on the next page.';
+        fragment.appendChild(leadInSupplements);
+      } else {
+        var leadIn = document.createElement('p');
+        leadIn.className = 'govuk-body app-action-list-group-lead-in';
+        leadIn.textContent = 'The available length will update as you make your selections.';
+        fragment.appendChild(leadIn);
+      }
     }
 
     codes.forEach(function(actionCode) {

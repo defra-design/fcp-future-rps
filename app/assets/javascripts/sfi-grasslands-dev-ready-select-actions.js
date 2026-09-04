@@ -2997,9 +2997,10 @@ function applyPrototypeParcelAreas(parcelId) {
   parcelData[parcelId].availableArea = areas.availableArea;
 }
 
-// Prototype: which constraints the parcel has (SO3757 3193 / 3194 for user testing).
+// Prototype: which constraints the parcel has (SO3757 3190 / 3193 / 3194 for user testing).
 // Action-level ineligibility deducts area; consent / HEFER-required does not.
 var PARCEL_CONSENT_FLAGS = {
+  'church-field': { sssi: true, hefer: true }, // SO3757 3190
   'gate-field': { sssi: true, hefer: true }, // SO3757 3194
   'far-meadow': { sssi: false, hefer: true } // SO3757 3193
 };

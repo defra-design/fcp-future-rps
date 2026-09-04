@@ -21,7 +21,7 @@
 
 {% block content %}
   {% set parcels = reviewParcels if reviewParcels else [] %}
-  {% set summary = reviewSummary if reviewSummary else { totalYearlyPaymentFormatted: '£0.00' } %}
+  {% set summary = reviewSummary if reviewSummary else { totalYearlyPaymentFormatted: '£0.00', agreementDurationYears: 3, agreementDurationFormatted: '3 years', estimatedTotalPaymentFormatted: '£0.00' } %}
 
   <div class="govuk-grid-row app-view-application" role="main">
     <div class="govuk-grid-column-full">
@@ -76,7 +76,7 @@
                     </tr>
                   {% endfor %}
                   <tr class="govuk-table__row app-confirm-parcel-card__subtotal">
-                    <th scope="row" class="govuk-table__cell">Total yearly payment</th>
+                    <th scope="row" class="govuk-table__cell">Subtotal</th>
                     <td class="govuk-table__cell"></td>
                     <td class="govuk-table__cell govuk-table__cell--numeric">
                       <strong>{{ parcel.yearlyPaymentFormatted }}</strong>
@@ -91,21 +91,7 @@
         <p class="govuk-body">No land parcels or actions have been added yet.</p>
       {% endif %}
 
-      <div class="govuk-summary-card app-confirm-parcel-card govuk-!-margin-bottom-9">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">
-            Payment summary
-          </h2>
-        </div>
-        <div class="govuk-summary-card__content">
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-              <dt class="govuk-summary-list__key">Total yearly payment</dt>
-              <dd class="govuk-summary-list__value"><strong>{% if parcels and parcels.length %}{{ summary.totalYearlyPaymentFormatted }}{% else %}£0.00{% endif %}</strong></dd>
-            </div>
-          </dl>
-        </div>
-      </div>
+      {% include "sfi-grasslands-v3/_includes/payment-summary-card.html" %}
 
       <button type="button" class="govuk-button govuk-button--secondary govuk-!-display-none-print" data-module="govuk-button" onclick="window.print()">
         Print

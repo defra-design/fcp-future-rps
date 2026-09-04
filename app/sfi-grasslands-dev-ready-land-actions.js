@@ -614,15 +614,22 @@ function buildBasketParcels (req) {
 }
 
 function summariseBasket (basketParcels) {
+  var AGREEMENT_DURATION_YEARS = 3
   var totalYearlyPayment = 0
 
   ;(basketParcels || []).forEach(function (parcel) {
     totalYearlyPayment += toNumber(parcel && parcel.yearlyPayment)
   })
 
+  var estimatedTotalPayment = totalYearlyPayment * AGREEMENT_DURATION_YEARS
+
   return {
     totalYearlyPayment: totalYearlyPayment,
     totalYearlyPaymentFormatted: formatMoney(totalYearlyPayment),
+    agreementDurationYears: AGREEMENT_DURATION_YEARS,
+    agreementDurationFormatted: AGREEMENT_DURATION_YEARS + ' years',
+    estimatedTotalPayment: estimatedTotalPayment,
+    estimatedTotalPaymentFormatted: formatMoney(estimatedTotalPayment),
     isEmpty: !basketParcels || basketParcels.length === 0
   }
 }

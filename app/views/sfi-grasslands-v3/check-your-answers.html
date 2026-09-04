@@ -196,21 +196,7 @@
       <p class="govuk-body govuk-!-margin-bottom-9">No land parcels or actions have been added yet.</p>
     {% endif %}
 
-    <div class="govuk-summary-card app-confirm-parcel-card govuk-!-margin-bottom-9">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">
-          Payment summary
-        </h2>
-      </div>
-      <div class="govuk-summary-card__content">
-        <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-            <dt class="govuk-summary-list__key">Total yearly payment</dt>
-            <dd class="govuk-summary-list__value">{% if parcels and parcels.length %}{{ summary.totalYearlyPaymentFormatted }}{% else %}£0.00{% endif %}</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
+    {% include "sfi-grasslands-v3/_includes/payment-summary-card.html" %}
       
          <form class="form" action="/sfi-grasslands-v3/check-your-answers" method="post">
 <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">

@@ -5723,7 +5723,12 @@ function getSfiGrasslandsV3ReviewApplicationData (req) {
   return {
     reviewParcels: mockParcels,
     reviewSummary: {
+      totalYearlyPayment: 5158.30,
       totalYearlyPaymentFormatted: '£5,158.30',
+      agreementDurationYears: 3,
+      agreementDurationFormatted: '3 years',
+      estimatedTotalPayment: 15474.90,
+      estimatedTotalPaymentFormatted: '£15,474.90',
       isEmpty: false
     },
     usedMockData: true
@@ -7742,7 +7747,12 @@ function getSfiGrasslandsDevReadyReviewApplicationData (req) {
   return {
     reviewParcels: mockParcels,
     reviewSummary: {
+      totalYearlyPayment: 5158.30,
       totalYearlyPaymentFormatted: '£5,158.30',
+      agreementDurationYears: 3,
+      agreementDurationFormatted: '3 years',
+      estimatedTotalPayment: 15474.90,
+      estimatedTotalPaymentFormatted: '£15,474.90',
       isEmpty: false
     },
     usedMockData: true

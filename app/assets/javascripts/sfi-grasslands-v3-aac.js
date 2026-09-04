@@ -51,8 +51,9 @@
     'valley-bottom': 2
   }
 
-  // SO3757 3193 (far-meadow) HEFER only; SO3757 3194 (gate-field) SSSI + HEFER.
+  // SO3757 3190 (church-field) SSSI + HEFER; 3193 (far-meadow) HEFER only; 3194 (gate-field) SSSI + HEFER.
   var PARCEL_SSSI_HEFER_FLAGS = {
+    'church-field': { sssi: true, hefer: true },
     'far-meadow': { sssi: false, hefer: true },
     'gate-field': { sssi: true, hefer: true }
   }
@@ -1223,7 +1224,11 @@
     if (!item || !action || !conditional) {
       return
     }
-    if (action.unit !== 'ha' && action.unit !== 'm' && action.unit !== 'pond') {
+    // Pond quantity is user-declared — no "why some land is not available" breakdown.
+    if (action.unit === 'pond') {
+      return
+    }
+    if (action.unit !== 'ha' && action.unit !== 'm') {
       return
     }
 
@@ -1419,11 +1424,8 @@
   function formatAvailableHint (available, unit) {
     var amount = Number(available)
     if (unit === 'pond') {
-      if (!Number.isFinite(amount)) {
-        return ''
-      }
-      var ponds = Math.max(0, Math.round(amount))
-      return ponds === 1 ? '1 pond available' : ponds.toLocaleString('en-GB') + ' ponds available'
+      // Pond count is user-declared — do not show "X ponds available".
+      return ''
     }
     if (unit === 'm') {
       var metres = Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0
@@ -1456,12 +1458,12 @@
 
   function buildHintText (action) {
     // Match default (AAC off) quantity copy: "X metres available" / "X.XXXX hectares available"
-    // Pond actions only show an available count when protected-land rules provide one.
+    // Pond actions: users enter a count — do not show "X ponds available".
     // Show remaining after this action's own entry (0 when CLIG3 has taken the full pool).
     if (!action) {
       return ''
     }
-    if (action.unit === 'pond' && !Number.isFinite(Number(action.maxAvailable != null ? action.maxAvailable : action.available))) {
+    if (action.unit === 'pond') {
       return ''
     }
     var amount = action.status === 'unavailable' ? 0 : action.available

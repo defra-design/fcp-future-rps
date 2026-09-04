@@ -322,8 +322,13 @@
   margin-top: 8px;
   margin-bottom: 0;
   padding: 0;
+}
+
+#actions-section .govuk-checkboxes__conditional .app-action-full-area-hint {
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding-left: 0;
   color: #505a5f;
-  font-weight: 400;
   font-size: 16px;
   line-height: 1.25;
 }
@@ -514,11 +519,10 @@
   line-height: 1.25;
 }
 
-/* AAC: GOV.UK summary card above Available actions */
+/* AAC: GOV.UK summary card above Available actions (page is already two-thirds) */
 .app-aac-parcel-summary {
   margin-top: 8px;
   margin-bottom: 24px;
-  max-width: 40rem;
 }
 
 .app-aac-parcel-summary[hidden] {
