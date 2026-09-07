@@ -274,6 +274,10 @@ function formatQuantityDisplay (action) {
     return Math.round(quantity).toLocaleString('en-GB') + ' m'
   }
 
+  if (unit === 'm²' || unit === 'm2' || unit === 'sq m') {
+    return Math.round(quantity).toLocaleString('en-GB') + ' m²'
+  }
+
   return quantity.toFixed(4) + ' ' + unit
 }
 
