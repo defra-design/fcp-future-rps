@@ -1993,6 +1993,9 @@ function getFormatErrorMessage(unit, reason) {
   }
 
   if (reason === 'whole') {
+    if (unit === 'm²') {
+      return 'Enter the quantity in whole square metres';
+    }
     return 'Enter a whole number of ponds, for example 1 or 2';
   }
 
@@ -2085,6 +2088,15 @@ function showQuantityErrorSummary(summaryErrors) {
   $summary[0].focus();
 }
 
+function quantityInputHasDecimalPoint(rawValue) {
+  var normalised = String(rawValue || '').trim().replace(/,/g, '').replace(/\s/g, '');
+  return /\./.test(normalised);
+}
+
+function requiresWholeNumberQuantity(unit) {
+  return isPondUnit(unit) || unit === 'm²';
+}
+
 function updateQuantityFormatErrors($quantityInput) {
   var $checkbox = getQuantityCheckbox($quantityInput);
   var errors = getQuantityErrorsStore($quantityInput);
@@ -2096,11 +2108,17 @@ function updateQuantityFormatErrors($quantityInput) {
   }
 
   var unit = $quantityInput.siblings('.govuk-input__suffix').text();
-  var parsed = parseQuantityInput($quantityInput.val());
+  var rawValue = $quantityInput.val();
+  var parsed = parseQuantityInput(rawValue);
 
   if (!parsed.valid && parsed.reason !== 'empty') {
     errors.format = getFormatErrorMessage(unit, parsed.reason);
-  } else if (parsed.valid && isPondUnit(unit) && !Number.isInteger(parsed.value)) {
+  } else if (
+    parsed.valid &&
+    requiresWholeNumberQuantity(unit) &&
+    (quantityInputHasDecimalPoint(rawValue) || !Number.isInteger(parsed.value))
+  ) {
+    // Keep the typed value — do not round decimals to a whole number
     errors.format = getFormatErrorMessage(unit, 'whole');
   }
 
@@ -3287,7 +3305,9 @@ function createActionCheckboxElements(action) {
   qtyInput.id = 'quantity-' + codeLower;
   qtyInput.name = 'quantity-' + codeLower;
   qtyInput.type = 'text';
-  qtyInput.inputMode = isPondUnit(getQuantityUnitForAction(action.code)) ? 'numeric' : 'decimal';
+  qtyInput.inputMode = requiresWholeNumberQuantity(getQuantityUnitForAction(action.code))
+    ? 'numeric'
+    : 'decimal';
   qtyInput.spellcheck = false;
 
   var suffix = document.createElement('div');
