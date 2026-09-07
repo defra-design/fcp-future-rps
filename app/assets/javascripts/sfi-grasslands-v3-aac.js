@@ -400,7 +400,8 @@
     if (!Number.isFinite(ha) || ha <= 0) {
       return 0
     }
-    return Math.max(50, Math.round(ha * 25))
+    // Prototype: modest traditional building footprint (not parcel-scale).
+    return Math.max(40, Math.min(180, Math.round(ha * 3)))
   }
 
   function getWorkingProfile (parcelId, parcel) {
@@ -728,7 +729,6 @@
 
   // User-entered quantity only — no shared land pool or available-land hint to recalculate.
   var ACTIONS_WITHOUT_AAC_LAND_POOL = {
-    HEF1: true,
     WBD1: true
   }
 
@@ -1432,8 +1432,8 @@
       return metres.toLocaleString('en-GB') + ' metres available'
     }
     if (unit === 'm²') {
-      // HEF1 building area has no reliable AAC — user enters what they want
-      return ''
+      var squareMetres = Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0
+      return squareMetres.toLocaleString('en-GB') + ' square metres available'
     }
     var ha = Number.isFinite(amount) ? Math.max(0, amount) : 0
     return ha.toFixed(4) + ' hectares available'

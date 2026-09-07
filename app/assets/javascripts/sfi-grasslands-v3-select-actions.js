@@ -1858,11 +1858,13 @@ function getAvailableHintText(actionCode, availableAmount) {
   if (isPondUnit(unit)) {
     return '';
   }
-  // HEF1 building area has no reliable AAC — user enters what they want
   if (unit === 'm²') {
-    return '';
+    var squareMetresValue = Number.isFinite(numericAmount)
+      ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
+      : '0';
+    return squareMetresValue + ' square metres available';
   }
-  if (isMetreBasedUnit(unit)) {
+  if (unit === 'm') {
     var metresValue = Number.isFinite(numericAmount)
       ? Math.max(0, Math.round(numericAmount)).toLocaleString('en-GB')
       : '0';
@@ -1886,7 +1888,7 @@ function setActionAvailableHint(actionCode, availableAmount) {
     return;
   }
   var unit = getQuantityUnitForAction(actionCode);
-  if (isPondUnit(unit) || unit === 'm²') {
+  if (isPondUnit(unit)) {
     hintEl.textContent = '';
     hintEl.hidden = true;
     return;
@@ -1906,7 +1908,7 @@ function createActionAvailableHint(actionCode) {
   availableHint.className = 'app-action-available-hint';
   availableHint.id = 'action-available-hint-' + codeLower;
   availableHint.setAttribute('data-action-available-hint', String(actionCode || '').toUpperCase());
-  if (isPondUnit(getQuantityUnitForAction(actionCode)) || getQuantityUnitForAction(actionCode) === 'm²') {
+  if (isPondUnit(getQuantityUnitForAction(actionCode))) {
     availableHint.hidden = true;
   } else if (isWholeRemainingAreaAction(actionCode)) {
     // CLIG3: show the pool it will take (not a misleading 0.0000 placeholder)
@@ -1949,8 +1951,8 @@ function getBuildingSquareMetresAvailable(parcel) {
     return 0;
   }
 
-  // Prototype: modest traditional building footprint for HEF1.
-  return Math.max(50, Math.round(areaHa * 25));
+  // Prototype: modest traditional building footprint for HEF1 (not parcel-scale).
+  return Math.max(40, Math.min(180, Math.round(areaHa * 3)));
 }
 
 function parseQuantityInput(rawValue) {
@@ -1993,14 +1995,17 @@ function hasClearlyInvalidQuantityInput(rawValue) {
   return !parsed.valid && parsed.reason === 'zero';
 }
 
-function getFormatErrorMessage(unit, reason) {
+function getFormatErrorMessage(unit, reason, actionCode) {
   if (reason === 'zero') {
     return 'Enter a number greater than 0';
   }
 
   if (reason === 'whole') {
     if (unit === 'm²') {
-      return 'Enter the quantity in whole square metres';
+      var code = String(actionCode || '').toUpperCase();
+      return code
+        ? 'Enter the quantity in whole square metres for ' + code
+        : 'Enter the quantity in whole square metres';
     }
     return 'Enter a whole number of ponds, for example 1 or 2';
   }
@@ -2114,18 +2119,19 @@ function updateQuantityFormatErrors($quantityInput) {
   }
 
   var unit = $quantityInput.siblings('.govuk-input__suffix').text();
+  var actionCode = ($quantityInput.attr('id') || '').replace('quantity-', '').toUpperCase();
   var rawValue = $quantityInput.val();
   var parsed = parseQuantityInput(rawValue);
 
   if (!parsed.valid && parsed.reason !== 'empty') {
-    errors.format = getFormatErrorMessage(unit, parsed.reason);
+    errors.format = getFormatErrorMessage(unit, parsed.reason, actionCode);
   } else if (
     parsed.valid &&
     requiresWholeNumberQuantity(unit) &&
     (quantityInputHasDecimalPoint(rawValue) || !Number.isInteger(parsed.value))
   ) {
     // Keep the typed value — do not round decimals to a whole number
-    errors.format = getFormatErrorMessage(unit, 'whole');
+    errors.format = getFormatErrorMessage(unit, 'whole', actionCode);
   }
 
   refreshQuantityFieldDisplay($quantityInput);
@@ -5587,8 +5593,8 @@ $(document).ready(function(){
           errors.overLimit = 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
         } else if (suffix === 'm' && isOverLimitM) {
           errors.overLimit = 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel';
-        } else if (suffix === 'm²') {
-          // HEF1 has no known available AAC — do not block on a prototype estimate
+        } else if (suffix === 'm²' && isOverLimitM2) {
+          errors.overLimit = 'Total square metres exceeds ' + Math.max(0, Math.round(totalAreaM2)).toLocaleString('en-GB') + ' available on this parcel';
         }
       }
 
@@ -5677,7 +5683,7 @@ $(document).ready(function(){
       if (errors.format || errors.overLimit) {
         summaryErrors.push({
           fieldId: $quantityInput.attr('id'),
-          linkText: getActionName(actionCode) + ': ' + actionCode
+          linkText: errors.format || errors.overLimit
         });
       }
     });
@@ -6682,9 +6688,9 @@ $(document).ready(function(){
             Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
             ' metres';
         } else if (action.unit === 'm²') {
-          // HEF1 has no known available AAC — do not cap against an estimate
-          refreshQuantityFieldDisplay($input);
-          return;
+          errors.overLimit = 'Enter up to ' +
+            Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
+            ' square metres';
         } else {
           errors.overLimit = 'Enter up to ' + Number(maxAllowed).toFixed(4) + ' hectares';
         }
