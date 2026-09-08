@@ -1,23 +1,26 @@
 /**
  * sfi-grasslands-v3: persist footer feature toggles (session + shareable URL)
- * across all pages that use the grasslands-v2 header layout.
+ * across all pages that use the grasslands-v3 header layout.
  */
 (function (window, document) {
   var TOGGLES = [
     {
       id: 'show-all-mvp-actions',
       storageKey: 'sfiGrasslandsV3ShowAllMvpActions',
-      queryParam: 'allActions'
+      queryParam: 'allActions',
+      defaultOn: false
     },
     {
       id: 'show-previous-agreements',
       storageKey: 'sfiGrasslandsV3ShowPreviousAgreements',
-      queryParam: 'previousAgreements'
+      queryParam: 'previousAgreements',
+      defaultOn: true
     },
     {
       id: 'show-action-deductions',
       storageKey: 'sfiGrasslandsV3ShowActionDeductions',
-      queryParam: 'actionDeductions'
+      queryParam: 'actionDeductions',
+      defaultOn: true
     }
   ]
 
@@ -28,18 +31,6 @@
       }
     }
     return null
-  }
-
-  function isToggleEnabled (queryParam) {
-    var toggle = findToggle(queryParam)
-    if (!toggle) {
-      return false
-    }
-    var input = document.getElementById(toggle.id)
-    if (input) {
-      return Boolean(input.checked)
-    }
-    return getQueryFlag(queryParam) || getSessionFlag(toggle.storageKey)
   }
 
   function getQueryFlag (paramName) {
@@ -58,16 +49,50 @@
     }
   }
 
+  function getSessionFlagRaw (storageKey) {
+    try {
+      return window.sessionStorage.getItem(storageKey)
+    } catch (error) {
+      return null
+    }
+  }
+
   function setSessionFlag (storageKey, enabled) {
     try {
-      if (enabled) {
-        window.sessionStorage.setItem(storageKey, '1')
-      } else {
-        window.sessionStorage.removeItem(storageKey)
-      }
+      // Persist explicit off as '0' so defaultOn toggles stay off after the user disables them
+      window.sessionStorage.setItem(storageKey, enabled ? '1' : '0')
     } catch (error) {
       // Ignore storage errors in private browsing.
     }
+  }
+
+  function resolveToggleEnabled (toggle) {
+    if (!toggle) {
+      return false
+    }
+    if (getQueryFlag(toggle.queryParam)) {
+      return true
+    }
+    var raw = getSessionFlagRaw(toggle.storageKey)
+    if (raw === '1') {
+      return true
+    }
+    if (raw === '0') {
+      return false
+    }
+    return Boolean(toggle.defaultOn)
+  }
+
+  function isToggleEnabled (queryParam) {
+    var toggle = findToggle(queryParam)
+    if (!toggle) {
+      return false
+    }
+    var input = document.getElementById(toggle.id)
+    if (input) {
+      return Boolean(input.checked)
+    }
+    return resolveToggleEnabled(toggle)
   }
 
   function syncQueryParams () {
@@ -97,7 +122,7 @@
         var input = document.getElementById(toggle.id)
         var enabled = input
           ? Boolean(input.checked)
-          : (getQueryFlag(toggle.queryParam) || getSessionFlag(toggle.storageKey))
+          : resolveToggleEnabled(toggle)
         setOrClear(toggle.queryParam, enabled)
       })
 
@@ -121,8 +146,8 @@
         return
       }
 
-      // Query wins so shared links open with the intended state
-      var enabled = getQueryFlag(toggle.queryParam) || getSessionFlag(toggle.storageKey)
+      // Query / session / defaultOn — shared links still win via ?param=1
+      var enabled = resolveToggleEnabled(toggle)
       input.checked = enabled
       setSessionFlag(toggle.storageKey, enabled)
 
@@ -147,6 +172,9 @@
     getSessionFlag: getSessionFlag,
     setSessionFlag: setSessionFlag,
     getQueryFlag: getQueryFlag,
-    isToggleEnabled: isToggleEnabled
+    isToggleEnabled: isToggleEnabled,
+    resolveToggleEnabled: function (queryParam) {
+      return resolveToggleEnabled(findToggle(queryParam))
+    }
   }
 })(window, document)

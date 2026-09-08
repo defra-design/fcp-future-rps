@@ -4875,17 +4875,24 @@ function formatBreakdownNumber(value) {
 }
 
 function isPreviousAgreementsToggleOn() {
-  if (window.SfiGrasslandsV3FeatureToggles) {
-    return window.SfiGrasslandsV3FeatureToggles.getQueryFlag('previousAgreements') ||
-      window.SfiGrasslandsV3FeatureToggles.getSessionFlag('sfiGrasslandsV3ShowPreviousAgreements');
+  if (window.SfiGrasslandsV3FeatureToggles &&
+      typeof window.SfiGrasslandsV3FeatureToggles.isToggleEnabled === 'function') {
+    return window.SfiGrasslandsV3FeatureToggles.isToggleEnabled('previousAgreements');
   }
   try {
     if (new URLSearchParams(window.location.search).get('previousAgreements') === '1') {
       return true;
     }
-    return window.sessionStorage.getItem('sfiGrasslandsV3ShowPreviousAgreements') === '1';
+    var raw = window.sessionStorage.getItem('sfiGrasslandsV3ShowPreviousAgreements');
+    if (raw === '1') {
+      return true;
+    }
+    if (raw === '0') {
+      return false;
+    }
+    return true;
   } catch (error) {
-    return false;
+    return true;
   }
 }
 
@@ -6094,11 +6101,8 @@ $(document).ready(function(){
 
   function setSessionFlag(storageKey, enabled) {
     try {
-      if (enabled) {
-        window.sessionStorage.setItem(storageKey, '1');
-      } else {
-        window.sessionStorage.removeItem(storageKey);
-      }
+      // Persist explicit off as '0' so default-on toggles stay off when disabled
+      window.sessionStorage.setItem(storageKey, enabled ? '1' : '0');
     } catch (error) {
       // Ignore storage errors in private browsing.
     }
@@ -6110,6 +6114,28 @@ $(document).ready(function(){
     } catch (error) {
       return false;
     }
+  }
+
+  function isFeatureToggleEnabled(queryParam, storageKey, defaultOn) {
+    if (window.SfiGrasslandsV3FeatureToggles &&
+        typeof window.SfiGrasslandsV3FeatureToggles.resolveToggleEnabled === 'function') {
+      return window.SfiGrasslandsV3FeatureToggles.resolveToggleEnabled(queryParam);
+    }
+    if (getFeatureToggleQueryFlag(queryParam)) {
+      return true;
+    }
+    try {
+      var raw = window.sessionStorage.getItem(storageKey);
+      if (raw === '1') {
+        return true;
+      }
+      if (raw === '0') {
+        return false;
+      }
+    } catch (error) {
+      // Ignore storage errors in private browsing.
+    }
+    return Boolean(defaultOn);
   }
 
   // Keep shareable feature-toggle state in the URL, e.g. ?allActions=1
@@ -6398,7 +6424,7 @@ $(document).ready(function(){
   function wireActionDeductionsToggle() {
     var storageKey = 'sfiGrasslandsV3ShowActionDeductions';
     var toggle = document.getElementById('show-action-deductions');
-    var enabled = getFeatureToggleQueryFlag('actionDeductions') || getSessionFlag(storageKey);
+    var enabled = isFeatureToggleEnabled('actionDeductions', storageKey, true);
 
     setSessionFlag(storageKey, enabled);
     if (toggle) {
@@ -6416,7 +6442,7 @@ $(document).ready(function(){
   function wirePreviousAgreementsToggle() {
     var storageKey = 'sfiGrasslandsV3ShowPreviousAgreements';
     var toggle = document.getElementById('show-previous-agreements');
-    var enabled = getFeatureToggleQueryFlag('previousAgreements') || getSessionFlag(storageKey);
+    var enabled = isFeatureToggleEnabled('previousAgreements', storageKey, true);
 
     setSessionFlag(storageKey, enabled);
     if (toggle) {
