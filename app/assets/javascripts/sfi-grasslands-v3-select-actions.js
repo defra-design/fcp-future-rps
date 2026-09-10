@@ -2206,6 +2206,91 @@ function getExistingAgreementActionLabels(sourceDl) {
   return labels;
 }
 
+function formatExistingAgreementActionLabel(action) {
+  if (window.SfiGrasslandsV3ExistingAgreements &&
+    typeof window.SfiGrasslandsV3ExistingAgreements.formatLabel === 'function') {
+    return window.SfiGrasslandsV3ExistingAgreements.formatLabel(action);
+  }
+  if (!action) {
+    return '';
+  }
+  if (action.name && action.code) {
+    return action.name + ' (' + action.code + ')';
+  }
+  return action.name || action.code || '';
+}
+
+function formatExistingAgreementQuantity(action, agreement) {
+  if (action && action.ha != null && Number.isFinite(Number(action.ha))) {
+    return (Math.round(Number(action.ha) * 10000) / 10000).toFixed(4) + ' ha';
+  }
+  if (agreement && agreement.availableArea) {
+    return String(agreement.availableArea)
+      .replace(/\s*hectares?\s*$/i, ' ha')
+      .trim();
+  }
+  return '—';
+}
+
+function buildExistingAgreementsTable(agreements) {
+  var table = document.createElement('table');
+  table.className = 'govuk-table app-existing-agreements-table govuk-!-margin-bottom-0';
+
+  var caption = document.createElement('caption');
+  caption.className = 'govuk-table__caption govuk-visually-hidden';
+  caption.textContent = 'Existing agreements';
+  table.appendChild(caption);
+
+  var thead = document.createElement('thead');
+  thead.className = 'govuk-table__head';
+  var headRow = document.createElement('tr');
+  headRow.className = 'govuk-table__row';
+  ['Scheme', 'Action', 'Quantity', 'Expires'].forEach(function(headingText) {
+    var th = document.createElement('th');
+    th.className = 'govuk-table__header';
+    th.setAttribute('scope', 'col');
+    th.textContent = headingText;
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+  tbody.className = 'govuk-table__body';
+
+  (agreements || []).forEach(function(agreement) {
+    (agreement.actions || []).forEach(function(action) {
+      var row = document.createElement('tr');
+      row.className = 'govuk-table__row';
+
+      var schemeCell = document.createElement('td');
+      schemeCell.className = 'govuk-table__cell';
+      schemeCell.textContent = agreement.scheme || '—';
+
+      var actionCell = document.createElement('td');
+      actionCell.className = 'govuk-table__cell';
+      actionCell.textContent = formatExistingAgreementActionLabel(action) || '—';
+
+      var quantityCell = document.createElement('td');
+      quantityCell.className = 'govuk-table__cell';
+      quantityCell.textContent = formatExistingAgreementQuantity(action, agreement);
+
+      var expiresCell = document.createElement('td');
+      expiresCell.className = 'govuk-table__cell';
+      expiresCell.textContent = agreement.endDate || '—';
+
+      row.appendChild(schemeCell);
+      row.appendChild(actionCell);
+      row.appendChild(quantityCell);
+      row.appendChild(expiresCell);
+      tbody.appendChild(row);
+    });
+  });
+
+  table.appendChild(tbody);
+  return table;
+}
+
 function appendPreviousAgreementSummaryRow(listEl, keyText, valueText) {
   var row = document.createElement('div');
   row.className = 'govuk-summary-list__row';
@@ -5006,59 +5091,7 @@ function updateAacParcelAreaBreakdown() {
       if (detailsSummaryEl) {
         detailsSummaryEl.textContent = 'View existing agreements';
       }
-      previousAgreements.forEach(function(agreement, index) {
-        var block = document.createElement('div');
-        block.className = 'app-existing-agreement' +
-          (index < previousAgreements.length - 1 ? ' govuk-!-margin-bottom-6' : '');
-
-        if (agreement.scheme) {
-          var heading = document.createElement('h3');
-          heading.className = 'govuk-heading-s govuk-!-margin-bottom-2';
-          heading.textContent = agreement.scheme;
-          block.appendChild(heading);
-        }
-
-        var list = document.createElement('dl');
-        list.className = 'govuk-summary-list govuk-!-margin-bottom-0';
-
-        if (agreement.endDate) {
-          appendPreviousAgreementSummaryRow(list, 'Agreement ends', agreement.endDate);
-        }
-
-        var actionLabels = (agreement.actions || []).map(function(action) {
-          return window.SfiGrasslandsV3ExistingAgreements &&
-            typeof window.SfiGrasslandsV3ExistingAgreements.formatLabel === 'function'
-            ? window.SfiGrasslandsV3ExistingAgreements.formatLabel(action)
-            : ((action.name || '') + (action.code ? ' (' + action.code + ')' : ''));
-        }).filter(Boolean);
-
-        if (actionLabels.length) {
-          appendPreviousAgreementSummaryRow(
-            list,
-            actionLabels.length === 1 ? 'Existing action' : 'Existing actions',
-            actionLabels.join(', ')
-          );
-        }
-
-        var areaHa = null;
-        (agreement.actions || []).forEach(function(action) {
-          if (action.ha != null && Number.isFinite(Number(action.ha))) {
-            areaHa = (areaHa == null ? 0 : areaHa) + Number(action.ha);
-          }
-        });
-        if (areaHa != null) {
-          appendPreviousAgreementSummaryRow(
-            list,
-            'Area',
-            (Math.round(areaHa * 10000) / 10000).toFixed(4) + ' ha'
-          );
-        } else if (agreement.availableArea) {
-          appendPreviousAgreementSummaryRow(list, 'Area', agreement.availableArea);
-        }
-
-        block.appendChild(list);
-        listEl.appendChild(block);
-      });
+      listEl.appendChild(buildExistingAgreementsTable(previousAgreements));
       detailsEl.hidden = false;
       detailsEl.open = false;
     } else {

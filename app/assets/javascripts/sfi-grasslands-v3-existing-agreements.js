@@ -1,6 +1,6 @@
 (function (window) {
   // Previous / existing agreements on each parcel (prototype data).
-  // Shown on select-actions in a GOV.UK summary list (same pattern as selected land parcel).
+  // Shown on select-actions in a GOV.UK details table (Scheme, Action, Quantity, Expires).
   var EXISTING_AGREEMENTS = {
     'woods-view': [
       {
@@ -47,11 +47,18 @@
         scheme: 'Sustainable Farming Incentive 2024',
         shortScheme: 'SFI 2024',
         endDate: '30 September 2027',
-        actions: [{
-          code: 'CSAM3',
-          name: 'Herbal leys',
-          ha: 2.1
-        }]
+        actions: [
+          {
+            code: 'CSAM3',
+            name: 'Herbal leys',
+            ha: 2.1
+          },
+          {
+            code: 'CMOR1',
+            name: 'Assess moorland and produce a written record',
+            ha: 2.1
+          }
+        ]
       },
       {
         scheme: 'Sustainable Farming Incentive 2023',
@@ -60,7 +67,7 @@
         actions: [{
           code: 'CIGL1',
           name: 'Grassland field corners or blocks out of management',
-          ha: 3.6
+          ha: 2.1
         }]
       }
     ],
@@ -120,11 +127,18 @@
         scheme: 'Sustainable Farming Incentive 2024',
         shortScheme: 'SFI 2024',
         endDate: '30 September 2027',
-        actions: [{
-          code: 'CSAM3',
-          name: 'Herbal leys',
-          ha: 2.1
-        }]
+        actions: [
+          {
+            code: 'CSAM3',
+            name: 'Herbal leys',
+            ha: 2.1
+          },
+          {
+            code: 'CMOR1',
+            name: 'Assess moorland and produce a written record',
+            ha: 2.1
+          }
+        ]
       },
       {
         scheme: 'Sustainable Farming Incentive 2023',
@@ -133,7 +147,7 @@
         actions: [{
           code: 'CIGL1',
           name: 'Grassland field corners or blocks out of management',
-          ha: 3.6
+          ha: 2.1
         }]
       }
     ]

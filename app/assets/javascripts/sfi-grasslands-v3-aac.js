@@ -202,7 +202,7 @@
       exclusions.push({
         featureKey: featureKey,
         label: featureKey === 'sssi' ? 'SSSI' : 'HEFER',
-        detail: null,
+        detail: deduction.label || null,
         amount: amount,
         ha: amount,
         unit: unit
@@ -215,20 +215,39 @@
     return remaining
   }
 
-  // Only deduct existing-agreement land that matches this action code.
+  function isPreviousAgreementsEnabled () {
+    if (window.SfiGrasslandsV3FeatureToggles &&
+        typeof window.SfiGrasslandsV3FeatureToggles.isToggleEnabled === 'function') {
+      return window.SfiGrasslandsV3FeatureToggles.isToggleEnabled('previousAgreements')
+    }
+    try {
+      return new URLSearchParams(window.location.search).get('previousAgreements') === '1'
+    } catch (error) {
+      return false
+    }
+  }
+
+  // Deduct land already in previous agreements on this parcel (when that toggle is on).
   function applyExistingAgreementDeductions (code, unit, baseEligible, exclusions) {
     if (unit !== 'ha' || !Number.isFinite(baseEligible)) {
       return baseEligible
     }
-    if (!window.SfiGrasslandsV3ExistingAgreements ||
-        typeof window.SfiGrasslandsV3ExistingAgreements.getDeductionsForAction !== 'function') {
+    if (!isPreviousAgreementsEnabled()) {
+      return baseEligible
+    }
+    if (!window.SfiGrasslandsV3ExistingAgreements) {
       return baseEligible
     }
 
-    var deductions = window.SfiGrasslandsV3ExistingAgreements.getDeductionsForAction(
-      state.parcelId,
-      code
-    ) || []
+    var deductions = []
+    if (typeof window.SfiGrasslandsV3ExistingAgreements.getDeductions === 'function') {
+      deductions = window.SfiGrasslandsV3ExistingAgreements.getDeductions(state.parcelId) || []
+    } else if (typeof window.SfiGrasslandsV3ExistingAgreements.getDeductionsForAction === 'function') {
+      deductions = window.SfiGrasslandsV3ExistingAgreements.getDeductionsForAction(
+        state.parcelId,
+        code
+      ) || []
+    }
     var remaining = baseEligible
 
     deductions.forEach(function (action) {
@@ -236,10 +255,90 @@
       if (!(amount > 0)) {
         return
       }
+      var agreementLabel = window.SfiGrasslandsV3ExistingAgreements &&
+        typeof window.SfiGrasslandsV3ExistingAgreements.formatLabel === 'function'
+        ? window.SfiGrasslandsV3ExistingAgreements.formatLabel(action)
+        : ((action.name || '') + (action.code ? ' (' + action.code + ')' : ''))
       exclusions.push({
         featureKey: 'existingAgreement',
-        label: 'Existing agreement',
-        detail: null,
+        label: 'Previous agreement',
+        detail: agreementLabel || null,
+        code: action.code || null,
+        name: action.name || null,
+        amount: amount,
+        ha: amount,
+        unit: 'ha'
+      })
+      remaining = roundHa4(remaining - amount)
+    })
+
+    return remaining
+  }
+
+  function isLandCoverEligibleForAction (code, coverName) {
+    var name = String(coverName || '')
+    switch (String(code || '').toUpperCase()) {
+      case 'CSAM3':
+        return /permanent grassland|temporary grass|arable|fallow|leguminous|perennial|crop/i.test(name)
+      case 'SCR2':
+        return /scrub|arable|fallow/i.test(name)
+      case 'CLIG3':
+      case 'CIGL1':
+      case 'CIGL2':
+      case 'CNUM2':
+      case 'GRH7':
+      case 'GRH8':
+      case 'GRH10':
+      case 'GRH12':
+        return /permanent grassland|temporary grass/i.test(name)
+      default:
+        return true
+    }
+  }
+
+  function getIneligibleLandCoverRows (code, profile) {
+    if (!profile || !Array.isArray(profile.landCovers)) {
+      return []
+    }
+    var rows = []
+    profile.landCovers.forEach(function (cover) {
+      var ha = Number(cover && cover.ha)
+      if (!(ha > 0) || isLandCoverEligibleForAction(code, cover.name)) {
+        return
+      }
+      rows.push({
+        name: cover.name,
+        ha: roundHa4(ha)
+      })
+    })
+    return rows
+  }
+
+  // Itemise ineligible land covers (e.g. Scrub for herbal leys) and reduce remaining area.
+  // If the eligible base already excluded those covers, expand first so available stays the same.
+  function applyLandCoverDeductions (code, unit, baseEligible, exclusions, profile) {
+    if (unit !== 'ha' || !Number.isFinite(baseEligible) || !profile) {
+      return baseEligible
+    }
+    var covers = getIneligibleLandCoverRows(code, profile)
+    if (!covers.length) {
+      return baseEligible
+    }
+
+    var coverTotal = covers.reduce(function (sum, cover) {
+      return sum + Number(cover.ha)
+    }, 0)
+    var remaining = roundHa4(baseEligible + coverTotal)
+
+    covers.forEach(function (cover) {
+      var amount = roundHa4(Math.min(Number(cover.ha), Math.max(0, remaining)))
+      if (!(amount > 0)) {
+        return
+      }
+      exclusions.push({
+        featureKey: 'landCover',
+        label: cover.name,
+        detail: cover.name,
         amount: amount,
         ha: amount,
         unit: 'ha'
@@ -561,6 +660,7 @@
           baseEligible = roundHa4(Math.min(baseEligible, profile.availableHa))
         }
         baseBeforeProtectedLand = baseEligible
+        baseEligible = applyLandCoverDeductions(code, 'ha', baseEligible, exclusions, profile)
         baseEligible = applyExistingAgreementDeductions(code, 'ha', baseEligible, exclusions)
         baseEligible = applyProtectedLandDeductions(code, 'ha', baseEligible, exclusions)
         break
@@ -584,6 +684,7 @@
           }
         }
         baseBeforeProtectedLand = baseEligible
+        baseEligible = applyLandCoverDeductions(code, 'ha', baseEligible, exclusions, profile)
         baseEligible = applyExistingAgreementDeductions(code, 'ha', baseEligible, exclusions)
         baseEligible = applyProtectedLandDeductions(code, 'ha', baseEligible, exclusions)
         break
@@ -1105,12 +1206,15 @@
       return null
     }
     if (item.featureKey === 'sssi' || item.featureKey === 'hefer' ||
-        item.featureKey === 'existingAgreement') {
+        item.featureKey === 'existingAgreement' || item.featureKey === 'landCover') {
       return item.featureKey
     }
     var text = String(item.label || '')
-    if (/existing agreement/i.test(text)) {
+    if (/existing agreement|previous agreement/i.test(text)) {
       return 'existingAgreement'
+    }
+    if (/land cover|scrub/i.test(text)) {
+      return 'landCover'
     }
     if (/sssi/i.test(text)) {
       return 'sssi'
@@ -1119,6 +1223,57 @@
       return 'hefer'
     }
     return null
+  }
+
+  function formatAvailabilityDeductionLabel (item, featureKey) {
+    if (featureKey === 'existingAgreement') {
+      if (item.detail) {
+        return item.detail
+      }
+      if (item.name && item.code) {
+        return item.name + ' (' + item.code + ')'
+      }
+      if (window.SfiGrasslandsV3ExistingAgreements &&
+          typeof window.SfiGrasslandsV3ExistingAgreements.formatLabel === 'function' &&
+          (item.code || item.name)) {
+        return window.SfiGrasslandsV3ExistingAgreements.formatLabel(item)
+      }
+      if (item.label && !/^existing agreement$/i.test(String(item.label)) &&
+          !/^previous agreement$/i.test(String(item.label))) {
+        return item.label
+      }
+      return 'Previous agreement'
+    }
+    if (featureKey === 'sssi') {
+      return 'Sites of special scientific interest (SSSI)'
+    }
+    if (featureKey === 'hefer') {
+      return 'Historic and archaeological features'
+    }
+    if (featureKey === 'landCover') {
+      return item.detail || item.label || 'Land cover'
+    }
+    return item.label || item.detail || 'Other'
+  }
+
+  var DEDUCTION_GROUPS = [
+    { id: 'landCover', title: 'Land cover', keys: ['landCover'] },
+    { id: 'existingAgreements', title: 'Previous agreements', keys: ['existingAgreement'] },
+    { id: 'featuresOnLand', title: 'Features on land', keys: ['sssi', 'hefer'] }
+  ]
+
+  function groupAvailabilityDeductions (rows) {
+    return DEDUCTION_GROUPS.map(function (group) {
+      return {
+        id: group.id,
+        title: group.title,
+        rows: (rows || []).filter(function (row) {
+          return group.keys.indexOf(row.featureKey) !== -1
+        })
+      }
+    }).filter(function (group) {
+      return group.rows.length > 0
+    })
   }
 
   function getAvailabilityDeductionRows (action) {
@@ -1133,29 +1288,17 @@
         return
       }
       var unit = item.unit || action.unit || 'ha'
-      var label = item.label
-      if (!label) {
-        if (featureKey === 'existingAgreement') {
-          label = 'Existing agreement'
-        } else if (featureKey === 'sssi') {
-          label = 'SSSI'
-        } else if (featureKey === 'hefer') {
-          label = 'HEFER'
-        } else {
-          label = 'Other'
-        }
-      }
       rows.push({
         featureKey: featureKey,
-        label: label,
+        label: formatAvailabilityDeductionLabel(item, featureKey),
         detail: item.detail || null,
         amount: unit === 'ha' ? roundHa4(Number(amount)) : Math.round(Number(amount)),
         unit: unit
       })
     })
 
-    // Stable order: existing agreement, then SSSI, then HEFER, then anything else
-    var order = { existingAgreement: 1, sssi: 2, hefer: 3 }
+    // Stable order: land cover, existing agreement, then SSSI, then HEFER
+    var order = { landCover: 1, existingAgreement: 2, sssi: 3, hefer: 4 }
     rows.sort(function (a, b) {
       return (order[a.featureKey] || 9) - (order[b.featureKey] || 9)
     })
@@ -1253,8 +1396,20 @@
     var text = document.createElement('div')
     text.className = 'govuk-details__text'
 
+    var intro = document.createElement('p')
+    intro.className = 'govuk-body-s govuk-!-margin-bottom-3'
+    intro.textContent = 'These areas are not included in the ' +
+      (action.unit === 'm' ? 'length' : 'hectares') +
+      ' available for this action.'
+    text.appendChild(intro)
+
     var list = document.createElement('table')
     list.className = 'govuk-table app-action-availability-details__table govuk-!-margin-bottom-0'
+
+    var caption = document.createElement('caption')
+    caption.className = 'govuk-table__caption govuk-visually-hidden'
+    caption.textContent = 'Deductions from available ' + (action.unit === 'm' ? 'length' : 'area')
+    list.appendChild(caption)
 
     var head = document.createElement('thead')
     head.className = 'govuk-table__head'
@@ -1269,7 +1424,7 @@
     var areaHead = document.createElement('th')
     areaHead.className = 'govuk-table__header govuk-table__header--numeric'
     areaHead.setAttribute('scope', 'col')
-    areaHead.textContent = 'Area'
+    areaHead.textContent = action.unit === 'm' ? 'Length' : 'Area'
 
     headRow.appendChild(reasonHead)
     headRow.appendChild(areaHead)
@@ -1279,27 +1434,47 @@
     var body = document.createElement('tbody')
     body.className = 'govuk-table__body'
 
+    var groups = groupAvailabilityDeductions(deductions)
+    var showGroupHeaders = groups.length > 1
     var totalUnavailable = 0
-    deductions.forEach(function (deduction) {
-      totalUnavailable = roundForUnit(
-        totalUnavailable + Number(deduction.amount),
-        deduction.unit || action.unit
-      )
 
-      var row = document.createElement('tr')
-      row.className = 'govuk-table__row'
+    groups.forEach(function (group) {
+      if (showGroupHeaders) {
+        var groupRow = document.createElement('tr')
+        groupRow.className = 'govuk-table__row app-action-availability-details__group'
 
-      var reasonCell = document.createElement('td')
-      reasonCell.className = 'govuk-table__cell'
-      reasonCell.textContent = deduction.label
+        var groupHeader = document.createElement('th')
+        groupHeader.className = 'govuk-table__header'
+        groupHeader.setAttribute('scope', 'colgroup')
+        groupHeader.setAttribute('colspan', '2')
+        groupHeader.textContent = group.title
 
-      var areaCell = document.createElement('td')
-      areaCell.className = 'govuk-table__cell govuk-table__cell--numeric'
-      areaCell.textContent = formatBreakdownDeduction(deduction.amount, deduction.unit || action.unit)
+        groupRow.appendChild(groupHeader)
+        body.appendChild(groupRow)
+      }
 
-      row.appendChild(reasonCell)
-      row.appendChild(areaCell)
-      body.appendChild(row)
+      group.rows.forEach(function (deduction) {
+        totalUnavailable = roundForUnit(
+          totalUnavailable + Number(deduction.amount),
+          deduction.unit || action.unit
+        )
+
+        var row = document.createElement('tr')
+        row.className = 'govuk-table__row'
+
+        var reasonCell = document.createElement('td')
+        reasonCell.className = 'govuk-table__cell' +
+          (showGroupHeaders ? ' app-action-availability-details__reason' : '')
+        reasonCell.textContent = deduction.label
+
+        var areaCell = document.createElement('td')
+        areaCell.className = 'govuk-table__cell govuk-table__cell--numeric'
+        areaCell.textContent = formatBreakdownDeduction(deduction.amount, deduction.unit || action.unit)
+
+        row.appendChild(reasonCell)
+        row.appendChild(areaCell)
+        body.appendChild(row)
+      })
     })
 
     var totalRow = document.createElement('tr')
