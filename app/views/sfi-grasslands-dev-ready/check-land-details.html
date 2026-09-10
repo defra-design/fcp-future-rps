@@ -50,10 +50,6 @@
         <li>the correct land covers for each land parcel (for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover)</li>
       </ul>
 
-      <p class="govuk-body">
-        <a class="govuk-link" href="https://www.gov.uk/guidance/rural-payments-service-how-to-register-land-and-update-digital-maps" target="_blank" rel="noopener noreferrer">Check your digital maps (opens in new tab)</a>
-      </p>
-
       <form class="form" action="/sfi-grasslands-dev-ready/check-land-details-answer" method="post">
         {% include "sfi-grasslands-dev-ready/_includes/eligibility-return-to.html" %}
         <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">

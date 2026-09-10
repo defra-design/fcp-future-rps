@@ -199,12 +199,20 @@ function syncFromSessionAnswers (req, options) {
   return tasks
 }
 
-function resolveCheckTask (stored, completed, href) {
+function resolveCheckTask (stored, completed, href, previousCompleted) {
   if (completed) {
     return {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
       href: href
+    }
+  }
+  // Must finish earlier Check before you start tasks first
+  if (previousCompleted === false) {
+    return {
+      key: STATUS.CANNOT_START,
+      status: statusViewCannotStart(),
+      href: null
     }
   }
   if (stored === STATUS.IN_PROGRESS) {
@@ -239,29 +247,33 @@ function getResolvedTaskStates (req) {
   var checkAnswersCompleted = checkAnswersStored === STATUS.COMPLETED
   var submitCompleted = submitStored === STATUS.COMPLETED
 
-  // Check before you start — available in any order
+  // Check before you start — one task at a time, in list order
   var beforeYouStart = resolveCheckTask(
     beforeYouStartStored,
     beforeYouStartCompleted,
-    '/sfi-grasslands-v3/before-you-make-an-application'
+    '/sfi-grasslands-v3/before-you-make-an-application',
+    true
   )
 
   var checkBusinessDetails = resolveCheckTask(
     businessStored,
     businessCompleted,
-    '/sfi-grasslands-v3/check-business-details'
+    '/sfi-grasslands-v3/check-business-details',
+    beforeYouStartCompleted
   )
 
   var checkLandDetails = resolveCheckTask(
     landDetailsStored,
     landDetailsCompleted,
-    '/sfi-grasslands-v3/check-land-details'
+    '/sfi-grasslands-v3/check-land-details',
+    businessCompleted
   )
 
   var confirmEligible = resolveCheckTask(
     eligibleStored,
     eligibleCompleted,
-    '/sfi-grasslands-v3/management-control'
+    '/sfi-grasslands-v3/management-control',
+    landDetailsCompleted
   )
 
   // 2. Select land — locked until section 1 complete

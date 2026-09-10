@@ -519,10 +519,21 @@
   line-height: 1.25;
 }
 
-/* AAC: GOV.UK summary card above Available actions (page is already two-thirds) */
+/* AAC: GOV.UK summary card above Available actions (constrained to two-thirds) */
 .app-aac-parcel-summary {
   margin-top: 8px;
   margin-bottom: 24px;
+}
+
+/* Keep the Available actions heading on the reading measure */
+.app-actions-heading-constrained {
+  max-width: 66.6666%;
+}
+
+@media (max-width: 40.0625em) {
+  .app-actions-heading-constrained {
+    max-width: none;
+  }
 }
 
 .app-aac-parcel-summary[hidden] {

@@ -3063,10 +3063,10 @@ function setEligibleParcelNote(el, hasSssi, hasHefer) {
     el.appendChild(createConsentGuidanceLink(SSSI_CONSENT_GUIDANCE_HREF, 'SSSI consent'));
   }
   if (hasSssi && hasHefer) {
-    el.appendChild(document.createTextNode(' or an '));
+    el.appendChild(document.createTextNode(' or a '));
   }
   if (hasHefer) {
-    el.appendChild(createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'HEFER'));
+    el.appendChild(createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'Historic Environment Farm Environment Record (HEFER)'));
   }
   el.appendChild(document.createTextNode('. We’ll tell you what you need for each action.'));
 }

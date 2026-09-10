@@ -120,6 +120,7 @@ function clearClig3SupplementsComplete (req) {
   var data = getSessionData(req)
   delete data.clig3SupplementsCompleteParcelId
   delete data.clig3SupplementsCompleteQuantity
+  delete data.clig3SupplementsChoice
 }
 
 function markClig3SupplementsComplete (req, actions) {
@@ -131,6 +132,26 @@ function markClig3SupplementsComplete (req, actions) {
   }
   data.clig3SupplementsCompleteParcelId = parcel.parcelId
   data.clig3SupplementsCompleteQuantity = getClig3AppliedQuantity(actions)
+  // “No supplement” is not an action — remember it so the page can re-check
+  data.clig3SupplementsChoice = getSelectedClig3SupplementCode(actions) || 'NONE'
+}
+
+function getClig3SupplementSelectionForPage (req, actions) {
+  var code = getSelectedClig3SupplementCode(actions)
+  if (code) {
+    return code
+  }
+  var data = getSessionData(req)
+  var parcel = getDraftParcel(req)
+  if (
+    parcel &&
+    parcel.parcelId &&
+    data.clig3SupplementsCompleteParcelId === parcel.parcelId &&
+    data.clig3SupplementsChoice === 'NONE'
+  ) {
+    return 'NONE'
+  }
+  return ''
 }
 
 function shouldShowClig3Supplements (req, actions) {
@@ -453,9 +474,7 @@ function getClig3SupplementOptions (clig3Ha) {
       name: name,
       ratePerHa: ratePerHa,
       rateText: '£' + ratePerHa + '/ha',
-      availableText: appliesFullArea
-        ? availableFormatted + ' available'
-        : 'Up to ' + availableFormatted + ' available',
+      availableText: availableFormatted + ' available',
       requiresQuantityInput: requiresQuantity,
       appliesFullClig3Area: appliesFullArea,
       guidanceUrl: getClig3SupplementGuidanceUrl(code, name)
@@ -610,7 +629,7 @@ function buildBasketParcels (req) {
       var reference = getParcelDisplayReference(parcel) || 'Unknown parcel'
 
       return Object.assign({}, parcel, summary, {
-        heading: 'Parcel reference ' + reference,
+        heading: 'Land parcel ' + reference,
         parcelReference: reference,
         landCoverLines: formatLandCoverLines(parcel.landCover, parcel.totalArea)
       })
@@ -836,6 +855,7 @@ module.exports = {
   clearClig3SupplementsComplete: clearClig3SupplementsComplete,
   getClig3AppliedQuantity: getClig3AppliedQuantity,
   getSelectedClig3SupplementCode: getSelectedClig3SupplementCode,
+  getClig3SupplementSelectionForPage: getClig3SupplementSelectionForPage,
   getSelectedClig3SupplementQuantity: getSelectedClig3SupplementQuantity,
   stripClig3Supplements: stripClig3Supplements,
   applyClig3SupplementSelection: applyClig3SupplementSelection,

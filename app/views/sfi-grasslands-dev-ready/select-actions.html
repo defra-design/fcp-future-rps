@@ -146,7 +146,14 @@
       </div>
     </div>
 
-    <!-- AAC: single column inside two-thirds. Non-AAC: actions | selected parcel -->
+  </div>
+</div>
+
+{# Actions list uses full width; intro / map / buttons stay two-thirds #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <!-- AAC: single column. Non-AAC: actions | selected parcel -->
     <div class="app-bottom-panels">
 
       <div class="app-bottom-panels__actions">
@@ -162,104 +169,117 @@
 
         <div id="actions-section"{% if not draftParcel %} class="app-js-hidden"{% endif %}>
 
-          {# AAC only: summary card above Available actions #}
-          <div id="aac-parcel-summary" class="app-aac-parcel-summary" hidden>
-            <div class="govuk-summary-card">
-              <div class="govuk-summary-card__title-wrapper">
-                <h2 class="govuk-summary-card__title">Selected land parcel</h2>
-                {% if not isEditingLandActions %}
-                  <ul class="govuk-summary-card__actions">
-                    <li class="govuk-summary-card__action">
-                      <a class="govuk-link" href="/sfi-grasslands-dev-ready/select-land">Change<span class="govuk-visually-hidden" id="aac-parcel-change-hidden"> land parcel</span></a>
-                    </li>
-                  </ul>
-                {% endif %}
-              </div>
-              <div class="govuk-summary-card__content">
-                <dl class="govuk-summary-list">
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Parcel reference</dt>
-                    <dd class="govuk-summary-list__value" id="aac-parcel-reference">—</dd>
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+              {# AAC only: summary card above Available actions #}
+              <div id="aac-parcel-summary" class="app-aac-parcel-summary" hidden>
+                <div class="govuk-summary-card">
+                  <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">Selected land parcel</h2>
+                    {% if not isEditingLandActions %}
+                      <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                          <a class="govuk-link" href="/sfi-grasslands-dev-ready/select-land">Change<span class="govuk-visually-hidden" id="aac-parcel-change-hidden"> land parcel</span></a>
+                        </li>
+                      </ul>
+                    {% endif %}
                   </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Land covers</dt>
-                    <dd class="govuk-summary-list__value" id="aac-parcel-land-cover">—</dd>
+                  <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                      <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Parcel reference</dt>
+                        <dd class="govuk-summary-list__value" id="aac-parcel-reference">—</dd>
+                      </div>
+                      <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Land covers</dt>
+                        <dd class="govuk-summary-list__value" id="aac-parcel-land-cover">—</dd>
+                      </div>
+                      <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Total area</dt>
+                        <dd class="govuk-summary-list__value">
+                          <span id="aac-actions-total-area">—</span>
+                        </dd>
+                      </div>
+                    </dl>
                   </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Total area</dt>
-                    <dd class="govuk-summary-list__value">
-                      <span id="aac-actions-total-area">—</span>
-                    </dd>
-                  </div>
-                </dl>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="govuk-form-group govuk-!-margin-top-2" id="actions-form-group">
             <fieldset class="govuk-fieldset"{% if actionsError %} aria-describedby="actions-selection-error"{% endif %}>
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m app-actions-heading-constrained">
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
 
-              {# AAC only: guidance under the list heading. #}
-              <div id="aac-actions-intro" hidden>
-                <p class="govuk-body">The quantity available for each action depends on:</p>
-                <ul class="govuk-list govuk-list--bullet">
-                  <li>the land cover on this parcel</li>
-                  <li>land already in existing agreements</li>
-                  <li>other actions you select</li>
-                  <li id="aac-actions-intro-sssi-factor" hidden>site of special scientific interest (SSSI) eligibility</li>
-                  <li id="aac-actions-intro-hefer-factor" hidden>Historic Environment Farm Environment Record (HEFER) eligibility</li>
-                  <li id="aac-actions-intro-ineligible-factor" hidden>whether any of the land is ineligible for the action</li>
-                </ul>
-                <div id="aac-actions-intro-protected-notes" class="govuk-inset-text" hidden>
-                  <p class="govuk-body govuk-!-margin-bottom-0" id="aac-actions-intro-eligible-note"></p>
-                </div>
-                <p class="govuk-body">Each of these actions lasts for 3 years. Read the guidance for each action for what you’ll need to do. All links open in a new tab.</p>
-              </div>
-              <div id="actions-compatibility-status-sentinel" class="actions-compatibility-status-sentinel" aria-hidden="true"></div>
-              <div class="actions-compatibility-status-slot">
-                <div id="actions-compatibility-status" class="actions-compatibility-status" role="status" aria-live="polite" aria-atomic="true" hidden>
-                  <div class="actions-compatibility-status__inner">
-                    <span class="actions-compatibility-status__spinner" aria-hidden="true"></span>
-                    <div>
-                      <p class="govuk-body govuk-!-margin-bottom-1">Checking which actions can be used together…</p>
-                      <p class="govuk-body govuk-!-margin-bottom-0">This may take a few seconds.</p>
+              <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                  {# AAC only: guidance under the list heading. #}
+                  <div id="aac-actions-intro" hidden>
+                    <p class="govuk-body">The quantity available for each action depends on:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                      <li>the land cover on this parcel</li>
+                      <li>land already in existing agreements</li>
+                      <li>other actions you select</li>
+                      <li id="aac-actions-intro-sssi-factor" hidden>site of special scientific interest (SSSI) eligibility</li>
+                      <li id="aac-actions-intro-hefer-factor" hidden>Historic or archaeological features eligibility</li>
+                      <li id="aac-actions-intro-ineligible-factor" hidden>whether any of the land is ineligible for the action</li>
+                    </ul>
+                    <div id="aac-actions-intro-protected-notes" class="govuk-inset-text" hidden>
+                      <p class="govuk-body govuk-!-margin-bottom-0" id="aac-actions-intro-eligible-note"></p>
+                    </div>
+                    <p class="govuk-body">Each of these actions lasts for 3 years. Read the guidance for each action for what you’ll need to do. All links open in a new tab.</p>
+                  </div>
+                  <div id="actions-compatibility-status-sentinel" class="actions-compatibility-status-sentinel" aria-hidden="true"></div>
+                  <div class="actions-compatibility-status-slot">
+                    <div id="actions-compatibility-status" class="actions-compatibility-status" role="status" aria-live="polite" aria-atomic="true" hidden>
+                      <div class="actions-compatibility-status__inner">
+                        <span class="actions-compatibility-status__spinner" aria-hidden="true"></span>
+                        <div>
+                          <p class="govuk-body govuk-!-margin-bottom-1">Checking which actions can be used together…</p>
+                          <p class="govuk-body govuk-!-margin-bottom-0">This may take a few seconds.</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  <p id="actions-selection-error" class="govuk-error-message"{% if not actionsError %} hidden{% endif %}>
+                    <span class="govuk-visually-hidden">Error:</span> {{ actionsErrorMessageText }}
+                  </p>
                 </div>
               </div>
-              <p id="actions-selection-error" class="govuk-error-message"{% if not actionsError %} hidden{% endif %}>
-                <span class="govuk-visually-hidden">Error:</span> {{ actionsErrorMessageText }}
-              </p>
+
               <div class="govuk-checkboxes{% if actionsError %} app-actions-checkboxes--error{% endif %}" data-module="govuk-checkboxes" id="actions-checkboxes-container"></div>
             </fieldset>
           </div>
 
-          <div id="no-results-message" class="app-js-hidden">
-            <div class="govuk-!-margin-top-4">
-              <p class="govuk-body govuk-!-font-weight-bold" id="no-results-title">There are no matching results.</p>
-              <p class="govuk-body" id="no-results-description">Please check your spelling, or action code, and try again.</p>
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+              <div id="no-results-message" class="app-js-hidden">
+                <div class="govuk-!-margin-top-4">
+                  <p class="govuk-body govuk-!-font-weight-bold" id="no-results-title">There are no matching results.</p>
+                  <p class="govuk-body" id="no-results-description">Please check your spelling, or action code, and try again.</p>
+                </div>
+              </div>
+
+              <form action="/sfi-grasslands-dev-ready/select-actions" method="post" id="continue-form">
+                <input type="hidden" name="draftLandActions" id="draftLandActions" value="">
+                <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
+                <div class="govuk-button-group govuk-!-margin-top-6">
+                  <button type="submit" id="continue-button" class="govuk-button" data-module="govuk-button">
+                    Save and continue
+                  </button>
+                </div>
+                {% if showCancelToLandAndActions %}
+                  <p class="govuk-body">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-dev-ready/cancel-land-actions-draft">
+                      Cancel<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
+                    </a>
+                  </p>
+                {% endif %}
+              </form>
             </div>
           </div>
-
-          <form action="/sfi-grasslands-dev-ready/select-actions" method="post" id="continue-form">
-            <input type="hidden" name="draftLandActions" id="draftLandActions" value="">
-            <input type="hidden" name="parcelSelectionsData" id="parcelSelectionsData" value="">
-            <div class="govuk-button-group govuk-!-margin-top-6">
-              <button type="submit" id="continue-button" class="govuk-button" data-module="govuk-button">
-                Save and continue
-              </button>
-            </div>
-            {% if showCancelToLandAndActions %}
-              <p class="govuk-body">
-                <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-dev-ready/cancel-land-actions-draft">
-                  Cancel<span class="govuk-visually-hidden"> and return to land parcels and actions</span>
-                </a>
-              </p>
-            {% endif %}
-          </form>
         </div>
       </div>
 
@@ -321,15 +341,14 @@
 
     </div>
 
-    <div id="parcels-actions-summary-section">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <div class="app-application-summary">
-        {# <h2 class="govuk-heading-s">Parcels and actions summary</h2> #}
-        <div class="govuk-accordion" data-module="govuk-accordion" id="application-summary-accordion">
-          
+  </div>
+</div>
 
-          <!-- Selected parcels section -->
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div id="parcels-actions-summary-section">
+      <div class="app-application-summary">
+        <div class="govuk-accordion" data-module="govuk-accordion" id="application-summary-accordion">
           <div class="govuk-accordion__section govuk-accordion__section--expanded">
             <div class="govuk-accordion__section-header">
               <h3 class="govuk-accordion__section-heading">
@@ -339,31 +358,26 @@
               </h3>
             </div>
             <div id="application-summary-accordion-content-2" class="govuk-accordion__section-content" aria-labelledby="application-summary-accordion-heading-2">
-              {# <p class="govuk-body" id="application-summary-intro" style="display: none;">You have selected actions for the following parcels</p> #}
               <div id="application-summary-empty">
                 <p class="govuk-body app-application-summary__empty">No actions selected yet. Select a parcel and add actions to begin.</p>
               </div>
               <div id="application-summary-list" class="app-js-hidden">
                 <!-- Selected parcels and actions will be dynamically added here -->
               </div>
-                     <div class="back-to-top">
-              <a class="govuk-link" href="#page-heading">
-                <svg role="presentation" focusable="false" class="back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                  <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                </svg>Back to top
-              </a>
+              <div class="back-to-top">
+                <a class="govuk-link" href="#page-heading">
+                  <svg role="presentation" focusable="false" class="back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                  </svg>Back to top
+                </a>
+              </div>
             </div>
-            </div>
-     
-          </div>
-      
-
-      
-
           </div>
         </div>
+      </div>
     </div>
-    </div>
+  </div>
+</div>
 
 {% endblock %}
 
@@ -392,4 +406,3 @@
 
   <script src="/public/javascripts/sfi-grasslands-dev-ready-select-actions.js"></script>
 {% endblock %}
-

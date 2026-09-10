@@ -22,6 +22,7 @@ const sfiGrasslandsV2Consent = require('./sfi-grasslands-v2-consent')
 const sfiGrasslandsV3Tasks = require('./sfi-grasslands-v3-tasks')
 const sfiGrasslandsV3LandActions = require('./sfi-grasslands-v3-land-actions')
 const sfiGrasslandsV3Consent = require('./sfi-grasslands-v3-consent')
+const sfiGrasslandsV3LandDetails = require('./sfi-grasslands-v3-land-details')
 
 const sfiGrasslandsDevReadyTasks = require('./sfi-grasslands-dev-ready-tasks')
 const sfiGrasslandsDevReadyLandActions = require('./sfi-grasslands-dev-ready-land-actions')
@@ -3292,7 +3293,7 @@ router.get('/sfi-grasslands-v2/clig3-supplements', function (req, res) {
     draftParcel: draftParcel,
     draftActions: draftActions,
     supplementOptions: sfiGrasslandsV2LandActions.getClig3SupplementOptions(clig3Ha),
-    selectedSupplementCode: sfiGrasslandsV2LandActions.getSelectedClig3SupplementCode(draftActions),
+    selectedSupplementCode: sfiGrasslandsV2LandActions.getClig3SupplementSelectionForPage(req, draftActions),
     selectedSupplementQuantity: sfiGrasslandsV2LandActions.getSelectedClig3SupplementQuantity(draftActions),
     clig3AreaFormatted: sfiGrasslandsV2LandActions.formatHectares(clig3Ha),
     backHref: backHref,
@@ -4974,6 +4975,24 @@ function getSfiV3NextCheckBeforeYouStartPath (req) {
   return '/sfi-grasslands-v3/task-list'
 }
 
+// Redirect if this Check before you start task is locked (must do tasks in order)
+function redirectIfSfiV3CheckBeforeYouStartLocked (req, res, taskStateKey) {
+  if (req.query.from === 'check-your-answers') {
+    return false
+  }
+
+  sfiGrasslandsV3Tasks.syncFromSessionAnswers(req, {})
+  var states = sfiGrasslandsV3Tasks.getResolvedTaskStates(req)
+  var task = states[taskStateKey]
+
+  if (task && task.key === sfiGrasslandsV3Tasks.STATUS.CANNOT_START) {
+    res.redirect(getSfiV3NextCheckBeforeYouStartPath(req))
+    return true
+  }
+
+  return false
+}
+
 function renderSfiGrasslandsV3EligibilityPage (req, res, view, options) {
   var opts = options || {}
 
@@ -4998,6 +5017,9 @@ function saveSfiGrasslandsV3Answer (req, fieldName, value) {
 }
 
 router.get('/sfi-grasslands-v3/check-business-details', function (req, res) {
+  if (redirectIfSfiV3CheckBeforeYouStartLocked(req, res, 'checkBusinessDetails')) {
+    return
+  }
   sfiGrasslandsV3Tasks.markInProgress(req, sfiGrasslandsV3Tasks.TASK_IDS.checkBusinessDetails)
   if (req.query.from !== 'check-your-answers') {
     setSfiV3CheckBeforeYouStartLinearFlow(req, true)
@@ -5012,6 +5034,9 @@ router.get('/sfi-grasslands-v3/update-business-details', function (req, res) {
 })
 
 router.get('/sfi-grasslands-v3/check-land-details', function (req, res) {
+  if (redirectIfSfiV3CheckBeforeYouStartLocked(req, res, 'checkLandDetails')) {
+    return
+  }
   sfiGrasslandsV3Tasks.markInProgress(req, sfiGrasslandsV3Tasks.TASK_IDS.checkLandDetails)
   if (req.query.from !== 'check-your-answers') {
     setSfiV3CheckBeforeYouStartLinearFlow(req, true)
@@ -5026,6 +5051,9 @@ router.get('/sfi-grasslands-v3/confirm-eligibility-details', function (req, res)
 })
 
 router.get('/sfi-grasslands-v3/management-control', function (req, res) {
+  if (redirectIfSfiV3CheckBeforeYouStartLocked(req, res, 'confirmEligible')) {
+    return
+  }
   sfiGrasslandsV3Tasks.markInProgress(req, sfiGrasslandsV3Tasks.TASK_IDS.confirmEligible)
   renderSfiGrasslandsV3EligibilityPage(req, res, 'sfi-grasslands-v3/management-control')
 })
@@ -5045,6 +5073,46 @@ router.get('/sfi-grasslands-v3/eligible', function (req, res) {
   res.render('sfi-grasslands-v3/eligible', {
     data: getSfiGrasslandsV3SessionData(req)
   })
+})
+
+router.get('/sfi-grasslands-v3/view-land', function (req, res) {
+  res.redirect('/sfi-grasslands-v3/land-details')
+})
+
+router.get('/sfi-grasslands-v3/land-details', function (req, res) {
+  var parcels = sfiGrasslandsV3LandDetails.getAllParcels()
+  var farmSummary = sfiGrasslandsV3LandDetails.getFarmSummary()
+  res.render('sfi-grasslands-v3/land-details', Object.assign({
+    data: getSfiGrasslandsV3SessionData(req),
+    parcels: parcels,
+    farmSummary: farmSummary,
+    mapPayload: sfiGrasslandsV3LandDetails.getMapPayload({})
+  }, getSfiGrasslandsV3CompatibilityLocals(req)))
+})
+
+router.get('/sfi-grasslands-v3/land-details/:slug', function (req, res) {
+  var parcel = sfiGrasslandsV3LandDetails.getParcelBySlug(req.params.slug)
+  if (!parcel) {
+    return res.redirect('/sfi-grasslands-v3/land-details')
+  }
+
+  res.render('sfi-grasslands-v3/land-details-parcel', Object.assign({
+    data: getSfiGrasslandsV3SessionData(req),
+    parcel: parcel,
+    farmSummary: sfiGrasslandsV3LandDetails.getFarmSummary(),
+    mapPayload: sfiGrasslandsV3LandDetails.getMapPayload({
+      selectedParcelId: parcel.id,
+      fitAllParcels: true
+    })
+  }, getSfiGrasslandsV3CompatibilityLocals(req)))
+})
+
+router.get('/land-details', function (req, res) {
+  res.redirect('/sfi-grasslands-v3/land-details')
+})
+
+router.get('/land-details/:slug', function (req, res) {
+  res.redirect('/sfi-grasslands-v3/land-details/' + encodeURIComponent(req.params.slug))
 })
 
 router.get('/sfi-grasslands-v3/select-land-map-fluid-find', function (req, res) {
@@ -5232,7 +5300,7 @@ router.get('/sfi-grasslands-v3/clig3-supplements', function (req, res) {
     draftParcel: draftParcel,
     draftActions: draftActions,
     supplementOptions: sfiGrasslandsV3LandActions.getClig3SupplementOptions(clig3Ha),
-    selectedSupplementCode: sfiGrasslandsV3LandActions.getSelectedClig3SupplementCode(draftActions),
+    selectedSupplementCode: sfiGrasslandsV3LandActions.getClig3SupplementSelectionForPage(req, draftActions),
     selectedSupplementQuantity: sfiGrasslandsV3LandActions.getSelectedClig3SupplementQuantity(draftActions),
     clig3AreaFormatted: sfiGrasslandsV3LandActions.formatHectares(clig3Ha),
     backHref: backHref,
@@ -5505,6 +5573,9 @@ router.post('/sfi-grasslands-v3/remove-parcel-actions/:parcelId', function (req,
 })
 
 router.get('/sfi-grasslands-v3/before-you-make-an-application', function (req, res) {
+  if (redirectIfSfiV3CheckBeforeYouStartLocked(req, res, 'beforeYouStart')) {
+    return
+  }
   sfiGrasslandsV3Tasks.markInProgress(req, sfiGrasslandsV3Tasks.TASK_IDS.beforeYouStart)
   if (req.query.from !== 'check-your-answers') {
     setSfiV3CheckBeforeYouStartLinearFlow(req, true)
@@ -7017,6 +7088,10 @@ function getSfiDevReadyNextCheckBeforeYouStartPath (req) {
   sfiGrasslandsDevReadyTasks.syncFromSessionAnswers(req, {})
   var states = sfiGrasslandsDevReadyTasks.getResolvedTaskStates(req)
 
+  if (states.checkBusinessDetails.key !== sfiGrasslandsDevReadyTasks.STATUS.COMPLETED) {
+    return '/sfi-grasslands-dev-ready/check-business-details'
+  }
+
   if (states.checkLandDetails.key !== sfiGrasslandsDevReadyTasks.STATUS.COMPLETED) {
     return '/sfi-grasslands-dev-ready/check-land-details'
   }
@@ -7026,6 +7101,24 @@ function getSfiDevReadyNextCheckBeforeYouStartPath (req) {
   }
 
   return '/sfi-grasslands-dev-ready/task-list'
+}
+
+// Redirect if this Check before you start task is locked (must do tasks in order)
+function redirectIfSfiDevReadyCheckBeforeYouStartLocked (req, res, taskStateKey) {
+  if (req.query.from === 'check-your-answers') {
+    return false
+  }
+
+  sfiGrasslandsDevReadyTasks.syncFromSessionAnswers(req, {})
+  var states = sfiGrasslandsDevReadyTasks.getResolvedTaskStates(req)
+  var task = states[taskStateKey]
+
+  if (task && task.key === sfiGrasslandsDevReadyTasks.STATUS.CANNOT_START) {
+    res.redirect(getSfiDevReadyNextCheckBeforeYouStartPath(req))
+    return true
+  }
+
+  return false
 }
 
 function renderSfiGrasslandsDevReadyEligibilityPage (req, res, view, options) {
@@ -7052,6 +7145,9 @@ function saveSfiGrasslandsDevReadyAnswer (req, fieldName, value) {
 }
 
 router.get('/sfi-grasslands-dev-ready/check-business-details', function (req, res) {
+  if (redirectIfSfiDevReadyCheckBeforeYouStartLocked(req, res, 'checkBusinessDetails')) {
+    return
+  }
   sfiGrasslandsDevReadyTasks.markInProgress(req, sfiGrasslandsDevReadyTasks.TASK_IDS.checkBusinessDetails)
   if (req.query.from !== 'check-your-answers') {
     setSfiDevReadyCheckBeforeYouStartLinearFlow(req, true)
@@ -7066,6 +7162,9 @@ router.get('/sfi-grasslands-dev-ready/update-business-details', function (req, r
 })
 
 router.get('/sfi-grasslands-dev-ready/check-land-details', function (req, res) {
+  if (redirectIfSfiDevReadyCheckBeforeYouStartLocked(req, res, 'checkLandDetails')) {
+    return
+  }
   sfiGrasslandsDevReadyTasks.markInProgress(req, sfiGrasslandsDevReadyTasks.TASK_IDS.checkLandDetails)
   if (req.query.from !== 'check-your-answers') {
     setSfiDevReadyCheckBeforeYouStartLinearFlow(req, true)
@@ -7080,6 +7179,9 @@ router.get('/sfi-grasslands-dev-ready/confirm-eligibility-details', function (re
 })
 
 router.get('/sfi-grasslands-dev-ready/management-control', function (req, res) {
+  if (redirectIfSfiDevReadyCheckBeforeYouStartLocked(req, res, 'confirmEligible')) {
+    return
+  }
   sfiGrasslandsDevReadyTasks.markInProgress(req, sfiGrasslandsDevReadyTasks.TASK_IDS.confirmEligible)
   renderSfiGrasslandsDevReadyEligibilityPage(req, res, 'sfi-grasslands-dev-ready/management-control')
 })
@@ -7286,7 +7388,7 @@ router.get('/sfi-grasslands-dev-ready/clig3-supplements', function (req, res) {
     draftParcel: draftParcel,
     draftActions: draftActions,
     supplementOptions: sfiGrasslandsDevReadyLandActions.getClig3SupplementOptions(clig3Ha),
-    selectedSupplementCode: sfiGrasslandsDevReadyLandActions.getSelectedClig3SupplementCode(draftActions),
+    selectedSupplementCode: sfiGrasslandsDevReadyLandActions.getClig3SupplementSelectionForPage(req, draftActions),
     selectedSupplementQuantity: sfiGrasslandsDevReadyLandActions.getSelectedClig3SupplementQuantity(draftActions),
     clig3AreaFormatted: sfiGrasslandsDevReadyLandActions.formatHectares(clig3Ha),
     backHref: backHref,

@@ -314,15 +314,6 @@
 
     #selected-parcel-summary {
       overflow-anchor: none;
-      width: 75%;
-      max-width: 75%;
-    }
-
-    @media (max-width: 40.0625em) {
-      #selected-parcel-summary {
-        width: 100%;
-        max-width: 100%;
-      }
     }
 
     #selected-parcel-summary .govuk-details__text .govuk-summary-list {
@@ -521,7 +512,7 @@
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-two-thirds">
 
     <div id="parcel-selection-error-summary" class="govuk-error-summary" aria-labelledby="parcel-selection-error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" hidden>
       <h2 class="govuk-error-summary__title" id="parcel-selection-error-summary-title">
@@ -546,6 +537,13 @@
     <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).</p>
     <p id="selected-parcel-text" style="display: none;"></p>
     <script type="application/json" id="draft-parcel-json">{% if draftParcel %}{{ draftParcel | dump | safe }}{% else %}null{% endif %}</script>
+
+  </div>
+</div>
+
+{# Map + farm summary use full width; intro and selected parcel stay two-thirds #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
 
     <div class="app-map-shell govuk-!-margin-top-6">
       <div class="govuk-form-group" id="map-form-group">
@@ -629,8 +627,14 @@
 
     <p id="parcel-selection-status" class="govuk-visually-hidden" aria-live="polite"></p>
 
-    {# Restore saved draft parcel after Save and continue (Back / Change parcel) #}
-    {% set hasDraftParcel = draftParcel and draftParcel.parcelId %}
+  </div>
+</div>
+
+{# Restore saved draft parcel after Save and continue (Back / Change parcel) #}
+{% set hasDraftParcel = draftParcel and draftParcel.parcelId %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
 
     <div id="selected-parcel-summary" class="govuk-!-margin-top-6"{% if not hasDraftParcel %} hidden{% endif %}>
       <h2 class="govuk-heading-m" id="selected-parcel-summary-heading">Selected land parcel</h2>
@@ -724,6 +728,9 @@
         </p>
       {% endif %}
     </form>
+
+  </div>
+</div>
 
     <!-- Two column layout below map -->
     <div class="govuk-grid-row app-bottom-panels">
@@ -1068,7 +1075,6 @@
 
           </div>
         </div>
-    </div>
     </div>
 
 {% endblock %}

@@ -97,6 +97,13 @@ body:not(.app-select-land--wide) .app-land-layout {
   max-width: 100%;
 }
 
+// Radio conditional already has a left border — drop the inset bar to avoid a double line
+.app-parcel-list-view .app-parcel-list__no-actions.govuk-inset-text {
+  border-left: 0;
+  padding-left: 0;
+  margin-left: 0;
+}
+
 // Keep status tags on one line in list + selected-parcel summary
 #summary-parcel-added-tag,
 .app-parcel-list-view .govuk-tag,

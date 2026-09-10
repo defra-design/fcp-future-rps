@@ -2,5 +2,5 @@
 {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
 {% set parcelHeadingTag = parcelHeadingTag | default('h2') %}
 {% set parcelHeadingClass = parcelHeadingClass | default('govuk-heading-m') %}
-<span class="govuk-caption-m">Parcel reference</span>
+<span class="govuk-caption-m">Land parcel</span>
 <{{ parcelHeadingTag }} class="{{ parcelHeadingClass }}"{% if parcelHeadingStyle %} style="{{ parcelHeadingStyle }}"{% endif %}>{{ parcelRef }}</{{ parcelHeadingTag }}>
