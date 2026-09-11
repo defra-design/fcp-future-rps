@@ -1,0 +1,30 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-agreement-v1/offer" %}
+{% set signOutUrl = "/sfi-agreement-v1/offer-email" %}
+{% extends "layouts/sfi-agreement-v1-header.html" %}
+
+{% block pageTitle %}
+  Manage land-based actions
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+{% endblock %}
+
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Offer rejected
+      </h1>
+
+      <p class="govuk-body">
+        You have rejected this offer. This does not prevent you from applying again.
+      </p>
+
+      <p><a href="">Return to homepage</a></p>
+  </div>
+{% endblock %}
+

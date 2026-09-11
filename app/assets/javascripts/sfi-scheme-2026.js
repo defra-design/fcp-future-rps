@@ -26,7 +26,7 @@
     { code: 'CIGL2', name: 'Winter bird food on improved grassland', theme: 'Farmland Wildlife - Grassland', rateText: '£515/ha' },
     { code: 'CLIG3', name: 'Manage grassland with very low nutrient inputs', theme: 'Farmland Wildlife - Grassland', rateText: '£151/ha' },
     { code: 'HEF6', name: 'Manage historic and archaeological features on grassland', theme: 'Heritage', rateText: '£55/ha' },
-    { code: 'HEF1', name: 'Maintain weatherproof traditional farm or forestry buildings', theme: 'Heritage', rateText: '£5/sq m' },
+    { code: 'HEF1', name: 'Maintain weatherproof traditional farm or forestry buildings', theme: 'Heritage', rateText: '£5/m²' },
     { code: 'CIPM2', name: 'Flower-rich grass margins, blocks or in-field strips', theme: 'Integrated Pest Management', rateText: '£798/ha' },
     { code: 'CIPM3', name: 'Companion crop on arable and horticultural land', theme: 'Integrated Pest Management', rateText: '£55/ha' },
     { code: 'CIPM4', name: 'No use of insecticide on arable crops and permanent crops', theme: 'Integrated Pest Management', rateText: '£45/ha' },

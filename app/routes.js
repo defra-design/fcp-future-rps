@@ -23,6 +23,7 @@ const sfiGrasslandsV3Tasks = require('./sfi-grasslands-v3-tasks')
 const sfiGrasslandsV3LandActions = require('./sfi-grasslands-v3-land-actions')
 const sfiGrasslandsV3Consent = require('./sfi-grasslands-v3-consent')
 const sfiGrasslandsV3LandDetails = require('./sfi-grasslands-v3-land-details')
+const sfiAgreementV1Offer = require('./sfi-agreement-v1-offer')
 
 const sfiGrasslandsDevReadyTasks = require('./sfi-grasslands-dev-ready-tasks')
 const sfiGrasslandsDevReadyLandActions = require('./sfi-grasslands-dev-ready-land-actions')
@@ -4838,6 +4839,20 @@ function getSfiGrasslandsV3SessionData (req) {
   return req.session.data || {}
 }
 
+router.get('/sfi-grasslands-v3/sign-in', function (req, res) {
+  var returnUrl = req.query.returnUrl
+  var safeReturn = (
+    typeof returnUrl === 'string' &&
+    returnUrl.charAt(0) === '/' &&
+    returnUrl.indexOf('//') !== 0
+  ) ? returnUrl : null
+
+  res.render('sfi-grasslands-v3/sign-in', {
+    signInContinueUrl: safeReturn || 'singlefrontdoor/start/your-businesses-list',
+    signInMethod: safeReturn ? 'get' : 'post'
+  })
+})
+
 
 function buildSfiV3ActionsSummaryFromSession (req) {
   var data = getSfiGrasslandsV3SessionData(req)
@@ -8931,3 +8946,51 @@ router.post('/public-body-answer-ht', function (req, res) {
 
 
 
+
+// --- sfi-agreement-v1 (offer email → accepted; pulls grasslands v3 application data) ---
+
+router.get('/sfi-agreement-v1/offer', function (req, res) {
+  var data = req.session.data || {}
+  var offer = sfiAgreementV1Offer.buildOfferFromSession(data)
+
+  res.render('sfi-agreement-v1/offer', {
+    data: data,
+    offer: offer
+  })
+})
+
+router.get('/sfi-agreement-v1/offer-sign-in', function (req, res) {
+  res.redirect('/sfi-grasslands-v3/sign-in?previousAgreements=1&actionDeductions=1&returnUrl=' + encodeURIComponent('/sfi-agreement-v1/offer'))
+})
+
+router.post('/sfi-agreement-v1/offer-sign-in', function (req, res) {
+  res.redirect('/sfi-agreement-v1/offer')
+})
+
+router.get('/sfi-agreement-v1/agreement', function (req, res) {
+  var data = req.session.data || {}
+  var offer = sfiAgreementV1Offer.buildOfferFromSession(data, { signed: false })
+
+  res.render('sfi-agreement-v1/agreement', {
+    data: data,
+    offer: offer
+  })
+})
+
+router.get('/sfi-agreement-v1/agreement-signed', function (req, res) {
+  var data = req.session.data || {}
+  var offer = sfiAgreementV1Offer.buildOfferFromSession(data, { signed: true })
+
+  res.render('sfi-agreement-v1/agreement', {
+    data: data,
+    offer: offer
+  })
+})
+
+router.post('/sfi-agreement-v1/offer', function (req, res) {
+  res.redirect('/sfi-agreement-v1/accept-offer')
+})
+
+router.post('/sfi-agreement-v1/accept-offer', function (req, res) {
+  res.redirect('/sfi-agreement-v1/offer-accepted')
+})

@@ -330,6 +330,8 @@
 
       var heading = panel.querySelector('h2')
       var target = heading || panel
+      // Force layout before measuring (map/fonts can still be settling).
+      void panel.offsetHeight
       var top = target.getBoundingClientRect().top + window.pageYOffset - 20
 
       didScrollToPanel = true
@@ -348,11 +350,7 @@
         window.history.scrollRestoration = 'auto'
       }
 
-      if (typeof window.scrollTo === 'function') {
-        window.scrollTo({ top: top, left: 0, behavior: 'smooth' })
-      } else {
-        window.scrollTo(0, top)
-      }
+      window.scrollTo(0, top)
     }
 
     function goToParcel (event) {
@@ -382,12 +380,19 @@
     map.on('click', 'land-parcels-fill', goToParcel)
     map.on('click', 'land-parcels-label', goToParcel)
 
-    // Arrive with #selected-land-parcel: wait for the map, then ease down once.
+    // Arrive with #selected-land-parcel: wait for the map, then jump to the panel.
     // Avoid native hash jump (instant + fights user scroll when the map reflows).
     if (window.location.hash === '#selected-land-parcel') {
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual'
       }
+      // Clear hash early so the browser does not snap, then hold at the top
+      // until we scroll to the panel.
+      window.history.replaceState(
+        null,
+        '',
+        window.location.pathname + window.location.search
+      )
       window.scrollTo(0, 0)
 
       var pendingHashScroll = true
@@ -401,7 +406,7 @@
       }
 
       map.once('idle', function () {
-        window.setTimeout(runHashScroll, 200)
+        window.setTimeout(runHashScroll, 120)
       })
       // Fallback if idle never fires
       window.setTimeout(runHashScroll, 2000)

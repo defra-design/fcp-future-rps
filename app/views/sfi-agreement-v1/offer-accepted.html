@@ -1,0 +1,57 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-agreement-v1/offer" %}
+{% set signOutUrl = "/sfi-agreement-v1/offer-email" %}
+{% extends "layouts/sfi-agreement-v1-header.html" %}
+
+{% block pageTitle %}
+  Agreement offer accepted
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+          Agreement offer accepted
+        </h1>
+        <div class="govuk-panel__body">
+          Your agreement number<br><strong>GR1234D</strong>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-m">
+        What happens next
+      </h2>
+
+      <p class="govuk-body">
+        Your agreement starts on 1 September 2026 and will last for 3 years.
+      </p>
+      <p class="govuk-body">
+        You will receive your first payment in December 2026.
+      </p>
+      <p class="govuk-body">
+        You will usually receive your first payment in the fourth month after your agreement starts.
+      </p>
+
+      <p class="govuk-body">You can:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          <a class="govuk-link" href="/sfi-agreement-v1/agreement-signed" rel="noreferrer noopener" target="_blank">view your agreement document (opens in a new tab)</a>
+        </li>
+        <li>
+          <a class="govuk-link" href="#" onclick="return false;">read the Grasslands terms and conditions (opens in a new tab)</a>
+        </li>
+        <li>
+          <a class="govuk-link" href="#" onclick="return false;">read the guidance for your actions (opens in a new tab)</a>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+{% endblock %}

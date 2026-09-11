@@ -1,0 +1,101 @@
+// Loaded by sfi-agreement-v1/agreement.html (printable draft / signed agreement)
+
+.app-agreement-meta-value {
+  font-weight: normal;
+}
+
+// Parcel refs like "SO3757 3190" must stay on one line in narrow table columns
+.app-agreement-parcel-ref {
+  white-space: nowrap;
+}
+
+.app-agreement-contents {
+  margin-bottom: 30px;
+
+  .govuk-list {
+    margin-bottom: 0;
+  }
+}
+
+.gem-c-print-link__button.app-agreement-print {
+  border: 0;
+  background-color: transparent;
+  background-position: 0 50%;
+  padding-left: 28px;
+  margin: 0;
+  cursor: pointer;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.31579;
+  color: #1d70b8;
+  text-decoration: underline;
+  text-underline-offset: 0.1em;
+
+  &:hover {
+    color: #003078;
+  }
+
+  &:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #ffdd00;
+    box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+    text-decoration: none;
+  }
+}
+
+.app-agreement-document {
+  position: relative;
+}
+
+.app-agreement-document--draft {
+  // Keep document content above the watermark for selection/clicks
+  > *:not(.app-agreement-document__watermark) {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.app-agreement-document__watermark {
+  display: none;
+}
+
+@media print {
+  .govuk-phase-banner,
+  .govuk-header,
+  .govuk-service-navigation,
+  .govuk-footer,
+  .gem-c-print-link,
+  .app-agreement-contents,
+  .back-to-top {
+    display: none !important;
+  }
+
+  .app-agreement-document__watermark {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    overflow: hidden;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+
+    &::before {
+      content: "DRAFT";
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 12rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      color: #b1b4b6;
+      opacity: 0.35;
+      transform: rotate(-32deg);
+      white-space: nowrap;
+      user-select: none;
+    }
+  }
+}

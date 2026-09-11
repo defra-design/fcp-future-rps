@@ -1,0 +1,88 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-agreement-v1/offer" %}
+{% set signOutUrl = "/sfi-agreement-v1/offer-email" %}
+{% extends "layouts/sfi-agreement-v1-header.html" %}
+
+{% block pageTitle %}
+  Accept your agreement offer
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-agreement-v1/offer"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        Accept your agreement offer
+      </h1>
+
+      <p class="govuk-body">Your agreement will consist of:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>your Grasslands agreement</li>
+        <li>
+          <a class="govuk-link" href="#" onclick="return false;">the Grasslands terms and conditions (opens in a new tab)</a>
+        </li>
+        <li>the actions you have selected</li>
+      </ul>
+
+      <p class="govuk-body">
+        By accepting this offer, you confirm on your own behalf or, where applicable, on behalf of the agreement holder, that:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>you will comply with the obligations under your agreement</li>
+        <li>the information you gave and the declarations you made in your application are true and accurate to the best of your knowledge and belief</li>
+        <li>you have the authority to enter into the agreement</li>
+        <li>you are not aware of any circumstances that would make you ineligible or prevent you from meeting your obligations under the agreement</li>
+        <li>your obligations under this agreement do not duplicate or conflict with any other legal or contractual obligations you are subject to</li>
+        <li>you will comply with all relevant laws when carrying out your obligations under the agreement</li>
+      </ul>
+
+      <p class="govuk-body">
+        Read the
+        <a class="govuk-link" href="#" onclick="return false;">Grasslands terms and conditions (opens in a new tab)</a>
+        to understand what can happen if you deliberately give wrong or incomplete information, or do not report changes as soon as possible.
+      </p>
+
+      <p class="govuk-body">
+        If you are accepting this offer on behalf of the agreement holder, you also confirm that you have the authority to:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>accept this agreement on the agreement holder’s behalf</li>
+        <li>enter into the agreement on the agreement holder’s behalf</li>
+      </ul>
+
+      <form method="post" action="/sfi-agreement-v1/accept-offer">
+        {{ govukCheckboxes({
+          name: "acceptConfirm",
+          items: [
+            {
+              value: "yes",
+              text: "I confirm I have read the information in this section and accept this agreement offer. I accept it either on my own or my organisation’s behalf, or as someone duly authorised to act on behalf of the agreement holder.",
+              attributes: {
+                id: "accept-confirm",
+                onchange: "document.getElementById('accept-offer-button').disabled = !this.checked;"
+              }
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Accept offer",
+          type: "submit",
+          disabled: true,
+          attributes: {
+            id: "accept-offer-button"
+          }
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -56,6 +56,13 @@
     {% set footerItems = [] %}
   {% endif %}
 
+  {% if showViewAgreementInFooter %}
+    {% set footerItems = footerItems.concat([{
+      href: "/sfi-agreement-v1/offer-email",
+      text: "View agreement"
+    }]) %}
+  {% endif %}
+
   {% set contentLicenceHtml %}
     All content is available under the
     <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated

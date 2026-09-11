@@ -1453,7 +1453,13 @@ function formatPaymentRatePlainEnglish(rateText) {
     return amount + ' per 100 metres' + sideNote + ' each year';
   }
 
-  if (lower.indexOf('/m') !== -1 && lower.indexOf('/100m') === -1 && lower.indexOf('sq m') === -1) {
+  if (
+    lower.indexOf('/m') !== -1 &&
+    lower.indexOf('/100m') === -1 &&
+    lower.indexOf('sq m') === -1 &&
+    lower.indexOf('/m2') === -1 &&
+    lower.indexOf('/m²') === -1
+  ) {
     return amount + ' per metre' + sideNote + ' each year';
   }
 
@@ -1465,7 +1471,12 @@ function formatPaymentRatePlainEnglish(rateText) {
     return amount + ' per tonne each year';
   }
 
-  if (lower.indexOf('sq m') !== -1 || lower.indexOf('/sq m') !== -1) {
+  if (
+    lower.indexOf('sq m') !== -1 ||
+    lower.indexOf('/sq m') !== -1 ||
+    lower.indexOf('/m2') !== -1 ||
+    lower.indexOf('/m²') !== -1
+  ) {
     return amount + ' per square metre each year';
   }
 
@@ -1526,9 +1537,11 @@ function calculateActionYearlyPayment(actionCode, quantity) {
     return (numericQuantity / 100) * rateAmount;
   }
 
-  // HEF1 is £/sq m; other metre actions may be £/m
+  // HEF1 is £/m²; other metre actions may be £/m
   if (
     lowerRateText.indexOf('sq m') !== -1 ||
+    lowerRateText.indexOf('/m2') !== -1 ||
+    lowerRateText.indexOf('/m²') !== -1 ||
     lowerRateText.indexOf('/m') !== -1
   ) {
     return numericQuantity * rateAmount;
@@ -3732,12 +3745,17 @@ function ensureSharedParcelLayers(mapInstance) {
       layout: {
         'text-field': ['get', 'displayName'],
         'text-size': 11,
-        'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular']
+        // OpenFreeMap liberty ships Noto Sans — Open Sans can fail to render.
+        'text-font': ['Noto Sans Regular'],
+        // Show every parcel number at farm zoom (labels may overlap slightly).
+        'text-allow-overlap': true,
+        'text-ignore-placement': true,
+        'text-optional': false
       },
       paint: {
         'text-color': '#0b0c0c',
         'text-halo-color': '#ffffff',
-        'text-halo-width': 1
+        'text-halo-width': 1.25
       }
     });
   }
@@ -4576,7 +4594,7 @@ function reorderActionOptions(sortedCodes) {
 
         var leadInSupplements = document.createElement('p');
         leadInSupplements.className = 'govuk-body app-action-list-group-lead-in';
-        leadInSupplements.textContent = 'If you select an action that has supplements, you can choose these on the next page.';
+        leadInSupplements.textContent = 'If an action has supplements, you can select these on the next page.';
         fragment.appendChild(leadInSupplements);
       } else {
         var leadIn = document.createElement('p');

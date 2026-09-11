@@ -787,8 +787,8 @@
 
 .app-action-availability-details__table {
   margin-bottom: 0;
-  width: 100%;
-  max-width: 28rem;
+  width: auto;
+  max-width: none;
 }
 
 .app-action-availability-details__table .govuk-table__header,
@@ -797,10 +797,12 @@
   padding-top: 10px;
   padding-bottom: 10px;
   vertical-align: top;
+  white-space: nowrap;
 }
 
 .app-action-availability-details__group .govuk-table__header {
   padding-top: 15px;
+  white-space: nowrap;
 }
 
 .app-action-availability-details__group:first-child .govuk-table__header {
@@ -811,10 +813,16 @@
   padding-left: 15px;
 }
 
+.app-action-availability-details__table .govuk-table__header--numeric,
+.app-action-availability-details__table .govuk-table__cell--numeric {
+  padding-left: 20px;
+}
+
 .app-action-availability-details__total-row .govuk-table__header,
 .app-action-availability-details__total-row .govuk-table__cell {
   font-weight: 700;
   border-bottom: 0;
+  white-space: nowrap;
 }
 
 /* Hidden until JS sets style.display, or the server omits this class (draft parcel). */

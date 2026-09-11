@@ -1,0 +1,46 @@
+{% extends "layouts/main-thread.html" %}
+
+{% set pageName = "SFI Agreement" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/index">SFI prototypes</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">
+      SFI Agreement
+      <span class="govuk-caption-l">Version 1</span>
+    </h1>
+
+    <p class="govuk-body">
+      <a class="govuk-button" href="/clear-session-data?returnUrl=/sfi-agreement-v1/offer-email">Start prototype</a>
+    </p>
+
+    <h2 class="govuk-heading-m">Main journey</h2>
+    <ol class="govuk-list govuk-list--number">
+      <li><a class="govuk-link" href="/sfi-agreement-v1/offer-email">Offer email</a></li>
+      <li><a class="govuk-link" href="/sfi-grasslands-v3/sign-in?previousAgreements=1&actionDeductions=1&returnUrl=/sfi-agreement-v1/offer">Sign in</a></li>
+      <li><a class="govuk-link" href="/sfi-agreement-v1/offer">Review agreement offer</a></li>
+      <li><a class="govuk-link" href="/sfi-agreement-v1/accept-offer">Accept offer</a></li>
+      <li><a class="govuk-link" href="/sfi-agreement-v1/offer-accepted">Offer accepted confirmation</a></li>
+      <li><a class="govuk-link" href="/sfi-agreement-v1/agreement">Agreement document (draft)</a></li>
+      <li><a class="govuk-link" href="/sfi-agreement-v1/agreement-signed">Agreement document (signed)</a></li>
+    </ol>
+
+    <h2 class="govuk-heading-m">Related screens</h2>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a class="govuk-link" href="/sfi-agreement-v1/offer-rejected">Offer rejected</a></li>
+      <li><a class="govuk-link" href="/sfi-agreement-v1/offer-being-updated">Offer being updated</a></li>
+      <li><a class="govuk-link" href="/sfi-agreement-v1/offer-updated-email">Updated offer email</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

@@ -1453,7 +1453,13 @@ function formatPaymentRatePlainEnglish(rateText) {
     return amount + ' per 100 metres' + sideNote + ' each year';
   }
 
-  if (lower.indexOf('/m') !== -1 && lower.indexOf('/100m') === -1 && lower.indexOf('sq m') === -1) {
+  if (
+    lower.indexOf('/m') !== -1 &&
+    lower.indexOf('/100m') === -1 &&
+    lower.indexOf('sq m') === -1 &&
+    lower.indexOf('/m2') === -1 &&
+    lower.indexOf('/m²') === -1
+  ) {
     return amount + ' per metre' + sideNote + ' each year';
   }
 
@@ -1465,7 +1471,12 @@ function formatPaymentRatePlainEnglish(rateText) {
     return amount + ' per tonne each year';
   }
 
-  if (lower.indexOf('sq m') !== -1 || lower.indexOf('/sq m') !== -1) {
+  if (
+    lower.indexOf('sq m') !== -1 ||
+    lower.indexOf('/sq m') !== -1 ||
+    lower.indexOf('/m2') !== -1 ||
+    lower.indexOf('/m²') !== -1
+  ) {
     return amount + ' per square metre each year';
   }
 
@@ -1526,9 +1537,11 @@ function calculateActionYearlyPayment(actionCode, quantity) {
     return (numericQuantity / 100) * rateAmount;
   }
 
-  // HEF1 is £/sq m; other metre actions may be £/m
+  // HEF1 is £/m²; other metre actions may be £/m
   if (
     lowerRateText.indexOf('sq m') !== -1 ||
+    lowerRateText.indexOf('/m2') !== -1 ||
+    lowerRateText.indexOf('/m²') !== -1 ||
     lowerRateText.indexOf('/m') !== -1
   ) {
     return numericQuantity * rateAmount;

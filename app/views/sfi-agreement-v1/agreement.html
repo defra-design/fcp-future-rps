@@ -1,0 +1,323 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = offer.signed and "/sfi-agreement-v1/agreement-signed" or "/sfi-agreement-v1/offer" %}
+{% set signOutUrl = "/sfi-agreement-v1/offer-email" %}
+{% extends "layouts/sfi-agreement-v1-header.html" %}
+
+{% block pageTitle %}
+  {% if offer.signed %}
+    Sustainable Farming Incentive agreement
+  {% else %}
+    Sustainable Farming Incentive agreement — draft
+  {% endif %}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service – you can <a class="govuk-link" href="#" target="_blank" rel="noopener noreferrer">help improve the service with your feedback (opens in a new tab)</a>.'
+  }) }}
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/public/stylesheets/sfi-agreement-v1-agreement.css">
+
+<div class="app-agreement-document{% if not offer.signed %} app-agreement-document--draft{% endif %}">
+  {% if not offer.signed %}
+    <div class="app-agreement-document__watermark" aria-hidden="true"></div>
+
+    {{ govukNotificationBanner({
+      titleText: "This is a draft version of your agreement",
+      text: "You must check the information in it before you accept your offer. Your agreement starts after you accept the offer and we have approved it."
+    }) }}
+  {% endif %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <dl class="govuk-body dataset-info">
+      <dd>Agreement holder:</dd>
+      <dt>{{ offer.holder.name }}</dt>
+      <dd>SBI:</dd>
+      <dt>{{ offer.holder.sbi }}</dt>
+      <dd>Address:</dd>
+      <dt>{{ offer.holder.addressInline }}</dt>
+      <dd>Agreement name:</dd>
+      <dt>{{ offer.holder.agreementName }}</dt>
+      {% if offer.signed %}
+        <dd>Agreement number:</dd>
+        <dt>{{ offer.holder.agreementNumber }}</dt>
+      {% endif %}
+      <dd>Agreement start date:</dd>
+      <dt>{{ offer.holder.startDate }}</dt>
+      {% if offer.signed and offer.holder.endDate %}
+        <dd>Agreement end date:</dd>
+        <dt>{{ offer.holder.endDate }}</dt>
+      {% endif %}
+      <dd>Agreement duration:</dd>
+      <dt>{{ offer.holder.duration }}</dt>
+    </dl>
+  </div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<nav class="app-agreement-contents govuk-!-display-none-print" id="contents" role="navigation" aria-labelledby="agreement-contents-title">
+  <h2 class="govuk-heading-m" id="agreement-contents-title">Contents</h2>
+  <ul class="govuk-list">
+    <li><a class="govuk-link" href="#intro">1. Introduction and overview</a></li>
+    <li><a class="govuk-link" href="#parties">2. Parties to the agreement</a></li>
+    <li><a class="govuk-link" href="#land">3. Land covered by the agreement</a></li>
+    <li><a class="govuk-link" href="#actions">4. Summary of actions</a></li>
+    <li><a class="govuk-link" href="#payment">5. Payments</a></li>
+    <li><a class="govuk-link" href="#duration">6. Agreement duration</a></li>
+    <li><a class="govuk-link" href="#sign">7. Electronic signature</a></li>
+    <li><a class="govuk-link" href="#data">8. Data protection</a></li>
+  </ul>
+
+  <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-3">
+    <button type="button" class="govuk-link govuk-body-s gem-c-print-link__button app-agreement-print" onclick="window.print()">
+      Print this page
+    </button>
+  </div>
+</nav>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h2 id="intro" class="govuk-heading-l">
+      1. Introduction and overview
+    </h2>
+    <p class="govuk-body">
+      This is the Sustainable Farming Incentive (SFI) agreement document. It describes the payment (the “Grant”)
+      you will receive for delivering the SFI action(s) you have chosen.
+    </p>
+    <p class="govuk-body">
+      The SFI “Agreement” comprises:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>this SFI agreement document (“Agreement Document”)</li>
+      <li>the <a class="govuk-link" href="#" onclick="return false;">Grasslands terms and conditions (opens in a new tab)</a> (“Terms and Conditions”)</li>
+      <li>the <a class="govuk-link" href="#" onclick="return false;">Grasslands actions for 2026 (opens in a new tab)</a> you have chosen (“Actions”)</li>
+    </ul>
+    <p class="govuk-body">
+      When you enter the Agreement, you are agreeing to the terms applicable to the payment of the Grant.
+      You should review the mandatory requirements of your Agreement to make sure you understand the full
+      extent of your obligations under the Agreement.
+    </p>
+
+    <h2 id="parties" class="govuk-heading-l">
+      2. Parties to the agreement
+    </h2>
+    <p class="govuk-body">
+      This Agreement is between:
+    </p>
+    <p class="govuk-body">
+      You, {{ offer.holder.name }}, of {{ offer.holder.addressInline }},
+      and the Secretary of State for Environment, Food and Rural Affairs
+      (“us”, “we”, “our”).
+    </p>
+
+    <h2 id="land" class="govuk-heading-l">
+      3. Land covered by the agreement
+    </h2>
+    <p class="govuk-body">
+      The “Agreement Land” comprises the following land parcels.
+    </p>
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-visually-hidden">Land parcels covered by the agreement</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Parcel</th>
+          <th scope="col" class="govuk-table__header">Total parcel area (ha)</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for parcel in offer.landParcels %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell app-agreement-parcel-ref">{{ parcel.parcelReference }}</td>
+            <td class="govuk-table__cell">{{ parcel.areaText | replace(" ha", "") }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="govuk-body">
+      The Terms and Conditions contain separate obligations in relation to the “Agreement Land”.
+    </p>
+
+    <h2 id="actions" class="govuk-heading-l">
+      4. Summary of actions
+    </h2>
+    <p class="govuk-body">
+      The following table sets out a summary of the Actions you have chosen and agree to complete under the Agreement.
+      The Terms and Conditions and the Actions set out the accompanying obligations for the chosen Actions.
+    </p>
+    {% if not offer.signed %}
+      <p class="govuk-body">
+        Start and end dates will be displayed once you sign this agreement.
+      </p>
+    {% endif %}
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-visually-hidden">Summary of actions</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Parcel</th>
+          <th scope="col" class="govuk-table__header">Action</th>
+          <th scope="col" class="govuk-table__header">Quantity</th>
+          <th scope="col" class="govuk-table__header">Start date</th>
+          <th scope="col" class="govuk-table__header">End date</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for row in offer.detailRows %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell app-agreement-parcel-ref">{{ row.parcelReference }}</td>
+            <td class="govuk-table__cell">{{ row.label }}</td>
+            <td class="govuk-table__cell">{{ row.quantityText }}</td>
+            <td class="govuk-table__cell">{% if offer.signed %}{{ offer.actionStartDate }}{% endif %}</td>
+            <td class="govuk-table__cell">{% if offer.signed %}{{ offer.actionEndDate }}{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2 id="payment" class="govuk-heading-l">
+      5. Payments
+    </h2>
+    <p class="govuk-body">
+      Subject to you complying with your Agreement, the following tables set out a summary of the total payments
+      for the Actions you have chosen and agree to complete under the Agreement, and the total payments for the
+      duration of your agreement.
+    </p>
+    <p class="govuk-body">
+      Under the Agreement, your annual payment value is paid in quarterly instalments. Your first payment may be a
+      different amount due to the Rural Payments Agency rounding it up.
+    </p>
+    <p class="govuk-body">
+      {% if offer.signed %}
+        You will receive your first payment in December 2026.
+      {% else %}
+        You’ll usually receive your first payment in the fourth month after your agreement’s start date.
+      {% endif %}
+    </p>
+    <p class="govuk-body">
+      These figures are correct at the Agreement start date and may vary as a result of the processes set out in the Terms and Conditions.
+    </p>
+
+    {% for year in offer.agreementYears %}
+      <h3 class="govuk-heading-m">Agreement year {{ year.number }}</h3>
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-visually-hidden">Payments for agreement year {{ year.number }}</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Action</th>
+            <th scope="col" class="govuk-table__header">Payment rate</th>
+            <th scope="col" class="govuk-table__header">Quantity</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Annual payment</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for row in offer.actionRows %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ row.label }}</td>
+              <td class="govuk-table__cell">{{ row.paymentRateText }}</td>
+              <td class="govuk-table__cell">{{ row.quantityText }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                {% if year.isFirstYear %}{{ row.yearOnePaymentText }}{% else %}{{ row.yearLaterPaymentText }}{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header" colspan="3">Total annual payment</th>
+            <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">
+              {% if year.isFirstYear %}{{ offer.yearOneTotalText }}{% else %}{{ offer.yearLaterTotalText }}{% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    {% endfor %}
+
+    <h3 class="govuk-heading-m">Annual payment summary</h3>
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-visually-hidden">Annual payment summary across 3 years</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Action</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Year 1</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Year 2</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Year 3</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total payment</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for row in offer.actionRows %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ row.label }}</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.yearOnePaymentText }}</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.yearLaterPaymentText }}</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.yearLaterPaymentText }}</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.threeYearPaymentText }}</td>
+          </tr>
+        {% endfor %}
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Total</th>
+          <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">{{ offer.yearOneTotalText }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">{{ offer.yearLaterTotalText }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">{{ offer.yearLaterTotalText }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">{{ offer.threeYearTotalText }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="duration" class="govuk-heading-l">
+      6. Agreement duration
+    </h2>
+    <p class="govuk-body">
+      The Agreement will start on the Agreement start date and last for the Agreement duration, subject to the
+      provisions for early termination set out in the Terms and Conditions.
+    </p>
+    <dl class="govuk-body dataset-info">
+      <dd>Agreement start date:</dd>
+      <dt class="app-agreement-meta-value">{{ offer.holder.startDate }}</dt>
+      {% if offer.signed and offer.holder.endDate %}
+        <dd>Agreement end date:</dd>
+        <dt class="app-agreement-meta-value">{{ offer.holder.endDate }}</dt>
+      {% else %}
+        <dd>Agreement duration:</dd>
+        <dt class="app-agreement-meta-value">{{ offer.holder.duration }}</dt>
+      {% endif %}
+    </dl>
+
+    <h2 id="sign" class="govuk-heading-l">
+      7. Electronic signature
+    </h2>
+    {% if offer.signed %}
+      <p class="govuk-body">
+        The Agreement comprising this Agreement Document, the Terms and Conditions and the Actions has been accepted by
+        {{ offer.holder.signedBy }} – {{ offer.holder.signedBusiness }} on {{ offer.holder.signedOn }}.
+      </p>
+    {% else %}
+      <p class="govuk-body">
+        The agreement comprising this agreement document, the terms and conditions and the actions has been accepted by
+        [Name of individual] – [Name of business] on [Date of acceptance].
+      </p>
+    {% endif %}
+
+    <h2 id="data" class="govuk-heading-l">
+      8. Data protection
+    </h2>
+    <p class="govuk-body">
+      The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give
+      to Rural Payments Agency (RPA). For information on how we handle personal data go to Condition 16 of the Terms and Conditions.
+    </p>
+
+    <div class="back-to-top govuk-!-display-none-print govuk-!-margin-top-6">
+      <a class="govuk-link" href="#contents">
+        <svg role="presentation" focusable="false" class="back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+          <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+        </svg>Back to top
+      </a>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

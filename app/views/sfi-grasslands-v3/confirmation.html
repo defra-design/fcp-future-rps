@@ -1,5 +1,6 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/sfi-grasslands-v3/task-list" %}
+{% set showViewAgreementInFooter = true %}
 {% extends "layouts/sfi-grasslands-v3-header.html" %}
 
 {% block pageTitle %}
@@ -80,10 +81,6 @@
       <p class="govuk-body">
         <a class="govuk-link" href="/sfi-grasslands-v3/view-application" target="_blank" rel="noreferrer noopener">View and print submitted application (opens in new tab)</a>
       </p>
-
-      <a href="/sfi-grasslands-v3/applications-and-agreements" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-        Go to applications and agreements
-      </a>
 
     </div>
   </div>

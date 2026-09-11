@@ -43,8 +43,9 @@
 
   // Illustrative ha already used by previous agreements (when not on the Gate Field profile).
   var PREVIOUS_AGREEMENT_HA_BY_PARCEL = {
-    'far-meadow': 5.7, // CSAM3 2.1 ha + CIGL1 3.6 ha in existing SFI agreements
-    'gate-field': 5.7, // CSAM3 2.1 ha + CIGL1 3.6 ha in existing SFI agreements
+    'far-meadow': 16.02, // CSAM3 + CNUM2 + CIPM2 + CIGL1
+    'gate-field': 10.13, // CSAM3 + CNUM2 + CIGL1
+    'church-field': 7.5, // CSAM3 + CIPM2 + GS2
     'brook-field': 1.5,
     'long-meadow': 1,
     'upper-slope': 1.5,

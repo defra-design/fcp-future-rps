@@ -44,6 +44,7 @@
     ],
     'gate-field': [
       {
+        // SO3757 3194 — SFI 2024 agreement (3 years from Oct 2024)
         scheme: 'Sustainable Farming Incentive 2024',
         shortScheme: 'SFI 2024',
         endDate: '30 September 2027',
@@ -51,23 +52,54 @@
           {
             code: 'CSAM3',
             name: 'Herbal leys',
-            ha: 2.1
+            ha: 6.45
           },
           {
-            code: 'CMOR1',
-            name: 'Assess moorland and produce a written record',
-            ha: 2.1
+            code: 'CNUM2',
+            name: 'Legumes on improved grassland',
+            ha: 3.2
           }
         ]
       },
       {
+        // Earlier SFI 2023 agreement still running on part of the parcel
         scheme: 'Sustainable Farming Incentive 2023',
         shortScheme: 'SFI 2023',
-        endDate: '1 November 2026',
+        endDate: '31 October 2026',
         actions: [{
           code: 'CIGL1',
-          name: 'Grassland field corners or blocks out of management',
-          ha: 2.1
+          name: 'Take grassland field corners or blocks out of management',
+          ha: 0.48
+        }]
+      }
+    ],
+    'church-field': [
+      {
+        // SO3757 3190 — mixed SFI + Countryside Stewardship on SSSI/HEFER land
+        scheme: 'Sustainable Farming Incentive 2024',
+        shortScheme: 'SFI 2024',
+        endDate: '30 September 2027',
+        actions: [
+          {
+            code: 'CSAM3',
+            name: 'Herbal leys',
+            ha: 4.5
+          },
+          {
+            code: 'CIPM2',
+            name: 'Flower-rich grass margins, blocks or in-field strips',
+            ha: 0.85
+          }
+        ]
+      },
+      {
+        scheme: 'Countryside Stewardship Mid Tier',
+        shortScheme: 'CS Mid Tier',
+        endDate: '31 December 2027',
+        actions: [{
+          code: 'GS2',
+          name: 'Permanent grassland with very low inputs (outside SDAs)',
+          ha: 2.15
         }]
       }
     ],
@@ -124,6 +156,7 @@
     ],
     'far-meadow': [
       {
+        // SO3757 3193 — larger temporary grassland parcel
         scheme: 'Sustainable Farming Incentive 2024',
         shortScheme: 'SFI 2024',
         endDate: '30 September 2027',
@@ -131,23 +164,28 @@
           {
             code: 'CSAM3',
             name: 'Herbal leys',
-            ha: 2.1
+            ha: 8.75
           },
           {
-            code: 'CMOR1',
-            name: 'Assess moorland and produce a written record',
-            ha: 2.1
+            code: 'CNUM2',
+            name: 'Legumes on improved grassland',
+            ha: 5.4
+          },
+          {
+            code: 'CIPM2',
+            name: 'Flower-rich grass margins, blocks or in-field strips',
+            ha: 1.25
           }
         ]
       },
       {
         scheme: 'Sustainable Farming Incentive 2023',
         shortScheme: 'SFI 2023',
-        endDate: '1 November 2026',
+        endDate: '31 October 2026',
         actions: [{
           code: 'CIGL1',
-          name: 'Grassland field corners or blocks out of management',
-          ha: 2.1
+          name: 'Take grassland field corners or blocks out of management',
+          ha: 0.62
         }]
       }
     ]

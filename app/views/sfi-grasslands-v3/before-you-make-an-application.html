@@ -13,12 +13,12 @@
   {% set fromCheckYourAnswers = (returnTo == 'check-your-answers') or (data['sfiEligibilityReturnTo'] == 'check-your-answers') %}
   {% if fromCheckYourAnswers %}
     {{ govukBackLink({
-      text: "Back to check your answers",
+      text: "Back",
       href: "/sfi-grasslands-v3/check-your-answers"
     }) }}
   {% else %}
     {{ govukBackLink({
-      text: "Back to task list",
+      text: "Back",
       href: "/sfi-grasslands-v3/task-list"
     }) }}
   {% endif %}
@@ -34,13 +34,48 @@
         Before you make an application
       </h1>
 
-      <p class="govuk-body">Before you apply, check whether any of these requirements apply to your land.</p>
+      <p class="govuk-body">
+        Before you apply, check if any of these requirements apply to your land.
+      </p>
+
+      <h2 class="govuk-heading-m">Land eligibility</h2>
+      <p class="govuk-body">
+        Make sure your land will be eligible for the duration of your agreement.
+      </p>
+
+      <h2 class="govuk-heading-m">Historic or archaeological features</h2>
+      <p class="govuk-body">
+        If you select actions on land with historic or archaeological features, you’ll need
+        <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">SFI Historic Environment Farm Environment Record (HEFER)<span class="govuk-visually-hidden"> (opens in a new tab)</span></a>.
+        You must have this consent before you apply.
+      </p>
+
+      <h2 class="govuk-heading-m">Sites of special scientific interest (SSSI)</h2>
+      <p class="govuk-body">
+        If you select actions on SSSI land, you’ll need
+        <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">SSSI consent<span class="govuk-visually-hidden"> (opens in a new tab)</span></a>
+        from Natural England. You must have this consent before you apply.
+      </p>
+
+      <h2 class="govuk-heading-m">Inheritance tax exemptions and maintenance funds</h2>
+      <p class="govuk-body">
+        Check that the actions you select are allowed if any of your land:
+      </p>
       <ul class="govuk-list govuk-list--bullet">
-        <li>Land eligibility – make sure your land remains eligible for the duration of your agreement.</li>
-        <li>Historic or archaeological features – if you apply for actions on land with historic or archaeological features, get a <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">Historic Environment Farm Environment Record (HEFER)<span class="govuk-visually-hidden"> (opens in new tab)</span></a> from Historic England. You must have your HEFER before you start the relevant actions.</li>
-        <li>Sites of special scientific interest (SSSI) – if you select actions on SSSI land, get <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">SSSI consent<span class="govuk-visually-hidden"> (opens in new tab)</span></a> from Natural England. You must have consent before the RPA can offer you an agreement.</li>
-        <li>Inheritance tax exemptions and maintenance funds – if any of your land has a conditional exemption from inheritance tax or is the object of a maintenance fund, check that your selected actions are allowed on that land. Read the <a class="govuk-link" href="https://www.gov.uk/guidance/eligible-funding-on-land-conditionally-exempt-from-inheritance-tax" target="_blank" rel="noopener noreferrer">guidance on eligible funding<span class="govuk-visually-hidden"> (opens in new tab)</span></a>.</li>
-        <li>Other funding or legal requirements – do not apply for actions that include activities you are legally required to carry out or that are already funded by other sources.</li>
+        <li>has a conditional exemption from inheritance tax</li>
+        <li>is the object of a maintenance fund</li>
+      </ul>
+      <p class="govuk-body">
+        Read the <a class="govuk-link" href="https://www.gov.uk/guidance/eligible-funding-on-land-conditionally-exempt-from-inheritance-tax" target="_blank" rel="noopener noreferrer">guidance on eligible funding<span class="govuk-visually-hidden"> (opens in a new tab)</span></a>.
+      </p>
+
+      <h2 class="govuk-heading-m">Other funding or legal requirements</h2>
+      <p class="govuk-body">
+        You must not apply for actions which include activities that:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>you are legally required to carry out</li>
+        <li>are already funded by other sources</li>
       </ul>
 
       <form class="form" action="/sfi-grasslands-v3/before-you-make-an-application-answer" method="post">

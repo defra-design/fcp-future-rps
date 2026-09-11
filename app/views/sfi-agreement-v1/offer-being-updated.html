@@ -1,0 +1,30 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-agreement-v1/offer" %}
+{% set signOutUrl = "/sfi-agreement-v1/offer-email" %}
+{% extends "layouts/sfi-agreement-v1-header.html" %}
+
+{% block pageTitle %}
+  Accept offer
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        You have requested an update to your agreement offer
+      </h1>
+
+      <p>Your agreement offer is currently being updated.</p>
+      <p>The Rural Payments Agency will email you when it is ready for you to review.</p>
+    </div> <!-- two-thirds col -->
+  </div> <!-- row -->
+
+{% endblock %}
+

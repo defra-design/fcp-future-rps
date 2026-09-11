@@ -1,0 +1,82 @@
+{# Header for SFI Agreement v1 — matches grasslands application header #}
+{% set serviceName = serviceName or "Apply for a grasslands agreement" %}
+{% if serviceUrl is not defined %}
+  {% set serviceUrl = "/sfi-agreement-v1/offer" %}
+{% endif %}
+{% set signOutUrl = signOutUrl or "/sfi-agreement-v1/offer-email" %}
+{% extends "layouts/day1-header.html" %}
+
+{% block header %}
+  <div class="govuk-header">
+    <div class="govuk-header__container govuk-width-container">
+      <div class="govuk-header__logo">
+        <a href="/index" class="govuk-header__homepage-link">
+          <img src="/public/images/brand.png" alt="Department for Environment, Food and Rural Affairs" class="govuk-header__logotype" height="30">
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {{ govukServiceNavigation({
+    rebrand: true,
+    serviceName: serviceName,
+    serviceUrl: serviceUrl,
+    navigation: navigation or []
+  }) }}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service – you can <a class="govuk-link" href="#" target="_blank" rel="noopener noreferrer">help improve the service with your feedback (opens in a new tab)</a>.'
+  }) }}
+{% endblock %}
+
+{% block footer %}
+  {% if (GOVUKPrototypeKit.isDevelopment) %}
+    {% set footerItems = [
+      {
+        href: "/manage-prototype",
+        text: "Manage your prototype"
+      },
+      {
+        href: "/clear-session-data",
+        text: "Clear data",
+        attributes: {
+          "data-clear-session-data": ""
+        }
+      }
+    ] %}
+  {% else %}
+    {% set footerItems = [
+      {
+        href: "/clear-session-data",
+        text: "Clear data",
+        attributes: {
+          "data-clear-session-data": ""
+        }
+      }
+    ] %}
+  {% endif %}
+
+  {{ govukFooter({
+    rebrand: true,
+    meta: {
+      items: footerItems,
+      html: 'Built by the <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs">Department for Environment, Food &amp; Rural Affairs</a>',
+      visuallyHiddenTitle: "Support links"
+    }
+  }) }}
+
+  <script>
+    document.querySelectorAll('[data-clear-session-data], a[href="/manage-prototype/clear-data"], a[href="/clear-session-data"]').forEach(function (link) {
+      link.setAttribute('data-clear-session-data', '')
+      link.addEventListener('click', function (event) {
+        event.preventDefault()
+        window.location.href = '/clear-session-data?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash)
+      })
+    })
+  </script>
+{% endblock %}
