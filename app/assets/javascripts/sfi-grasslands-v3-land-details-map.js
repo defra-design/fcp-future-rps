@@ -167,7 +167,9 @@
           'text-field': ['get', 'displayName'],
           'text-size': 11,
           'text-font': LABEL_FONT,
-          'text-optional': true
+          'text-optional': true,
+          'text-allow-overlap': false,
+          'text-padding': 2
         },
         paint: {
           'text-color': '#0b0c0c',
@@ -175,22 +177,30 @@
           'text-halo-width': 1.25
         }
       })
+    } else if (map.getFilter('land-parcels-label')) {
+      map.setFilter('land-parcels-label', null)
     }
   }
 
-  function init () {
-    var payload = readJson('land-details-map-data')
-    var mapEl = document.getElementById('land-details-map')
-    if (!payload || !mapEl || typeof maplibregl === 'undefined') {
-      return
+  function boundsForSelected (geojson) {
+    var selected = (geojson.features || []).filter(function (feature) {
+      return feature.properties && feature.properties.selected === 'yes'
+    })
+    if (!selected.length) {
+      return boundsFromGeoJson(geojson)
     }
+    return boundsFromGeoJson({ type: 'FeatureCollection', features: selected })
+  }
 
+  function createMap (mapEl, payload, options) {
+    var opts = options || {}
+    var isMini = Boolean(opts.mini)
     var geojson = buildGeoJson(payload.parcels)
     if (!geojson.features.length) {
-      return
+      return null
     }
 
-    if (!mapEl.style.minHeight) {
+    if (!isMini && !mapEl.style.minHeight) {
       mapEl.style.minHeight = '420px'
     }
 
@@ -198,16 +208,16 @@
       container: mapEl,
       style: 'https://tiles.openfreemap.org/styles/liberty',
       center: [-0.752, 51.9525],
-      zoom: 13.5,
+      zoom: isMini ? 14 : 13.5,
       minZoom: 6,
       maxZoom: 19,
       attributionControl: true
     })
 
-    window.__landDetailsMap = map
-
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
-    map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left')
+    if (!isMini) {
+      map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left')
+    }
 
     if (map.scrollZoom && typeof map.scrollZoom.disable === 'function') {
       map.scrollZoom.disable()
@@ -219,12 +229,13 @@
       if (didFitBounds) {
         return
       }
+      // Fit all parcels so every parcel is visible and clickable on the mini map.
       var bounds = boundsFromGeoJson(geojson)
       if (bounds.isEmpty()) {
         return
       }
       map.fitBounds(bounds, {
-        padding: 56,
+        padding: isMini ? 28 : 56,
         maxZoom: 15.5,
         duration: 0
       })
@@ -254,6 +265,10 @@
 
     map.on('load', paint)
     map.on('style.load', paint)
+
+    window.addEventListener('resize', function () {
+      map.resize()
+    })
 
     map.on('mouseenter', 'land-parcels-fill', function () {
       map.getCanvas().style.cursor = 'pointer'
@@ -289,11 +304,11 @@
       closePopup()
       hoveredParcelId = parcelId
       hoverPopup = new maplibregl.Popup({
+        maxWidth: '216px',
+        offset: 12,
         closeButton: false,
         closeOnClick: false,
-        offset: 12,
-        maxWidth: '180px',
-        className: 'app-land-details-parcel-popup'
+        className: 'parcel-popup-selectable'
       })
         .setLngLat(lngLat)
         .setHTML(buildPopupHtml(props))
@@ -319,6 +334,27 @@
     map.on('mouseleave', 'land-parcels-label', function () {
       closePopup()
     })
+
+    if (isMini) {
+      function selectFromMiniMap (event) {
+        var feature = event.features && event.features[0]
+        var parcelId = feature && feature.properties && feature.properties.parcelId
+        if (!parcelId) {
+          return
+        }
+        closePopup()
+        if (typeof opts.onParcelSelect === 'function') {
+          opts.onParcelSelect(parcelId, feature.properties)
+          return
+        }
+        if (feature.properties.href) {
+          window.location.href = feature.properties.href
+        }
+      }
+      map.on('click', 'land-parcels-fill', selectFromMiniMap)
+      map.on('click', 'land-parcels-label', selectFromMiniMap)
+      return map
+    }
 
     var didScrollToPanel = false
 
@@ -380,41 +416,305 @@
     map.on('click', 'land-parcels-fill', goToParcel)
     map.on('click', 'land-parcels-label', goToParcel)
 
-    // Arrive with #selected-land-parcel: wait for the map, then jump to the panel.
-    // Avoid native hash jump (instant + fights user scroll when the map reflows).
+    // Arrive with #selected-land-parcel: scroll to the panel straight away.
+    // Do not wait for map idle — that left users stuck at the top for seconds.
     if (window.location.hash === '#selected-land-parcel') {
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual'
       }
-      // Clear hash early so the browser does not snap, then hold at the top
-      // until we scroll to the panel.
-      window.history.replaceState(
-        null,
-        '',
-        window.location.pathname + window.location.search
-      )
-      window.scrollTo(0, 0)
 
-      var pendingHashScroll = true
+      scrollToSelectedPanel()
 
-      function runHashScroll () {
-        if (!pendingHashScroll) {
-          return
-        }
-        pendingHashScroll = false
-        scrollToSelectedPanel()
-      }
-
+      // Map paint can nudge layout; nudge once more after idle if we already scrolled.
       map.once('idle', function () {
-        window.setTimeout(runHashScroll, 120)
+        didScrollToPanel = false
+        scrollToSelectedPanel()
       })
-      // Fallback if idle never fires
-      window.setTimeout(runHashScroll, 2000)
     }
 
-    window.addEventListener('resize', function () {
-      map.resize()
-    })
+    return map
+  }
+
+  function createAccordionMiniMapApi (payload) {
+    var accordion = document.getElementById('land-details-parcel-accordion')
+    var parcels = payload.parcels || []
+    var map = null
+
+    function setSelectedParcel (parcelId) {
+      if (!map) {
+        return
+      }
+      var nextParcels = parcels.map(function (parcel) {
+        return Object.assign({}, parcel, {
+          selected: parcelId != null && String(parcel.id) === String(parcelId)
+        })
+      })
+      var geojson = buildGeoJson(nextParcels)
+      var source = map.getSource(SOURCE_ID)
+      if (source && typeof source.setData === 'function') {
+        source.setData(geojson)
+      }
+    }
+
+    function setAccordionSelected (parcelId) {
+      if (!accordion) {
+        return
+      }
+      var id = parcelId != null ? String(parcelId) : null
+      accordion.querySelectorAll('.govuk-accordion__section').forEach(function (section) {
+        var isSelected = id && section.getAttribute('data-parcel-id') === id
+        section.classList.toggle('app-land-details-parcel-list__section--selected', Boolean(isSelected))
+      })
+    }
+
+    function clearHoverHighlight () {
+      var expanded = accordion && accordion.querySelector('.govuk-accordion__section--expanded')
+      var parcelId = expanded && expanded.getAttribute('data-parcel-id')
+      setSelectedParcel(parcelId || null)
+    }
+
+    function setSectionExpanded (section, expanded) {
+      if (!section) {
+        return
+      }
+      var button = section.querySelector('.govuk-accordion__section-button')
+      var content = section.querySelector('.govuk-accordion__section-content')
+      var showHideText = section.querySelector('.govuk-accordion__section-toggle-text')
+      var showHideIcon = section.querySelector('.govuk-accordion-nav__chevron')
+      if (!button || !content) {
+        return
+      }
+
+      button.setAttribute('aria-expanded', expanded ? 'true' : 'false')
+      if (expanded) {
+        section.classList.add('govuk-accordion__section--expanded')
+        content.removeAttribute('hidden')
+        if (showHideText) {
+          showHideText.textContent = 'Hide'
+        }
+        if (showHideIcon) {
+          showHideIcon.classList.remove('govuk-accordion-nav__chevron--down')
+        }
+      } else {
+        section.classList.remove('govuk-accordion__section--expanded')
+        content.setAttribute('hidden', 'until-found')
+        if (showHideText) {
+          showHideText.textContent = 'Show'
+        }
+        if (showHideIcon) {
+          showHideIcon.classList.add('govuk-accordion-nav__chevron--down')
+        }
+      }
+    }
+
+    function isStackedListLayout () {
+      // Match CSS stacking breakpoint (narrow tablet and below)
+      var stacked = Boolean(
+        window.matchMedia &&
+        window.matchMedia('(max-width: 48.0625em)').matches
+      )
+      if (!stacked) {
+        return false
+      }
+      return Boolean(
+        document.querySelector('.app-land-details-layout--list') ||
+        document.querySelector('.app-land-details-layout--v2')
+      )
+    }
+
+    function isV2Layout () {
+      return Boolean(document.querySelector('.app-land-details-layout--v2'))
+    }
+
+    function listPanelCanScroll (listPanel) {
+      if (!listPanel) {
+        return false
+      }
+      var style = window.getComputedStyle(listPanel)
+      if (style.overflowY !== 'auto' && style.overflowY !== 'scroll') {
+        return false
+      }
+      return listPanel.scrollHeight > listPanel.clientHeight + 1
+    }
+
+    function resizeMiniMapSoon () {
+      window.setTimeout(function () {
+        if (map && typeof map.resize === 'function') {
+          map.resize()
+        }
+      }, 50)
+    }
+
+    function scrollOpenedSectionIntoView (section) {
+      if (!section) {
+        return
+      }
+      window.requestAnimationFrame(function () {
+        // v2 desktop: map is sticky on the right — pin the opened section to the top
+        if (isV2Layout() && !isStackedListLayout()) {
+          var offset = 16
+          var top = section.getBoundingClientRect().top + window.pageYOffset - offset
+          window.scrollTo(0, Math.max(0, top))
+          resizeMiniMapSoon()
+          return
+        }
+
+        // Stacked mobile (v1 or v2): sit the section just under the sticky map
+        var mapAside = document.querySelector(
+          '.app-land-details-layout--list .app-land-details-summary, .app-land-details-layout--v2 .app-land-details-summary'
+        )
+        if (mapAside && window.getComputedStyle(mapAside).position === 'sticky') {
+          var mapBottom = mapAside.getBoundingClientRect().bottom
+          var sectionTop = section.getBoundingClientRect().top
+          var delta = sectionTop - mapBottom - 8
+          if (Math.abs(delta) > 1) {
+            window.scrollBy(0, delta)
+          }
+        } else {
+          section.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'auto' })
+        }
+        resizeMiniMapSoon()
+      })
+    }
+
+    function closeOtherSections (keepSection) {
+      // v2 allows multiple sections open at once (standard GOV.UK accordion)
+      if (!accordion || isV2Layout()) {
+        return
+      }
+      accordion.querySelectorAll('.govuk-accordion__section--expanded').forEach(function (section) {
+        if (section !== keepSection) {
+          setSectionExpanded(section, false)
+        }
+      })
+    }
+
+    function openAccordionSection (parcelId) {
+      if (!accordion) {
+        return
+      }
+      var section = null
+      var id = String(parcelId)
+      try {
+        section = accordion.querySelector('[data-parcel-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]')
+      } catch (error) {
+        section = accordion.querySelector('[data-parcel-id="' + id.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]')
+      }
+      if (!section) {
+        return
+      }
+      closeOtherSections(section)
+      setSectionExpanded(section, true)
+
+      var listPanel = document.querySelector('.app-land-details-list-panel')
+      if (listPanelCanScroll(listPanel) && listPanel.contains(section) && !isV2Layout()) {
+        // v1 desktop: scroll inside the list column — keep the map in place
+        var panelTop = listPanel.getBoundingClientRect().top
+        var sectionTop = section.getBoundingClientRect().top
+        listPanel.scrollTop += (sectionTop - panelTop) - 8
+      } else {
+        // Includes map clicks on v2 (list accordion clicks do not call this)
+        scrollOpenedSectionIntoView(section)
+      }
+    }
+
+    function selectParcel (parcelId) {
+      openAccordionSection(parcelId)
+      setSelectedParcel(parcelId)
+      setAccordionSelected(parcelId)
+    }
+
+    function syncFromExpandedSections () {
+      var expanded = accordion && accordion.querySelector('.govuk-accordion__section--expanded')
+      var parcelId = expanded && expanded.getAttribute('data-parcel-id')
+      if (parcelId) {
+        setSelectedParcel(parcelId)
+        setAccordionSelected(parcelId)
+      } else {
+        setSelectedParcel(null)
+        setAccordionSelected(null)
+      }
+    }
+
+    if (accordion) {
+      var hoveredAccordionParcelId = null
+
+      accordion.addEventListener('click', function (event) {
+        var header = event.target.closest && event.target.closest('.govuk-accordion__section-header')
+        var section = header && header.closest('.govuk-accordion__section')
+        window.setTimeout(function () {
+          if (section && section.classList.contains('govuk-accordion__section--expanded')) {
+            closeOtherSections(section)
+            var parcelId = section.getAttribute('data-parcel-id')
+            setSelectedParcel(parcelId)
+            setAccordionSelected(parcelId)
+            if (isStackedListLayout() && !isV2Layout()) {
+              scrollOpenedSectionIntoView(section)
+            }
+          } else {
+            syncFromExpandedSections()
+          }
+        }, 0)
+      })
+
+      // Hovering a list row highlights the matching parcel on the map
+      accordion.addEventListener('mouseover', function (event) {
+        var section = event.target.closest && event.target.closest('.govuk-accordion__section')
+        if (!section || !accordion.contains(section)) {
+          return
+        }
+        var parcelId = section.getAttribute('data-parcel-id')
+        if (!parcelId || parcelId === hoveredAccordionParcelId) {
+          return
+        }
+        hoveredAccordionParcelId = parcelId
+        setSelectedParcel(parcelId)
+      })
+
+      accordion.addEventListener('mouseleave', function () {
+        hoveredAccordionParcelId = null
+        clearHoverHighlight()
+      })
+    }
+
+    return {
+      bindMap: function (miniMap) {
+        map = miniMap
+        window.setTimeout(syncFromExpandedSections, 100)
+      },
+      selectParcel: selectParcel
+    }
+  }
+
+  function init () {
+    var payload = readJson('land-details-map-data')
+    if (!payload || typeof maplibregl === 'undefined') {
+      return
+    }
+
+    var fullMapEl = document.getElementById('land-details-map')
+    var miniMapEl = document.getElementById('land-details-mini-map')
+
+    if (fullMapEl) {
+      window.__landDetailsMap = createMap(fullMapEl, payload, { mini: false })
+    }
+
+    if (miniMapEl) {
+      var accordionApi = createAccordionMiniMapApi(payload)
+      window.__landDetailsMiniMap = createMap(miniMapEl, payload, {
+        mini: true,
+        onParcelSelect: function (parcelId) {
+          accordionApi.selectParcel(parcelId)
+        }
+      })
+      accordionApi.bindMap(window.__landDetailsMiniMap)
+      // List layout uses a fixed-height panel — resize once the map has a real size
+      window.setTimeout(function () {
+        if (window.__landDetailsMiniMap && typeof window.__landDetailsMiniMap.resize === 'function') {
+          window.__landDetailsMiniMap.resize()
+        }
+      }, 50)
+    }
   }
 
   if (document.readyState === 'loading') {

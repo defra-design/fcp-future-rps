@@ -11,6 +11,7 @@
   {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
 
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-land-details.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-land-details-v2.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
   <script>
     document.documentElement.classList.add('app-land-details--wide');
@@ -31,37 +32,23 @@
 
       <h1 class="govuk-heading-l">Check your digital maps</h1>
       <p class="govuk-body" id="land-details-intro">
-        {% if isListView %}
-          Select a land parcel to see its details.
-        {% else %}
-          Select a land parcel on the map to see its details.
-        {% endif %}
+        Select a land parcel on the map or in the list to see its details.
       </p>
 
-      <div class="app-land-details-layout{% if isListView %} app-land-details-layout--list{% endif %}">
-        {% if isListView %}
-          <aside class="app-land-details-summary" aria-label="Parcel map">
-            <div
-              id="land-details-mini-map"
-              class="app-land-details-mini-map"
-              role="img"
-              aria-label="Map of land parcels for {{ farmSummary.farmName }}"
-            ></div>
-          </aside>
-          <div class="app-land-details-list-panel">
-            {% include "sfi-grasslands-v3/_includes/land-details-farm-summary.html" %}
-            {% include "sfi-grasslands-v3/_includes/land-details-parcel-accordion.html" %}
-          </div>
-        {% else %}
+      <div class="app-land-details-layout app-land-details-layout--v2">
+        <div class="app-land-details-list-panel">
           {% include "sfi-grasslands-v3/_includes/land-details-farm-summary.html" %}
-          <div>
-            <div
-              id="land-details-map"
-              class="app-land-details-map"
-              aria-label="Map of land parcels for {{ farmSummary.farmName }}"
-            ></div>
-          </div>
-        {% endif %}
+          {% set selectedParcelId = parcel.id if parcel else null %}
+          {% include "sfi-grasslands-v3/_includes/land-details-parcel-accordion.html" %}
+        </div>
+        <aside class="app-land-details-summary" aria-label="Parcel map">
+          <div
+            id="land-details-mini-map"
+            class="app-land-details-mini-map"
+            role="img"
+            aria-label="Map of land parcels for {{ farmSummary.farmName }}"
+          ></div>
+        </aside>
       </div>
 
       <div class="govuk-grid-row">
@@ -88,5 +75,5 @@
 
 {% block pageScripts %}
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
-  <script src="/public/javascripts/sfi-grasslands-v3-land-details-map.js?v=43"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-land-details-map.js?v=46"></script>
 {% endblock %}

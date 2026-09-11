@@ -9,6 +9,7 @@ var parcelsById = require('./data/sfi-grasslands-v3-land-details-parcels.json')
 
 var FARM_NAME = 'Agile Farm'
 var LAND_DETAILS_BASE = '/sfi-grasslands-v3/land-details'
+var LAND_DETAILS_V2_BASE = '/sfi-grasslands-v3/land-details-v2'
 
 function roundHaFour (value) {
   return Math.round(Math.max(0, Number(value) || 0) * 10000) / 10000
@@ -49,6 +50,36 @@ function referenceToSlug (reference) {
     .replace(/\s+/g, '-')
 }
 
+function getParcelView (query) {
+  // List + map is the default; full-width map needs ?view=map
+  return String((query && query.view) || '').toLowerCase() === 'map' ? 'map' : 'list'
+}
+
+function buildQueryString (query, options) {
+  var opts = options || {}
+  var source = query || {}
+  var parts = []
+  Object.keys(source).forEach(function (key) {
+    if (key === 'view') {
+      return
+    }
+    var value = source[key]
+    if (value === undefined || value === null || value === '') {
+      return
+    }
+    parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(String(value)))
+  })
+  var view = opts.view !== undefined ? opts.view : getParcelView(source)
+  if (view === 'map') {
+    parts.push('view=map')
+  }
+  return parts.length ? '?' + parts.join('&') : ''
+}
+
+function buildParcelHref (slug, querySuffix, basePath) {
+  return (basePath || LAND_DETAILS_BASE) + '/' + slug + (querySuffix || '') + '#selected-land-parcel'
+}
+
 function slugToReference (slug) {
   var cleaned = String(slug || '').trim().replace(/-/g, ' ')
   var match = cleaned.match(/^([A-Z]{2}\d{4})\s+(\d{4})$/i)
@@ -75,7 +106,9 @@ function getCoverNamesForParcel (parcelId, parcel) {
   return toCoverNames(parcel.landCover)
 }
 
-function buildParcelRecord (parcelId) {
+function buildParcelRecord (parcelId, options) {
+  var opts = options || {}
+  var querySuffix = opts.querySuffix || ''
   var parcel = parcelsById[parcelId]
   if (!parcel) {
     return null
@@ -97,17 +130,21 @@ function buildParcelRecord (parcelId) {
     name: parcel.name,
     parcelReference: reference,
     slug: slug,
-    href: LAND_DETAILS_BASE + '/' + slug + '#selected-land-parcel',
+    href: buildParcelHref(slug, querySuffix, opts.basePath),
     totalArea: totalArea,
     totalAreaFormatted: formatHa(totalArea),
     totalAreaLabel: formatHa(totalArea) + ' ha',
     landCoverSummary: landCoverSummary,
     landCovers: coverShares.map(function (share) {
+      var areaFormatted = formatHa(share.ha) + ' ha'
       return {
         name: share.name,
         area: share.ha,
-        areaFormatted: formatHa(share.ha) + ' ha',
-        line: share.name + ' - ' + formatHa(share.ha) + ' ha'
+        areaFormatted: areaFormatted,
+        // Single cover matches total area — no need to repeat the hectares
+        line: coverShares.length === 1
+          ? share.name
+          : share.name + ' - ' + areaFormatted
       }
     }),
     availableActionsCount: availableActionsCount,
@@ -143,9 +180,12 @@ function getParcelRequirements (parcelId) {
   }
 }
 
-function getAllParcels () {
+function getAllParcels (options) {
+  var opts = options || {}
   return Object.keys(parcelsById)
-    .map(buildParcelRecord)
+    .map(function (parcelId) {
+      return buildParcelRecord(parcelId, opts)
+    })
     .filter(Boolean)
     .sort(function (a, b) {
       return String(a.parcelReference).localeCompare(String(b.parcelReference))
@@ -167,7 +207,7 @@ function getFarmSummary () {
   }
 }
 
-function getParcelBySlug (slug) {
+function getParcelBySlug (slug, options) {
   var reference = slugToReference(slug)
   if (!reference) {
     return null
@@ -176,12 +216,12 @@ function getParcelBySlug (slug) {
   if (!parcelId) {
     return null
   }
-  return buildParcelRecord(parcelId)
+  return buildParcelRecord(parcelId, options)
 }
 
 function getMapPayload (options) {
   var opts = options || {}
-  var parcels = getAllParcels()
+  var parcels = getAllParcels(opts)
   var selectedId = opts.selectedParcelId || null
 
   return {
@@ -204,11 +244,43 @@ function getMapPayload (options) {
   }
 }
 
+function getPageLocals (query, options) {
+  var opts = options || {}
+  var basePath = opts.basePath || LAND_DETAILS_BASE
+  var parcelView = opts.forceListView ? 'list' : getParcelView(query)
+  var querySuffix = buildQueryString(query, { view: parcelView })
+  var parcelOptions = { querySuffix: querySuffix, basePath: basePath }
+  var parcels = getAllParcels(parcelOptions)
+  var selectedParcel = opts.slug ? getParcelBySlug(opts.slug, parcelOptions) : null
+
+  return {
+    parcelView: parcelView,
+    isListView: parcelView === 'list',
+    isLandDetailsV2: Boolean(opts.isLandDetailsV2),
+    parcels: parcels,
+    farmSummary: getFarmSummary(),
+    parcel: selectedParcel,
+    landDetailsIndexHref: basePath + buildQueryString(query, { view: parcelView }),
+    mapViewHref: basePath + (opts.slug ? '/' + opts.slug : '') + buildQueryString(query, { view: 'map' }),
+    listViewHref: basePath + (opts.slug ? '/' + opts.slug : '') + buildQueryString(query, { view: 'list' }),
+    mapPayload: getMapPayload({
+      querySuffix: querySuffix,
+      basePath: basePath,
+      selectedParcelId: selectedParcel && selectedParcel.id,
+      fitAllParcels: Boolean(opts.fitAllParcels)
+    })
+  }
+}
+
 module.exports = {
   LAND_DETAILS_BASE: LAND_DETAILS_BASE,
+  LAND_DETAILS_V2_BASE: LAND_DETAILS_V2_BASE,
   getAllParcels: getAllParcels,
   getFarmSummary: getFarmSummary,
   getParcelBySlug: getParcelBySlug,
   getMapPayload: getMapPayload,
+  getParcelView: getParcelView,
+  buildQueryString: buildQueryString,
+  getPageLocals: getPageLocals,
   formatHa: formatHa
 }

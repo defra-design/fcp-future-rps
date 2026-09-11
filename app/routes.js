@@ -5095,31 +5095,52 @@ router.get('/sfi-grasslands-v3/view-land', function (req, res) {
 })
 
 router.get('/sfi-grasslands-v3/land-details', function (req, res) {
-  var parcels = sfiGrasslandsV3LandDetails.getAllParcels()
-  var farmSummary = sfiGrasslandsV3LandDetails.getFarmSummary()
+  var locals = sfiGrasslandsV3LandDetails.getPageLocals(req.query, {})
   res.render('sfi-grasslands-v3/land-details', Object.assign({
-    data: getSfiGrasslandsV3SessionData(req),
-    parcels: parcels,
-    farmSummary: farmSummary,
-    mapPayload: sfiGrasslandsV3LandDetails.getMapPayload({})
-  }, getSfiGrasslandsV3CompatibilityLocals(req)))
+    data: getSfiGrasslandsV3SessionData(req)
+  }, locals, getSfiGrasslandsV3CompatibilityLocals(req)))
 })
 
 router.get('/sfi-grasslands-v3/land-details/:slug', function (req, res) {
-  var parcel = sfiGrasslandsV3LandDetails.getParcelBySlug(req.params.slug)
-  if (!parcel) {
-    return res.redirect('/sfi-grasslands-v3/land-details')
+  var locals = sfiGrasslandsV3LandDetails.getPageLocals(req.query, {
+    slug: req.params.slug,
+    fitAllParcels: true
+  })
+  if (!locals.parcel) {
+    return res.redirect('/sfi-grasslands-v3/land-details' + sfiGrasslandsV3LandDetails.buildQueryString(req.query))
   }
 
   res.render('sfi-grasslands-v3/land-details-parcel', Object.assign({
-    data: getSfiGrasslandsV3SessionData(req),
-    parcel: parcel,
-    farmSummary: sfiGrasslandsV3LandDetails.getFarmSummary(),
-    mapPayload: sfiGrasslandsV3LandDetails.getMapPayload({
-      selectedParcelId: parcel.id,
-      fitAllParcels: true
-    })
-  }, getSfiGrasslandsV3CompatibilityLocals(req)))
+    data: getSfiGrasslandsV3SessionData(req)
+  }, locals, getSfiGrasslandsV3CompatibilityLocals(req)))
+})
+
+router.get('/sfi-grasslands-v3/land-details-v2', function (req, res) {
+  var locals = sfiGrasslandsV3LandDetails.getPageLocals(req.query, {
+    basePath: sfiGrasslandsV3LandDetails.LAND_DETAILS_V2_BASE,
+    forceListView: true,
+    isLandDetailsV2: true
+  })
+  res.render('sfi-grasslands-v3/land-details-v2', Object.assign({
+    data: getSfiGrasslandsV3SessionData(req)
+  }, locals, getSfiGrasslandsV3CompatibilityLocals(req)))
+})
+
+router.get('/sfi-grasslands-v3/land-details-v2/:slug', function (req, res) {
+  var locals = sfiGrasslandsV3LandDetails.getPageLocals(req.query, {
+    slug: req.params.slug,
+    fitAllParcels: true,
+    basePath: sfiGrasslandsV3LandDetails.LAND_DETAILS_V2_BASE,
+    forceListView: true,
+    isLandDetailsV2: true
+  })
+  if (!locals.parcel) {
+    return res.redirect('/sfi-grasslands-v3/land-details-v2' + sfiGrasslandsV3LandDetails.buildQueryString(req.query))
+  }
+
+  res.render('sfi-grasslands-v3/land-details-v2', Object.assign({
+    data: getSfiGrasslandsV3SessionData(req)
+  }, locals, getSfiGrasslandsV3CompatibilityLocals(req)))
 })
 
 router.get('/land-details', function (req, res) {

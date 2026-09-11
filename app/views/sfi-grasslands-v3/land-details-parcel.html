@@ -10,15 +10,15 @@
   {{ super() }}
   {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
 
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v3-land-details.css">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
   <script>
     document.documentElement.classList.add('app-land-details--wide');
     document.body.classList.add('app-land-details--wide');
   </script>
 
   {{ govukBackLink({
-    text: "Back to check your digital maps are correct",
+    text: "Back",
     href: "/sfi-grasslands-v3/check-land-details"
   }) }}
 {% endblock %}
@@ -30,80 +30,90 @@
       {% include "sfi-grasslands-v3/_includes/journey-caption.html" %}
 
       <h1 class="govuk-heading-l">Check your digital maps</h1>
+      <p class="govuk-body" id="land-details-intro">
+        {% if isListView %}
+          Select a land parcel to see its details.
+        {% else %}
+          Select a land parcel on the map to see its details.
+        {% endif %}
+      </p>
 
-      <div class="app-land-details-layout">
-        <div>
-          <div
-            id="land-details-map"
-            class="app-land-details-map"
-            aria-label="Map of land parcels for {{ farmSummary.farmName }}, selected parcel {{ parcel.parcelReference }}"
-          ></div>
-        </div>
-
-        <aside class="app-land-details-summary" aria-label="Farm summary">
-          <table class="govuk-table">
-            <caption class="govuk-table__caption govuk-table__caption--m">{{ farmSummary.farmName }}</caption>
-            <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Available land parcels</th>
-                <td class="govuk-table__cell govuk-table__cell--numeric">{{ farmSummary.parcelCount }}</td>
-              </tr>
-              <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Total area (hectares)</th>
-                <td class="govuk-table__cell govuk-table__cell--numeric">{{ farmSummary.totalAreaLabel }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </aside>
+      <div class="app-land-details-layout{% if isListView %} app-land-details-layout--list{% endif %}">
+        {% if isListView %}
+          <aside class="app-land-details-summary" aria-label="Parcel map">
+            <div
+              id="land-details-mini-map"
+              class="app-land-details-mini-map"
+              role="img"
+              aria-label="Map showing selected land parcel {{ parcel.parcelReference }}"
+            ></div>
+          </aside>
+          <div class="app-land-details-list-panel">
+            {% include "sfi-grasslands-v3/_includes/land-details-farm-summary.html" %}
+            {% set selectedParcelId = parcel.id %}
+            {% include "sfi-grasslands-v3/_includes/land-details-parcel-accordion.html" %}
+          </div>
+        {% else %}
+          {% include "sfi-grasslands-v3/_includes/land-details-farm-summary.html" %}
+          <div>
+            <div
+              id="land-details-map"
+              class="app-land-details-map"
+              aria-label="Map of land parcels for {{ farmSummary.farmName }}, selected parcel {{ parcel.parcelReference }}"
+            ></div>
+          </div>
+        {% endif %}
       </div>
 
-      <div class="govuk-grid-row govuk-!-margin-top-6" id="selected-land-parcel">
-        <div class="govuk-grid-column-two-thirds">
-          <h2 class="govuk-heading-m">Selected land parcel</h2>
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">Land parcel</dt>
-              <dd class="govuk-summary-list__value">{{ parcel.parcelReference }}</dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/sfi-grasslands-v3/land-details">Change<span class="govuk-visually-hidden"> land parcel</span></a>
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-              <dt class="govuk-summary-list__key">Land cover</dt>
-              <dd class="govuk-summary-list__value">
-                {% for cover in parcel.landCovers %}
-                  {{ cover.line }}{% if not loop.last %}<br>{% endif %}
-                {% endfor %}
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-              <dt class="govuk-summary-list__key">Total area</dt>
-              <dd class="govuk-summary-list__value">{{ parcel.totalAreaLabel }}</dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-              <dt class="govuk-summary-list__key">Actions available</dt>
-              <dd class="govuk-summary-list__value">{{ parcel.availableActionsCount }}</dd>
-            </div>
-            {% if parcel.requirements.show %}
-              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                <dt class="govuk-summary-list__key">Requirements</dt>
-                <dd class="govuk-summary-list__value">
-                  <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
-                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                    {% for item in parcel.requirements.items %}
-                      <li>{{ item }}</li>
-                    {% endfor %}
-                  </ul>
+      {% if not isListView %}
+        <div class="govuk-grid-row govuk-!-margin-top-6" id="selected-land-parcel">
+          <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Selected land parcel</h2>
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Land parcel</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.parcelReference }}</dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="{{ landDetailsIndexHref }}">Change<span class="govuk-visually-hidden"> land parcel</span></a>
                 </dd>
               </div>
-            {% endif %}
-          </dl>
+              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key">Land cover</dt>
+                <dd class="govuk-summary-list__value">
+                  {% for cover in parcel.landCovers %}
+                    {{ cover.line }}{% if not loop.last %}<br>{% endif %}
+                  {% endfor %}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key">Total area</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.totalAreaLabel }}</dd>
+              </div>
+              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key">Available actions</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.availableActionsCount }}</dd>
+              </div>
+              {% if parcel.requirements.show %}
+                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                  <dt class="govuk-summary-list__key">Requirements</dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                      {% for item in parcel.requirements.items %}
+                        <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </dd>
+                </div>
+              {% endif %}
+            </dl>
+          </div>
         </div>
-      </div>
+      {% endif %}
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <h2 class="govuk-heading-m">If your land information is not up to date</h2>
+          <h2 class="govuk-heading-m{% if isListView %} govuk-!-margin-top-8{% endif %}">If your land information is not up to date</h2>
           <p class="govuk-body">
             If you have already asked us to update information about your land, the changes might not show here yet. If the information is incorrect, you may need to update your digital maps before you apply.
             <a class="govuk-link" href="https://www.gov.uk/guidance/rural-payments-service-how-to-register-land-and-update-digital-maps" target="_blank" rel="noopener noreferrer">Find out how to update your digital maps (opens in new tab)</a>.
@@ -125,5 +135,5 @@
 
 {% block pageScripts %}
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
-  <script src="/public/javascripts/sfi-grasslands-v3-land-details-map.js?v=16"></script>
+  <script src="/public/javascripts/sfi-grasslands-v3-land-details-map.js?v=43"></script>
 {% endblock %}
