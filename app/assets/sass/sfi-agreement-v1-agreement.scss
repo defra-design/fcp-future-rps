@@ -9,6 +9,17 @@
   white-space: nowrap;
 }
 
+.govuk-table {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.govuk-table .govuk-table__header,
+.govuk-table .govuk-table__cell {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
 .app-agreement-contents {
   margin-bottom: 30px;
 

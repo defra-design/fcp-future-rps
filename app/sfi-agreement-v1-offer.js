@@ -163,8 +163,10 @@ function calculatePayment (code, quantity, unit) {
 
 function getParcelSelectionsFromSession (sessionData) {
   var data = sessionData || {}
-  return parseParcelSelectionsData(data.parcelSelectionsData) ||
-    parseParcelSelectionsData(data.sfiParcelSelectionsData) ||
+  // Prefer the grasslands application snapshot — it includes CLIG3 supplements.
+  // Select-actions form posts can leave a stale parcelSelectionsData without them.
+  return parseParcelSelectionsData(data.sfiParcelSelectionsData) ||
+    parseParcelSelectionsData(data.parcelSelectionsData) ||
     {}
 }
 

@@ -250,7 +250,11 @@ function buildParcelSelectionsDataFromApplication (req) {
 }
 
 function syncParcelSelectionsData (req) {
-  getSessionData(req).sfiParcelSelectionsData = buildParcelSelectionsDataFromApplication(req)
+  var json = buildParcelSelectionsDataFromApplication(req)
+  var data = getSessionData(req)
+  data.sfiParcelSelectionsData = json
+  // Keep the form field key in sync so agreement / CYA use the same snapshot
+  data.parcelSelectionsData = json
 }
 
 function hasSavedLandAndActions (req) {

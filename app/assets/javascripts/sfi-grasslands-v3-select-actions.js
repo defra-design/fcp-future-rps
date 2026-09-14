@@ -2323,13 +2323,13 @@ function appendPreviousAgreementSummaryRow(listEl, keyText, valueText) {
 
 function formatPreviousAgreementsCountSummary(agreementCount) {
   if (agreementCount === 1) {
-    return '1 previous agreement';
+    return '1 existing agreement';
   }
-  return agreementCount + ' previous agreements';
+  return agreementCount + ' existing agreements';
 }
 
 function formatPreviousAgreementsDetailsLabel(agreementCount) {
-  return 'View ' + agreementCount + ' previous agreement actions';
+  return 'View ' + agreementCount + ' existing agreement actions';
 }
 
 function isActionCodeOnThisPage(code) {
@@ -2375,7 +2375,7 @@ function updatePreviousAgreementsSummary(parcelId) {
   detailsEl.hidden = true;
   sectionEl.hidden = true;
   if (summaryTextEl) {
-    summaryTextEl.textContent = 'View previous agreement actions';
+    summaryTextEl.textContent = 'View existing agreement actions';
   }
 
   var agreements = [];
@@ -3081,6 +3081,12 @@ var compatibilityConfig = {
   }
 };
 
+// Keep a full matrix for previous-agreement AAC deductions (includes codes like CIPM2
+// that may not be in the selectable MVP catalog).
+var previousAgreementIncompatibleByCode = JSON.parse(
+  JSON.stringify(compatibilityConfig.incompatibleByCode)
+);
+
 var matrixCompatibilityConfig = null;
 var compatibilityConfigElement = document.getElementById('compatibility-client-config');
 if (compatibilityConfigElement) {
@@ -3092,6 +3098,17 @@ if (compatibilityConfigElement) {
 }
 if (matrixCompatibilityConfig && matrixCompatibilityConfig.incompatibleByCode) {
   compatibilityConfig = matrixCompatibilityConfig;
+  Object.keys(matrixCompatibilityConfig.incompatibleByCode).forEach(function (code) {
+    var merged = previousAgreementIncompatibleByCode[code]
+      ? previousAgreementIncompatibleByCode[code].slice()
+      : [];
+    (matrixCompatibilityConfig.incompatibleByCode[code] || []).forEach(function (other) {
+      if (merged.indexOf(other) === -1) {
+        merged.push(other);
+      }
+    });
+    previousAgreementIncompatibleByCode[code] = merged;
+  });
 }
 
 var mvpActionCodeSet = ACTION_CATALOG.reduce(function(lookup, action) {
@@ -6310,6 +6327,8 @@ $(document).ready(function(){
         GRH8: ['GRH7', 'GRH10'],
         GRH10: ['GRH7', 'GRH8']
       },
+      // Previous-agreement deductions use the full compatibility matrix
+      previousAgreementIncompatibleByCode: previousAgreementIncompatibleByCode,
       getContinueButton: function() {
         return document.getElementById('continue-button');
       },

@@ -127,7 +127,7 @@
       <caption class="govuk-table__caption govuk-visually-hidden">Land parcels covered by the agreement</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Parcel</th>
+          <th scope="col" class="govuk-table__header">Land parcel</th>
           <th scope="col" class="govuk-table__header">Total parcel area (ha)</th>
         </tr>
       </thead>
@@ -160,9 +160,9 @@
       <caption class="govuk-table__caption govuk-visually-hidden">Summary of actions</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Parcel</th>
           <th scope="col" class="govuk-table__header">Action</th>
           <th scope="col" class="govuk-table__header">Quantity</th>
+          <th scope="col" class="govuk-table__header">Land parcel</th>
           <th scope="col" class="govuk-table__header">Start date</th>
           <th scope="col" class="govuk-table__header">End date</th>
         </tr>
@@ -170,9 +170,9 @@
       <tbody class="govuk-table__body">
         {% for row in offer.detailRows %}
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell app-agreement-parcel-ref">{{ row.parcelReference }}</td>
             <td class="govuk-table__cell">{{ row.label }}</td>
             <td class="govuk-table__cell">{{ row.quantityText }}</td>
+            <td class="govuk-table__cell app-agreement-parcel-ref">{{ row.parcelReference }}</td>
             <td class="govuk-table__cell">{% if offer.signed %}{{ offer.actionStartDate }}{% endif %}</td>
             <td class="govuk-table__cell">{% if offer.signed %}{{ offer.actionEndDate }}{% endif %}</td>
           </tr>
@@ -211,7 +211,7 @@
           <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Action</th>
             <th scope="col" class="govuk-table__header">Payment rate</th>
-            <th scope="col" class="govuk-table__header">Quantity</th>
+            <th scope="col" class="govuk-table__header">Total quantity</th>
             <th scope="col" class="govuk-table__header govuk-table__header--numeric">Annual payment</th>
           </tr>
         </thead>

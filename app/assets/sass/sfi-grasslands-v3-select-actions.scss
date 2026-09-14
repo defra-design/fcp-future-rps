@@ -322,6 +322,7 @@
   margin-top: 8px;
   margin-bottom: 0;
   padding: 0;
+  max-width: 75%; // roughly govuk-grid-column-three-quarters
 }
 
 #actions-section .govuk-checkboxes__conditional .app-action-full-area-hint {
@@ -802,7 +803,9 @@
 
 .app-action-availability-details__group .govuk-table__header {
   padding-top: 15px;
+  padding-bottom: 5px;
   white-space: nowrap;
+  border-bottom: 0;
 }
 
 .app-action-availability-details__group:first-child .govuk-table__header {

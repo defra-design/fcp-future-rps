@@ -10,6 +10,7 @@
 {% block beforeContent %}
   {{ super() }}
   {% include "sfi-grasslands-v3/_includes/account-bar.html" %}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-agreement-v1-offer.css">
 {% endblock %}
 
 {% block content %}
@@ -55,21 +56,24 @@
   <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         <h2 class="govuk-heading-l">Actions</h2>
+        <p class="govuk-body">
+          Each row is an action on one land parcel.
+        </p>
         <table class="govuk-table">
-          <caption class="govuk-table__caption govuk-visually-hidden">Actions in this agreement offer</caption>
+          <caption class="govuk-table__caption govuk-visually-hidden">Actions on each land parcel in this agreement offer</caption>
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">Action</th>
-              <th scope="col" class="govuk-table__header">Land parcels</th>
               <th scope="col" class="govuk-table__header">Quantity</th>
+              <th scope="col" class="govuk-table__header">Land parcel</th>
             </tr>
           </thead>
           <tbody class="govuk-table__body">
             {% for row in offer.detailRows %}
               <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ row.label }}</td>
-                <td class="govuk-table__cell">{{ row.parcelReference }}</td>
                 <td class="govuk-table__cell">{{ row.quantityText }}</td>
+                <td class="govuk-table__cell">{{ row.parcelReference }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -82,6 +86,7 @@
         <h2 class="govuk-heading-l">Payments</h2>
         <p class="govuk-body">
           If you accept this agreement offer, you will receive the following payments for each action.
+          Where an action is on more than one parcel, the quantity and payment are combined.
         </p>
         <p class="govuk-body">
           Payments are made in instalments. You should receive your first payment in the fourth month after your agreement starts.
@@ -99,7 +104,7 @@
               <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">Action</th>
                 <th scope="col" class="govuk-table__header">Payment rate</th>
-                <th scope="col" class="govuk-table__header">Quantity</th>
+                <th scope="col" class="govuk-table__header">Total quantity</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">Annual payment</th>
               </tr>
             </thead>

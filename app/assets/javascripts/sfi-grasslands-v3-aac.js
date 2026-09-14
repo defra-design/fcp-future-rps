@@ -19,6 +19,8 @@
     actions: [],
     selections: {},
     incompatibleByCode: {},
+    // Full compatibility matrix — used only for previous-agreement area deductions
+    previousAgreementIncompatibleByCode: {},
     onBusyChange: null,
     onAfterRecalculate: null,
     getContinueButton: null
@@ -228,7 +230,33 @@
     }
   }
 
-  // Deduct land already in previous agreements on this parcel (when that toggle is on).
+  // Deduct previous-agreement land only when it is the same action or matrix-incompatible.
+  // Uses the full compatibility matrix (not AAC’s reduced in-session conflict list).
+  function getPreviousAgreementIncompatibilities (code) {
+    var map = state.previousAgreementIncompatibleByCode || {}
+    if (Object.keys(map).length) {
+      return map[String(code || '').toUpperCase()] || []
+    }
+    return getHardIncompatibilities(code)
+  }
+
+  function shouldDeductExistingAgreementAction (candidateCode, existingAction) {
+    var existingCode = String((existingAction && existingAction.code) || '').toUpperCase()
+    var code = String(candidateCode || '').toUpperCase()
+    if (!existingCode || !code) {
+      return false
+    }
+    if (existingCode === code) {
+      return true
+    }
+    var fromCandidate = getPreviousAgreementIncompatibilities(code)
+    if (fromCandidate.indexOf(existingCode) !== -1) {
+      return true
+    }
+    // Symmetric check — matrix should be two-way, but be safe
+    return getPreviousAgreementIncompatibilities(existingCode).indexOf(code) !== -1
+  }
+
   function applyExistingAgreementDeductions (code, unit, baseEligible, exclusions) {
     if (unit !== 'ha' || !Number.isFinite(baseEligible)) {
       return baseEligible
@@ -240,15 +268,13 @@
       return baseEligible
     }
 
-    var deductions = []
+    var allDeductions = []
     if (typeof window.SfiGrasslandsV3ExistingAgreements.getDeductions === 'function') {
-      deductions = window.SfiGrasslandsV3ExistingAgreements.getDeductions(state.parcelId) || []
-    } else if (typeof window.SfiGrasslandsV3ExistingAgreements.getDeductionsForAction === 'function') {
-      deductions = window.SfiGrasslandsV3ExistingAgreements.getDeductionsForAction(
-        state.parcelId,
-        code
-      ) || []
+      allDeductions = window.SfiGrasslandsV3ExistingAgreements.getDeductions(state.parcelId) || []
     }
+    var deductions = allDeductions.filter(function (action) {
+      return shouldDeductExistingAgreementAction(code, action)
+    })
     var remaining = baseEligible
 
     deductions.forEach(function (action) {
@@ -262,7 +288,7 @@
         : ((action.name || '') + (action.code ? ' (' + action.code + ')' : ''))
       exclusions.push({
         featureKey: 'existingAgreement',
-        label: 'Previous agreement',
+        label: 'Existing agreement',
         detail: agreementLabel || null,
         code: action.code || null,
         name: action.name || null,
@@ -1243,7 +1269,7 @@
           !/^previous agreement$/i.test(String(item.label))) {
         return item.label
       }
-      return 'Previous agreement'
+      return 'Existing agreement'
     }
     if (featureKey === 'sssi') {
       return 'Sites of special scientific interest (SSSI)'
@@ -1259,7 +1285,7 @@
 
   var DEDUCTION_GROUPS = [
     { id: 'landCover', title: 'Land cover', keys: ['landCover'] },
-    { id: 'existingAgreements', title: 'Previous agreements', keys: ['existingAgreement'] },
+    { id: 'existingAgreements', title: 'Existing agreements', keys: ['existingAgreement'] },
     { id: 'featuresOnLand', title: 'Features on land', keys: ['sssi', 'hefer'] }
   ]
 
@@ -1399,9 +1425,9 @@
 
     var intro = document.createElement('p')
     intro.className = 'govuk-body-s govuk-!-margin-bottom-3'
-    intro.textContent = 'These areas are not included in the ' +
-      (action.unit === 'm' ? 'length' : 'hectares') +
-      ' available for this action.'
+    intro.textContent = action.unit === 'm'
+      ? 'Some length cannot be used for this action because of existing agreements or features on the land.'
+      : 'Some land cannot be used for this action because of existing agreements or features on the land.'
     text.appendChild(intro)
 
     var list = document.createElement('table')
@@ -1436,7 +1462,8 @@
     body.className = 'govuk-table__body'
 
     var groups = groupAvailabilityDeductions(deductions)
-    var showGroupHeaders = groups.length > 1
+    // Always show group titles (e.g. Existing agreements) so the reason is clear
+    var showGroupHeaders = groups.length > 0
     var totalUnavailable = 0
 
     groups.forEach(function (group) {
@@ -1484,7 +1511,7 @@
     var totalKey = document.createElement('th')
     totalKey.className = 'govuk-table__header'
     totalKey.setAttribute('scope', 'row')
-    totalKey.textContent = 'Total deduction'
+    totalKey.textContent = action.unit === 'm' ? 'Length not available' : 'Land not available'
 
     var totalValue = document.createElement('td')
     totalValue.className = 'govuk-table__cell govuk-table__cell--numeric'
@@ -2001,6 +2028,9 @@
     }
     if (options.incompatibleByCode) {
       state.incompatibleByCode = options.incompatibleByCode
+    }
+    if (options.previousAgreementIncompatibleByCode) {
+      state.previousAgreementIncompatibleByCode = options.previousAgreementIncompatibleByCode
     }
     if (typeof options.onBusyChange === 'function') {
       state.onBusyChange = options.onBusyChange
