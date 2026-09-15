@@ -678,6 +678,21 @@ function removeParcelFromBasket (req, parcelId) {
 }
 
 function loadParcelIntoDraftForEdit (req, parcelId) {
+  // Confirm can show a saved parcel plus a different draft parcel at once.
+  // Editing moves a parcel into the single draft slot — commit any other
+  // in-progress draft first so it is not overwritten and lost from the basket.
+  var existingDraft = getDraftParcel(req)
+  var existingDraftActions = getDraftActions(req)
+  if (
+    existingDraft &&
+    existingDraft.parcelId &&
+    existingDraft.parcelId !== parcelId &&
+    Array.isArray(existingDraftActions) &&
+    existingDraftActions.length > 0
+  ) {
+    commitDraftToApplication(req)
+  }
+
   var parcels = getApplicationParcels(req)
   var parcel = parcels.find(function (entry) {
     return entry.parcelId === parcelId
