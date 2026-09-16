@@ -1286,7 +1286,7 @@
   var DEDUCTION_GROUPS = [
     { id: 'landCover', title: 'Land cover', keys: ['landCover'] },
     { id: 'existingAgreements', title: 'Existing agreements', keys: ['existingAgreement'] },
-    { id: 'featuresOnLand', title: 'Features on land', keys: ['sssi', 'hefer'] }
+    { id: 'featuresOnLand', title: 'Features on the land', keys: ['sssi', 'hefer'] }
   ]
 
   function groupAvailabilityDeductions (rows) {
@@ -1425,9 +1425,7 @@
 
     var intro = document.createElement('p')
     intro.className = 'govuk-body-s govuk-!-margin-bottom-3'
-    intro.textContent = action.unit === 'm'
-      ? 'Some length cannot be used for this action because of existing agreements or features on the land.'
-      : 'Some land cannot be used for this action because of existing agreements or features on the land.'
+    intro.textContent = 'Some of this land cannot be used for this action because of its land cover, existing agreements or features on the land.'
     text.appendChild(intro)
 
     var list = document.createElement('table')
@@ -1451,7 +1449,7 @@
     var areaHead = document.createElement('th')
     areaHead.className = 'govuk-table__header govuk-table__header--numeric'
     areaHead.setAttribute('scope', 'col')
-    areaHead.textContent = action.unit === 'm' ? 'Length' : 'Area'
+    areaHead.textContent = 'Land not available'
 
     headRow.appendChild(reasonHead)
     headRow.appendChild(areaHead)
@@ -1473,7 +1471,7 @@
 
         var groupHeader = document.createElement('th')
         groupHeader.className = 'govuk-table__header'
-        groupHeader.setAttribute('scope', 'colgroup')
+        groupHeader.setAttribute('scope', 'rowgroup')
         groupHeader.setAttribute('colspan', '2')
         groupHeader.textContent = group.title
 
@@ -1488,7 +1486,7 @@
         )
 
         var row = document.createElement('tr')
-        row.className = 'govuk-table__row'
+        row.className = 'govuk-table__row app-action-availability-details__reason-row'
 
         var reasonCell = document.createElement('td')
         reasonCell.className = 'govuk-table__cell' +
@@ -1511,7 +1509,7 @@
     var totalKey = document.createElement('th')
     totalKey.className = 'govuk-table__header'
     totalKey.setAttribute('scope', 'row')
-    totalKey.textContent = action.unit === 'm' ? 'Length not available' : 'Land not available'
+    totalKey.textContent = 'Total land not available'
 
     var totalValue = document.createElement('td')
     totalValue.className = 'govuk-table__cell govuk-table__cell--numeric'

@@ -812,6 +812,14 @@
   padding-top: 10px;
 }
 
+.app-action-availability-details__group:not(:first-child) .govuk-table__header {
+  border-top: 1px solid #b1b4b6;
+}
+
+.app-action-availability-details__reason-row .govuk-table__cell {
+  border-bottom: 0;
+}
+
 .app-action-availability-details__reason {
   padding-left: 15px;
 }
@@ -825,6 +833,7 @@
 .app-action-availability-details__total-row .govuk-table__cell {
   font-weight: 700;
   border-bottom: 0;
+  border-top: 1px solid #b1b4b6;
   white-space: nowrap;
 }
 
