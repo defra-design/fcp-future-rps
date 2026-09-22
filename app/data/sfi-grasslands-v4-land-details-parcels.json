@@ -1,0 +1,1058 @@
+{
+  "ash-copse": {
+    "id": "ash-copse",
+    "name": "Ash Copse",
+    "totalArea": "38.7654",
+    "availableArea": "38.7654",
+    "landCover": "Scrub - ungrazeable",
+    "coords": [
+      [
+        51.9544,
+        -0.7493
+      ],
+      [
+        51.9556,
+        -0.7494
+      ],
+      [
+        51.9558,
+        -0.7475
+      ],
+      [
+        51.955,
+        -0.7472
+      ],
+      [
+        51.9544,
+        -0.7475
+      ],
+      [
+        51.9542,
+        -0.7485
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM3",
+      "CSAM3",
+      "AHW3",
+      "CAHL1"
+    ]
+  },
+  "barn-field": {
+    "id": "barn-field",
+    "name": "Barn Field",
+    "totalArea": "45.2187",
+    "availableArea": "45.2187",
+    "landCover": "Other arable crops",
+    "coords": [
+      [
+        51.9477,
+        -0.7552
+      ],
+      [
+        51.9485,
+        -0.7548
+      ],
+      [
+        51.9488,
+        -0.7525
+      ],
+      [
+        51.9481,
+        -0.7522
+      ],
+      [
+        51.9473,
+        -0.7526
+      ],
+      [
+        51.947,
+        -0.7549
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM3",
+      "CAHL2",
+      "CSAM2",
+      "SOH1"
+    ]
+  },
+  "beech-wood": {
+    "id": "beech-wood",
+    "name": "Beech Wood",
+    "totalArea": "39.8765",
+    "availableArea": "39.8765",
+    "landCover": "Notional - natural",
+    "coords": [
+      [
+        51.9558,
+        -0.7475
+      ],
+      [
+        51.9565,
+        -0.7477
+      ],
+      [
+        51.9567,
+        -0.746
+      ],
+      [
+        51.956,
+        -0.7458
+      ],
+      [
+        51.9553,
+        -0.746
+      ],
+      [
+        51.955,
+        -0.7472
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM3",
+      "AHW3",
+      "CAHL1",
+      "CSAM3"
+    ]
+  },
+  "boundary-field": {
+    "id": "boundary-field",
+    "name": "Boundary Field",
+    "totalArea": "48.5432",
+    "availableArea": "48.5432",
+    "landCover": "Non-agricultural area",
+    "coords": [
+      [
+        51.9544,
+        -0.7579
+      ],
+      [
+        51.9544,
+        -0.7549
+      ],
+      [
+        51.9539,
+        -0.7547
+      ],
+      [
+        51.9532,
+        -0.7548
+      ],
+      [
+        51.9532,
+        -0.7578
+      ],
+      [
+        51.9537,
+        -0.758
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CAHL2",
+      "CSAM2",
+      "AHW7",
+      "SOH1",
+      "CIGL1"
+    ]
+  },
+  "brook-field": {
+    "id": "brook-field",
+    "name": "Brook Field",
+    "totalArea": "52.7841",
+    "availableArea": "32.7841",
+    "landCover": "Rivers and Streams type 2",
+    "coords": [
+      [
+        51.9505,
+        -0.7575
+      ],
+      [
+        51.9507,
+        -0.7549
+      ],
+      [
+        51.95,
+        -0.7546
+      ],
+      [
+        51.9493,
+        -0.755
+      ],
+      [
+        51.949,
+        -0.7574
+      ],
+      [
+        51.9497,
+        -0.7577
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM2",
+      "CIGL1",
+      "CSAM3",
+      "CAHL1",
+      "BFS1",
+      "AHW7",
+      "CIPM2",
+      "SOH1",
+      "PRF1"
+    ]
+  },
+  "chalk-slope": {
+    "id": "chalk-slope",
+    "name": "Chalk Slope",
+    "totalArea": "55.3287",
+    "availableArea": "55.3287",
+    "landCover": "Land lying fallow",
+    "coords": [
+      [
+        51.949,
+        -0.7574
+      ],
+      [
+        51.9493,
+        -0.755
+      ],
+      [
+        51.9485,
+        -0.7547
+      ],
+      [
+        51.9478,
+        -0.7551
+      ],
+      [
+        51.9477,
+        -0.7572
+      ],
+      [
+        51.9482,
+        -0.7575
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "SOH1",
+      "PRF1",
+      "CNUM3",
+      "AHW3",
+      "CAHL2",
+      "CSAM2",
+      "BFS1",
+      "CIPM2"
+    ]
+  },
+  "church-field": {
+    "id": "church-field",
+    "name": "Church Field",
+    "totalArea": "36.9876",
+    "availableArea": "36.9876",
+    "landCover": [
+      "Permanent grassland",
+      "Scrub - ungrazeable",
+      "Pond"
+    ],
+    "coords": [
+      [
+        51.9463,
+        -0.7553
+      ],
+      [
+        51.947,
+        -0.7549
+      ],
+      [
+        51.9473,
+        -0.7526
+      ],
+      [
+        51.9466,
+        -0.7523
+      ],
+      [
+        51.9459,
+        -0.7527
+      ],
+      [
+        51.9456,
+        -0.755
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CSAM2",
+      "BFS1",
+      "CIPM2",
+      "SOH1",
+      "CAHL2"
+    ]
+  },
+  "corner-paddock": {
+    "id": "corner-paddock",
+    "name": "Corner Paddock",
+    "totalArea": "18.5673",
+    "availableArea": "18.5673",
+    "landCover": "Temporary grass",
+    "coords": [
+      [
+        51.95,
+        -0.7546
+      ],
+      [
+        51.9507,
+        -0.7549
+      ],
+      [
+        51.9512,
+        -0.7545
+      ],
+      [
+        51.9512,
+        -0.7513
+      ],
+      [
+        51.9505,
+        -0.751
+      ],
+      [
+        51.9498,
+        -0.7514
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CIGL1",
+      "CNUM2",
+      "CAHL1",
+      "CAHL2",
+      "CSAM2",
+      "BFS1",
+      "AHW7",
+      "CSAM3",
+      "PRF1"
+    ]
+  },
+  "eastern-meadow": {
+    "id": "eastern-meadow",
+    "name": "Eastern Meadow",
+    "totalArea": "78.5624",
+    "availableArea": "78.5624",
+    "landCover": "Temporary grass",
+    "coords": [
+      [
+        51.9532,
+        -0.7578
+      ],
+      [
+        51.9532,
+        -0.7548
+      ],
+      [
+        51.9527,
+        -0.7546
+      ],
+      [
+        51.952,
+        -0.7547
+      ],
+      [
+        51.952,
+        -0.7577
+      ],
+      [
+        51.9525,
+        -0.7579
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM3",
+      "CAHL1",
+      "CSAM2",
+      "BFS1",
+      "AHW7",
+      "CIPM2",
+      "CNUM2",
+      "SOH1"
+    ]
+  },
+  "far-meadow": {
+    "id": "far-meadow",
+    "name": "Far Meadow",
+    "totalArea": "56.3200",
+    "availableArea": "56.3200",
+    "landCover": "Temporary grass",
+    "coords": [
+      [
+        51.9433,
+        -0.7566
+      ],
+      [
+        51.9435,
+        -0.7555
+      ],
+      [
+        51.9428,
+        -0.7552
+      ],
+      [
+        51.9421,
+        -0.7556
+      ],
+      [
+        51.9419,
+        -0.7564
+      ],
+      [
+        51.9426,
+        -0.7567
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CAHL1",
+      "BFS1",
+      "AHW7",
+      "CIPM2",
+      "CSAM3",
+      "SOH1"
+    ]
+  },
+  "gate-field": {
+    "id": "gate-field",
+    "name": "Gate Field",
+    "totalArea": "44.8800",
+    "availableArea": "39.8100",
+    "landCover": [
+      "Permanent grassland",
+      "Scrub"
+    ],
+    "coords": [
+      [
+        51.9556,
+        -0.755
+      ],
+      [
+        51.9549,
+        -0.7548
+      ],
+      [
+        51.9544,
+        -0.7549
+      ],
+      [
+        51.9544,
+        -0.7516
+      ],
+      [
+        51.9551,
+        -0.7514
+      ],
+      [
+        51.9556,
+        -0.7517
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM2",
+      "CSAM2",
+      "CAHL1",
+      "AHW7",
+      "CIGL1"
+    ]
+  },
+  "home-paddock": {
+    "id": "home-paddock",
+    "name": "Home Paddock",
+    "totalArea": "33.4521",
+    "availableArea": "33.4521",
+    "landCover": "Notional - mixed",
+    "coords": [
+      [
+        51.9498,
+        -0.75
+      ],
+      [
+        51.9505,
+        -0.7497
+      ],
+      [
+        51.9512,
+        -0.75
+      ],
+      [
+        51.9512,
+        -0.7485
+      ],
+      [
+        51.9505,
+        -0.7482
+      ],
+      [
+        51.9498,
+        -0.7485
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CIPM2",
+      "BFS1",
+      "CAHL2",
+      "SOH1"
+    ]
+  },
+  "lane-meadow": {
+    "id": "lane-meadow",
+    "name": "Lane Meadow",
+    "totalArea": "62.1098",
+    "availableArea": "62.1098",
+    "landCover": "Temporary grass",
+    "coords": [
+      [
+        51.9532,
+        -0.7578
+      ],
+      [
+        51.9532,
+        -0.7548
+      ],
+      [
+        51.9527,
+        -0.7546
+      ],
+      [
+        51.952,
+        -0.7547
+      ],
+      [
+        51.952,
+        -0.7577
+      ],
+      [
+        51.9525,
+        -0.7579
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM2",
+      "BFS1",
+      "CIPM2",
+      "CAHL1",
+      "AHW3",
+      "PRF1"
+    ]
+  },
+  "lower-pasture": {
+    "id": "lower-pasture",
+    "name": "Lower Pasture",
+    "totalArea": "71.8932",
+    "availableArea": "71.8932",
+    "landCover": "Permanent grassland",
+    "coords": [
+      [
+        51.9544,
+        -0.7549
+      ],
+      [
+        51.9539,
+        -0.7547
+      ],
+      [
+        51.9532,
+        -0.7548
+      ],
+      [
+        51.9527,
+        -0.7546
+      ],
+      [
+        51.9527,
+        -0.7513
+      ],
+      [
+        51.9544,
+        -0.7516
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "BFS1",
+      "CNUM2",
+      "CIPM2",
+      "CSAM3",
+      "CAHL1",
+      "AHW7"
+    ]
+  },
+  "mill-meadow": {
+    "id": "mill-meadow",
+    "name": "Mill Meadow",
+    "totalArea": "58.4521",
+    "availableArea": "58.4521",
+    "landCover": "Temporary grass",
+    "coords": [
+      [
+        51.9544,
+        -0.7516
+      ],
+      [
+        51.9527,
+        -0.7513
+      ],
+      [
+        51.9519,
+        -0.751
+      ],
+      [
+        51.9515,
+        -0.7495
+      ],
+      [
+        51.9522,
+        -0.749
+      ],
+      [
+        51.9544,
+        -0.7493
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CAHL2",
+      "CSAM2",
+      "BFS1",
+      "CIPM2",
+      "SOH1",
+      "CIGL1"
+    ]
+  },
+  "new-ground": {
+    "id": "new-ground",
+    "name": "New Ground",
+    "totalArea": "49.7654",
+    "availableArea": "49.7654",
+    "landCover": "Land lying fallow",
+    "coords": [
+      [
+        51.9556,
+        -0.7517
+      ],
+      [
+        51.9551,
+        -0.7514
+      ],
+      [
+        51.9544,
+        -0.7516
+      ],
+      [
+        51.9544,
+        -0.7493
+      ],
+      [
+        51.9551,
+        -0.7491
+      ],
+      [
+        51.9556,
+        -0.7494
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM2",
+      "BFS1",
+      "CSAM2",
+      "CIPM2",
+      "CAHL2"
+    ]
+  },
+  "north-field-bucks": {
+    "id": "north-field-bucks",
+    "name": "North Field",
+    "totalArea": "95.4231",
+    "availableArea": "95.4231",
+    "landCover": "Other arable crops",
+    "coords": [
+      [
+        51.952,
+        -0.7577
+      ],
+      [
+        51.952,
+        -0.7547
+      ],
+      [
+        51.9512,
+        -0.7545
+      ],
+      [
+        51.9507,
+        -0.7549
+      ],
+      [
+        51.9505,
+        -0.7575
+      ],
+      [
+        51.951,
+        -0.7578
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM3",
+      "CAHL1",
+      "CAHL2",
+      "CSAM2",
+      "BFS1",
+      "AHW7",
+      "CIPM2",
+      "CNUM2"
+    ]
+  },
+  "oak-grove": {
+    "id": "oak-grove",
+    "name": "Oak Grove",
+    "totalArea": "32.6543",
+    "availableArea": "32.6543",
+    "landCover": "Perennial crops",
+    "coords": [
+      [
+        51.9461,
+        -0.757
+      ],
+      [
+        51.9463,
+        -0.7553
+      ],
+      [
+        51.9456,
+        -0.755
+      ],
+      [
+        51.9449,
+        -0.7554
+      ],
+      [
+        51.9447,
+        -0.7568
+      ],
+      [
+        51.9454,
+        -0.7571
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "AHW3",
+      "CIGL1",
+      "CAHL1",
+      "PRF1",
+      "BFS1"
+    ]
+  },
+  "orchard-plot": {
+    "id": "orchard-plot",
+    "name": "Orchard Plot",
+    "totalArea": "35.4321",
+    "availableArea": "35.4321",
+    "landCover": "Perennial crops",
+    "coords": [
+      [
+        51.9449,
+        -0.7554
+      ],
+      [
+        51.9456,
+        -0.755
+      ],
+      [
+        51.9459,
+        -0.7527
+      ],
+      [
+        51.9452,
+        -0.7524
+      ],
+      [
+        51.9445,
+        -0.7528
+      ],
+      [
+        51.9442,
+        -0.7551
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CIPM2",
+      "CAHL1",
+      "SOH1",
+      "PRF1"
+    ]
+  },
+  "pond-close": {
+    "id": "pond-close",
+    "name": "Pond Close",
+    "totalArea": "29.3214",
+    "availableArea": "29.3214",
+    "landCover": "Pond",
+    "coords": [
+      [
+        51.9447,
+        -0.7568
+      ],
+      [
+        51.9449,
+        -0.7554
+      ],
+      [
+        51.9442,
+        -0.7551
+      ],
+      [
+        51.9435,
+        -0.7555
+      ],
+      [
+        51.9433,
+        -0.7566
+      ],
+      [
+        51.944,
+        -0.7569
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "AHW3",
+      "CAHL1",
+      "PRF1",
+      "CNUM2"
+    ]
+  },
+  "river-meadow": {
+    "id": "river-meadow",
+    "name": "River Meadow",
+    "totalArea": "67.3421",
+    "availableArea": "67.3421",
+    "landCover": "Rivers and Streams type 3",
+    "coords": [
+      [
+        51.9477,
+        -0.7572
+      ],
+      [
+        51.9477,
+        -0.7552
+      ],
+      [
+        51.947,
+        -0.7549
+      ],
+      [
+        51.9463,
+        -0.7553
+      ],
+      [
+        51.9461,
+        -0.757
+      ],
+      [
+        51.9468,
+        -0.7573
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CAHL1",
+      "BFS1",
+      "CIPM2",
+      "CNUM2",
+      "AHW7"
+    ]
+  },
+  "spring-pasture": {
+    "id": "spring-pasture",
+    "name": "Spring Pasture",
+    "totalArea": "64.3215",
+    "availableArea": "44.3215",
+    "landCover": "Leguminous and nitrogen fixing crops",
+    "coords": [
+      [
+        51.9544,
+        -0.7579
+      ],
+      [
+        51.9544,
+        -0.7549
+      ],
+      [
+        51.9539,
+        -0.7547
+      ],
+      [
+        51.9532,
+        -0.7548
+      ],
+      [
+        51.9532,
+        -0.7578
+      ],
+      [
+        51.9537,
+        -0.758
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CAHL2",
+      "CSAM2",
+      "BFS1",
+      "AHW7",
+      "SOH1",
+      "CIGL1",
+      "AHW3",
+      "CNUM3"
+    ]
+  },
+  "upper-slope": {
+    "id": "upper-slope",
+    "name": "Upper Slope",
+    "totalArea": "54.6789",
+    "availableArea": "54.6789",
+    "landCover": "Land lying fallow",
+    "coords": [
+      [
+        51.9556,
+        -0.758
+      ],
+      [
+        51.9556,
+        -0.755
+      ],
+      [
+        51.9549,
+        -0.7548
+      ],
+      [
+        51.9544,
+        -0.7549
+      ],
+      [
+        51.9544,
+        -0.7579
+      ],
+      [
+        51.9551,
+        -0.7581
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM3",
+      "BFS1",
+      "CIPM2",
+      "CAHL1",
+      "CSAM3"
+    ]
+  },
+  "valley-bottom": {
+    "id": "valley-bottom",
+    "name": "Valley Bottom",
+    "totalArea": "88.9423",
+    "availableArea": "60.9423",
+    "landCover": "Permanent grassland",
+    "coords": [
+      [
+        51.952,
+        -0.7547
+      ],
+      [
+        51.9527,
+        -0.7546
+      ],
+      [
+        51.9527,
+        -0.7513
+      ],
+      [
+        51.9519,
+        -0.751
+      ],
+      [
+        51.9512,
+        -0.7513
+      ],
+      [
+        51.9512,
+        -0.7545
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "BFS1",
+      "CAHL1",
+      "CAHL2",
+      "CIPM2",
+      "CNUM2",
+      "CIGL1",
+      "AHW3",
+      "CSAM3",
+      "PRF1"
+    ]
+  },
+  "woodland-edge": {
+    "id": "woodland-edge",
+    "name": "Woodland Edge",
+    "totalArea": "28.4516",
+    "availableArea": "28.4516",
+    "landCover": "Notional - scrub",
+    "coords": [
+      [
+        51.9498,
+        -0.7514
+      ],
+      [
+        51.9505,
+        -0.751
+      ],
+      [
+        51.9512,
+        -0.7513
+      ],
+      [
+        51.9512,
+        -0.75
+      ],
+      [
+        51.9505,
+        -0.7497
+      ],
+      [
+        51.9498,
+        -0.75
+      ]
+    ],
+    "location": "buckinghamshire",
+    "actions": [
+      "CNUM3",
+      "CSAM3",
+      "PRF1",
+      "AHW3",
+      "CIPM2",
+      "BFS1",
+      "CAHL1"
+    ]
+  }
+}

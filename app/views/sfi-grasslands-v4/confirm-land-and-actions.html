@@ -1,0 +1,180 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4/task-list" %}
+{% extends "layouts/sfi-grasslands-v4-header.html" %}
+
+{% block pageTitle %}
+  {% if basketSummary and basketSummary.isEmpty %}Your land and actions{% else %}Review land parcels and actions{% endif %}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4/_includes/account-bar.html" %}
+  {% set parcels = basketParcels if basketParcels else [] %}
+  {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
+  {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
+
+  {% if fromCheckYourAnswers %}
+    {{ govukBackLink({
+      text: "Back to check your answers",
+      href: "/sfi-grasslands-v4/check-your-answers"
+    }) }}
+  {% else %}
+    {{ govukBackLink({
+      text: "Back to task list",
+      href: "/sfi-grasslands-v4/task-list"
+    }) }}
+  {% endif %}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v4-confirm-land-and-actions.css">
+{% endblock %}
+
+{% block content %}
+  {% set parcels = basketParcels if basketParcels else [] %}
+  {% set summary = basketSummary if basketSummary else { isEmpty: true, totalYearlyPaymentFormatted: '£0.00' } %}
+  {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or (false) %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% if flashMessage %}
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="confirm-land-success-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="confirm-land-success-title">
+              Success
+            </h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">{{ flashMessage }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% set journeySection = "Select land and actions" %}
+      {% include "sfi-grasslands-v4/_includes/journey-caption.html" %}
+
+      {% if summary.isEmpty %}
+        <h1 class="govuk-heading-l">Your land and actions</h1>
+        {% if flashMessage %}
+          <p class="govuk-body">
+            You removed the last land parcel. You must add at least one land parcel to continue your application.
+          </p>
+        {% else %}
+          <p class="govuk-body">You have not added any land parcels or actions yet.</p>
+        {% endif %}
+        <p class="govuk-body">
+          <a class="govuk-link" href="/sfi-grasslands-v4/select-land">Select a land parcel and add actions</a>
+        </p>
+      {% else %}
+        <h1 class="govuk-heading-l">Review land parcels and actions</h1>
+        {% for parcel in parcels %}
+          {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
+          <div class="govuk-summary-card app-confirm-parcel-card" id="parcel-{{ parcel.parcelId }}">
+            <div class="govuk-summary-card__title-wrapper">
+              <h2 class="govuk-summary-card__title">
+                Land parcel <span class="app-confirm-parcel-card__title-ref">{{ parcelRef }}</span>
+              </h2>
+              <ul class="govuk-summary-card__actions">
+                <li class="govuk-summary-card__action">
+                  <a class="govuk-link" href="/sfi-grasslands-v4/remove-parcel-actions/{{ parcel.parcelId }}">
+                    Remove parcel<span class="govuk-visually-hidden"> {{ parcelRef }}</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+              <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-visually-hidden">
+                  Actions on land parcel {{ parcelRef }}
+                </caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Action</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Quantity</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Yearly payment</th>
+                    <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Change</span></th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  {% for action in parcel.actions %}
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">
+                        {{ action.name }} ({{ action.code }})
+                        {% if action.consentHint %}
+                          <span class="app-confirm-parcel-card__hint">{{ action.consentHint }}</span>
+                        {% endif %}
+                      </td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.quantityDisplay }}</td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.yearlyPaymentFormatted }}</td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <a class="govuk-link" href="/sfi-grasslands-v4/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
+                          Change<span class="govuk-visually-hidden"> {{ action.name }} ({{ action.code }})</span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  <tr class="govuk-table__row app-confirm-parcel-card__subtotal">
+                    <th scope="row" class="govuk-table__cell">Subtotal</th>
+                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.yearlyPaymentFormatted }}</td>
+                    <td class="govuk-table__cell"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p class="govuk-body app-confirm-parcel-card__add-action">
+                <a class="govuk-link" href="/sfi-grasslands-v4/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if fromCheckYourAnswers %}?from=check-your-answers{% endif %}">
+                  Add more actions to this parcel<span class="govuk-visually-hidden"> {{ parcelRef }}</span>
+                </a>
+              </p>
+            </div>
+          </div>
+        {% endfor %}
+        {% include "sfi-grasslands-v4/_includes/payment-summary-card.html" %}
+
+        <form action="/sfi-grasslands-v4/confirm-land-and-actions" method="post" id="confirm-land-actions-form">
+          {% if fromCheckYourAnswers %}
+            <input type="hidden" name="from" value="check-your-answers">
+          {% endif %}
+          <input type="hidden" name="parcelView" id="parcel-view-preference" value="map">
+          <div class="govuk-button-group">
+            {% if fromCheckYourAnswers %}
+              <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="returnToCya">
+                Continue
+              </button>
+            {% else %}
+              <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="save">
+                Continue
+              </button>
+            {% endif %}
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" name="confirmAction" value="addAnother">
+              Add another land parcel
+            </button>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script>
+    (function() {
+      var SELECT_LAND_PATH = '/sfi-grasslands-v4/select-land';
+      var view = 'map';
+      try {
+        view = sessionStorage.getItem('sfiGrasslandsV4ParcelView') || 'map';
+      } catch (e) {}
+
+      var preference = document.getElementById('parcel-view-preference');
+      if (preference) {
+        preference.value = view === 'list' ? 'list' : 'map';
+      }
+
+      var href = view === 'list' ? (SELECT_LAND_PATH + '?view=list') : SELECT_LAND_PATH;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('a[href="' + SELECT_LAND_PATH + '"], a[href^="' + SELECT_LAND_PATH + '?"]'),
+        function(link) {
+          link.setAttribute('href', href);
+        }
+      );
+    })();
+  </script>
+{% endblock %}

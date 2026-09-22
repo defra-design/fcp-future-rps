@@ -1,0 +1,92 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4/task-list" %}
+{% extends "layouts/sfi-grasslands-v4-header.html" %}
+
+{% block pageTitle %}
+  Check your digital maps
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4/_includes/account-bar.html" %}
+
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v4-land-details.css">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
+  <script>
+    document.documentElement.classList.add('app-land-details--wide');
+    document.body.classList.add('app-land-details--wide');
+  </script>
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v4/check-land-details"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% set journeySection = "Check before you start" %}
+      {% include "sfi-grasslands-v4/_includes/journey-caption.html" %}
+
+      <h1 class="govuk-heading-l">Check your digital maps</h1>
+      <p class="govuk-body" id="land-details-intro">
+        {% if isListView %}
+          Select a land parcel to see its details.
+        {% else %}
+          Select a land parcel on the map to see its details.
+        {% endif %}
+      </p>
+
+      <div class="app-land-details-layout{% if isListView %} app-land-details-layout--list{% endif %}">
+        {% if isListView %}
+          <aside class="app-land-details-summary" aria-label="Parcel map">
+            <div
+              id="land-details-mini-map"
+              class="app-land-details-mini-map"
+              role="img"
+              aria-label="Map of land parcels for {{ farmSummary.farmName }}"
+            ></div>
+          </aside>
+          <div class="app-land-details-list-panel">
+            {% include "sfi-grasslands-v4/_includes/land-details-farm-summary.html" %}
+            {% include "sfi-grasslands-v4/_includes/land-details-parcel-accordion.html" %}
+          </div>
+        {% else %}
+          {% include "sfi-grasslands-v4/_includes/land-details-farm-summary.html" %}
+          <div>
+            <div
+              id="land-details-map"
+              class="app-land-details-map"
+              aria-label="Map of land parcels for {{ farmSummary.farmName }}"
+            ></div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <h2 class="govuk-heading-m govuk-!-margin-top-8">If your land information is not up to date</h2>
+          <p class="govuk-body">
+            If you have already asked us to update information about your land, the changes might not show here yet. If the information is incorrect, you may need to update your digital maps before you apply.
+            <a class="govuk-link" href="https://www.gov.uk/guidance/rural-payments-service-how-to-register-land-and-update-digital-maps" target="_blank" rel="noopener noreferrer">Find out how to update your digital maps (opens in new tab)</a>.
+          </p>
+
+          <h2 class="govuk-heading-m">Land data</h2>
+          <p class="govuk-body">
+            Use
+            <a class="govuk-link" href="https://environment.data.gov.uk/rpa" target="_blank" rel="noopener noreferrer">Defra Data Services (opens in new tab)</a>
+            to download or link to your Rural Payments service land data, including land parcel boundaries, land cover and hedges. You can use this data in your farm or mapping software.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="land-details-map-data">{{ mapPayload | dump | safe }}</script>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-land-details-map.js?v=43"></script>
+{% endblock %}

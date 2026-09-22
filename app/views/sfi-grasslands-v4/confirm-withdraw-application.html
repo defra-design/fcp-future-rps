@@ -1,0 +1,84 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4/applications-and-agreements" %}
+{% extends "layouts/sfi-grasslands-v4-header.html" %}
+
+{% block pageTitle %}
+  {% if withdrawError %}Error: {% endif %}Withdraw application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v4/view-woodlands-application"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if withdrawError %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [
+            {
+              text: withdrawErrorMessage,
+              href: "#withdraw-application"
+            }
+          ]
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">Withdraw application</h1>
+
+      <p class="govuk-body">
+        You are about to withdraw application {{ woodlandsApplication.applicationNumber }} for {{ woodlandsApplication.scheme }}.
+      </p>
+
+      <p class="govuk-body">
+        If you withdraw this application, it will no longer be considered.
+      </p>
+
+      <p class="govuk-body">
+        You will not be able to continue or resubmit this application.
+      </p>
+
+      <form class="form" action="/sfi-grasslands-v4/withdraw-application" method="post" novalidate>
+        {{ govukRadios({
+          name: "withdrawApplication",
+          idPrefix: "withdraw-application",
+          fieldset: {
+            legend: {
+              text: "Are you sure you want to withdraw this application?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          errorMessage: withdrawError and {
+            text: withdrawErrorMessage
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes, withdraw the application",
+              checked: data.withdrawApplication == "yes"
+            },
+            {
+              value: "no",
+              text: "No, keep the application",
+              checked: data.withdrawApplication == "no"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

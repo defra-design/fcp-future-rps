@@ -1,0 +1,37 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4/task-list" %}
+{% extends "layouts/sfi-grasslands-v4-header.html" %}
+
+{% block pageTitle %}
+  You cannot continue with this application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back to before you make an application",
+    href: "/sfi-grasslands-v4/before-you-make-an-application"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" role="main">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set journeySection = "Check before you start" %}
+      {% include "sfi-grasslands-v4/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">You cannot continue with this application</h1>
+
+      <p class="govuk-body">
+        You must be able to confirm these requirements to apply for a grasslands agreement.
+      </p>
+
+      <p class="govuk-body">
+        If you want to change your answer, select ‘Back to before you make an application’.
+      </p>
+
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{# Prototype applicant details shown on view-application. No Change links. #}
+{% if applicationReference %}
+  <p class="govuk-body">
+    Application number: <strong>{{ applicationReference }}</strong>
+  </p>
+{% endif %}
+
+<h2 class="govuk-heading-m">Applicant details</h2>
+
+<h3 class="govuk-heading-s">Your details</h3>
+<dl class="govuk-summary-list govuk-!-margin-bottom-7">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Title</dt>
+    <dd class="govuk-summary-list__value">Mr</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">First name</dt>
+    <dd class="govuk-summary-list__value">Alfred</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Last name</dt>
+    <dd class="govuk-summary-list__value">Waldron</dd>
+  </div>
+</dl>
+
+<h3 class="govuk-heading-s">Business details</h3>
+<dl class="govuk-summary-list govuk-!-margin-bottom-7">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Business name</dt>
+    <dd class="govuk-summary-list__value">Agile Farm Ltd</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Address 1</dt>
+    <dd class="govuk-summary-list__value">Agile Farm Ltd</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Address 2</dt>
+    <dd class="govuk-summary-list__value">Canal Walk</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">City</dt>
+    <dd class="govuk-summary-list__value">Newbury</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Postcode</dt>
+    <dd class="govuk-summary-list__value">RG14 1AA</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">SBI number</dt>
+    <dd class="govuk-summary-list__value">123456789</dd>
+  </div>
+</dl>
+
+<h3 class="govuk-heading-s">Contact details</h3>
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Email address</dt>
+    <dd class="govuk-summary-list__value">alfred.waldron@agilefarm.co.uk</dd>
+  </div>
+</dl>
