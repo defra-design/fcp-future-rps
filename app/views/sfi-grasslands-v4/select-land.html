@@ -100,8 +100,7 @@
 
     .app-parcel-list__requirements-intro,
     .app-parcel-list__requirements-list,
-    .app-parcel-list__requirements-list > li,
-    .app-parcel-list__no-actions {
+    .app-parcel-list__requirements-list > li {
       font-family: "GDS Transport", arial, sans-serif;
       font-size: 19px;
       font-weight: 400;
@@ -112,11 +111,6 @@
     /* Match map key colours */
     .app-parcel-status-tag--added {
       background-color: #CFE4DC;
-      color: #0b0c0c;
-    }
-
-    .app-parcel-status-tag--unavailable {
-      background-color: #E5E6E7;
       color: #0b0c0c;
     }
 
@@ -355,11 +349,6 @@
     .app-map-key__swatch--added {
       background-color: #CFE4DC;
       border-color: #083D29;
-    }
-
-    .app-map-key__swatch--unavailable {
-      background-color: #E5E6E7;
-      border-color: #505A5F;
     }
 
     .app-application-summary__selected {
@@ -820,10 +809,6 @@
                 <span class="app-map-key__swatch app-map-key__swatch--added" aria-hidden="true"></span>
                 <span class="govuk-body govuk-!-margin-bottom-0">Added to application</span>
               </li>
-              <li class="app-map-key__item">
-                <span class="app-map-key__swatch app-map-key__swatch--unavailable" aria-hidden="true"></span>
-                <span class="govuk-body govuk-!-margin-bottom-0">No actions available</span>
-              </li>
             </ul>
           </div>
         </div>
@@ -918,9 +903,6 @@
           </dd>
         </div>
       </dl>
-      <div id="summary-parcel-no-actions" class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0" hidden>
-        <p class="govuk-body govuk-!-margin-bottom-0">There are no actions available for this land parcel. Select another land parcel to continue.</p>
-      </div>
     </div>
 
     <form action="/sfi-grasslands-v4/select-land" method="post" id="continue-form" class="govuk-!-margin-top-6">
@@ -3530,7 +3512,7 @@
     var ACTION_FEATURE_REQUIREMENTS = {
       AHW2: ['hasArableLand'],
       AHW4: ['hasArableLand'],
-      // BND1 / BND2 / CHRW2 appear on all land covers — no feature gate.
+      // Boundary actions (BND1, BND2, CHRW2, WBD2) appear on all land covers — no feature gate.
       CIGL1: ['hasGrasslandHabitat'],
       CIGL2: ['hasGrasslandHabitat'],
       CLIG3: ['hasGrasslandHabitat'],
@@ -3539,8 +3521,7 @@
       SCR2: ['hasScrubMosaic'],
       SPM3: ['hasGrazedHabitat'],
       SPM5: ['hasExtensiveHabitat'],
-      WBD1: ['hasPond'],
-      WBD2: ['hasDitch']
+      WBD1: ['hasPond']
     }; 
 
     var HISTORIC_ASSET_PARCELS = {
@@ -3668,11 +3649,12 @@
       return lookup;
     }, {});
 
-    // Prototype rule: Field boundaries actions appear on every land cover type.
+    // Prototype rule: all Boundary actions appear on every land cover / parcel.
     var BOUNDARY_ACTIONS_ALL_LAND_COVERS = {
       BND1: true,
       BND2: true,
-      CHRW2: true
+      CHRW2: true,
+      WBD2: true
     };
 
     function getEligibleActionsForLandCover(landCover) {
@@ -3910,14 +3892,6 @@
       }
     }
 
-    function parcelHasAvailableActions(parcelId) {
-      var parcel = parcelData[parcelId];
-      if (!parcel) {
-        return false;
-      }
-      return Array.isArray(parcel.actions) && parcel.actions.length > 0;
-    }
-
     // Status colours matched to map legend (selected stays GOV.UK yellow)
     var PARCEL_STATUS_COLOURS = {
       availableFill: '#F1DEB8',
@@ -3925,8 +3899,6 @@
       selectedFill: '#FFDD00',
       addedFill: '#CFE4DC',
       addedBorder: '#083D29',
-      unavailableFill: '#E5E6E7',
-      unavailableBorder: '#505A5F',
       darkBorder: '#0b0c0c'
     };
 
@@ -3953,24 +3925,9 @@
       };
     }
 
-    // No compatible actions — light grey (still selectable)
-    function unavailableStyle() {
-      return {
-        appState: 'rest',
-        fillColor: PARCEL_STATUS_COLOURS.unavailableFill,
-        weight: 2,
-        opacity: 1,
-        color: PARCEL_STATUS_COLOURS.unavailableBorder,
-        fillOpacity: 0.9
-      };
-    }
-
     function restingStyle(parcelId) {
       if (isParcelAlreadyAdded(parcelId)) {
         return addedStyle();
-      }
-      if (!parcelHasAvailableActions(parcelId)) {
-        return unavailableStyle();
       }
       return defaultStyle();
     }
@@ -4023,7 +3980,6 @@
           feature.properties = {};
         }
         feature.properties.added = isParcelAlreadyAdded(id);
-        feature.properties.unavailable = !parcelHasAvailableActions(id);
       });
 
       if (rawMap && rawMap.getSource(PARCEL_SOURCE_ID)) {
@@ -4041,8 +3997,7 @@
         {
           selected: !!selected,
           hover: !!hover,
-          added: isParcelAlreadyAdded(parcelId),
-          unavailable: !parcelHasAvailableActions(parcelId)
+          added: isParcelAlreadyAdded(parcelId)
         }
       );
     }
@@ -4061,7 +4016,7 @@
         });
       }
 
-      // Fill by status: selected > added > unavailable > available (hover keeps status fill)
+      // Fill by status: selected > added > available (hover keeps status fill)
       var fillColorExpr = [
         'case',
         ['boolean', ['feature-state', 'selected'], false], PARCEL_STATUS_COLOURS.selectedFill,
@@ -4069,10 +4024,6 @@
           ['boolean', ['feature-state', 'added'], false],
           ['==', ['get', 'added'], true]
         ], PARCEL_STATUS_COLOURS.addedFill,
-        ['any',
-          ['boolean', ['feature-state', 'unavailable'], false],
-          ['==', ['get', 'unavailable'], true]
-        ], PARCEL_STATUS_COLOURS.unavailableFill,
         PARCEL_STATUS_COLOURS.availableFill
       ];
       var fillOpacityExpr = [
@@ -4089,10 +4040,6 @@
           ['boolean', ['feature-state', 'added'], false],
           ['==', ['get', 'added'], true]
         ], PARCEL_STATUS_COLOURS.addedBorder,
-        ['any',
-          ['boolean', ['feature-state', 'unavailable'], false],
-          ['==', ['get', 'unavailable'], true]
-        ], PARCEL_STATUS_COLOURS.unavailableBorder,
         PARCEL_STATUS_COLOURS.availableBorder
       ];
       var lineWidthExpr = [
@@ -4309,8 +4256,7 @@
           name: data.name,
           displayName: formatParcelReference(data),
           color: data.color,
-          added: isParcelAlreadyAdded(parcelId),
-          unavailable: !parcelHasAvailableActions(parcelId)
+          added: isParcelAlreadyAdded(parcelId)
         }
       });
 
@@ -4655,17 +4601,6 @@
       });
     }
 
-    function announceUnavailableParcel(parcelId) {
-      var statusEl = document.getElementById('parcel-selection-status');
-      if (!statusEl || !parcelData[parcelId]) {
-        return;
-      }
-      var reference = formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, parcelData[parcelId])) || parcelId;
-      statusEl.textContent = '';
-      window.setTimeout(function() {
-        statusEl.textContent = reference + '. No actions available.';
-      }, 50);
-    }
 
     function syncParcelListSelection(parcelId) {
       var radios = document.querySelectorAll('input[name="selected-parcel-list"]');
@@ -4694,7 +4629,7 @@
     }
 
     function buildParcelListDetails(parcelId, parcel) {
-      // Revealed on select only — requirements (+ zero-actions).
+      // Revealed on select only — requirements.
       // Total area / available actions / land covers stay on the radio label.
       var details = document.createElement('div');
       details.className = 'app-parcel-list__details';
@@ -4721,17 +4656,6 @@
           list.appendChild(li);
         });
         details.appendChild(list);
-      }
-
-      if (getParcelAvailableActionsCount(parcelId, parcel) === 0) {
-        var noActions = document.createElement('div');
-        noActions.className = 'govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2 app-parcel-list__no-actions';
-        var noActionsText = document.createElement('p');
-        noActionsText.className = 'govuk-body govuk-!-margin-bottom-0';
-        noActionsText.textContent =
-          'There are no actions available for this land parcel. Select another land parcel to continue.';
-        noActions.appendChild(noActionsText);
-        details.appendChild(noActions);
       }
 
       // Empty reveal when there is nothing extra to show
@@ -5053,17 +4977,6 @@
       return true;
     }
 
-    function updateSelectedParcelNoActionsInset(parcelId, parcel) {
-      var inset = document.getElementById('summary-parcel-no-actions');
-      if (!inset) {
-        return;
-      }
-      if (!parcelId || !parcel) {
-        inset.hidden = true;
-        return;
-      }
-      inset.hidden = getParcelAvailableActionsCount(parcelId, parcel) !== 0;
-    }
 
     function updateSelectedParcelSummary(parcelId, parcel, osRefDisplay) {
       var summary = document.getElementById('selected-parcel-summary');
@@ -5109,8 +5022,6 @@
           requirementsRow.classList.add('govuk-!-display-none');
         }
       }
-
-      updateSelectedParcelNoActionsInset(parcelId, parcel);
 
       document.getElementById('selectedParcelId').value = parcelId || '';
       document.getElementById('selectedParcelName').value = reference || '';
@@ -5179,8 +5090,6 @@
       if (requirementsEl) {
         requirementsEl.textContent = '';
       }
-
-      updateSelectedParcelNoActionsInset(null, null);
 
       updateContinueForSelectedParcel(null);
       hideParcelSelectionError();
@@ -5457,10 +5366,9 @@
       var index = getKeyboardParcelOrder().indexOf(parcelId);
       var total = getKeyboardParcelOrder().length;
       var position = index >= 0 ? (' Parcel ' + (index + 1) + ' of ' + total + '.') : '';
-      var unavailableNote = parcelHasAvailableActions(parcelId) ? '' : ' No actions available.';
       statusEl.textContent = '';
       window.setTimeout(function() {
-        statusEl.textContent = (isSelected ? 'Selected land parcel: ' : 'Land parcel: ') + reference + '.' + position + unavailableNote;
+        statusEl.textContent = (isSelected ? 'Selected land parcel: ' : 'Land parcel: ') + reference + '.' + position;
       }, 50);
     }
 
@@ -6825,13 +6733,6 @@
           if (!parcelId) {
             e.preventDefault();
             showParcelSelectionError();
-            return false;
-          }
-          if (!parcelHasAvailableActions(parcelId)) {
-            e.preventDefault();
-            showParcelSelectionError(
-              'There are no actions available for this land parcel. Select another land parcel to continue.'
-            );
             return false;
           }
           hideParcelSelectionError();

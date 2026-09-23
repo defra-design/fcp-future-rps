@@ -523,8 +523,8 @@
   }
 
   // Fixed AAC starting maxima for the one-sided / both-sided boundary demo.
-  // Physical boundary is 2,000 m on both parcels — users only see these maxima.
-  // church-field = SO3757 3190 (one-sided); far-meadow = SO3757 3193 (both-sided).
+  // church-field = SO3757 3190 (one-sided): all actions 2,000 m.
+  // far-meadow = SO3757 3193 (both sides): BND1/WBD2 2,000; BND2/CHRW2 4,000.
   var BOUNDARY_LENGTH_STARTING_MAXIMA = {
     'church-field': {
       BND1: 2000,
@@ -908,10 +908,20 @@
   }
 
   // Directed reductions for boundary length (recalculated from AAC starting max).
-  // BND1 → reduces BND2
-  // BND2 → reduces BND1 and CHRW2
-  // CHRW2 → reduces BND2
-  // WBD2 → reduces nothing; nothing reduces WBD2
+  // Do not treat “both-sided parcel” as doubling every deduction.
+  //
+  // SO3757 3190 (church-field) — all start 2,000 m; every deduction is 1:1.
+  // SO3757 3193 (far-meadow) — BND1/WBD2 start 2,000; BND2/CHRW2 start 4,000.
+  //
+  // Directed graph (both parcels):
+  //   BND1  → reduces BND2
+  //   BND2  → reduces BND1 and CHRW2
+  //   CHRW2 → reduces BND2
+  //   WBD2  → reduces nothing; nothing reduces WBD2
+  //
+  // The only ×2 deduction is BND1 → BND2 on 3193:
+  //   BND2 available = 4000 − (BND1 × 2) − BND2 − CHRW2
+  // BND2 → BND1 is always ×1. BND2 ↔ CHRW2 is always ×1.
   var LINEAR_LENGTH_REDUCED_BY = {
     BND1: ['BND2'],
     BND2: ['BND1', 'CHRW2'],
@@ -919,11 +929,13 @@
     WBD2: []
   }
 
-  function isBoundaryLengthAction (code) {
-    return Object.prototype.hasOwnProperty.call(
-      LINEAR_LENGTH_REDUCED_BY,
-      String(code || '').toUpperCase()
-    )
+  // SO3757 3193 — both sides available (far-meadow only).
+  var BOTH_SIDED_BOUNDARY_PARCELS = {
+    'far-meadow': true
+  }
+
+  function isBothSidedBoundaryParcel (parcelId) {
+    return Boolean(BOTH_SIDED_BOUNDARY_PARCELS[parcelId || state.parcelId])
   }
 
   function getLinearLengthReducers (code) {
@@ -940,7 +952,23 @@
     return reducers.indexOf(String(selectedCode || '').toUpperCase()) !== -1
   }
 
+  // Only BND1 quantity × 2 when reducing BND2 on SO3757 3193. All other deductions stay 1:1.
+  function getLinearLengthDeductionMultiplier (targetCode, reducerCode) {
+    var target = String(targetCode || '').toUpperCase()
+    var reducer = String(reducerCode || '').toUpperCase()
+    if (target === 'BND2' && reducer === 'BND1' && isBothSidedBoundaryParcel()) {
+      return 2
+    }
+    return 1
+  }
+
   function getUsedByOtherUnitActions (code, unit) {
+    var normalizedCode = String(code || '').toUpperCase()
+    // WBD2 stacks independently — never reduced by BND1 / BND2 / CHRW2 (or any other action).
+    if (unit === 'm' && normalizedCode === 'WBD2') {
+      return 0
+    }
+
     var profile = getWorkingProfile(state.parcelId, state.parcel)
     var selfBase = buildBaseCalculation(code, profile)
     var selfEligible = Number(selfBase.baseEligible)
@@ -948,6 +976,10 @@
 
     Object.keys(state.selections).forEach(function (selectedCode) {
       if (selectedCode === code) {
+        return
+      }
+      // WBD2 never reduces other boundary lengths.
+      if (unit === 'm' && String(selectedCode || '').toUpperCase() === 'WBD2') {
         return
       }
       // Supplements stack on their base — neither side should reduce the other's exclusive pool.
@@ -980,7 +1012,9 @@
       // this action's allowance — otherwise selecting CLIG3 after a valid CNUM2
       // entry incorrectly errors CNUM2.
       var competingQuantity = quantity
-      if (
+      if (unit === 'm') {
+        competingQuantity = quantity * getLinearLengthDeductionMultiplier(code, selectedCode)
+      } else if (
         unit === 'ha' &&
         Number.isFinite(selfEligible) &&
         Number.isFinite(Number(meta.baseEligible))
@@ -1661,11 +1695,7 @@
           updating.setAttribute('aria-live', 'polite')
           updating.innerHTML =
             '<span class="actions-compatibility-status__spinner" aria-hidden="true"></span>' +
-            '<p class="govuk-body-s govuk-!-margin-bottom-0">' +
-            (isBoundaryLengthAction(editedCode)
-              ? 'Updating available length for this action…'
-              : 'Updating available land for this action…') +
-            '</p>'
+            '<p class="govuk-body-s govuk-!-margin-bottom-0">Updating available land for this action…</p>'
           if (hint && hint.parentNode) {
             hint.parentNode.insertBefore(updating, hint.nextSibling)
           } else {

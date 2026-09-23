@@ -7142,10 +7142,6 @@ function getSfiV3NextCheckBeforeYouStartPath (req) {
   sfiGrasslandsV4Tasks.syncFromSessionAnswers(req, {})
   var states = sfiGrasslandsV4Tasks.getResolvedTaskStates(req)
 
-  if (states.beforeYouStart.key !== sfiGrasslandsV4Tasks.STATUS.COMPLETED) {
-    return '/sfi-grasslands-v4/before-you-make-an-application'
-  }
-
   if (states.checkBusinessDetails.key !== sfiGrasslandsV4Tasks.STATUS.COMPLETED) {
     return '/sfi-grasslands-v4/check-business-details'
   }
@@ -7780,27 +7776,21 @@ router.post('/sfi-grasslands-v4/remove-parcel-actions/:parcelId', function (req,
 })
 
 router.get('/sfi-grasslands-v4/before-you-make-an-application', function (req, res) {
-  if (redirectIfSfiV3CheckBeforeYouStartLocked(req, res, 'beforeYouStart')) {
-    return
-  }
-  sfiGrasslandsV4Tasks.markInProgress(req, sfiGrasslandsV4Tasks.TASK_IDS.beforeYouStart)
-  if (req.query.from !== 'check-your-answers') {
-    setSfiV3CheckBeforeYouStartLinearFlow(req, true)
-  }
-  renderSfiGrasslandsV4EligibilityPage(req, res, 'sfi-grasslands-v4/before-you-make-an-application')
+  // Page removed from v4 — skip to Check your details
+  var query = req.url.indexOf('?') !== -1 ? req.url.slice(req.url.indexOf('?')) : ''
+  res.redirect('/sfi-grasslands-v4/check-business-details' + query)
 })
 
 router.get('/sfi-grasslands-v4/before-you-submit', function (req, res) {
   var query = req.url.indexOf('?') !== -1 ? req.url.slice(req.url.indexOf('?')) : ''
-  res.redirect('/sfi-grasslands-v4/before-you-make-an-application' + query)
+  res.redirect('/sfi-grasslands-v4/check-business-details' + query)
 })
 
 router.post('/sfi-grasslands-v4/before-you-make-an-application-answer', function (req, res) {
-  var returnTo = getSfiV3EligibilityReturnTo(req, req.body.returnTo)
-
   saveSfiGrasslandsV4Answer(req, 'land-eligible-answer', 'yes')
   sfiGrasslandsV4Tasks.markCompleted(req, sfiGrasslandsV4Tasks.TASK_IDS.beforeYouStart)
 
+  var returnTo = getSfiV3EligibilityReturnTo(req, req.body.returnTo)
   if (returnTo === 'check-your-answers') {
     clearSfiV3EligibilityReturnTo(req)
     setSfiV3CheckBeforeYouStartLinearFlow(req, false)

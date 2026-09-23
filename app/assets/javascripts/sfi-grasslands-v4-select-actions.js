@@ -1597,7 +1597,8 @@ var LINEAR_ACTION_CODES = {
 };
 
 // Fixed AAC starting maxima for the one-sided / both-sided boundary demo.
-// church-field = SO3757 3190; far-meadow = SO3757 3193.
+// church-field = SO3757 3190 (one-sided): all actions 2,000 m.
+// far-meadow = SO3757 3193 (both sides): BND1/WBD2 2,000; BND2/CHRW2 4,000.
 var BOUNDARY_LENGTH_STARTING_MAXIMA = {
   'church-field': {
     BND1: 2000,
@@ -1614,11 +1615,19 @@ var BOUNDARY_LENGTH_STARTING_MAXIMA = {
 };
 
 // Directed reductions (matches AAC). Recalculate from starting max + current selections.
+// Do not treat “both-sided parcel” as doubling every deduction.
+// Directed graph: BND1→BND2; BND2→BND1+CHRW2; CHRW2→BND2; WBD2 independent.
+// Only ×2: BND1 → BND2 on SO3757 3193 (far-meadow). Everything else is 1:1.
 var LINEAR_LENGTH_REDUCED_BY = {
   BND1: ['BND2'],
   BND2: ['BND1', 'CHRW2'],
   CHRW2: ['BND2'],
   WBD2: []
+};
+
+// SO3757 3193 — both sides available (far-meadow only).
+var BOTH_SIDED_BOUNDARY_PARCELS = {
+  'far-meadow': true
 };
 
 function getBoundaryLengthStartingMax(parcelId, actionCode) {
@@ -1638,17 +1647,41 @@ function getLinearLengthReducers(actionCode) {
   return [];
 }
 
+function isBothSidedBoundaryParcel(parcelId) {
+  var id = parcelId || currentSelectedParcel || null;
+  return Boolean(BOTH_SIDED_BOUNDARY_PARCELS[id]);
+}
+
+// Only BND1 quantity × 2 when reducing BND2 on SO3757 3193. All other deductions stay 1:1.
+function getLinearLengthDeductionMultiplier(targetCode, reducerCode, parcelId) {
+  var target = String(targetCode || '').toUpperCase();
+  var reducer = String(reducerCode || '').toUpperCase();
+  if (target === 'BND2' && reducer === 'BND1' && isBothSidedBoundaryParcel(parcelId)) {
+    return 2;
+  }
+  return 1;
+}
+
 function getMetresUsedByReducers(actionCode) {
+  var normalized = String(actionCode || '').toUpperCase();
+  // WBD2 stacks independently — never reduced by other boundary actions.
+  if (normalized === 'WBD2') {
+    return 0;
+  }
+
   var reducers = getLinearLengthReducers(actionCode);
   var used = 0;
 
   reducers.forEach(function(reducerCode) {
+    if (String(reducerCode || '').toUpperCase() === 'WBD2') {
+      return;
+    }
     if (!$('input[name="actions"][value="' + reducerCode + '"]').is(':checked')) {
       return;
     }
     var parsed = parseQuantityInput($('#quantity-' + reducerCode.toLowerCase()).val());
     if (parsed.valid) {
-      used += parsed.value;
+      used += parsed.value * getLinearLengthDeductionMultiplier(actionCode, reducerCode);
     }
   });
 
@@ -2955,7 +2988,7 @@ function formatParcelReference(parcel) {
 var ACTION_FEATURE_REQUIREMENTS = {
   AHW2: ['hasArableLand'],
   AHW4: ['hasArableLand'],
-  // BND1 / BND2 / CHRW2 appear on all land covers — no feature gate.
+  // Boundary actions (BND1, BND2, CHRW2, WBD2) appear on all land covers — no feature gate.
   CIGL1: ['hasGrasslandHabitat'],
   CIGL2: ['hasGrasslandHabitat'],
   CLIG3: ['hasGrasslandHabitat'],
@@ -2964,8 +2997,7 @@ var ACTION_FEATURE_REQUIREMENTS = {
   SCR2: ['hasScrubMosaic'],
   SPM3: ['hasGrazedHabitat'],
   SPM5: ['hasExtensiveHabitat'],
-  WBD1: ['hasPond'],
-  WBD2: ['hasDitch']
+  WBD1: ['hasPond']
 }; 
 
 var HISTORIC_ASSET_PARCELS = {
@@ -3096,11 +3128,12 @@ var actionCodesInCatalog = ACTION_CATALOG.reduce(function(lookup, action) {
   return lookup;
 }, {});
 
-// Prototype rule: Field boundaries actions appear on every land cover type.
+// Prototype rule: all Boundary actions appear on every land cover / parcel.
 var BOUNDARY_ACTIONS_ALL_LAND_COVERS = {
   BND1: true,
   BND2: true,
-  CHRW2: true
+  CHRW2: true,
+  WBD2: true
 };
 
 function getEligibleActionsForLandCover(landCover) {
@@ -5829,7 +5862,7 @@ $(document).ready(function(){
         $quantityInput.data('blurred', true);
         updateQuantityFormatErrors($quantityInput);
       });
-      // On Continue, check every quantity — live UI only flags the last edited field
+      // On Continue, re-check every quantity against remaining available
       updateAacQuantityOverLimitErrors({ all: true });
     } else {
       $('input[name="actions"]:checked').each(function() {
@@ -6440,7 +6473,9 @@ $(document).ready(function(){
           window.SfiGrasslandsV4Aac.render();
         }
         mirrorClig3SupplementAvailableHints();
-        updateAacQuantityOverLimitErrors();
+        // Re-check every quantity — shared boundary length can invalidate
+        // another action (e.g. CHRW2 filling the pool zeros BND2).
+        updateAacQuantityOverLimitErrors({ all: true });
         refreshContinueFromActionSelection();
         captureCurrentParcelState();
       }
@@ -6803,10 +6838,9 @@ $(document).ready(function(){
     syncAllWholeRemainingAreaActions();
   });
 
-  // Live over-limit errors only appear on the quantity last edited.
-  // Continue still validates every field via { all: true }.
-  var lastQuantityEditedActionCode = null;
-
+  // After any AAC recalculation, re-check every quantity for over-limit.
+  // Shared boundary length (BND1/BND2/CHRW2) can invalidate a field that was
+  // not just edited — e.g. entering CHRW2 must error an existing BND2 entry.
   function updateAacQuantityOverLimitErrors(options) {
     options = options || {};
     if (!(window.SfiGrasslandsV4Aac && window.SfiGrasslandsV4Aac.isEnabled())) {
@@ -6820,28 +6854,18 @@ $(document).ready(function(){
       byCode[action.code] = action;
     });
 
-    var checkAll = options.all === true;
+    // Default to all fields. Callers can pass actionCode to limit scope.
+    var checkAll = options.all !== false && !options.actionCode;
     var onlyCode = checkAll
       ? null
-      : (options.actionCode
-        ? String(options.actionCode).toUpperCase()
-        : (lastQuantityEditedActionCode || null));
+      : (options.actionCode ? String(options.actionCode).toUpperCase() : null);
 
     $('input[id^="quantity-"]').each(function() {
       var $input = $(this);
       var actionCode = ($input.attr('id') || '').replace('quantity-', '').toUpperCase();
       var errors = getQuantityErrorsStore($input);
 
-      // Live mode: only the last-edited field can show an over-limit error
       if (onlyCode && actionCode !== onlyCode) {
-        if (errors.overLimit) {
-          errors.overLimit = null;
-          refreshQuantityFieldDisplay($input);
-        }
-        return;
-      }
-
-      if (!checkAll && !onlyCode) {
         return;
       }
 
@@ -6907,8 +6931,6 @@ $(document).ready(function(){
       return;
     }
 
-    lastQuantityEditedActionCode = actionCode;
-
     var $input = $(inputEl);
     $input.data('blurred', true);
     updateQuantityFormatErrors($input);
@@ -6930,7 +6952,8 @@ $(document).ready(function(){
       return;
     }
 
-    updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+    // Check all quantities so shared-pool shrinks surface on related actions
+    updateAacQuantityOverLimitErrors({ all: true });
 
     if (rawValue) {
       // 2.5s simulated API + inline “Updating…” — then refresh shared-pool hints
@@ -6938,7 +6961,7 @@ $(document).ready(function(){
     } else {
       window.SfiGrasslandsV4Aac.render();
       applyGreyOutCnum2();
-      updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+      updateAacQuantityOverLimitErrors({ all: true });
       captureCurrentParcelState();
     }
     refreshContinueFromActionSelection();

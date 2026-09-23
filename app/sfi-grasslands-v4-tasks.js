@@ -168,11 +168,11 @@ function syncFromSessionAnswers (req, options) {
   var tasks = ensureTasks(req)
   var hasSelectedLand = options && options.hasSelectedLand
 
-  if (data['land-eligible-answer'] === 'yes') {
-    tasks.beforeYouStart = STATUS.COMPLETED
-  } else if (data['land-eligible-answer'] === 'no' && tasks.beforeYouStart !== STATUS.COMPLETED) {
-    tasks.beforeYouStart = STATUS.IN_PROGRESS
+  if (data['land-eligible-answer'] !== 'yes') {
+    // Page removed from v4 — keep the task completed so later tasks unlock
+    data['land-eligible-answer'] = 'yes'
   }
+  tasks.beforeYouStart = STATUS.COMPLETED
 
   if (data['business-details-answer'] === 'yes') {
     tasks.checkBusinessDetails = STATUS.COMPLETED
@@ -230,7 +230,6 @@ function resolveCheckTask (stored, completed, href, previousCompleted) {
 }
 
 function getResolvedTaskStates (req) {
-  var beforeYouStartStored = getStoredStatus(req, TASK_IDS.beforeYouStart)
   var businessStored = getStoredStatus(req, TASK_IDS.checkBusinessDetails)
   var landDetailsStored = getStoredStatus(req, TASK_IDS.checkLandDetails)
   var eligibleStored = getStoredStatus(req, TASK_IDS.confirmEligible)
@@ -238,20 +237,21 @@ function getResolvedTaskStates (req) {
   var checkAnswersStored = getStoredStatus(req, TASK_IDS.checkAnswers)
   var submitStored = getStoredStatus(req, TASK_IDS.submitApplication)
 
-  var beforeYouStartCompleted = beforeYouStartStored === STATUS.COMPLETED
+  // beforeYouStart page removed from v4 — treat as complete so Check your details is first
+  var beforeYouStartCompleted = true
   var businessCompleted = businessStored === STATUS.COMPLETED
   var landDetailsCompleted = landDetailsStored === STATUS.COMPLETED
   var eligibleCompleted = eligibleStored === STATUS.COMPLETED
-  var section1Complete = beforeYouStartCompleted && businessCompleted && landDetailsCompleted && eligibleCompleted
+  var section1Complete = businessCompleted && landDetailsCompleted && eligibleCompleted
   var selectLandCompleted = selectLandStored === STATUS.COMPLETED
   var checkAnswersCompleted = checkAnswersStored === STATUS.COMPLETED
   var submitCompleted = submitStored === STATUS.COMPLETED
 
-  // Check before you start — one task at a time, in list order
+  // Kept for status maps / redirects; not shown on the task list
   var beforeYouStart = resolveCheckTask(
-    beforeYouStartStored,
+    STATUS.COMPLETED,
     beforeYouStartCompleted,
-    '/sfi-grasslands-v4/before-you-make-an-application',
+    '/sfi-grasslands-v4/check-business-details',
     true
   )
 
@@ -259,7 +259,7 @@ function getResolvedTaskStates (req) {
     businessStored,
     businessCompleted,
     '/sfi-grasslands-v4/check-business-details',
-    beforeYouStartCompleted
+    true
   )
 
   var checkLandDetails = resolveCheckTask(
@@ -375,11 +375,6 @@ function getTaskListPageData (req) {
     totalSections: states.totalSections,
     applicationComplete: states.applicationComplete,
     section1Items: [
-      buildTaskItem({
-        title: 'Before you make an application',
-        href: states.beforeYouStart.href,
-        status: states.beforeYouStart.status
-      }),
       buildTaskItem({
         title: 'Check your details',
         href: states.checkBusinessDetails.href,
