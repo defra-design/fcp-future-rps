@@ -522,9 +522,10 @@
     return Math.max(50, Math.round(4 * Math.sqrt(ha * 10000)))
   }
 
-  // Fixed AAC starting maxima for the one-sided / both-sided boundary demo.
-  // church-field = SO3757 3190 (one-sided): all actions 2,000 m.
-  // far-meadow = SO3757 3193 (both sides): BND1/WBD2 2,000; BND2/CHRW2 4,000.
+  // Fixed AAC starting maxima — same 2,000 m physical perimeter on both demo parcels.
+  // Difference is how many sides the applicant controls (not different action rules):
+  // church-field (SO3757 3190) — one side → single-sided actions use perimeter once
+  // far-meadow (SO3757 3193) — both sides → single-sided actions use perimeter × 2
   var BOUNDARY_LENGTH_STARTING_MAXIMA = {
     'church-field': {
       BND1: 2000,
@@ -763,7 +764,7 @@
       case 'CHRW2':
       case 'WBD2':
         unit = 'm'
-        // Prefer fixed AAC demo maxima (one-sided / both-sided). Do not surface
+        // Prefer fixed AAC demo maxima from action sidedness. Do not surface
         // single-sided or both-sided detail — only the resulting available length.
         baseEligible = getBoundaryLengthStartingMax(code)
         if (baseEligible == null) {
@@ -907,35 +908,36 @@
     return getSupplementBaseCode(a) === b || getSupplementBaseCode(b) === a
   }
 
-  // Directed reductions for boundary length (recalculated from AAC starting max).
-  // Do not treat “both-sided parcel” as doubling every deduction.
+  // Boundary length reductions (not hard incompatibility):
+  //   BND1 reduces BND2, CHRW2 and WBD2
+  //   BND2 / CHRW2 / WBD2 each reduce BND1 only
+  //   BND2, CHRW2 and WBD2 do not reduce one another
   //
-  // SO3757 3190 (church-field) — all start 2,000 m; every deduction is 1:1.
-  // SO3757 3193 (far-meadow) — BND1/WBD2 start 2,000; BND2/CHRW2 start 4,000.
-  //
-  // Directed graph (both parcels):
-  //   BND1  → reduces BND2
-  //   BND2  → reduces BND1 and CHRW2
-  //   CHRW2 → reduces BND2
-  //   WBD2  → reduces nothing; nothing reduces WBD2
-  //
-  // The only ×2 deduction is BND1 → BND2 on 3193:
-  //   BND2 available = 4000 − (BND1 × 2) − BND2 − CHRW2
-  // BND2 → BND1 is always ×1. BND2 ↔ CHRW2 is always ×1.
+  // When applicant controls both sides (far-meadow / 3193):
+  //   BND1 available  = start − (BND2 × 2) − (CHRW2 × 2) − WBD2
+  //   BND2 available  = start − (BND1 × 2)
+  //   CHRW2 available = start − (BND1 × 2)
+  //   WBD2 available  = start − BND1
+  // When applicant controls one side (church-field / 3190): all those ×2 become ×1.
   var LINEAR_LENGTH_REDUCED_BY = {
-    BND1: ['BND2'],
-    BND2: ['BND1', 'CHRW2'],
-    CHRW2: ['BND2'],
-    WBD2: []
+    BND1: ['BND2', 'CHRW2', 'WBD2'],
+    BND2: ['BND1'],
+    CHRW2: ['BND1'],
+    WBD2: ['BND1']
   }
 
-  // SO3757 3193 — both sides available (far-meadow only).
-  var BOTH_SIDED_BOUNDARY_PARCELS = {
+  var ONE_SIDED_BOUNDARY_ACTIONS = {
+    BND2: true,
+    CHRW2: true
+  }
+
+  // Applicant controls both sides of the boundary (single-sided actions get perimeter × 2).
+  var BOTH_SIDES_CONTROLLED_PARCELS = {
     'far-meadow': true
   }
 
-  function isBothSidedBoundaryParcel (parcelId) {
-    return Boolean(BOTH_SIDED_BOUNDARY_PARCELS[parcelId || state.parcelId])
+  function applicantControlsBothBoundarySides (parcelId) {
+    return Boolean(BOTH_SIDES_CONTROLLED_PARCELS[parcelId || state.parcelId])
   }
 
   function getLinearLengthReducers (code) {
@@ -952,23 +954,26 @@
     return reducers.indexOf(String(selectedCode || '').toUpperCase()) !== -1
   }
 
-  // Only BND1 quantity × 2 when reducing BND2 on SO3757 3193. All other deductions stay 1:1.
+  // ×2 only when applicant controls both sides and a one-sided action meets BND1.
+  // One-side control (3190): all deductions 1:1. WBD2 ↔ BND1 always 1:1.
   function getLinearLengthDeductionMultiplier (targetCode, reducerCode) {
     var target = String(targetCode || '').toUpperCase()
     var reducer = String(reducerCode || '').toUpperCase()
-    if (target === 'BND2' && reducer === 'BND1' && isBothSidedBoundaryParcel()) {
+
+    if (!applicantControlsBothBoundarySides()) {
+      return 1
+    }
+
+    if (target === 'BND1' && ONE_SIDED_BOUNDARY_ACTIONS[reducer]) {
+      return 2
+    }
+    if (ONE_SIDED_BOUNDARY_ACTIONS[target] && reducer === 'BND1') {
       return 2
     }
     return 1
   }
 
   function getUsedByOtherUnitActions (code, unit) {
-    var normalizedCode = String(code || '').toUpperCase()
-    // WBD2 stacks independently — never reduced by BND1 / BND2 / CHRW2 (or any other action).
-    if (unit === 'm' && normalizedCode === 'WBD2') {
-      return 0
-    }
-
     var profile = getWorkingProfile(state.parcelId, state.parcel)
     var selfBase = buildBaseCalculation(code, profile)
     var selfEligible = Number(selfBase.baseEligible)
@@ -976,10 +981,6 @@
 
     Object.keys(state.selections).forEach(function (selectedCode) {
       if (selectedCode === code) {
-        return
-      }
-      // WBD2 never reduces other boundary lengths.
-      if (unit === 'm' && String(selectedCode || '').toUpperCase() === 'WBD2') {
         return
       }
       // Supplements stack on their base — neither side should reduce the other's exclusive pool.
@@ -1046,7 +1047,7 @@
       var allocationNote = null
 
       // Shared pool by unit: ha actions share hectares; metre actions use directed
-      // boundary-length reductions (BND1/BND2/CHRW2). WBD2 is independent.
+      // boundary-length reductions (BND1 vs BND2/CHRW2/WBD2; others compatible).
       // Pond count is open unless protected-land rules give a finite prototype total.
       // Supplements stack on their base and do not compete for exclusive hectares.
       if (base.unit === 'pond' && !Number.isFinite(base.baseEligible)) {

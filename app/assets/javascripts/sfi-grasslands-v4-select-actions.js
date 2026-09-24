@@ -1596,9 +1596,10 @@ var LINEAR_ACTION_CODES = {
   WBD2: true
 };
 
-// Fixed AAC starting maxima for the one-sided / both-sided boundary demo.
-// church-field = SO3757 3190 (one-sided): all actions 2,000 m.
-// far-meadow = SO3757 3193 (both sides): BND1/WBD2 2,000; BND2/CHRW2 4,000.
+// Fixed AAC starting maxima — same 2,000 m physical perimeter on both demo parcels.
+// Difference is how many sides the applicant controls (not different action rules):
+// church-field (SO3757 3190) — one side → single-sided actions use perimeter once
+// far-meadow (SO3757 3193) — both sides → single-sided actions use perimeter × 2
 var BOUNDARY_LENGTH_STARTING_MAXIMA = {
   'church-field': {
     BND1: 2000,
@@ -1614,19 +1615,24 @@ var BOUNDARY_LENGTH_STARTING_MAXIMA = {
   }
 };
 
-// Directed reductions (matches AAC). Recalculate from starting max + current selections.
-// Do not treat “both-sided parcel” as doubling every deduction.
-// Directed graph: BND1→BND2; BND2→BND1+CHRW2; CHRW2→BND2; WBD2 independent.
-// Only ×2: BND1 → BND2 on SO3757 3193 (far-meadow). Everything else is 1:1.
+// Boundary length reductions (matches AAC) — not hard incompatibility:
+//   BND1 reduces BND2, CHRW2 and WBD2
+//   BND2 / CHRW2 / WBD2 each reduce BND1 only
+//   BND2, CHRW2 and WBD2 do not reduce one another
+// Both-sides control: one-sided ↔ BND1 uses ×2. One-side control: all deductions 1:1.
 var LINEAR_LENGTH_REDUCED_BY = {
-  BND1: ['BND2'],
-  BND2: ['BND1', 'CHRW2'],
-  CHRW2: ['BND2'],
-  WBD2: []
+  BND1: ['BND2', 'CHRW2', 'WBD2'],
+  BND2: ['BND1'],
+  CHRW2: ['BND1'],
+  WBD2: ['BND1']
 };
 
-// SO3757 3193 — both sides available (far-meadow only).
-var BOTH_SIDED_BOUNDARY_PARCELS = {
+var ONE_SIDED_BOUNDARY_ACTIONS = {
+  BND2: true,
+  CHRW2: true
+};
+
+var BOTH_SIDES_CONTROLLED_PARCELS = {
   'far-meadow': true
 };
 
@@ -1647,35 +1653,34 @@ function getLinearLengthReducers(actionCode) {
   return [];
 }
 
-function isBothSidedBoundaryParcel(parcelId) {
+function applicantControlsBothBoundarySides(parcelId) {
   var id = parcelId || currentSelectedParcel || null;
-  return Boolean(BOTH_SIDED_BOUNDARY_PARCELS[id]);
+  return Boolean(BOTH_SIDES_CONTROLLED_PARCELS[id]);
 }
 
-// Only BND1 quantity × 2 when reducing BND2 on SO3757 3193. All other deductions stay 1:1.
+// ×2 only when applicant controls both sides and a one-sided action meets BND1.
 function getLinearLengthDeductionMultiplier(targetCode, reducerCode, parcelId) {
   var target = String(targetCode || '').toUpperCase();
   var reducer = String(reducerCode || '').toUpperCase();
-  if (target === 'BND2' && reducer === 'BND1' && isBothSidedBoundaryParcel(parcelId)) {
+
+  if (!applicantControlsBothBoundarySides(parcelId)) {
+    return 1;
+  }
+
+  if (target === 'BND1' && ONE_SIDED_BOUNDARY_ACTIONS[reducer]) {
+    return 2;
+  }
+  if (ONE_SIDED_BOUNDARY_ACTIONS[target] && reducer === 'BND1') {
     return 2;
   }
   return 1;
 }
 
 function getMetresUsedByReducers(actionCode) {
-  var normalized = String(actionCode || '').toUpperCase();
-  // WBD2 stacks independently — never reduced by other boundary actions.
-  if (normalized === 'WBD2') {
-    return 0;
-  }
-
   var reducers = getLinearLengthReducers(actionCode);
   var used = 0;
 
   reducers.forEach(function(reducerCode) {
-    if (String(reducerCode || '').toUpperCase() === 'WBD2') {
-      return;
-    }
     if (!$('input[name="actions"][value="' + reducerCode + '"]').is(':checked')) {
       return;
     }
@@ -5750,7 +5755,7 @@ $(document).ready(function(){
       if ($suffix.text() === 'ha') {
         setActionAvailableHint(actionCode, remainingHa);
       } else if ($suffix.text() === 'm') {
-        // Directed reductions: BND1↔BND2↔CHRW2; WBD2 independent
+        // Boundary length reductions: BND1 ↔ BND2/CHRW2/WBD2 (others do not reduce each other)
         var poolTotalM = getLinearAvailableMetres(parcel, actionCode);
         var usedByReducers = getMetresUsedByReducers(actionCode);
         var remainingForPool = Math.max(0, poolTotalM - usedByReducers);
@@ -6453,8 +6458,9 @@ $(document).ready(function(){
       // AAC exploration: only genuine policy conflicts — not the full matrix.
       // Area / length sharing is handled by remaining eligible amounts, not binary disable.
       // CLIG3 and CSAM3 share remaining grassland area (not hard-incompatible).
-      // Boundary length: BND1↔BND2↔CHRW2 directed reductions; WBD2 independent.
-      // SO3757 3190 / 3193 use fixed AAC starting maxima (one-sided / both-sided).
+      // Boundary: BND1 shares length with BND2/CHRW2/WBD2 via AAC reductions — not hard-blocked.
+      // BND2, CHRW2 and WBD2 are compatible with each other (no mutual reductions).
+      // Single-sided ×2 only when applicant controls both sides (SO3757 3193).
       incompatibleByCode: {
         GRH7: ['GRH8', 'GRH10'],
         GRH8: ['GRH7', 'GRH10'],
@@ -6473,8 +6479,7 @@ $(document).ready(function(){
           window.SfiGrasslandsV4Aac.render();
         }
         mirrorClig3SupplementAvailableHints();
-        // Re-check every quantity — shared boundary length can invalidate
-        // another action (e.g. CHRW2 filling the pool zeros BND2).
+        // Re-check every quantity — BND1 length conflicts can invalidate other fields.
         updateAacQuantityOverLimitErrors({ all: true });
         refreshContinueFromActionSelection();
         captureCurrentParcelState();
