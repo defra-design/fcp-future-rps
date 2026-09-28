@@ -212,6 +212,26 @@
     })
   }
 
+  // Without JS (or <dialog> support) the Sign out link just signs out
+  function initSignOutDialog () {
+    var link = document.querySelector('[data-rps-sign-out]')
+    var dialog = document.getElementById('rps-sign-out-dialog')
+    if (!link || !dialog || typeof dialog.showModal !== 'function') {
+      return
+    }
+    link.addEventListener('click', function (event) {
+      event.preventDefault()
+      dialog.showModal()
+    })
+    // Clicking the grey backdrop closes the dialog, like pressing No
+    dialog.addEventListener('click', function (event) {
+      if (event.target === dialog) {
+        dialog.close()
+      }
+    })
+  }
+
   disablePlaceholderLinks()
+  initSignOutDialog()
   initMap()
 })()

@@ -31,13 +31,29 @@
           <nav aria-label="Account">
             <ul class="app-rps-header__navigation">
               <li><a class="app-rps-header__link" href="#">Your businesses</a></li>
-              <li><a class="app-rps-header__link" href="{{ rpsBasePath }}/sign-out">Sign out</a></li>
+              <li><a class="app-rps-header__link" href="{{ rpsBasePath }}/sign-out" data-rps-sign-out>Sign out</a></li>
             </ul>
           </nav>
         {% endif %}
       </div>
     </div>
   </header>
+
+  {% if data['ruralPaymentsSignedIn'] and not hideAccountNav %}
+    <dialog class="app-rps-modal" id="rps-sign-out-dialog" aria-labelledby="rps-sign-out-title">
+      <form method="dialog" class="app-rps-modal__close-form">
+        <button type="submit" class="app-rps-modal__close" aria-label="Close">&times;</button>
+      </form>
+      <h2 class="govuk-heading-l" id="rps-sign-out-title" tabindex="-1" autofocus>Sign out</h2>
+      <p class="govuk-body">This will end your session. Are you sure you want to sign out?</p>
+      <div class="govuk-button-group">
+        <a class="govuk-button app-rps-button" href="{{ rpsBasePath }}/sign-out" role="button" draggable="false" data-module="govuk-button">Yes</a>
+        <form method="dialog">
+          <button type="submit" class="govuk-link app-rps-link-button">No</button>
+        </form>
+      </div>
+    </dialog>
+  {% endif %}
 {% endblock %}
 
 {% block scripts %}
