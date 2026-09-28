@@ -1619,21 +1619,12 @@ var BOUNDARY_LENGTH_STARTING_MAXIMA = {
 //   BND1 reduces BND2, CHRW2 and WBD2
 //   BND2 / CHRW2 / WBD2 each reduce BND1 only
 //   BND2, CHRW2 and WBD2 do not reduce one another
-// Both-sides control: one-sided ↔ BND1 uses ×2. One-side control: all deductions 1:1.
+// Deductions are proportional to each action's starting length (see getLinearLengthDeductionMultiplier).
 var LINEAR_LENGTH_REDUCED_BY = {
   BND1: ['BND2', 'CHRW2', 'WBD2'],
   BND2: ['BND1'],
   CHRW2: ['BND1'],
   WBD2: ['BND1']
-};
-
-var ONE_SIDED_BOUNDARY_ACTIONS = {
-  BND2: true,
-  CHRW2: true
-};
-
-var BOTH_SIDES_CONTROLLED_PARCELS = {
-  'far-meadow': true
 };
 
 function getBoundaryLengthStartingMax(parcelId, actionCode) {
@@ -1653,27 +1644,17 @@ function getLinearLengthReducers(actionCode) {
   return [];
 }
 
-function applicantControlsBothBoundarySides(parcelId) {
-  var id = parcelId || currentSelectedParcel || null;
-  return Boolean(BOTH_SIDES_CONTROLLED_PARCELS[id]);
-}
-
-// ×2 only when applicant controls both sides and a one-sided action meets BND1.
+// Using a share of one action's starting length removes the same share from the other.
+// far-meadow (BND1 2,000 / CHRW2 4,000): 1,000 m CHRW2 takes 500 m off BND1,
+// and 1,000 m BND1 takes 2,000 m off CHRW2. Matching starting lengths give 1:1.
 function getLinearLengthDeductionMultiplier(targetCode, reducerCode, parcelId) {
-  var target = String(targetCode || '').toUpperCase();
-  var reducer = String(reducerCode || '').toUpperCase();
-
-  if (!applicantControlsBothBoundarySides(parcelId)) {
+  var id = parcelId || currentSelectedParcel || null;
+  var targetMax = getBoundaryLengthStartingMax(id, targetCode);
+  var reducerMax = getBoundaryLengthStartingMax(id, reducerCode);
+  if (!targetMax || !reducerMax) {
     return 1;
   }
-
-  if (target === 'BND1' && ONE_SIDED_BOUNDARY_ACTIONS[reducer]) {
-    return 2;
-  }
-  if (ONE_SIDED_BOUNDARY_ACTIONS[target] && reducer === 'BND1') {
-    return 2;
-  }
-  return 1;
+  return targetMax / reducerMax;
 }
 
 function getMetresUsedByReducers(actionCode) {

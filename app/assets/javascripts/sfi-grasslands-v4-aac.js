@@ -912,32 +912,11 @@
   //   BND1 reduces BND2, CHRW2 and WBD2
   //   BND2 / CHRW2 / WBD2 each reduce BND1 only
   //   BND2, CHRW2 and WBD2 do not reduce one another
-  //
-  // When applicant controls both sides (far-meadow / 3193):
-  //   BND1 available  = start − (BND2 × 2) − (CHRW2 × 2) − WBD2
-  //   BND2 available  = start − (BND1 × 2)
-  //   CHRW2 available = start − (BND1 × 2)
-  //   WBD2 available  = start − BND1
-  // When applicant controls one side (church-field / 3190): all those ×2 become ×1.
   var LINEAR_LENGTH_REDUCED_BY = {
     BND1: ['BND2', 'CHRW2', 'WBD2'],
     BND2: ['BND1'],
     CHRW2: ['BND1'],
     WBD2: ['BND1']
-  }
-
-  var ONE_SIDED_BOUNDARY_ACTIONS = {
-    BND2: true,
-    CHRW2: true
-  }
-
-  // Applicant controls both sides of the boundary (single-sided actions get perimeter × 2).
-  var BOTH_SIDES_CONTROLLED_PARCELS = {
-    'far-meadow': true
-  }
-
-  function applicantControlsBothBoundarySides (parcelId) {
-    return Boolean(BOTH_SIDES_CONTROLLED_PARCELS[parcelId || state.parcelId])
   }
 
   function getLinearLengthReducers (code) {
@@ -954,23 +933,17 @@
     return reducers.indexOf(String(selectedCode || '').toUpperCase()) !== -1
   }
 
-  // ×2 only when applicant controls both sides and a one-sided action meets BND1.
-  // One-side control (3190): all deductions 1:1. WBD2 ↔ BND1 always 1:1.
+  // Deductions are proportional: using a share of one action's starting length removes
+  // the same share from the other. On far-meadow (both sides, BND1 2,000 / CHRW2 4,000)
+  // 1,000 m CHRW2 takes 500 m off BND1, and 1,000 m BND1 takes 2,000 m off CHRW2.
+  // Where starting lengths match (one side controlled, or no fixed maxima) this is 1:1.
   function getLinearLengthDeductionMultiplier (targetCode, reducerCode) {
-    var target = String(targetCode || '').toUpperCase()
-    var reducer = String(reducerCode || '').toUpperCase()
-
-    if (!applicantControlsBothBoundarySides()) {
+    var targetMax = getBoundaryLengthStartingMax(targetCode)
+    var reducerMax = getBoundaryLengthStartingMax(reducerCode)
+    if (!targetMax || !reducerMax) {
       return 1
     }
-
-    if (target === 'BND1' && ONE_SIDED_BOUNDARY_ACTIONS[reducer]) {
-      return 2
-    }
-    if (ONE_SIDED_BOUNDARY_ACTIONS[target] && reducer === 'BND1') {
-      return 2
-    }
-    return 1
+    return targetMax / reducerMax
   }
 
   function getUsedByOtherUnitActions (code, unit) {
