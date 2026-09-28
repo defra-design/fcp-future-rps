@@ -1,0 +1,100 @@
+{% extends "layouts/sfi-grasslands-v4-rural-payments.html" %}
+
+{% set pageName = "Land summary" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
+  {{ super() }}
+{% endblock %}
+
+{% block beforeContent %}
+  <div class="app-rps-close">
+    <a class="govuk-button app-rps-button app-rps-close__button" href="/sfi-grasslands-v4/rural-payments/business-overview" role="button" draggable="false" data-module="govuk-button">Close</a>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full app-rps-column--content">
+      <h1 class="govuk-heading-l app-rps-page-title">Land summary</h1>
+      <p class="govuk-caption-m app-rps-page-caption">{{ businessName }}</p>
+
+      <p class="govuk-body-s">This is how the land parcels for this business are distributed. Click on the Parcel ID to view it or tell us about any changes.</p>
+
+      <p class="govuk-body-s">
+        <a class="govuk-link" href="#">Help</a>
+      </p>
+
+      <div class="govuk-inset-text app-rps-date-search">
+        <form action="/sfi-grasslands-v4/rural-payments/land-summary" method="get">
+          <p class="govuk-body-s">Choose a date you want to see the information and map for:</p>
+          <div class="govuk-form-group app-rps-date-search__field">
+            <label class="govuk-label app-rps-date-search__label" for="rps-land-date">Date:</label>
+            <input class="govuk-input app-rps-input app-rps-date-search__input" id="rps-land-date" name="date" type="text" value="{{ searchDate }}">
+          </div>
+          {{ govukButton({
+            text: "Search",
+            classes: "app-rps-button app-rps-date-search__button"
+          }) }}
+        </form>
+      </div>
+
+      <h2 class="govuk-heading-s">Summary</h2>
+      <table class="govuk-table app-rps-table">
+        <caption class="govuk-table__caption govuk-visually-hidden">Summary of land for {{ businessName }}</caption>
+        <tbody class="govuk-table__body">
+          {% for row in summaryRows %}
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__cell">{{ row.key }}</th>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.value }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2 class="govuk-heading-m">Land parcels</h2>
+      <table class="govuk-table app-rps-table">
+        <caption class="govuk-table__caption govuk-visually-hidden">Land parcels for {{ businessName }}</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header app-rps-nowrap" aria-sort="{{ sortLinks.parcel.ariaSort }}">
+              <a class="govuk-link app-rps-sort-link" href="{{ sortLinks.parcel.href }}">Parcel ID{% if sortLinks.parcel.arrow %} <span aria-hidden="true">{{ sortLinks.parcel.arrow }}</span>{% endif %}</a>
+            </th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric" aria-sort="{{ sortLinks.area.ariaSort }}">
+              <a class="govuk-link app-rps-sort-link" href="{{ sortLinks.area.href }}">Total area (ha){% if sortLinks.area.arrow %} <span aria-hidden="true">{{ sortLinks.area.arrow }}</span>{% endif %}</a>
+            </th>
+            <th scope="col" class="govuk-table__header">Eligible covers</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">BPS eligible area (ha)</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for parcel in parcels %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell app-rps-nowrap">
+                <a class="govuk-link" href="{{ parcel.href }}">{{ parcel.parcelReference }}</a>
+              </td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.totalAreaFormatted }}</td>
+              <td class="govuk-table__cell">{{ parcel.eligibleCovers }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.eligibleAreaFormatted }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="govuk-grid-column-full app-rps-column--map">
+      {% include "sfi-grasslands-v4/rural-payments/_map.html" %}
+
+      <h2 class="govuk-heading-m">Is this information up to date?</h2>
+      <p class="govuk-body-s">If you have already asked us to make changes to information about your land, they might not show here yet.</p>
+
+      <h2 class="govuk-heading-m">Land data</h2>
+      <p class="govuk-body-s">Use <a class="govuk-link" href="#">Defra Data Services</a> to download or link to the data in the Rural Payments service. This will give your land parcel boundaries, land cover (this is not land use), and hedges to use in your farm and mapping software.</p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script type="application/json" id="rural-payments-map-data">{{ mapPayload | dump | safe }}</script>
+  <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
+{% endblock %}

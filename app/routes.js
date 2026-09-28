@@ -27,6 +27,7 @@ const sfiGrasslandsV4Tasks = require('./sfi-grasslands-v4-tasks')
 const sfiGrasslandsV4LandActions = require('./sfi-grasslands-v4-land-actions')
 const sfiGrasslandsV4Consent = require('./sfi-grasslands-v4-consent')
 const sfiGrasslandsV4LandDetails = require('./sfi-grasslands-v4-land-details')
+const sfiGrasslandsV4RuralPayments = require('./sfi-grasslands-v4-rural-payments')
 const sfiAgreementV1Offer = require('./sfi-agreement-v1-offer')
 
 const sfiGrasslandsDevReadyTasks = require('./sfi-grasslands-dev-ready-tasks')
@@ -7308,6 +7309,76 @@ router.get('/sfi-grasslands-v4/land-details-v2/:slug', function (req, res) {
   res.render('sfi-grasslands-v4/land-details-v2', Object.assign({
     data: getSfiGrasslandsV4SessionData(req)
   }, locals, getSfiGrasslandsV4CompatibilityLocals(req)))
+})
+
+// Recreated Rural Payments service, opened in a new tab from check-land-details
+var RURAL_PAYMENTS_BASE = sfiGrasslandsV4RuralPayments.BASE_PATH
+
+router.get(RURAL_PAYMENTS_BASE, function (req, res) {
+  res.redirect(RURAL_PAYMENTS_BASE + '/business-overview')
+})
+
+// Signing in returns users to the Rural Payments page they were trying to reach
+function getRuralPaymentsReturnPath (value) {
+  var path = String(value || '')
+  if (path.indexOf(RURAL_PAYMENTS_BASE + '/') !== 0 || path.indexOf('/sign-') !== -1) {
+    return RURAL_PAYMENTS_BASE + '/business-overview'
+  }
+  return path
+}
+
+function redirectIfRuralPaymentsSignedOut (req, res) {
+  if (req.session.data.ruralPaymentsSignedIn) {
+    return false
+  }
+  res.redirect(RURAL_PAYMENTS_BASE + '/sign-in?returnTo=' + encodeURIComponent(req.originalUrl))
+  return true
+}
+
+router.get(RURAL_PAYMENTS_BASE + '/sign-in', function (req, res) {
+  res.render('sfi-grasslands-v4/rural-payments/sign-in', {
+    returnTo: getRuralPaymentsReturnPath(req.query.returnTo)
+  })
+})
+
+router.post(RURAL_PAYMENTS_BASE + '/sign-in', function (req, res) {
+  var returnTo = getRuralPaymentsReturnPath(req.body['rps-return-to'])
+  req.session.data.ruralPaymentsSignedIn = true
+  delete req.session.data['rps-password']
+  delete req.session.data['rps-return-to']
+  res.redirect(returnTo)
+})
+
+router.get(RURAL_PAYMENTS_BASE + '/sign-out', function (req, res) {
+  req.session.data.ruralPaymentsSignedIn = false
+  res.redirect(RURAL_PAYMENTS_BASE + '/sign-in')
+})
+
+router.get(RURAL_PAYMENTS_BASE + '/business-overview', function (req, res) {
+  if (redirectIfRuralPaymentsSignedOut(req, res)) {
+    return
+  }
+  res.render('sfi-grasslands-v4/rural-payments/business-overview', {
+    businessName: sfiGrasslandsV4RuralPayments.BUSINESS_NAME
+  })
+})
+
+router.get(RURAL_PAYMENTS_BASE + '/land-summary', function (req, res) {
+  if (redirectIfRuralPaymentsSignedOut(req, res)) {
+    return
+  }
+  res.render('sfi-grasslands-v4/rural-payments/land-summary', sfiGrasslandsV4RuralPayments.getLandSummaryLocals(req.query))
+})
+
+router.get(RURAL_PAYMENTS_BASE + '/parcel/:slug', function (req, res) {
+  if (redirectIfRuralPaymentsSignedOut(req, res)) {
+    return
+  }
+  var locals = sfiGrasslandsV4RuralPayments.getParcelDetailsLocals(req.params.slug)
+  if (!locals) {
+    return res.redirect(RURAL_PAYMENTS_BASE + '/land-summary')
+  }
+  res.render('sfi-grasslands-v4/rural-payments/parcel-details', locals)
 })
 
 router.get('/land-details', function (req, res) {
