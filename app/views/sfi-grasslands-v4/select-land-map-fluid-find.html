@@ -15,8 +15,7 @@
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/map-styles/dist/css/index.css">
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/css/index.css">
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/css/index.css">
-  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/datasets/dist/css/index.css">
-  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/interact/dist/css/index.css">
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/datasets/dist/css/index.css">
 
   <!-- MapLibre CSS -->
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
@@ -121,45 +120,6 @@
       position: relative;
     }
 
-    .map-reset-view-button {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-      padding: 8px 12px;
-      background: #ffffff;
-      border: 2px solid #0b0c0c;
-      box-shadow: 0 2px 4px rgba(11, 12, 12, 0.15);
-      font-family: "GDS Transport", arial, sans-serif;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.25;
-      color: #0b0c0c;
-      cursor: pointer;
-    }
-
-    .map-reset-view-button:hover {
-      background: #f3f2f1;
-    }
-
-    .map-reset-view-button:focus {
-      outline: 3px solid transparent;
-      box-shadow: 0 0 0 3px #ffdd00, 0 2px 4px rgba(11, 12, 12, 0.15);
-    }
-
-    .map-reset-view-button__icon {
-      flex-shrink: 0;
-      width: 20px;
-      height: 20px;
-    }
-
-    .map-reset-view-button[hidden] {
-      display: none;
-    }
     .im-map,
     .maplibregl-map {
       font-family: "GDS Transport", arial, sans-serif;
@@ -454,16 +414,6 @@
       <div class="govuk-grid-column-two-thirds">
         <div class="map-viewport">
           <div id="map"></div>
-          <button type="button" id="reset-map-view-button" class="map-reset-view-button" hidden aria-label="Show all parcels on the map" title="Show all parcels on the map">
-            <svg class="map-reset-view-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M8 4H4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 4h4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8 20H4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 20h4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <rect x="7" y="7" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"></rect>
-            </svg>
-            Show all parcels
-          </button>
         </div>
         <p class="govuk-body-s govuk-!-margin-top-2">
           {# Click on the field parcels to select and see details.
@@ -1233,7 +1183,10 @@
 {% block pageScripts %}
   <script src="/plugin-assets/%40defra%2Finteractive-map/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
-  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/scale-bar/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/umd/index.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-parcel-search.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-map-reset-button.js"></script>
 
   <!-- MapLibre JS -->
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
@@ -1380,12 +1333,7 @@
     }
 
     function updateResetMapViewButtonVisibility() {
-      var button = document.getElementById('reset-map-view-button');
-      if (!button) {
-        return;
-      }
-
-      button.hidden = !isMapAwayFromDefaultView();
+      sfiGrasslandsV4MapResetButton.setVisible(interactiveMap, isMapAwayFromDefaultView());
     }
 
     function onMapReady(callback) {
@@ -1441,8 +1389,23 @@
         backgroundColor: '#f5f5f0'
       },
       plugins: [
-        defra.scaleBarPlugin({ units: 'metric' })
+        defra.scaleBarPlugin({ units: 'metric' }),
+        sfiGrasslandsV4ParcelSearch.createPlugin({
+          getParcels: function() { return parcelData; },
+          formatReference: formatParcelReference
+        })
       ]
+    });
+
+    interactiveMap.on('app:ready', function() {
+      interactiveMap.toggleButtonState('mapControls', 'expanded', true);
+      sfiGrasslandsV4MapResetButton.add(interactiveMap, resetMapToAllParcelsView);
+    });
+
+    interactiveMap.on('search:match', function(event) {
+      if (event && event.type === 'parcel') {
+        selectParcel(event.parcelId);
+      }
     });
 
     interactiveMap.on('map:ready', function(event) {
@@ -5416,11 +5379,6 @@
           focusFarmByKey(farmKey);
         });
         
-        $('#reset-map-view-button').on('click', function(e) {
-          e.preventDefault();
-          resetMapToAllParcelsView();
-        });
-
         // Click handler for "Back to OS map reference farm selection" link
         $('#back-to-farm-selection-link').on('click', function(e) {
           e.preventDefault();

@@ -133,12 +133,7 @@ function isMapAwayFromDefaultView() {
 }
 
 function updateResetMapViewButtonVisibility() {
-  var button = document.getElementById('reset-map-view-button');
-  if (!button) {
-    return;
-  }
-
-  button.hidden = !isMapAwayFromDefaultView();
+  sfiGrasslandsV4MapResetButton.setVisible(interactiveMap, isMapAwayFromDefaultView());
 }
 
 function onMapReady(callback) {
@@ -194,8 +189,23 @@ var interactiveMap = new defra.InteractiveMap('map', {
     backgroundColor: '#f5f5f0'
   },
   plugins: [
-    defra.scaleBarPlugin({ units: 'metric' })
+    defra.scaleBarPlugin({ units: 'metric' }),
+    sfiGrasslandsV4ParcelSearch.createPlugin({
+      getParcels: function() { return parcelData; },
+      formatReference: formatParcelReference
+    })
   ]
+});
+
+interactiveMap.on('app:ready', function() {
+  interactiveMap.toggleButtonState('mapControls', 'expanded', true);
+  sfiGrasslandsV4MapResetButton.add(interactiveMap, resetMapToAllParcelsView);
+});
+
+interactiveMap.on('search:match', function(event) {
+  if (event && event.type === 'parcel') {
+    selectParcel(event.parcelId);
+  }
 });
 
 interactiveMap.on('map:ready', function(event) {
@@ -7059,11 +7069,6 @@ $(document).ready(function(){
       focusFarmByKey(farmKey);
     });
     
-    $('#reset-map-view-button').on('click', function(e) {
-      e.preventDefault();
-      resetMapToAllParcelsView();
-    });
-
     // Click handler for "Back to OS map reference farm selection" link
     $('#back-to-farm-selection-link').on('click', function(e) {
       e.preventDefault();

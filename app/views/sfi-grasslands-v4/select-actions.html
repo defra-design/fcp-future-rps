@@ -15,8 +15,7 @@
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/map-styles/dist/css/index.css">
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/css/index.css">
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/css/index.css">
-  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/datasets/dist/css/index.css">
-  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/interact/dist/css/index.css">
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/datasets/dist/css/index.css">
 
   <!-- MapLibre CSS -->
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
@@ -129,16 +128,6 @@
       <div class="govuk-grid-column-two-thirds">
         <div class="map-viewport">
           <div id="map"></div>
-          <button type="button" id="reset-map-view-button" class="map-reset-view-button" hidden aria-label="Show all parcels on the map" title="Show all parcels on the map">
-            <svg class="map-reset-view-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M8 4H4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 4h4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8 20H4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 20h4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <rect x="7" y="7" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"></rect>
-            </svg>
-            Show all parcels
-          </button>
         </div>
         <p class="govuk-body-s govuk-!-margin-top-2">
           {# Click on the field parcels to select and see details.
@@ -407,7 +396,10 @@
   </script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
-  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/scale-bar/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/umd/index.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-parcel-search.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-map-reset-button.js"></script>
 
   <!-- MapLibre JS -->
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
