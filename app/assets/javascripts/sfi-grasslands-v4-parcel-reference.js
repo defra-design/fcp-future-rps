@@ -65,7 +65,6 @@
     'willow-bank': { sheetId: 'SP8722', parcelId: '2214' },
     'ford-field': { sheetId: 'SP8722', parcelId: '2219' },
     'wood-lane-field': { sheetId: 'SP8128', parcelId: '2841' },
-    'coppice-close': { sheetId: 'SP8128', parcelId: '2846' },
   }
 
   function getParts (parcelOrId) {

@@ -13,6 +13,8 @@
   // The map already insets its view for the search and "View all" buttons, so only a
   // little is added here, plus extra on the right to clear the zoom and pan controls
   var FIT_PADDING_PX = { top: 10, right: 60, bottom: 10, left: 20 }
+  // Matches the page's closest parcel view, so a lone parcel isn't filled edge to edge
+  var SINGLE_PARCEL_MAX_ZOOM = 15
 
   // parcelData coords are [lat, lng]; MapLibre wants [lng, lat]
   function getCentroid (coords) {
@@ -82,6 +84,15 @@
     })
   }
 
+  function zoomToParcel (map, parcelData, pointFeature) {
+    var bounds = getBounds([pointFeature.properties.parcelId], parcelData)
+    if (bounds) {
+      map.fitBounds(bounds, { padding: FIT_PADDING_PX, maxZoom: SINGLE_PARCEL_MAX_ZOOM })
+    } else {
+      map.easeTo({ center: pointFeature.geometry.coordinates, zoom: CLUSTER_MAX_ZOOM + 2 })
+    }
+  }
+
   function attach (map, options) {
     var opts = options || {}
     var parcelData = opts.parcelData || {}
@@ -98,16 +109,18 @@
       clusterRadius: CLUSTER_RADIUS_PX
     })
 
+    // A parcel on its own isn't grouped into a cluster, so it has no point_count. It still
+    // gets a "1" bubble while clusters show, or it would be too small to see.
     map.addLayer({
       id: CLUSTER_LAYER_ID,
       type: 'circle',
       source: POINT_SOURCE_ID,
-      filter: ['has', 'point_count'],
+      maxzoom: CLUSTER_MAX_ZOOM + 1,
       paint: {
         'circle-color': '#1d70b8',
         'circle-stroke-color': '#ffffff',
         'circle-stroke-width': 3,
-        'circle-radius': ['step', ['get', 'point_count'], 16, 5, 20, 20, 26]
+        'circle-radius': ['step', ['coalesce', ['get', 'point_count'], 1], 16, 5, 20, 20, 26]
       }
     })
 
@@ -115,9 +128,9 @@
       id: CLUSTER_COUNT_LAYER_ID,
       type: 'symbol',
       source: POINT_SOURCE_ID,
-      filter: ['has', 'point_count'],
+      maxzoom: CLUSTER_MAX_ZOOM + 1,
       layout: {
-        'text-field': ['get', 'point_count_abbreviated'],
+        'text-field': ['coalesce', ['get', 'point_count_abbreviated'], '1'],
         'text-font': ['Noto Sans Bold'],
         'text-size': 14,
         'text-allow-overlap': true
@@ -133,8 +146,13 @@
 
     map.on('click', CLUSTER_LAYER_ID, function (event) {
       var feature = event.features && event.features[0]
-      if (feature) {
+      if (!feature) {
+        return
+      }
+      if (feature.properties.cluster) {
         zoomToCluster(map, parcelData, feature)
+      } else {
+        zoomToParcel(map, parcelData, feature)
       }
     })
 
