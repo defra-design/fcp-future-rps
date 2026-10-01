@@ -55,6 +55,17 @@
     'upper-slope': { sheetId: 'SO3757', parcelId: '3207' },
     'valley-bottom': { sheetId: 'SO3757', parcelId: '3208' },
     'woodland-edge': { sheetId: 'SO3757', parcelId: '3209' },
+    // Outlying sites (sfi-grasslands-v4-outlying-parcels.js) are on other map sheets
+    'hilltop-field': { sheetId: 'SP9035', parcelId: '4512' },
+    'windmill-ground': { sheetId: 'SP9035', parcelId: '4518' },
+    'long-furlong': { sheetId: 'SP9035', parcelId: '4523' },
+    'spinney-field': { sheetId: 'SP9035', parcelId: '4531' },
+    'top-pasture': { sheetId: 'SP9035', parcelId: '4537' },
+    'brook-end-meadow': { sheetId: 'SP8722', parcelId: '2207' },
+    'willow-bank': { sheetId: 'SP8722', parcelId: '2214' },
+    'ford-field': { sheetId: 'SP8722', parcelId: '2219' },
+    'wood-lane-field': { sheetId: 'SP8128', parcelId: '2841' },
+    'coppice-close': { sheetId: 'SP8128', parcelId: '2846' },
   }
 
   function getParts (parcelOrId) {

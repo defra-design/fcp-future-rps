@@ -2179,6 +2179,10 @@
     runUpdate: runUpdate,
     syncSelectionsFromDom: syncSelectionsFromDom,
     setSelectionExcluded: setSelectionExcluded,
+    // True if the action's quantity was counted in the last calculation (so it was taking land)
+    hasSelection: function (code) {
+      return Boolean(state.selections[String(code || '').toUpperCase()])
+    },
     applyToCheckboxes: applyToCheckboxes,
     getSelectionsForSave: getSelectionsForSave,
     getParcelAreaBreakdown: getParcelAreaBreakdown,

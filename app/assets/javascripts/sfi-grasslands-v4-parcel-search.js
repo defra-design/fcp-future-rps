@@ -2,6 +2,9 @@
 // Creates a Defra interactive map search plugin that finds land parcels by parcel ID.
 (function (root) {
   var MAX_RESULTS = 8;
+  // The plugin fits the map tightly to a result's bounds, so widen them on every side
+  // (as a share of the parcel's size) to keep the neighbouring parcels in view
+  var RESULT_BOUNDS_MARGIN = 0.6;
 
   function compact(value) {
     return String(value || '').replace(/\s+/g, '').toUpperCase();
@@ -18,6 +21,12 @@
     var lats = coords.map(function(point) { return point[0]; });
     var lngs = coords.map(function(point) { return point[1]; });
     return [Math.min.apply(null, lngs), Math.min.apply(null, lats), Math.max.apply(null, lngs), Math.max.apply(null, lats)];
+  }
+
+  function widenBounds(bounds, margin) {
+    var padLng = (bounds[2] - bounds[0]) * margin;
+    var padLat = (bounds[3] - bounds[1]) * margin;
+    return [bounds[0] - padLng, bounds[1] - padLat, bounds[2] + padLng, bounds[3] + padLat];
   }
 
   function markMatch(reference, query) {
@@ -55,7 +64,7 @@
           text: item.reference,
           marked: markMatch(item.reference, query),
           point: [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2],
-          bounds: bounds,
+          bounds: widenBounds(bounds, RESULT_BOUNDS_MARGIN),
           type: 'parcel'
         };
       });
@@ -83,6 +92,15 @@
       }]
     });
   }
+
+  // After a key press the plugin hides its results when the input loses focus, and pressing
+  // the mouse on a result takes focus away before the click lands. Keeping focus on the
+  // input until the click fires lets the result be chosen.
+  document.addEventListener('mousedown', function(event) {
+    if (event.target.closest && event.target.closest('.im-c-search-suggestions__item')) {
+      event.preventDefault();
+    }
+  }, true);
 
   root.sfiGrasslandsV4ParcelSearch = { createPlugin: createPlugin };
 })(window);

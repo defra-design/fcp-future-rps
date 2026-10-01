@@ -1378,6 +1378,10 @@ Object.keys(parcelData).forEach(function(parcelId) {
   }
 });
 
+if (window.SfiGrasslandsV4OutlyingParcels) {
+  window.SfiGrasslandsV4OutlyingParcels.addTo(parcelData);
+}
+
 if (window.SfiGrasslandsV4ParcelReference &&
     typeof window.SfiGrasslandsV4ParcelReference.applyToParcelData === 'function') {
   window.SfiGrasslandsV4ParcelReference.applyToParcelData(parcelData);
@@ -2153,16 +2157,25 @@ function getQuantityErrorsStore($quantityInput) {
   return store;
 }
 
+// Quantity errors are still worked out while the user types, but only shown once
+// they have pressed "Save and continue". After that they update live as fields are fixed.
+  // Over-limit errors are the exception: they show once the user stops typing, or after an
+  // AAC update for fields pushed over by another entry (errors.overLimitShown). They hide
+  // again while that field is being edited.
+var quantityErrorsVisible = false;
+
+function setQuantityErrorsVisible(visible) {
+  quantityErrorsVisible = Boolean(visible);
+}
+
 function refreshQuantityFieldDisplay($quantityInput) {
   var errors = getQuantityErrorsStore($quantityInput);
-  var priority = ['format', 'overLimit'];
   var message = null;
 
-  for (var i = 0; i < priority.length; i++) {
-    if (errors[priority[i]]) {
-      message = errors[priority[i]];
-      break;
-    }
+  if (quantityErrorsVisible) {
+    message = errors.format || errors.overLimit || null;
+  } else if (errors.overLimitShown && !errors.format) {
+    message = errors.overLimit || null;
   }
 
   var $formGroup = $quantityInput.closest('.govuk-form-group');
@@ -5861,6 +5874,7 @@ $(document).ready(function(){
       return false;
     }
 
+    setQuantityErrorsVisible(true);
     hideQuantityErrorSummary();
 
     if (window.SfiGrasslandsV4Aac && window.SfiGrasslandsV4Aac.isEnabled()) {
@@ -5928,6 +5942,7 @@ $(document).ready(function(){
       requiresWholeNumberQuantity(unit) && quantityInputHasDecimalPoint($input.val());
 
     if (window.SfiGrasslandsV4Aac && window.SfiGrasslandsV4Aac.isEnabled()) {
+      getQuantityErrorsStore($input).overLimitShown = false;
       if (hasClearlyInvalidQuantityInput($input.val()) || wholeNumberDecimal) {
         clearQuantityAacDebounce();
         updateQuantityFormatErrors($input);
@@ -5972,6 +5987,7 @@ $(document).ready(function(){
     }
 
     hideQuantityErrorSummary();
+    setQuantityErrorsVisible(false);
     resetActionSelectionUiState();
 
     originalSelectParcel(parcelId);
@@ -6486,7 +6502,7 @@ $(document).ready(function(){
         }
         mirrorClig3SupplementAvailableHints();
         // Re-check every quantity — BND1 length conflicts can invalidate other fields.
-        updateAacQuantityOverLimitErrors({ all: true });
+        updateAacQuantityOverLimitErrors({ all: true, reveal: true });
         refreshContinueFromActionSelection();
         captureCurrentParcelState();
       }
@@ -6883,6 +6899,9 @@ $(document).ready(function(){
       var $checkbox = getQuantityCheckbox($input);
       // Keep format errors (e.g. letter "d"); only manage over-limit here
       errors.overLimit = null;
+      if (options.reveal) {
+        errors.overLimitShown = true;
+      }
 
       if (!$checkbox.is(':checked')) {
         refreshQuantityFieldDisplay($input);
@@ -6937,6 +6956,9 @@ $(document).ready(function(){
       return;
     }
 
+    // Read before anything re-syncs selections from the new value
+    var wasTakingLand = window.SfiGrasslandsV4Aac.hasSelection(actionCode);
+
     var $input = $(inputEl);
     $input.data('blurred', true);
     updateQuantityFormatErrors($input);
@@ -6964,13 +6986,18 @@ $(document).ready(function(){
     // Check all quantities so shared-pool shrinks surface on related actions
     updateAacQuantityOverLimitErrors({ all: true });
 
-    // More than is available: error straight away, no "Updating…" spinner,
-    // and the entry doesn't take land from other actions
+    // More than is available: the field's own limit doesn't depend on its value, so the
+    // error can show straight away. The entry doesn't take land from other actions, so
+    // "Updating…" only runs if its previous amount was taking land and must be given back.
     if (errors.overLimit) {
       window.SfiGrasslandsV4Aac.setSelectionExcluded(actionCode, true);
-      window.SfiGrasslandsV4Aac.render();
-      applyGreyOutCnum2();
+      // Re-check now it's excluded, so other fields aren't judged against the oversized entry
       updateAacQuantityOverLimitErrors({ all: true });
+      errors.overLimitShown = true;
+      refreshQuantityFieldDisplay($input);
+      if (wasTakingLand) {
+        window.SfiGrasslandsV4Aac.runUpdate(actionCode);
+      }
       refreshContinueFromActionSelection();
       return;
     }

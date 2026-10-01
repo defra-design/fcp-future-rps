@@ -6,7 +6,8 @@
  */
 
 var parcelReference = require('./sfi-grasslands-v4-parcel-reference')
-var parcelsById = require('./data/sfi-grasslands-v4-land-details-parcels.json')
+var outlyingParcels = require('./assets/javascripts/sfi-grasslands-v4-outlying-parcels')
+var parcelsById = outlyingParcels.addTo(Object.assign({}, require('./data/sfi-grasslands-v4-land-details-parcels.json')))
 
 var BASE_PATH = '/sfi-grasslands-v4/rural-payments'
 var BUSINESS_NAME = 'AGILE FARM LTD'

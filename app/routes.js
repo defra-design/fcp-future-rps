@@ -7396,6 +7396,14 @@ router.get('/sfi-grasslands-v4/select-land-map-fluid-find', function (req, res) 
   }, getSfiGrasslandsV4CompatibilityLocals(req)))
 })
 
+// Exploration: parcels spread across several sites, grouped into clusters on the map
+router.get('/sfi-grasslands-v4/select-land-clusters', function (req, res) {
+  res.render('sfi-grasslands-v4/select-land-clusters', {
+    data: getSfiGrasslandsV4SessionData(req),
+    clusteredParcels: require('./data/sfi-grasslands-v4-clustered-parcels.json')
+  })
+})
+
 router.get('/sfi-grasslands-v4/select-land', function (req, res) {
   sfiGrasslandsV4Tasks.markInProgress(req, sfiGrasslandsV4Tasks.TASK_IDS.selectLand)
 

@@ -5,7 +5,8 @@
 
 var parcelReference = require('./sfi-grasslands-v4-parcel-reference')
 var consent = require('./sfi-grasslands-v4-consent')
-var parcelsById = require('./data/sfi-grasslands-v4-land-details-parcels.json')
+var outlyingParcels = require('./assets/javascripts/sfi-grasslands-v4-outlying-parcels')
+var parcelsById = outlyingParcels.addTo(Object.assign({}, require('./data/sfi-grasslands-v4-land-details-parcels.json')))
 
 var FARM_NAME = 'Agile Farm'
 var LAND_DETAILS_BASE = '/sfi-grasslands-v4/land-details'

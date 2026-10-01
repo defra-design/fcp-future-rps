@@ -1240,8 +1240,10 @@
   <script src="/public/javascripts/sfi-scheme-2026.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-mvp-actions.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-parcel-reference.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-outlying-parcels.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-existing-agreements.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-aac.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-select-land-map-clusters.js"></script>
 
   <!-- Pass server data to JavaScript -->
   <script id="application-parcels-data" type="application/json">{{ (applicationParcels or []) | dump | safe }}</script>
@@ -1360,12 +1362,74 @@
       }
     }
 
+    // Room for the cluster circles, plus a strip on the right for the zoom and pan controls
+    var ALL_PARCELS_FIT_PADDING_PX = { top: 40, right: 140, bottom: 40, left: 40 };
+
+    function getAllParcelsCamera() {
+      var allLatLngs = [];
+      Object.keys(parcelData).forEach(function(parcelId) {
+        var coords = parcelData[parcelId].coords;
+        if (Array.isArray(coords)) {
+          allLatLngs = allLatLngs.concat(coords);
+        }
+      });
+
+      if (!rawMap || !allLatLngs.length || typeof rawMap.cameraForBounds !== 'function') {
+        return null;
+      }
+
+      var camera = rawMap.cameraForBounds(createBoundsFromLatLngs(allLatLngs).toMapLibreBounds(), {
+        padding: ALL_PARCELS_FIT_PADDING_PX,
+        maxZoom: ALL_FARMS_MAP_ZOOM
+      });
+
+      if (!camera || !camera.center || !Number.isFinite(camera.zoom)) {
+        return null;
+      }
+
+      var center = Array.isArray(camera.center)
+        ? { lng: camera.center[0], lat: camera.center[1] }
+        : camera.center;
+      return { lat: center.lat, lng: center.lng, zoom: camera.zoom };
+    }
+
+    // Fits every parcel, so outlying sites show as clusters on load and after "View all land parcels"
     function establishDefaultMapView() {
-      defaultMapView = {
+      defaultMapView = getAllParcelsCamera() || {
         lat: ALL_FARMS_MAP_CENTER[0],
         lng: ALL_FARMS_MAP_CENTER[1],
         zoom: ALL_FARMS_MAP_ZOOM
       };
+    }
+
+    var SAVED_MAP_VIEW_KEY = 'sfiGrasslandsV4SelectLandMapView';
+
+    function saveMapView() {
+      if (!rawMap) {
+        return;
+      }
+      var center = rawMap.getCenter();
+      try {
+        sessionStorage.setItem(SAVED_MAP_VIEW_KEY, JSON.stringify({
+          lat: center.lat,
+          lng: center.lng,
+          zoom: rawMap.getZoom()
+        }));
+      } catch (error) {
+        // Storage can be unavailable (private browsing); the map still works without it.
+      }
+    }
+
+    function getSavedMapView() {
+      try {
+        var view = JSON.parse(sessionStorage.getItem(SAVED_MAP_VIEW_KEY));
+        if (view && Number.isFinite(view.lat) && Number.isFinite(view.lng) && Number.isFinite(view.zoom)) {
+          return view;
+        }
+      } catch (error) {
+        // Ignore missing or broken saved values
+      }
+      return null;
     }
 
     function isMapAwayFromDefaultView() {
@@ -1454,7 +1518,7 @@
 
     interactiveMap.on('search:match', function(event) {
       if (event && event.type === 'parcel') {
-        selectParcel(event.parcelId);
+        selectParcel(event.parcelId, { zoomToParcel: true });
       }
     });
 
@@ -1471,20 +1535,24 @@
         rawMap.scrollZoom.disable();
       }
 
+      // Once land has been added, come back to where the user was working.
+      // Before that, show every parcel. This runs before the ready callbacks so a parcel
+      // being restored can still zoom to itself.
+      establishDefaultMapView();
+      var hasAddedLand = Object.keys(applicationParcelIds).length > 0;
+      var startView = (hasAddedLand && getSavedMapView()) || defaultMapView;
+      rawMap.jumpTo({
+        center: [startView.lng, startView.lat],
+        zoom: startView.zoom
+      });
+
       mapReadyCallbacks.splice(0).forEach(function(callback) {
         callback(rawMap);
       });
 
-      establishDefaultMapView();
+      rawMap.on('moveend', saveMapView);
       rawMap.on('moveend', updateResetMapViewButtonVisibility);
-      rawMap.once('idle', function() {
-        if (isMapAwayFromDefaultView()) {
-          resetMapToAllParcelsView();
-          return;
-        }
-
-        updateResetMapViewButtonVisibility();
-      });
+      rawMap.once('idle', updateResetMapViewButtonVisibility);
     });
 
     window.addEventListener('resize', function() {
@@ -2578,6 +2646,10 @@
         delete parcelData[parcelId];
       }
     });
+
+    if (window.SfiGrasslandsV4OutlyingParcels) {
+      window.SfiGrasslandsV4OutlyingParcels.addTo(parcelData);
+    }
 
     if (window.SfiGrasslandsV4ParcelReference &&
         typeof window.SfiGrasslandsV4ParcelReference.applyToParcelData === 'function') {
@@ -3923,6 +3995,7 @@
     var PARCEL_FILL_LAYER_ID = 'parcels-fill';
     var PARCEL_LINE_LAYER_ID = 'parcels-line';
     var PARCEL_LABEL_LAYER_ID = 'parcels-labels';
+
     var parcelFeatureCollection = { type: 'FeatureCollection', features: [] };
     var parcelLayerEventsBound = false;
     var hoveredParcelId = null;
@@ -4053,13 +4126,13 @@
           source: PARCEL_SOURCE_ID,
           layout: {
             'text-field': ['get', 'displayName'],
-            'text-size': 11,
+            'text-size': ['interpolate', ['linear'], ['zoom'], 13, 11, 16, 13],
             'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular']
           },
           paint: {
             'text-color': labelColorExpr,
             'text-halo-color': '#ffffff',
-            'text-halo-width': 1
+            'text-halo-width': 1.5
           }
         });
       } else {
@@ -4083,9 +4156,14 @@
         hoveredParcelId = null;
       }
 
+      function isOverCluster(event) {
+        return Boolean(window.SfiGrasslandsV4SelectLandMapClusters &&
+          window.SfiGrasslandsV4SelectLandMapClusters.isClusterAt(mapInstance, event.point));
+      }
+
       function handleHover(event) {
         var parcelId = getParcelIdFromMapEvent(event);
-        if (!parcelId || parcelId === hoveredParcelId) {
+        if (!parcelId || parcelId === hoveredParcelId || isOverCluster(event)) {
           return;
         }
 
@@ -4102,7 +4180,7 @@
 
       function handleClick(event) {
         var parcelId = getParcelIdFromMapEvent(event);
-        if (!parcelId) {
+        if (!parcelId || isOverCluster(event)) {
           return;
         }
 
@@ -4388,6 +4466,13 @@
 
     onMapStyleReady(function(mapInstance) {
       ensureSharedParcelLayers(mapInstance);
+
+      if (window.SfiGrasslandsV4SelectLandMapClusters) {
+        window.SfiGrasslandsV4SelectLandMapClusters.attach(mapInstance, {
+          parcelData: parcelData,
+          labelLayerId: PARCEL_LABEL_LAYER_ID
+        });
+      }
 
       Object.keys(parcelPolygons).forEach(function(parcelId) {
         var polygon = parcelPolygons[parcelId];
@@ -5125,6 +5210,11 @@
     }
 
     // Function to select a parcel
+    // Close enough to see the parcel's shape, far enough to see its neighbours
+    var PARCEL_VIEW_MAX_ZOOM = 15;
+    var PARCEL_VIEW_MIN_ZOOM = 13;
+    var PARCEL_VIEW_PADDING_PX = 80;
+
     function selectParcel(parcelId, options) {
       var parcel = parcelData[parcelId];
       if (!parcel) return;
@@ -5275,11 +5365,15 @@
         }, 200);
       }
 
-      // Pan map to parcel - maintain zoom if switching between parcels
+      // Zoom to the parcel on search, first selection, or when it would be hidden in a cluster.
+      // Otherwise pan and keep the zoom, so moving between parcels feels steady.
       if (!options.skipMapMove && parcelPolygons[parcelId]) {
-        if (isFirstSelection) {
-          // First selection, fit bounds
-          map.fitBounds(parcelPolygons[parcelId].getBounds(), {padding: [50, 50]});
+        var isZoomedOutTooFar = map.getZoom() < PARCEL_VIEW_MIN_ZOOM;
+        if (options.zoomToParcel || isFirstSelection || isZoomedOutTooFar) {
+          map.fitBounds(parcelPolygons[parcelId].getBounds(), {
+            padding: PARCEL_VIEW_PADDING_PX,
+            maxZoom: PARCEL_VIEW_MAX_ZOOM
+          });
         } else {
           // Switching parcels, just pan to center maintaining zoom
           map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
@@ -5294,15 +5388,7 @@
     // Function to select parcel from list
     function selectParcelById(parcelId) {
       selectParcel(parcelId);
-      // Only zoom if no parcel is currently selected, otherwise just pan
-      if (parcelPolygons[parcelId]) {
-        if (currentSelectedParcel === null) {
-          map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
-        } else {
-          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
-        }
-        closeAllParcelPopups();
-      }
+      closeAllParcelPopups();
       // Scroll to map
       document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
     }
@@ -5425,6 +5511,10 @@
       });
 
       mapField.addEventListener('keydown', function(event) {
+        // The search box and map buttons sit inside the map field, so their keys bubble up here
+        if (event.target !== mapField && event.target.closest('input, textarea, select, button, a, [role="listbox"]')) {
+          return;
+        }
         var key = event.key;
         if (key === 'ArrowRight' || key === 'ArrowDown') {
           event.preventDefault();
@@ -5795,12 +5885,7 @@
         
         // Select the parcel after a short delay to ensure map is ready
         setTimeout(function() {
-          selectParcel(selectedParcelId);
-          
-          // Zoom to the parcel
-          if (parcelPolygons[selectedParcelId]) {
-            map.fitBounds(parcelPolygons[selectedParcelId].getBounds(), {padding: [50, 50]});
-          }
+          selectParcel(selectedParcelId, { zoomToParcel: true });
 
           enableReturnFromCheckYourAnswersFlow();
         }, 500);
@@ -5820,10 +5905,7 @@
 
         if (parcelIdToRestore) {
           onMapReady(function() {
-            selectParcel(parcelIdToRestore, { skipMapMove: false, scrollToSummary: false });
-            if (parcelPolygons[parcelIdToRestore]) {
-              map.fitBounds(parcelPolygons[parcelIdToRestore].getBounds(), { padding: [50, 50] });
-            }
+            selectParcel(parcelIdToRestore, { zoomToParcel: true, scrollToSummary: false });
           });
         }
       } catch (draftErr) {

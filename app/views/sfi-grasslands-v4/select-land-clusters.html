@@ -1,0 +1,93 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4/task-list" %}
+{% extends "layouts/sfi-grasslands-v4-header.html" %}
+
+{% block pageTitle %}
+  Select your land parcels
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4/_includes/account-bar.html" %}
+
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/dist/css/index.css">
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/css/index.css">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v4-select-land-clusters.css">
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v4/index"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Select your land parcels</h1>
+      <p class="govuk-body">Your land is in {{ clusteredParcels.sites | length }} places. Numbers on the map show how many land parcels are in that area. Select a number to zoom in to those parcels.</p>
+    </div>
+  </div>
+
+  <div class="app-cluster-map">
+    <div id="map" role="region" aria-label="Map of your land parcels"></div>
+  </div>
+
+  <ul class="app-cluster-map-key" aria-label="Map key">
+    <li><span class="app-cluster-map-key__swatch app-cluster-map-key__swatch--parcel"></span>Land parcel</li>
+    <li><span class="app-cluster-map-key__swatch app-cluster-map-key__swatch--selected"></span>Selected land parcel</li>
+    <li><span class="app-cluster-map-key__swatch app-cluster-map-key__swatch--cluster">5</span>Group of land parcels</li>
+  </ul>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h2 class="govuk-heading-m">Where your land is</h2>
+      <ul class="govuk-list app-cluster-site-list">
+        {% for site in clusteredParcels.sites %}
+          <li>
+            <button type="button" class="app-cluster-site-list__button" data-site-id="{{ site.id }}">
+              {{ site.name }}
+            </button>
+            <span class="app-cluster-site-list__count">{{ site.parcelCount }} {{ "land parcel" if site.parcelCount == 1 else "land parcels" }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="govuk-grid-column-one-half">
+      <div id="selected-parcel" aria-live="polite">
+        <h2 class="govuk-heading-m">Selected land parcel</h2>
+        <p class="govuk-body" id="selected-parcel-empty">Select a land parcel on the map.</p>
+        <dl class="govuk-summary-list" id="selected-parcel-details" hidden>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Land parcel</dt>
+            <dd class="govuk-summary-list__value" data-field="reference"></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Location</dt>
+            <dd class="govuk-summary-list__value" data-field="site"></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Land cover</dt>
+            <dd class="govuk-summary-list__value" data-field="landCover"></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Total area</dt>
+            <dd class="govuk-summary-list__value" data-field="area"></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/plugin-assets/%40defra%2Finteractive-map/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/umd/index.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4-map-reset-button.js"></script>
+
+  <script id="clustered-parcels-data" type="application/json">{{ clusteredParcels | dump | safe }}</script>
+  <script src="/public/javascripts/sfi-grasslands-v4-select-land-clusters.js"></script>
+{% endblock %}
