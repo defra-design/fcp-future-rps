@@ -10,7 +10,7 @@
   {{ super() }}
   {% include "sfi-grasslands-v4/_includes/account-bar.html" %}
   {{ govukBackLink({
-    text: backLinkText or "Back to select actions",
+    text: "Back",
     href: backHref or "/sfi-grasslands-v4/select-actions"
   }) }}
 {% endblock %}

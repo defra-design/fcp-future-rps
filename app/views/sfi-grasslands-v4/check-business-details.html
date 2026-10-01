@@ -13,12 +13,12 @@
   {% set fromCheckYourAnswers = (returnTo == 'check-your-answers') or (data['sfiEligibilityReturnTo'] == 'check-your-answers') %}
   {% if fromCheckYourAnswers %}
     {{ govukBackLink({
-      text: "Back to check your answers",
+      text: "Back",
       href: "/sfi-grasslands-v4/check-your-answers"
     }) }}
   {% else %}
     {{ govukBackLink({
-      text: "Back to task list",
+      text: "Back",
       href: "/sfi-grasslands-v4/task-list"
     }) }}
   {% endif %}

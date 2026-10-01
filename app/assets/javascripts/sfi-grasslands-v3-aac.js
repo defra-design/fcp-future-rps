@@ -18,6 +18,8 @@
     parcel: null,
     actions: [],
     selections: {},
+    // Entries over their available amount — they don't take land from other actions
+    excludedCodes: {},
     incompatibleByCode: {},
     // Full compatibility matrix — used only for previous-agreement area deductions
     previousAgreementIncompatibleByCode: {},
@@ -1731,6 +1733,9 @@
     state.selections = {}
     Array.prototype.forEach.call(document.querySelectorAll('input[name="actions"]:checked'), function (checkbox) {
       var code = checkbox.value
+      if (state.excludedCodes[code]) {
+        return
+      }
       var quantityInput = getActionQuantityInput(code)
       var raw = quantityInput ? String(quantityInput.value || '').trim() : ''
       // Accept pasted en-GB values such as "1,071"
@@ -1959,6 +1964,7 @@
 
     if (parcelChanged || options.resetSelections) {
       state.selections = {}
+      state.excludedCodes = {}
     }
 
     if (state.enabled && state.parcelId) {
@@ -1996,6 +2002,18 @@
         }
       })
       render()
+    }
+  }
+
+  function setSelectionExcluded (code, excluded) {
+    var key = String(code || '').toUpperCase()
+    if (!key) {
+      return
+    }
+    if (excluded) {
+      state.excludedCodes[key] = true
+    } else {
+      delete state.excludedCodes[key]
     }
   }
 
@@ -2055,6 +2073,7 @@
     recalculate: recalculate,
     runUpdate: runUpdate,
     syncSelectionsFromDom: syncSelectionsFromDom,
+    setSelectionExcluded: setSelectionExcluded,
     applyToCheckboxes: applyToCheckboxes,
     getSelectionsForSave: getSelectionsForSave,
     getParcelAreaBreakdown: getParcelAreaBreakdown,

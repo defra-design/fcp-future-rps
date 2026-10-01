@@ -23,12 +23,12 @@
 
   {% if isEditingLandActions %}
     {{ govukBackLink({
-      text: "Back to your land and actions",
+      text: "Back",
       href: "/sfi-grasslands-v4/cancel-land-actions-draft"
     }) }}
   {% else %}
     {{ govukBackLink({
-      text: "Back to select your land parcels",
+      text: "Back",
       href: "/sfi-grasslands-v4/select-land"
     }) }}
   {% endif %}
@@ -407,6 +407,8 @@
   <script src="/public/javascripts/sfi-grasslands-v4-mvp-actions.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-parcel-reference.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-existing-agreements.js"></script>
+  <script id="limited-area-json" type="application/json">{{ limitedAreaConfig | dump | safe }}</script>
+  <script src="/public/javascripts/sfi-grasslands-v4-limited-area.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-actions-compatibility-loading.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4-aac.js"></script>
 

@@ -18,6 +18,8 @@
     parcel: null,
     actions: [],
     selections: {},
+    // Entries over their available amount — they don't take land from other actions
+    excludedCodes: {},
     incompatibleByCode: {},
     // Full compatibility matrix — used only for previous-agreement area deductions
     previousAgreementIncompatibleByCode: {},
@@ -848,6 +850,11 @@
     return Number.isFinite(value) && value > 0 ? value : 0
   }
 
+  function getLimitedArea () {
+    var limitedArea = window.SfiGrasslandsV4LimitedArea
+    return limitedArea && limitedArea.isEnabled() ? limitedArea : null
+  }
+
   function getHardIncompatibilities (code) {
     return state.incompatibleByCode[code] || []
   }
@@ -1018,6 +1025,7 @@
       var usedByOthers = getUsedByOtherUnitActions(code, base.unit)
       var available = base.baseEligible
       var allocationNote = null
+      var limitedAreaCapped = false
 
       // Shared pool by unit: ha actions share hectares; metre actions use directed
       // boundary-length reductions (BND1 vs BND2/CHRW2/WBD2; others compatible).
@@ -1054,6 +1062,20 @@
             label: 'Used by your other selected actions',
             ha: base.unit === 'ha' ? Math.min(usedByOthers, base.baseEligible) : usedByOthers,
             unit: base.unit
+          }
+        }
+
+        var limitedArea = getLimitedArea()
+        if (base.unit === 'ha' && limitedArea && limitedArea.isLimitedCode(code)) {
+          var limitedMax = limitedArea.getMaxForAction(code, state.parcelId, state.selections)
+          if (limitedMax < available) {
+            allocationNote = {
+              label: 'Limited by the 25% limit for limited-area actions',
+              ha: roundHa4(available - limitedMax),
+              unit: 'ha'
+            }
+            available = limitedMax
+            limitedAreaCapped = true
           }
         }
       }
@@ -1099,7 +1121,9 @@
       } else if (remainingForInput <= 0 && selectedQuantity <= 0) {
         status = 'unavailable'
         statusText = 'Unavailable'
-        if (usedByOthers > 0) {
+        if (limitedAreaCapped) {
+          summaryReason = 'You have used all of your 25% limit for limited-area actions'
+        } else if (usedByOthers > 0) {
           summaryReason = base.unit === 'm'
             ? 'No metres are left for this action. They are already being used by your other selected actions.'
             : base.unit === 'm²'
@@ -1142,6 +1166,7 @@
         eligibleLand: base.eligibleLand,
         exclusions: base.exclusions,
         allocationNote: allocationNote,
+        limitedAreaCapped: limitedAreaCapped,
         hardConflict: hardConflict,
         baseEligible: base.baseEligible,
         baseBeforeProtectedLand: breakdownBase,
@@ -1813,6 +1838,9 @@
     state.selections = {}
     Array.prototype.forEach.call(document.querySelectorAll('input[name="actions"]:checked'), function (checkbox) {
       var code = checkbox.value
+      if (state.excludedCodes[code]) {
+        return
+      }
       var quantityInput = getActionQuantityInput(code)
       var raw = quantityInput ? String(quantityInput.value || '').trim() : ''
       // Accept pasted en-GB values such as "1,071"
@@ -2041,6 +2069,7 @@
 
     if (parcelChanged || options.resetSelections) {
       state.selections = {}
+      state.excludedCodes = {}
     }
 
     if (state.enabled && state.parcelId) {
@@ -2078,6 +2107,18 @@
         }
       })
       render()
+    }
+  }
+
+  function setSelectionExcluded (code, excluded) {
+    var key = String(code || '').toUpperCase()
+    if (!key) {
+      return
+    }
+    if (excluded) {
+      state.excludedCodes[key] = true
+    } else {
+      delete state.excludedCodes[key]
     }
   }
 
@@ -2137,6 +2178,7 @@
     recalculate: recalculate,
     runUpdate: runUpdate,
     syncSelectionsFromDom: syncSelectionsFromDom,
+    setSelectionExcluded: setSelectionExcluded,
     applyToCheckboxes: applyToCheckboxes,
     getSelectionsForSave: getSelectionsForSave,
     getParcelAreaBreakdown: getParcelAreaBreakdown,

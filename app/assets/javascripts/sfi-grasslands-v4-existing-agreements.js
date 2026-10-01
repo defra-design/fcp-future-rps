@@ -234,6 +234,14 @@
     return actions
   }
 
+  function getAllExistingAgreementActions () {
+    return Object.keys(EXISTING_AGREEMENTS).reduce(function (all, parcelId) {
+      return all.concat(getExistingAgreementActions(parcelId).map(function (action) {
+        return Object.assign({ parcelId: parcelId }, action)
+      }))
+    }, [])
+  }
+
   function countExistingAgreementActions (parcelId) {
     return getExistingAgreementActions(parcelId).length
   }
@@ -284,6 +292,7 @@
 
   window.SfiGrasslandsV4ExistingAgreements = {
     get: getExistingAgreementActions,
+    getAll: getAllExistingAgreementActions,
     getAgreements: getAgreements,
     count: countExistingAgreements,
     countActions: countExistingAgreementActions,

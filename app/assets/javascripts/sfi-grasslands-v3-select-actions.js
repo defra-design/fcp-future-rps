@@ -2008,34 +2008,39 @@ function hasClearlyInvalidQuantityInput(rawValue) {
   return !parsed.valid && parsed.reason === 'zero';
 }
 
-function getFormatErrorMessage(unit, reason, actionCode) {
-  if (reason === 'zero') {
-    return 'Enter a number greater than 0';
-  }
-
-  if (reason === 'whole') {
-    if (unit === 'm²') {
-      var code = String(actionCode || '').toUpperCase();
-      return code
-        ? 'Enter the quantity in whole square metres for ' + code
-        : 'Enter the quantity in whole square metres';
-    }
-    return 'Enter a whole number of ponds, for example 1 or 2';
-  }
-
+// One message per unit for every invalid entry (empty, 0, letters, wrong decimals)
+function getFormatErrorMessage(unit) {
   if (isPondUnit(unit)) {
-    return 'Enter a number of ponds, for example 1 or 2';
+    return 'Enter number of ponds – for example, 2';
   }
 
   if (unit === 'm') {
-    return 'Enter a number of metres, for example 100 or 250';
+    return 'Enter number of metres, rounded down to the nearest metre – for example, 234';
   }
 
   if (unit === 'm²') {
-    return 'Enter a number of square metres, for example 50 or 120';
+    return 'Enter number of square metres, rounded down to the nearest whole number – for example, 234';
   }
 
-  return 'Enter a number of hectares, for example 12.5 or 100';
+  return 'Enter number of hectares, up to 4 decimal places – for example, 12.3456';
+}
+
+function getOverLimitErrorMessage(unit) {
+  if (unit === 'm') {
+    return 'Enter a number that is not higher than the available metres';
+  }
+
+  if (unit === 'm²') {
+    return 'Enter a number that is not higher than the available square metres';
+  }
+
+  return 'Enter a number that is not higher than the available hectares';
+}
+
+// Hectares must be typed with exactly 4 decimal places, for example 10.0000
+function hasFourDecimalPlaces(rawValue) {
+  var normalised = String(rawValue || '').trim().replace(/,/g, '').replace(/\s/g, '');
+  return /^\d+\.\d{4}$/.test(normalised);
 }
 
 function getQuantityCheckbox($quantityInput) {
@@ -2084,6 +2089,7 @@ function refreshQuantityFieldDisplay($quantityInput) {
 function clearQuantityFieldValidation($quantityInput) {
   $quantityInput.removeData('quantityErrors');
   $quantityInput.removeData('blurred');
+  $quantityInput.removeData('requireValue');
 
   var $formGroup = $quantityInput.closest('.govuk-form-group');
   $formGroup.removeClass('govuk-form-group--error');
@@ -2118,7 +2124,8 @@ function quantityInputHasDecimalPoint(rawValue) {
 }
 
 function requiresWholeNumberQuantity(unit) {
-  return isPondUnit(unit) || unit === 'm²';
+  // Boundary length (m), building area (m²), and ponds must be whole numbers.
+  return isPondUnit(unit) || unit === 'm' || unit === 'm²';
 }
 
 function updateQuantityFormatErrors($quantityInput) {
@@ -2135,16 +2142,25 @@ function updateQuantityFormatErrors($quantityInput) {
   var actionCode = ($quantityInput.attr('id') || '').replace('quantity-', '').toUpperCase();
   var rawValue = $quantityInput.val();
   var parsed = parseQuantityInput(rawValue);
+  // Empty only counts as an error after Continue, so ticking a box doesn't show one straight away
+  var flagEmpty = $quantityInput.data('requireValue') && $quantityInput.attr('type') === 'text';
 
-  if (!parsed.valid && parsed.reason !== 'empty') {
-    errors.format = getFormatErrorMessage(unit, parsed.reason, actionCode);
+  if (!parsed.valid && (parsed.reason !== 'empty' || flagEmpty)) {
+    errors.format = getFormatErrorMessage(unit);
   } else if (
     parsed.valid &&
     requiresWholeNumberQuantity(unit) &&
     (quantityInputHasDecimalPoint(rawValue) || !Number.isInteger(parsed.value))
   ) {
     // Keep the typed value — do not round decimals to a whole number
-    errors.format = getFormatErrorMessage(unit, 'whole', actionCode);
+    errors.format = getFormatErrorMessage(unit);
+  } else if (
+    parsed.valid &&
+    unit === 'ha' &&
+    $quantityInput.attr('type') === 'text' &&
+    !hasFourDecimalPlaces(rawValue)
+  ) {
+    errors.format = getFormatErrorMessage(unit);
   }
 
   refreshQuantityFieldDisplay($quantityInput);
@@ -5665,11 +5681,11 @@ $(document).ready(function(){
 
       if (isOverLimit && parsed.valid) {
         if (suffix === 'ha' && isOverLimitHa) {
-          errors.overLimit = 'Total area exceeds ' + totalAreaHa + ' available on this parcel';
+          errors.overLimit = getOverLimitErrorMessage('ha');
         } else if (suffix === 'm' && isOverLimitM) {
-          errors.overLimit = 'Total metres exceeds ' + Math.max(0, Math.round(totalAreaM)).toLocaleString('en-GB') + ' available on this parcel';
+          errors.overLimit = getOverLimitErrorMessage('m');
         } else if (suffix === 'm²' && isOverLimitM2) {
-          errors.overLimit = 'Total square metres exceeds ' + Math.max(0, Math.round(totalAreaM2)).toLocaleString('en-GB') + ' available on this parcel';
+          errors.overLimit = getOverLimitErrorMessage('m²');
         }
       }
 
@@ -5734,6 +5750,7 @@ $(document).ready(function(){
         var actionCode = ($(this).val() || '').toString();
         var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
         $quantityInput.data('blurred', true);
+        $quantityInput.data('requireValue', $quantityInput.is(':visible'));
         updateQuantityFormatErrors($quantityInput);
       });
       // On Continue, check every quantity — live UI only flags the last edited field
@@ -5743,6 +5760,7 @@ $(document).ready(function(){
         var actionCode = ($(this).val() || '').toString();
         var $quantityInput = $('#quantity-' + actionCode.toLowerCase());
         $quantityInput.data('blurred', true);
+        $quantityInput.data('requireValue', $quantityInput.is(':visible'));
         updateQuantityFormatErrors($quantityInput);
       });
       updateAvailableQuantities();
@@ -6779,17 +6797,9 @@ $(document).ready(function(){
           // Pond count is user-declared — do not validate against parcel hectares
           refreshQuantityFieldDisplay($input);
           return;
-        } else if (action.unit === 'm') {
-          errors.overLimit = 'Enter up to ' +
-            Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
-            ' metres';
-        } else if (action.unit === 'm²') {
-          errors.overLimit = 'Enter up to ' +
-            Math.max(0, Math.round(maxAllowed)).toLocaleString('en-GB') +
-            ' square metres';
-        } else {
-          errors.overLimit = 'Enter up to ' + Number(maxAllowed).toFixed(4) + ' hectares';
         }
+
+        errors.overLimit = getOverLimitErrorMessage(action.unit);
       }
 
       refreshQuantityFieldDisplay($input);
@@ -6824,13 +6834,27 @@ $(document).ready(function(){
     // Invalid characters (e.g. "d") — show format error only, skip AAC recalculation
     var errors = getQuantityErrorsStore($input);
     if (errors.format) {
+      window.SfiGrasslandsV3Aac.setSelectionExcluded(actionCode, true);
       errors.overLimit = null;
       refreshQuantityFieldDisplay($input);
       refreshContinueFromActionSelection();
       return;
     }
 
+    window.SfiGrasslandsV3Aac.setSelectionExcluded(actionCode, false);
+
     updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+
+    // More than is available: error straight away, no "Updating…" spinner,
+    // and the entry doesn't take land from other actions
+    if (errors.overLimit) {
+      window.SfiGrasslandsV3Aac.setSelectionExcluded(actionCode, true);
+      window.SfiGrasslandsV3Aac.render();
+      applyGreyOutCnum2();
+      updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+      refreshContinueFromActionSelection();
+      return;
+    }
 
     if (rawValue) {
       // 2.5s simulated API + inline “Updating…” — then refresh shared-pool hints
@@ -7032,15 +7056,17 @@ $(document).ready(function(){
         return false;
       }
 
+      // Quantity errors first, so ticked actions with empty quantities aren't reported as "nothing selected"
+      if (!validateBeforeSave()) {
+        e.preventDefault();
+        hideActionsSelectionError();
+        return false;
+      }
+
       var draftActionsPayload = buildDraftLandActionsPayload();
       if (!draftActionsPayload.length) {
         e.preventDefault();
         showActionsSelectionError('Select at least one action');
-        return false;
-      }
-
-      if (!validateBeforeSave()) {
-        e.preventDefault();
         return false;
       }
 
