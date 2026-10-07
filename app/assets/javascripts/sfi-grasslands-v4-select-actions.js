@@ -1723,7 +1723,8 @@ function formatPondCount(count) {
   return n === 1 ? '1 pond' : n.toLocaleString('en-GB') + ' ponds';
 }
 
-// CLIG3 always takes all remaining available hectares — no quantity input
+// CLIG3 must use all the hectares available to it. Users type the quantity like any
+// other action, and entering less than the available area is an error.
 function isWholeRemainingAreaAction(actionCode) {
   return String(actionCode || '').toUpperCase() === 'CLIG3';
 }
@@ -1852,14 +1853,6 @@ function syncClig3SupplementRadiosFromCheckboxes() {
   syncClig3SupplementCheckboxesFromRadios();
 }
 
-function getClig3AvailableHintAmount() {
-  var $clig3 = $('input[name="actions"][value="CLIG3"]');
-  if ($clig3.length && $clig3.is(':checked')) {
-    return 0;
-  }
-  return getWholeRemainingAreaHa('CLIG3');
-}
-
 function getWholeRemainingAreaHa(actionCode) {
   var code = String(actionCode || '').toUpperCase();
   if (!isWholeRemainingAreaAction(code)) {
@@ -1915,39 +1908,7 @@ function getWholeRemainingAreaHa(actionCode) {
   return Math.max(0, Math.round((totalAreaHa - (totals.ha - clig3Value)) * 10000) / 10000);
 }
 
-function syncWholeRemainingAreaAction(actionCode) {
-  var code = String(actionCode || '').toUpperCase();
-  if (!isWholeRemainingAreaAction(code)) {
-    return;
-  }
-
-  var codeLower = code.toLowerCase();
-  var $checkbox = $('input[name="actions"][value="' + code + '"]');
-  var $quantityInput = $('#quantity-' + codeLower);
-  var amountEl = document.getElementById('whole-remaining-amount-' + codeLower);
-  if (!$checkbox.length || !$quantityInput.length) {
-    return;
-  }
-
-  if (!$checkbox.is(':checked')) {
-    $quantityInput.val('');
-    if (amountEl) {
-      amountEl.textContent = '0.0000';
-    }
-    return;
-  }
-
-  var remainingHa = getWholeRemainingAreaHa(code);
-  $quantityInput.val(remainingHa.toFixed(4));
-  if (amountEl) {
-    amountEl.textContent = remainingHa.toFixed(4);
-  }
-}
-
-function syncAllWholeRemainingAreaActions() {
-  ['CLIG3'].forEach(function(code) {
-    syncWholeRemainingAreaAction(code);
-  });
+function syncClig3Supplements() {
   syncClig3SupplementQuantitiesFromBase();
   mirrorClig3SupplementAvailableHints();
 }
@@ -2028,15 +1989,6 @@ function createActionAvailableHint(actionCode) {
     );
   }
   return availableHint;
-}
-
-function createClig3FullAreaHint(actionCode) {
-  var codeLower = String(actionCode || '').toLowerCase();
-  var hint = document.createElement('p');
-  hint.className = 'govuk-hint app-action-full-area-hint';
-  hint.id = 'action-full-area-hint-' + codeLower;
-  hint.innerHTML = '<strong>This action uses all the available area.</strong><br>To add another grassland action, deselect this action and select the other action first. You can then select this action again to use the remaining area.';
-  return hint;
 }
 
 function getLinearAvailableMetres(parcel, actionCode) {
@@ -2141,6 +2093,17 @@ function getOverLimitErrorMessage(unit) {
   return 'Enter a number that is not higher than the available hectares';
 }
 
+// For actions that must use all their available area (CLIG3). Returns null when the amount is fine.
+function getWholeAreaShortfallErrorMessage(actionCode, enteredHa, availableHa) {
+  if (!isWholeRemainingAreaAction(actionCode) || !(availableHa > 0)) {
+    return null;
+  }
+  if (enteredHa >= availableHa - 0.0001) {
+    return null;
+  }
+  return 'Enter ' + availableHa.toFixed(4) + ' hectares, which is the total available area for this action';
+}
+
 function getQuantityCheckbox($quantityInput) {
   var codeLower = ($quantityInput.attr('id') || '').replace('quantity-', '');
   return $('input[name="actions"][value="' + codeLower.toUpperCase() + '"]');
@@ -2184,12 +2147,31 @@ function refreshQuantityFieldDisplay($quantityInput) {
   if (message) {
     $formGroup.addClass('govuk-form-group--error');
     $quantityInput.addClass('govuk-input--error');
-    $formGroup.find('label').first().after(
+    var $hint = $formGroup.find('.govuk-hint').first();
+    ($hint.length ? $hint : $formGroup.find('label').first()).after(
       '<p class="govuk-error-message" id="error-' + $quantityInput.attr('id') + '"><span class="govuk-visually-hidden">Error:</span> ' + message + '</p>'
     );
   } else {
     $formGroup.removeClass('govuk-form-group--error');
     $quantityInput.removeClass('govuk-input--error');
+  }
+  setQuantityDescribedBy($quantityInput, Boolean(message));
+}
+
+// Screen readers announce the hint, then any error, when the field gets focus
+function setQuantityDescribedBy($quantityInput, hasError) {
+  var $hint = $quantityInput.closest('.govuk-form-group').find('.govuk-hint').first();
+  var ids = [];
+  if ($hint.length) {
+    ids.push($hint.attr('id'));
+  }
+  if (hasError) {
+    ids.push('error-' + $quantityInput.attr('id'));
+  }
+  if (ids.length) {
+    $quantityInput.attr('aria-describedby', ids.join(' '));
+  } else {
+    $quantityInput.removeAttr('aria-describedby');
   }
 }
 
@@ -2202,6 +2184,7 @@ function clearQuantityFieldValidation($quantityInput) {
   $formGroup.removeClass('govuk-form-group--error');
   $quantityInput.removeClass('govuk-input--error');
   $formGroup.find('.govuk-error-message').remove();
+  setQuantityDescribedBy($quantityInput, false);
 }
 
 function hideQuantityErrorSummary() {
@@ -3530,43 +3513,6 @@ function createActionCheckboxElements(action) {
   conditional.className = 'govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
   conditional.id = 'conditional-' + codeLower;
 
-  if (isWholeRemainingAreaAction(action.code)) {
-    conditional.setAttribute('data-whole-remaining-area', 'true');
-
-    var formGroup = document.createElement('div');
-    formGroup.className = 'govuk-form-group govuk-!-margin-bottom-0';
-
-    var qtyLabel = document.createElement('p');
-    qtyLabel.className = 'govuk-label govuk-!-margin-bottom-1';
-    qtyLabel.id = 'whole-remaining-label-' + codeLower;
-    qtyLabel.textContent = 'Quantity';
-
-    var amountText = document.createElement('p');
-    amountText.className = 'govuk-body govuk-!-margin-bottom-1';
-    amountText.id = 'whole-remaining-summary-' + codeLower;
-    amountText.setAttribute('aria-labelledby', qtyLabel.id);
-    amountText.innerHTML =
-      '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> ha</strong>';
-
-    // Shown only when selected (conditional panel) — these actions always take the full pool
-    var fullAreaHint = createClig3FullAreaHint(action.code);
-    amountText.setAttribute('aria-describedby', fullAreaHint.id);
-
-    var hiddenQty = document.createElement('input');
-    hiddenQty.type = 'hidden';
-    hiddenQty.id = 'quantity-' + codeLower;
-    hiddenQty.name = 'quantity-' + codeLower;
-    hiddenQty.value = '';
-    hiddenQty.setAttribute('data-whole-remaining-quantity', 'true');
-
-    formGroup.appendChild(qtyLabel);
-    formGroup.appendChild(amountText);
-    formGroup.appendChild(fullAreaHint);
-    formGroup.appendChild(hiddenQty);
-    conditional.appendChild(formGroup);
-    return { item: item, conditional: conditional };
-  }
-
   var quantityFormGroup = document.createElement('div');
   quantityFormGroup.className = 'govuk-form-group';
 
@@ -3596,6 +3542,16 @@ function createActionCheckboxElements(action) {
   wrapper.appendChild(qtyInput);
   wrapper.appendChild(suffix);
   quantityFormGroup.appendChild(quantityLabel);
+
+  if (isWholeRemainingAreaAction(action.code)) {
+    var quantityHint = document.createElement('div');
+    quantityHint.className = 'govuk-hint';
+    quantityHint.id = 'quantity-' + codeLower + '-hint';
+    quantityHint.textContent = 'Enter the total available area';
+    quantityFormGroup.appendChild(quantityHint);
+    qtyInput.setAttribute('aria-describedby', quantityHint.id);
+  }
+
   quantityFormGroup.appendChild(wrapper);
   conditional.appendChild(quantityFormGroup);
 
@@ -4296,11 +4252,10 @@ function restoreParcelState(parcelId) {
       }
     }
     syncClig3SupplementRadiosFromCheckboxes();
-    // AAC first so CLIG3 quantity sync can read the real available pool
     if (window.SfiGrasslandsV4Aac && window.SfiGrasslandsV4Aac.isEnabled()) {
       window.SfiGrasslandsV4Aac.render();
     }
-    syncAllWholeRemainingAreaActions();
+    syncClig3Supplements();
   }
 
   var hasQueuedActionFocus = Boolean(pendingActionFocusCode);
@@ -5740,7 +5695,7 @@ $(document).ready(function(){
 
     // AAC mode owns available-area hints and which actions stay visible
     if (window.SfiGrasslandsV4Aac && window.SfiGrasslandsV4Aac.isEnabled()) {
-      syncAllWholeRemainingAreaActions();
+      syncClig3Supplements();
       return;
     }
 
@@ -5787,8 +5742,6 @@ $(document).ready(function(){
       }
     });
 
-    // CLIG3 has no quantity input — show remaining pool until selected, then 0
-    setActionAvailableHint('CLIG3', getClig3AvailableHintAmount());
     mirrorClig3SupplementAvailableHints();
 
     // Tier 1: live over-limit validation
@@ -5819,6 +5772,14 @@ $(document).ready(function(){
         } else if (suffix === 'm²' && isOverLimitM2) {
           errors.overLimit = getOverLimitErrorMessage('m²');
         }
+      }
+
+      if (!errors.overLimit && parsed.valid) {
+        errors.overLimit = getWholeAreaShortfallErrorMessage(
+          actionCode,
+          parsed.value,
+          getWholeRemainingAreaHa(actionCode)
+        );
       }
 
       refreshQuantityFieldDisplay($input);
@@ -5866,7 +5827,7 @@ $(document).ready(function(){
       updateCompatibilityState();
     }
 
-    syncAllWholeRemainingAreaActions();
+    syncClig3Supplements();
   }
 
   function validateBeforeSave() {
@@ -6495,12 +6456,7 @@ $(document).ready(function(){
       },
       onAfterRecalculate: function() {
         applyGreyOutCnum2();
-        var clig3Before = $('#quantity-clig3').val();
-        syncAllWholeRemainingAreaActions();
-        if ($('#quantity-clig3').val() !== clig3Before) {
-          window.SfiGrasslandsV4Aac.render();
-        }
-        mirrorClig3SupplementAvailableHints();
+        syncClig3Supplements();
         // Re-check every quantity — BND1 length conflicts can invalidate other fields.
         updateAacQuantityOverLimitErrors({ all: true, reveal: true });
         refreshContinueFromActionSelection();
@@ -6825,27 +6781,14 @@ $(document).ready(function(){
       }
       if (isWholeRemainingAreaAction(actionCode)) {
         clearClig3SupplementSelections();
-        syncWholeRemainingAreaAction(actionCode);
       }
-    } else if (isWholeRemainingAreaAction(actionCode)) {
-      // Commit all remaining area as soon as the box is ticked
-      syncWholeRemainingAreaAction(actionCode);
     }
 
     // AAC mode: checking a box is instant — only quantity entry simulates the API wait
-    // (CLIG3 commits quantity on check, so conflicts update immediately)
     if (window.SfiGrasslandsV4Aac && window.SfiGrasslandsV4Aac.isEnabled()) {
-      if (
-        !isRestoringActionSelections &&
-        isWholeRemainingAreaAction(actionCode) &&
-        $(changedCheckbox).is(':checked')
-      ) {
-        window.SfiGrasslandsV4Aac.runUpdate(actionCode);
-      } else {
-        window.SfiGrasslandsV4Aac.render();
-      }
+      window.SfiGrasslandsV4Aac.render();
       applyGreyOutCnum2();
-      syncAllWholeRemainingAreaActions();
+      syncClig3Supplements();
       refreshContinueFromActionSelection();
       return;
     }
@@ -6856,13 +6799,13 @@ $(document).ready(function(){
       typeof window.SfiGrasslandsV4ActionsCompatibilityLoading.updateCompatibility === 'function'
     ) {
       window.SfiGrasslandsV4ActionsCompatibilityLoading.updateCompatibility(changedCheckbox);
-      syncAllWholeRemainingAreaActions();
+      syncClig3Supplements();
       return;
     }
 
     updateCompatibilityState();
     updateAvailableQuantities({ skipCompatibilityUpdate: true });
-    syncAllWholeRemainingAreaActions();
+    syncClig3Supplements();
   });
 
   // After any AAC recalculation, re-check every quantity for over-limit.
@@ -6939,6 +6882,10 @@ $(document).ready(function(){
         if (action.limitedAreaCapped) {
           errors.overLimit += '. CIGL1 and CIGL2 together can only use 25% of your total farm area';
         }
+      } else {
+        // Too little for CLIG3 is handled like too much: shown once typing stops, and the
+        // entry doesn't take land from other actions until it's fixed
+        errors.overLimit = getWholeAreaShortfallErrorMessage(actionCode, parsed.value, maxAllowed);
       }
 
       refreshQuantityFieldDisplay($input);

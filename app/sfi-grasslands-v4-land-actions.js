@@ -398,11 +398,11 @@ function groupParcelActionsForDisplay (actions) {
 }
 
 function supplementRequiresQuantityInput (code) {
-  var normalised = String(code || '').toUpperCase()
-  return normalised === 'GRH7' || normalised === 'GRH8'
+  return Boolean(STACKED_SUPPLEMENT_CODES[String(code || '').toUpperCase()])
 }
 
-function supplementAppliesFullClig3Area (code) {
+// GRH10 has to cover all the CLIG3 land, so the user must enter that exact amount
+function supplementMustMatchClig3Area (code) {
   return String(code || '').toUpperCase() === 'GRH10'
 }
 
@@ -471,7 +471,6 @@ function getClig3SupplementOptions (clig3Ha) {
     var name = getCatalogActionName(code) || code
     var ratePerHa = CLIG3_SUPPLEMENT_RATE_PER_HA[code]
     var requiresQuantity = supplementRequiresQuantityInput(code)
-    var appliesFullArea = supplementAppliesFullClig3Area(code)
 
     return {
       code: code,
@@ -480,7 +479,7 @@ function getClig3SupplementOptions (clig3Ha) {
       rateText: '£' + ratePerHa + '/ha',
       availableText: availableFormatted + ' available',
       requiresQuantityInput: requiresQuantity,
-      appliesFullClig3Area: appliesFullArea,
+      quantityHint: supplementMustMatchClig3Area(code) ? 'Enter the same amount as CLIG3' : '',
       guidanceUrl: getClig3SupplementGuidanceUrl(code, name)
     }
   })
@@ -525,6 +524,15 @@ function applyClig3SupplementSelection (actions, supplementCode, quantityRaw) {
         error: {
           fieldId: 'quantity-' + code.toLowerCase(),
           text: 'Enter a quantity for ' + code
+        }
+      }
+    }
+    if (supplementMustMatchClig3Area(code) && Math.abs(parsed.value - clig3Ha) > 0.00005) {
+      return {
+        actions: nextActions,
+        error: {
+          fieldId: 'quantity-' + code.toLowerCase(),
+          text: 'Enter ' + clig3Ha.toFixed(4) + ' hectares, which is all the land in CLIG3'
         }
       }
     }
