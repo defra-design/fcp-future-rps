@@ -164,7 +164,7 @@
               <div id="aac-parcel-summary" class="app-aac-parcel-summary" hidden>
                 <div class="govuk-summary-card">
                   <div class="govuk-summary-card__title-wrapper">
-                    <h2 class="govuk-summary-card__title">Selected land parcel</h2>
+                    <h2 class="govuk-summary-card__title">Land parcel <span id="aac-parcel-reference">—</span></h2>
                     {% if not isEditingLandActions %}
                       <ul class="govuk-summary-card__actions">
                         <li class="govuk-summary-card__action">
@@ -176,11 +176,7 @@
                   <div class="govuk-summary-card__content">
                     <dl class="govuk-summary-list">
                       <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Land parcel</dt>
-                        <dd class="govuk-summary-list__value" id="aac-parcel-reference">—</dd>
-                      </div>
-                      <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Land covers</dt>
+                        <dt class="govuk-summary-list__key">Land cover</dt>
                         <dd class="govuk-summary-list__value" id="aac-parcel-land-cover">—</dd>
                       </div>
                       <div class="govuk-summary-list__row">
@@ -193,39 +189,39 @@
                   </div>
                 </div>
               </div>
+
+              {# AAC only #}
+              <div id="aac-actions-intro" hidden>
+                <h2 class="govuk-heading-m">About the actions</h2>
+                <p class="govuk-body">Each action will last for 3 years.</p>
+                <p class="govuk-body">The quantity available for each action depends on:</p>
+                <ul class="govuk-list govuk-list--bullet">
+                  <li>the land cover on this parcel</li>
+                  <li>other actions you’ve already selected</li>
+                  <li id="aac-actions-intro-sssi-factor" hidden>site of special scientific interest (SSSI) eligibility</li>
+                  <li id="aac-actions-intro-hefer-factor" hidden>historic or archaeological features eligibility</li>
+                  <li id="aac-actions-intro-ineligible-factor" hidden>whether any of the land is ineligible for the action</li>
+                  <li>land already in existing agreements</li>
+                </ul>
+                <details class="govuk-details" data-module="govuk-details" id="aac-parcel-area-details" hidden>
+                  <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text" id="aac-parcel-area-details-summary">View your existing agreements</span>
+                  </summary>
+                  <div class="govuk-details__text" id="aac-parcel-area-breakdown-list"></div>
+                </details>
+              </div>
             </div>
           </div>
 
-          <div class="govuk-form-group govuk-!-margin-top-2" id="actions-form-group">
+          <div class="govuk-form-group" id="actions-form-group">
             <fieldset class="govuk-fieldset"{% if actionsError %} aria-describedby="actions-selection-error"{% endif %}>
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m app-actions-heading-constrained">
+              {# Visually hidden: screen readers still need the legend to name the checkbox group #}
+              <legend class="govuk-fieldset__legend govuk-visually-hidden">
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
 
               <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
-                  {# AAC only: guidance under the list heading. #}
-                  <div id="aac-actions-intro" hidden>
-                    <p class="govuk-body">The quantity available for each action depends on:</p>
-                    <ul class="govuk-list govuk-list--bullet">
-                      <li>the land cover on this parcel</li>
-                      <li>other actions you select</li>
-                      <li id="aac-actions-intro-sssi-factor" hidden>site of special scientific interest (SSSI) eligibility</li>
-                      <li id="aac-actions-intro-hefer-factor" hidden>Historic or archaeological features eligibility</li>
-                      <li id="aac-actions-intro-ineligible-factor" hidden>whether any of the land is ineligible for the action</li>
-                      <li>land already in existing agreements on this parcel</li>
-                    </ul>
-                    <details class="govuk-details govuk-!-margin-bottom-4" data-module="govuk-details" id="aac-parcel-area-details" hidden>
-                      <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text" id="aac-parcel-area-details-summary">View existing agreements</span>
-                      </summary>
-                      <div class="govuk-details__text" id="aac-parcel-area-breakdown-list"></div>
-                    </details>
-                    <div id="aac-actions-intro-protected-notes" class="govuk-inset-text" hidden>
-                      <p class="govuk-body govuk-!-margin-bottom-0" id="aac-actions-intro-eligible-note"></p>
-                    </div>
-                    <p class="govuk-body">Each of these actions lasts for 3 years. Read the guidance for each action for what you’ll need to do. All links open in a new tab.</p>
-                  </div>
                   <div id="actions-compatibility-status-sentinel" class="actions-compatibility-status-sentinel" aria-hidden="true"></div>
                   <div class="actions-compatibility-status-slot">
                     <div id="actions-compatibility-status" class="actions-compatibility-status" role="status" aria-live="polite" aria-atomic="true" hidden>

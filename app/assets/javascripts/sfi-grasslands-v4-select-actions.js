@@ -2035,7 +2035,7 @@ function createClig3FullAreaHint(actionCode) {
   var hint = document.createElement('p');
   hint.className = 'govuk-hint app-action-full-area-hint';
   hint.id = 'action-full-area-hint-' + codeLower;
-  hint.innerHTML = '<strong>This action uses all the available area.</strong><br>To add another grassland action, deselect this action and select the other action first. You can then select this action again to use the remaining area.';
+  hint.innerHTML = '<strong>This action uses the total remaining area.</strong><br>To add another grassland action, deselect this action and select the other action first. You can then select this action again to use the remaining area.';
   return hint;
 }
 
@@ -2356,7 +2356,7 @@ function formatExistingAgreementActionLabel(action) {
     return '';
   }
   if (action.name && action.code) {
-    return action.name + ' (' + action.code + ')';
+    return action.code + ': ' + action.name;
   }
   return action.name || action.code || '';
 }
@@ -2475,7 +2475,7 @@ function isActionCodeOnThisPage(code) {
 }
 
 function extractCodeFromPreviousAgreementLabel(label) {
-  var match = String(label || '').match(/\(([A-Z][A-Z0-9]*)\)\s*$/i);
+  var match = String(label || '').match(/^\s*([A-Z][A-Z0-9]*):/i);
   return match ? match[1].toUpperCase() : null;
 }
 
@@ -2993,7 +2993,7 @@ function renderLandCoverSummary(el, covers) {
     var ha = cover.ha;
     var line = cover.name;
     if (ha != null && Number.isFinite(Number(ha))) {
-      line += ' - ' + formatHaFourDecimals(ha) + ' ha';
+      line += ': ' + formatHaFourDecimals(ha) + ' ha';
     }
     el.appendChild(document.createTextNode(line));
   });
@@ -3289,42 +3289,6 @@ var PARCEL_CONSENT_FLAGS = {
   'far-meadow': { sssi: false, hefer: true } // SO3757 3193
 };
 
-var SSSI_CONSENT_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent';
-var HEFER_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer';
-
-function createConsentGuidanceLink(href, text) {
-  var link = document.createElement('a');
-  link.className = 'govuk-link';
-  link.href = href;
-  link.target = '_blank';
-  link.rel = 'noreferrer noopener';
-  link.appendChild(document.createTextNode(text));
-  var hidden = document.createElement('span');
-  hidden.className = 'govuk-visually-hidden';
-  hidden.textContent = ' (opens in new tab)';
-  link.appendChild(hidden);
-  return link;
-}
-
-function setEligibleParcelNote(el, hasSssi, hasHefer) {
-  el.textContent = '';
-  if (!hasSssi && !hasHefer) {
-    return;
-  }
-
-  el.appendChild(document.createTextNode('Some actions require '));
-  if (hasSssi) {
-    el.appendChild(createConsentGuidanceLink(SSSI_CONSENT_GUIDANCE_HREF, 'SSSI consent'));
-  }
-  if (hasSssi && hasHefer) {
-    el.appendChild(document.createTextNode(' or a '));
-  }
-  if (hasHefer) {
-    el.appendChild(createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'Historic Environment Farm Environment Record (HEFER)'));
-  }
-  el.appendChild(document.createTextNode('. We’ll tell you what you need for each action.'));
-}
-
 function getPreviousAgreementsForParcel(parcelId) {
   if (!parcelId || !window.SfiGrasslandsV4ExistingAgreements) {
     return [];
@@ -3347,12 +3311,10 @@ function getPreviousAgreementsForParcel(parcelId) {
 }
 
 function updateAacActionsIntro() {
-  var notes = document.getElementById('aac-actions-intro-protected-notes');
-  var eligibleNote = document.getElementById('aac-actions-intro-eligible-note');
   var sssiFactor = document.getElementById('aac-actions-intro-sssi-factor');
   var heferFactor = document.getElementById('aac-actions-intro-hefer-factor');
   var ineligibleFactor = document.getElementById('aac-actions-intro-ineligible-factor');
-  if (!notes && !sssiFactor && !heferFactor && !ineligibleFactor) {
+  if (!sssiFactor && !heferFactor && !ineligibleFactor) {
     return;
   }
 
@@ -3370,16 +3332,6 @@ function updateAacActionsIntro() {
   }
   if (ineligibleFactor) {
     ineligibleFactor.hidden = hasProtectedLand;
-  }
-  if (notes) {
-    notes.hidden = !hasProtectedLand;
-  }
-  if (eligibleNote) {
-    if (hasProtectedLand) {
-      setEligibleParcelNote(eligibleNote, hasSssi, hasHefer);
-    } else {
-      eligibleNote.textContent = '';
-    }
   }
 }
 
@@ -3488,19 +3440,18 @@ function createActionCheckboxElements(action) {
   var label = document.createElement('label');
   label.className = 'govuk-label govuk-checkboxes__label';
   label.setAttribute('for', 'action-' + codeLower);
-  label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
+  label.appendChild(document.createTextNode(action.code + ': ' + action.name));
 
+  // Outside the label so clicking the link does not tick the checkbox
+  var guidance = document.createElement('div');
+  guidance.className = 'govuk-checkboxes__hint app-action-guidance';
   var guidanceLink = document.createElement('a');
   guidanceLink.className = 'govuk-link app-action-guidance-link';
   guidanceLink.href = getActionGuidanceUrl(action);
   guidanceLink.target = '_blank';
   guidanceLink.rel = 'noopener noreferrer';
-  guidanceLink.textContent = 'read guidance';
-  guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
-  guidanceLink.addEventListener('click', function(event) {
-    event.stopPropagation();
-  });
-  label.appendChild(guidanceLink);
+  guidanceLink.textContent = 'Read guidance on ' + action.code + ' (opens in new tab)';
+  guidance.appendChild(guidanceLink);
 
   var consentHint = buildActionConsentHint(action.code, consentHintId);
   var describedBy = hintId;
@@ -3525,6 +3476,7 @@ function createActionCheckboxElements(action) {
 
   item.appendChild(input);
   item.appendChild(label);
+  item.appendChild(guidance);
 
   var conditional = document.createElement('div');
   conditional.className = 'govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
@@ -3668,19 +3620,17 @@ function appendClig3Supplements(clig3Conditional) {
     var label = document.createElement('label');
     label.className = 'govuk-label govuk-radios__label';
     label.setAttribute('for', 'clig3-supplement-' + codeLower);
-    label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
+    label.appendChild(document.createTextNode(action.code + ': ' + action.name));
 
+    var guidance = document.createElement('div');
+    guidance.className = 'govuk-radios__hint app-action-guidance';
     var guidanceLink = document.createElement('a');
     guidanceLink.className = 'govuk-link app-action-guidance-link';
     guidanceLink.href = getActionGuidanceUrl(action);
     guidanceLink.target = '_blank';
     guidanceLink.rel = 'noopener noreferrer';
-    guidanceLink.textContent = 'read guidance';
-    guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
-    guidanceLink.addEventListener('click', function(event) {
-      event.stopPropagation();
-    });
-    label.appendChild(guidanceLink);
+    guidanceLink.textContent = 'Read guidance on ' + action.code + ' (opens in new tab)';
+    guidance.appendChild(guidanceLink);
 
     var hint = document.createElement('span');
     hint.className = 'app-action-hint';
@@ -3700,6 +3650,7 @@ function appendClig3Supplements(clig3Conditional) {
     radio.setAttribute('aria-describedby', hintId + ' ' + availableHint.id);
     item.appendChild(radio);
     item.appendChild(label);
+    item.appendChild(guidance);
     radios.appendChild(item);
 
     // Quantity mirrors CLIG3 applied area — no user input
@@ -4593,22 +4544,22 @@ function getActionListGroups() {
   return [
     {
       id: 'ha',
-      heading: 'Grassland actions',
+      heading: 'Land',
       unit: 'ha'
     },
     {
       id: 'm',
-      heading: 'Boundary actions',
+      heading: 'Boundary',
       unit: 'm'
     },
     {
       id: 'pond',
-      heading: 'Pond actions',
+      heading: 'Ponds',
       unit: 'pond'
     },
     {
       id: 'm2',
-      heading: 'Building actions',
+      heading: 'Buildings',
       unit: 'm²'
     }
   ];
@@ -4640,6 +4591,23 @@ function clearActionListGroupHeadings(container) {
       }
     }
   );
+}
+
+// Only CLIG3 has supplements, so the note only shows when CLIG3 is in the list.
+// Call after updateActionListGroupHeadingVisibility, which shows every lead-in in a visible group.
+function updateSupplementsNoteVisibility() {
+  var note = document.getElementById('actions-supplements-note');
+  if (!note) {
+    return;
+  }
+  var input = document.querySelector(
+    '#actions-checkboxes-container > .govuk-checkboxes__item input[name="actions"][value="CLIG3"]'
+  );
+  var item = input && input.closest('.govuk-checkboxes__item');
+  note.hidden = !item ||
+    item.hidden ||
+    item.getAttribute('data-available-for-parcel') === 'false' ||
+    item.style.display === 'none';
 }
 
 function updateActionListGroupHeadingVisibility() {
@@ -4742,21 +4710,20 @@ function reorderActionOptions(sortedCodes) {
     fragment.appendChild(heading);
 
     if (group.id === 'ha' || group.id === 'm') {
-      if (group.id === 'ha') {
-        var leadInArea = document.createElement('p');
-        leadInArea.className = 'govuk-body app-action-list-group-lead-in';
-        leadInArea.textContent = 'The available area will update as you make your selections.';
-        fragment.appendChild(leadInArea);
+      var leadIn = document.createElement('p');
+      leadIn.className = 'govuk-body app-action-list-group-lead-in';
+      leadIn.textContent = group.id === 'ha'
+        ? 'The available area updates automatically as you make your selections.'
+        : 'The available length updates automatically as you make your selections.';
+      fragment.appendChild(leadIn);
 
-        var leadInSupplements = document.createElement('p');
-        leadInSupplements.className = 'govuk-body app-action-list-group-lead-in';
-        leadInSupplements.textContent = 'If an action has supplements, you can select these on the next page.';
-        fragment.appendChild(leadInSupplements);
-      } else {
-        var leadIn = document.createElement('p');
-        leadIn.className = 'govuk-body app-action-list-group-lead-in';
-        leadIn.textContent = 'The available length will update as you make your selections.';
-        fragment.appendChild(leadIn);
+      if (group.id === 'ha') {
+        var supplementsNote = document.createElement('p');
+        supplementsNote.className = 'govuk-body app-action-list-group-lead-in';
+        supplementsNote.id = 'actions-supplements-note';
+        supplementsNote.hidden = true;
+        supplementsNote.textContent = 'You can select supplements for your actions when you continue through the service.';
+        fragment.appendChild(supplementsNote);
       }
     }
 
@@ -4843,6 +4810,7 @@ function applyActionFilters() {
   });
 
   updateActionListGroupHeadingVisibility();
+  updateSupplementsNoteVisibility();
 
   if (currentSelectedParcel && visibleCount === 0) {
     var noResultsTitle = document.getElementById('no-results-title');
@@ -5167,7 +5135,7 @@ function hideAacPreviousAgreementsDetails() {
     listEl.innerHTML = '';
   }
   if (summaryEl) {
-    summaryEl.textContent = 'View existing agreements';
+    summaryEl.textContent = 'View your existing agreements';
   }
 }
 
@@ -5263,7 +5231,7 @@ function updateAacParcelAreaBreakdown() {
     listEl.innerHTML = '';
     if (showPreviousAgreements && hasPrevious) {
       if (detailsSummaryEl) {
-        detailsSummaryEl.textContent = 'View existing agreements';
+        detailsSummaryEl.textContent = 'View your existing agreements';
       }
       listEl.appendChild(buildExistingAgreementsTable(previousAgreements));
       detailsEl.hidden = false;
@@ -5556,7 +5524,7 @@ $(document).ready(function(){
         parcelSelection.actions.forEach(function(action) {
           var $actionRow = $('<div class="govuk-summary-list__row"></div>');
           var $actionKey = $('<dt class="govuk-summary-list__key"></dt>');
-          $actionKey.append(document.createTextNode(action.name + ' (' + action.code + ')'));
+          $actionKey.append(document.createTextNode(action.code + ': ' + action.name));
           var consentHintLines = getActionConsentHintLines(action.code, parcelId);
           consentHintLines.forEach(function(line) {
             $actionKey.append(
@@ -5658,12 +5626,13 @@ $(document).ready(function(){
     }
 
     var $checkbox = $('input[value="' + actionCode + '"]');
-    var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
+    // First text node only: the label also contains the hint spans
+    var labelText = $checkbox.siblings('.govuk-checkboxes__label').contents().first().text().trim();
 
-    // Extract just the action name (before the colon and code)
+    // Labels read "CODE: Action name"
     var parts = labelText.split(':');
     if (parts.length > 1) {
-      return parts[0].trim();
+      return parts.slice(1).join(':').trim();
     }
     return labelText || code;
   }
@@ -6179,11 +6148,11 @@ $(document).ready(function(){
 
       if (options.fromExistingAgreement) {
         hintText = selectedName && selectedCode
-          ? ('Not compatible with ' + selectedName + ' (' + selectedCode + ') already on this parcel.')
+          ? ('Not compatible with ' + selectedCode + ': ' + selectedName + ' already on this parcel.')
           : 'Not compatible with an existing agreement already on this parcel.';
       } else {
         hintText = selectedName
-          ? ('Not compatible with the selected action: ' + selectedName + ' (' + selectedCode + ').')
+          ? ('Not compatible with the selected action ' + selectedCode + ': ' + selectedName + '.')
           : ('Not compatible with ' + selectedCode + '.');
       }
 
@@ -6416,7 +6385,7 @@ $(document).ready(function(){
     var pageIntro = document.getElementById('actions-mode-intro');
     var aacIntro = document.getElementById('aac-actions-intro');
 
-    // AAC: hint sits under Available actions. Compatibility: stays under the page H1.
+    // AAC: "About the actions" sits under the parcel card. Compatibility: stays under the page H1.
     if (pageIntro) {
       pageIntro.hidden = Boolean(aacEnabled);
     }

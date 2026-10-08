@@ -3578,23 +3578,26 @@
         var label = document.createElement('label');
         label.className = 'govuk-label govuk-checkboxes__label';
         label.setAttribute('for', 'action-' + codeLower);
-        label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
-
-        var guidanceLink = document.createElement('a');
-        guidanceLink.className = 'govuk-link';
-        guidanceLink.href = getActionGuidanceUrl(action);
-        guidanceLink.target = '_blank';
-        guidanceLink.rel = 'noopener noreferrer';
-        guidanceLink.textContent = 'read guidance (opens in new tab)';
-        label.appendChild(guidanceLink);
+        label.appendChild(document.createTextNode(action.code + ': ' + action.name));
 
         var hint = document.createElement('div');
         hint.className = 'govuk-hint govuk-checkboxes__hint';
         hint.textContent = 'Payment rate per year: ' + action.rateText;
 
+        var guidance = document.createElement('div');
+        guidance.className = 'govuk-checkboxes__hint govuk-!-margin-top-1';
+        var guidanceLink = document.createElement('a');
+        guidanceLink.className = 'govuk-link govuk-!-font-size-16';
+        guidanceLink.href = getActionGuidanceUrl(action);
+        guidanceLink.target = '_blank';
+        guidanceLink.rel = 'noopener noreferrer';
+        guidanceLink.textContent = 'Read guidance on ' + action.code + ' (opens in new tab)';
+        guidance.appendChild(guidanceLink);
+
         item.appendChild(input);
         item.appendChild(label);
         item.appendChild(hint);
+        item.appendChild(guidance);
         container.appendChild(item);
 
         var conditional = document.createElement('div');
@@ -4755,7 +4758,7 @@
             
             parcelSelection.actions.forEach(function(action) {
               var $actionRow = $('<div class="govuk-summary-list__row"></div>');
-              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.name + ' (' + action.code + ')');
+              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.code + ': ' + action.name);
               var $actionValue = $('<dd class="govuk-summary-list__value"></dd>');
               
               var payment = null;
@@ -4842,10 +4845,10 @@
         var $checkbox = $('input[value="' + actionCode + '"]');
         var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
         
-        // Extract just the action name (before the colon and code)
+        // Labels read "CODE: Action name"
         var parts = labelText.split(':');
         if (parts.length > 1) {
-          return parts[0].trim();
+          return parts.slice(1).join(':').trim();
         }
         return labelText;
       }

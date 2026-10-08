@@ -251,7 +251,7 @@
       return ''
     }
     if (action.name && action.code) {
-      return action.name + ' (' + action.code + ')'
+      return action.code + ': ' + action.name
     }
     return action.name || action.code || ''
   }

@@ -96,7 +96,7 @@
                   {% for action in parcel.actions %}
                     <tr class="govuk-table__row">
                       <td class="govuk-table__cell">
-                        {{ action.name }} ({{ action.code }})
+                        {{ action.code }}: {{ action.name }}
                         {% if action.consentHint %}
                           <span class="app-confirm-parcel-card__hint">{{ action.consentHint }}</span>
                         {% endif %}
@@ -105,7 +105,7 @@
                       <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.yearlyPaymentFormatted }}</td>
                       <td class="govuk-table__cell govuk-table__cell--numeric">
                         <a class="govuk-link" href="/sfi-grasslands-v4/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
-                          Change<span class="govuk-visually-hidden"> {{ action.name }} ({{ action.code }})</span>
+                          Change<span class="govuk-visually-hidden"> {{ action.code }}: {{ action.name }}</span>
                         </a>
                       </td>
                     </tr>

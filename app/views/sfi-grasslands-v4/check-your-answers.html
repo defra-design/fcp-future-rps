@@ -162,7 +162,7 @@
                 {% for action in parcel.actions %}
                   <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                      {{ action.name }} ({{ action.code }})
+                      {{ action.code }}: {{ action.name }}
                       {% if action.consentHint %}
                         <span class="app-confirm-parcel-card__hint">{{ action.consentHint }}</span>
                       {% endif %}

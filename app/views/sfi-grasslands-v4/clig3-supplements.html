@@ -36,6 +36,10 @@
       line-height: 1.25;
     }
 
+    .govuk-radios__hint.app-action-guidance {
+      margin-top: 3px;
+    }
+
     .app-action-full-area-hint {
       display: block;
       margin-top: 8px;
@@ -102,7 +106,7 @@
             <legend class="govuk-fieldset__legend govuk-visually-hidden">
               Add a supplement to CLIG3
             </legend>
-            <p class="govuk-body">Each of these actions lasts for 3 years. Read the guidance for each action for what you’ll need to do. All links open in a new tab.</p>
+            <p class="govuk-body">Each of these actions lasts for 3 years. Read the guidance for each action for what you’ll need to do.</p>
             {% if error and error.fieldId == 'clig3-supplement-none' %}
               <p id="clig3-supplement-error" class="govuk-error-message">
                 <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
@@ -123,14 +127,7 @@
                     {% if selectedCode == option.code %}checked{% endif %}
                   >
                   <label class="govuk-label govuk-radios__label" for="clig3-supplement-{{ option.code | lower }}">
-                    {{ option.name }}: {{ option.code }} -
-                    <a
-                      class="govuk-link app-action-guidance-link"
-                      href="{{ option.guidanceUrl }}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Read guidance for {{ option.name }}: {{ option.code }} (opens in new tab)"
-                    >read guidance</a>
+                    {{ option.code }}: {{ option.name }}
                     <span class="app-action-hint" id="action-hint-{{ option.code | lower }}">
                       Payment rate per year: {{ option.rateText }}
                     </span>
@@ -138,6 +135,9 @@
                       {{ option.availableText }}
                     </span>
                   </label>
+                  <div class="govuk-radios__hint app-action-guidance">
+                    <a class="govuk-link govuk-!-font-size-16" href="{{ option.guidanceUrl }}" target="_blank" rel="noopener noreferrer">Read guidance on {{ option.code }} (opens in new tab)</a>
+                  </div>
                 </div>
                 <div class="govuk-radios__conditional{% if selectedCode != option.code %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ option.code | lower }}">
                   {% if option.requiresQuantityInput %}

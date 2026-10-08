@@ -315,6 +315,14 @@
   font-weight: 400;
 }
 
+.govuk-checkboxes__hint.app-action-guidance,
+.govuk-radios__hint.app-action-guidance {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 .app-selected-parcel {
   margin-bottom: 0;
   padding: 15px;
@@ -485,17 +493,6 @@
 .app-aac-parcel-summary {
   margin-top: 8px;
   margin-bottom: 24px;
-}
-
-/* Keep the Available actions heading on the reading measure */
-.app-actions-heading-constrained {
-  max-width: 66.6666%;
-}
-
-@media (max-width: 40.0625em) {
-  .app-actions-heading-constrained {
-    max-width: none;
-  }
 }
 
 .app-aac-parcel-summary[hidden] {
@@ -731,7 +728,6 @@
 }
 
 #aac-actions-intro[hidden],
-#aac-actions-intro-protected-notes[hidden],
 #aac-actions-intro #aac-parcel-area-details[hidden] {
   display: none !important;
 }

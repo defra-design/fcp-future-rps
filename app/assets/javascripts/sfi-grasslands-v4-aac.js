@@ -287,7 +287,7 @@
       var agreementLabel = window.SfiGrasslandsV4ExistingAgreements &&
         typeof window.SfiGrasslandsV4ExistingAgreements.formatLabel === 'function'
         ? window.SfiGrasslandsV4ExistingAgreements.formatLabel(action)
-        : ((action.name || '') + (action.code ? ' (' + action.code + ')' : ''))
+        : (action.code ? action.code + ': ' : '') + (action.name || '')
       exclusions.push({
         featureKey: 'existingAgreement',
         label: 'Existing agreement',
@@ -1365,7 +1365,7 @@
         return item.detail
       }
       if (item.name && item.code) {
-        return item.name + ' (' + item.code + ')'
+        return item.code + ': ' + item.name
       }
       if (window.SfiGrasslandsV4ExistingAgreements &&
           typeof window.SfiGrasslandsV4ExistingAgreements.formatLabel === 'function' &&

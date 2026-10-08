@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v4-header.html" %}
 
 {% block pageTitle %}
-  Select your land parcels
+  Select a land parcel
 {% endblock %}
 
 {% block beforeContent %}
@@ -34,10 +34,6 @@
         document.body.classList.remove('app-select-land--wide');
       }
       window.__initialParcelView = view;
-      window.__parcelViewIntro = {
-        map: "Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).",
-        list: "Select a land parcel from the list. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished)."
-      };
     })();
   </script>
   <style>
@@ -47,10 +43,6 @@
 
     html[data-parcel-view="map"] #parcel-list-view {
       display: none !important;
-    }
-
-    .app-parcel-list__details {
-      padding-left: 16px;
     }
 
     #summary-parcel-added-tag,
@@ -78,8 +70,7 @@
     }
 
     /* Exact match for select-actions payment rate / hectares available hints */
-    .app-parcel-list-view .app-action-hint,
-    .app-parcel-list-view .app-action-available-hint {
+    .app-parcel-list-view .app-action-hint {
       display: block;
       margin-top: 2px;
       margin-bottom: 0;
@@ -95,16 +86,6 @@
       margin-top: 10px;
       margin-left: 0;
       vertical-align: middle;
-    }
-
-    .app-parcel-list__requirements-intro,
-    .app-parcel-list__requirements-list,
-    .app-parcel-list__requirements-list > li {
-      font-family: "GDS Transport", arial, sans-serif;
-      font-size: 19px;
-      font-weight: 400;
-      line-height: 1.31579;
-      color: #0b0c0c;
     }
 
     /* Match map key colours */
@@ -670,12 +651,15 @@
 
     {% set journeySection = "Select land and actions" %}
     {% include "sfi-grasslands-v4/_includes/journey-caption.html" %}
-    <h1 class="govuk-heading-l" id="page-heading">Select your land parcels</h1>
-    <p id="select-parcel-text" class="govuk-body">Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).</p>
+    <h1 class="govuk-heading-l" id="page-heading">Select a land parcel</h1>
+    <p id="select-parcel-text" class="govuk-body">Select a parcel from the map or the list of your parcels.</p>
     <p id="map-keyboard-hint" class="govuk-visually-hidden">
       Use the arrow keys to move between land parcels. Press Enter or Space to select a parcel.
     </p>
-    <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).</p>
+    <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a parcel from the map or the list of your parcels.</p>
+    <div class="govuk-inset-text">
+      You need to add each parcel individually. You can select actions and supplements for each parcel when you continue through the service.
+    </div>
     <p id="selected-parcel-text" style="display: none;"></p>
     <script type="application/json" id="draft-parcel-json">{% if draftParcel %}{{ draftParcel | dump | safe }}{% else %}null{% endif %}</script>
 
@@ -3809,23 +3793,26 @@
         var label = document.createElement('label');
         label.className = 'govuk-label govuk-checkboxes__label';
         label.setAttribute('for', 'action-' + codeLower);
-        label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
-
-        var guidanceLink = document.createElement('a');
-        guidanceLink.className = 'govuk-link';
-        guidanceLink.href = getActionGuidanceUrl(action);
-        guidanceLink.target = '_blank';
-        guidanceLink.rel = 'noopener noreferrer';
-        guidanceLink.textContent = 'read guidance (opens in new tab)';
-        label.appendChild(guidanceLink);
+        label.appendChild(document.createTextNode(action.code + ': ' + action.name));
 
         var hint = document.createElement('div');
         hint.className = 'govuk-hint govuk-checkboxes__hint';
         hint.textContent = 'Payment rate per year: ' + action.rateText;
 
+        var guidance = document.createElement('div');
+        guidance.className = 'govuk-checkboxes__hint govuk-!-margin-top-1';
+        var guidanceLink = document.createElement('a');
+        guidanceLink.className = 'govuk-link govuk-!-font-size-16';
+        guidanceLink.href = getActionGuidanceUrl(action);
+        guidanceLink.target = '_blank';
+        guidanceLink.rel = 'noopener noreferrer';
+        guidanceLink.textContent = 'Read guidance on ' + action.code + ' (opens in new tab)';
+        guidance.appendChild(guidanceLink);
+
         item.appendChild(input);
         item.appendChild(label);
         item.appendChild(hint);
+        item.appendChild(guidance);
         container.appendChild(item);
 
         var conditional = document.createElement('div');
@@ -4552,22 +4539,6 @@
       }
     }
 
-    function updateParcelViewIntro() {
-      var intros = window.__parcelViewIntro || {};
-      var intro =
-        currentParcelView === 'list'
-          ? (intros.list || "Select a land parcel from the list. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).")
-          : (intros.map || "Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).");
-      var selectParcelText = document.getElementById('select-parcel-text');
-      var chooseParcelText = document.getElementById('choose-parcel-text');
-      if (selectParcelText) {
-        selectParcelText.textContent = intro;
-      }
-      if (chooseParcelText) {
-        chooseParcelText.textContent = intro;
-      }
-    }
-
     function setParcelView(view) {
       var mapView = document.getElementById('parcel-map-view');
       var listView = document.getElementById('parcel-list-view');
@@ -4578,7 +4549,6 @@
       currentParcelView = view === 'list' ? 'list' : 'map';
       document.documentElement.setAttribute('data-parcel-view', currentParcelView);
       rememberParcelView(currentParcelView);
-      updateParcelViewIntro();
 
       // Map needs the extended layout; list uses normal GOV.UK content width
       document.body.classList.toggle('app-select-land--wide', currentParcelView === 'map');
@@ -4676,42 +4646,44 @@
       });
     }
 
+    // Same rows as the map view's "Selected land parcel" summary, minus the parcel
+    // reference (already in the radio label) and the Change link
     function buildParcelListDetails(parcelId, parcel) {
-      // Revealed on select only — requirements.
-      // Total area / available actions / land covers stay on the radio label.
-      var details = document.createElement('div');
-      details.className = 'app-parcel-list__details';
+      var list = document.createElement('dl');
+      list.className = 'govuk-summary-list app-parcel-list__summary';
 
-      var flags = getParcelRequirementFlags(parcelId);
-      var requirementItems = [];
-      if (flags.sssi) {
-        requirementItems.push('site of special scientific interest (SSSI) consent');
-      }
-      if (flags.hefer) {
-        requirementItems.push('a Historic Environment Farm Environment Record (HEFER)');
-      }
-      if (requirementItems.length) {
-        var intro = document.createElement('p');
-        intro.className = 'govuk-body govuk-!-margin-bottom-1 app-parcel-list__requirements-intro';
-        intro.textContent = 'Some actions require:';
-        details.appendChild(intro);
-
-        var list = document.createElement('ul');
-        list.className = 'govuk-list govuk-list--bullet govuk-!-margin-bottom-2 app-parcel-list__requirements-list';
-        requirementItems.forEach(function(itemText) {
-          var li = document.createElement('li');
-          li.textContent = itemText;
-          list.appendChild(li);
-        });
-        details.appendChild(list);
+      function addRow(key) {
+        var row = document.createElement('div');
+        row.className = 'govuk-summary-list__row';
+        var dt = document.createElement('dt');
+        dt.className = 'govuk-summary-list__key';
+        dt.textContent = key;
+        var dd = document.createElement('dd');
+        dd.className = 'govuk-summary-list__value';
+        row.appendChild(dt);
+        row.appendChild(dd);
+        list.appendChild(row);
+        return dd;
       }
 
-      // Empty reveal when there is nothing extra to show
-      if (!details.childNodes.length) {
-        details.hidden = true;
+      renderLandCoverSummary(
+        addRow('Land covers'),
+        getParcelLandCovers(parcel.landCover),
+        parcel.totalArea,
+        parcelId,
+        parcel
+      );
+      addRow('Total area').textContent = parcel.totalArea
+        ? (formatHaFourDecimals(parcel.totalArea) + ' ha')
+        : '-';
+      addRow('Available actions').textContent = String(getParcelAvailableActionsCount(parcelId, parcel));
+
+      var requirementsEl = addRow('Requirements');
+      if (!renderParcelRequirements(requirementsEl, parcelId)) {
+        list.removeChild(requirementsEl.parentNode);
       }
 
-      return details;
+      return list;
     }
 
     function buildParcelList() {
@@ -4755,19 +4727,7 @@
 
         var describedByParts = [];
 
-        // Same hint pattern as select-actions (payment rate / hectares available)
-        var landCoversId = 'parcel-list-land-covers-' + parcelId;
         var totalAreaId = 'parcel-list-total-area-' + parcelId;
-        var actionsId = 'parcel-list-available-actions-' + parcelId;
-
-        var landCoversLine = document.createElement('span');
-        landCoversLine.className = 'app-action-hint';
-        landCoversLine.id = landCoversId;
-        var coverNames = getParcelLandCovers(parcel.landCover);
-        landCoversLine.textContent = 'Land covers: ' +
-          (coverNames.length ? coverNames.join(', ') : '-');
-        label.appendChild(landCoversLine);
-
         var totalAreaLine = document.createElement('span');
         totalAreaLine.className = 'app-action-hint';
         totalAreaLine.id = totalAreaId;
@@ -4775,14 +4735,7 @@
           (parcel.totalArea ? (formatHaFourDecimals(parcel.totalArea) + ' ha') : '-');
         label.appendChild(totalAreaLine);
 
-        var actionsLine = document.createElement('span');
-        actionsLine.className = 'app-action-available-hint';
-        actionsLine.id = actionsId;
-        actionsLine.textContent = 'Available actions: ' +
-          String(getParcelAvailableActionsCount(parcelId, parcel));
-        label.appendChild(actionsLine);
-
-        describedByParts.push(landCoversId, totalAreaId, actionsId);
+        describedByParts.push(totalAreaId);
 
         if (isParcelAlreadyAdded(parcelId)) {
           var addedTagId = 'parcel-list-added-' + parcelId;
@@ -4801,17 +4754,11 @@
 
         container.appendChild(item);
 
-        var details = buildParcelListDetails(parcelId, parcel);
-        if (details && !details.hidden) {
-          var conditional = document.createElement('div');
-          conditional.className = 'govuk-radios__conditional govuk-radios__conditional--hidden';
-          conditional.id = conditionalId;
-          conditional.appendChild(details);
-          container.appendChild(conditional);
-        } else {
-          input.removeAttribute('aria-controls');
-          input.removeAttribute('aria-expanded');
-        }
+        var conditional = document.createElement('div');
+        conditional.className = 'govuk-radios__conditional govuk-radios__conditional--hidden';
+        conditional.id = conditionalId;
+        conditional.appendChild(buildParcelListDetails(parcelId, parcel));
+        container.appendChild(conditional);
       });
 
       syncParcelListConditionals();
@@ -5263,7 +5210,7 @@
       }
 
       // Keep land-selection heading; fill summary panel instead of showing actions
-      document.getElementById('page-heading').textContent = 'Select your land parcels';
+      document.getElementById('page-heading').textContent = 'Select a land parcel';
       document.getElementById('select-parcel-text').style.display = 'block';
       document.getElementById('choose-parcel-text').style.display = 'none';
       document.getElementById('selected-parcel-text').style.display = 'none';
@@ -6058,7 +6005,7 @@
             
             parcelSelection.actions.forEach(function(action) {
               var $actionRow = $('<div class="govuk-summary-list__row"></div>');
-              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.name + ' (' + action.code + ')');
+              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.code + ': ' + action.name);
               var $actionValue = $('<dd class="govuk-summary-list__value"></dd>');
               
               var payment = null;
@@ -6145,10 +6092,10 @@
         var $checkbox = $('input[value="' + actionCode + '"]');
         var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
         
-        // Extract just the action name (before the colon and code)
+        // Labels read "CODE: Action name"
         var parts = labelText.split(':');
         if (parts.length > 1) {
-          return parts[0].trim();
+          return parts.slice(1).join(':').trim();
         }
         return labelText;
       }
@@ -6618,7 +6565,7 @@
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
         // Keep the canonical land-page heading (do not flash a shorter title)
-        document.getElementById('page-heading').textContent = 'Select your land parcels';
+        document.getElementById('page-heading').textContent = 'Select a land parcel';
 
         var parcelInfoContainer = document.getElementById('parcel-info-container');
         if (parcelInfoContainer) {
@@ -6747,7 +6694,7 @@
           document.getElementById('parcels-list-section').style.display = 'none';
           
           // Reset page heading
-          document.getElementById('page-heading').textContent = 'Select your land parcels';
+          document.getElementById('page-heading').textContent = 'Select a land parcel';
           document.getElementById('select-parcel-text').style.display = 'block';
           document.getElementById('choose-parcel-text').style.display = 'none';
           document.getElementById('selected-parcel-text').style.display = 'none';
