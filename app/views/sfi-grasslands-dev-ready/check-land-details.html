@@ -13,12 +13,12 @@
   {% set fromCheckYourAnswers = (returnTo == 'check-your-answers') or (data['sfiEligibilityReturnTo'] == 'check-your-answers') %}
   {% if fromCheckYourAnswers %}
     {{ govukBackLink({
-      text: "Back to check your answers",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/check-your-answers"
     }) }}
   {% else %}
     {{ govukBackLink({
-      text: "Back to task list",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/task-list"
     }) }}
   {% endif %}
@@ -49,6 +49,10 @@
         <li>the correct total area (in hectares) for each land parcel</li>
         <li>the correct land covers for each land parcel (for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover)</li>
       </ul>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="/sfi-grasslands-dev-ready/rural-payments/land-summary" target="_blank">View your land in the Rural Payments service (opens in new tab)</a>
+      </p>
 
       <form class="form" action="/sfi-grasslands-dev-ready/check-land-details-answer" method="post">
         {% include "sfi-grasslands-dev-ready/_includes/eligibility-return-to.html" %}

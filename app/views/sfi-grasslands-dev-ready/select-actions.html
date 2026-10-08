@@ -23,12 +23,12 @@
 
   {% if isEditingLandActions %}
     {{ govukBackLink({
-      text: "Back to your land and actions",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/cancel-land-actions-draft"
     }) }}
   {% else %}
     {{ govukBackLink({
-      text: "Back to select your land parcels",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/select-land"
     }) }}
   {% endif %}
@@ -108,7 +108,7 @@
             <table class="govuk-table">
               <tbody class="govuk-table__body" id="parcel-info">
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Parcel reference</td>
+                  <td class="govuk-table__cell">Land parcel</td>
                   <td class="govuk-table__cell" id="os-ref">-</td>
                 </tr>
                 <tr class="govuk-table__row">
@@ -128,16 +128,6 @@
       <div class="govuk-grid-column-two-thirds">
         <div class="map-viewport">
           <div id="map"></div>
-          <button type="button" id="reset-map-view-button" class="map-reset-view-button" hidden aria-label="Show all parcels on the map" title="Show all parcels on the map">
-            <svg class="map-reset-view-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M8 4H4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 4h4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8 20H4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 20h4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <rect x="7" y="7" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"></rect>
-            </svg>
-            Show all parcels
-          </button>
         </div>
         <p class="govuk-body-s govuk-!-margin-top-2">
           {# Click on the field parcels to select and see details.
@@ -174,7 +164,7 @@
               <div id="aac-parcel-summary" class="app-aac-parcel-summary" hidden>
                 <div class="govuk-summary-card">
                   <div class="govuk-summary-card__title-wrapper">
-                    <h2 class="govuk-summary-card__title">Selected land parcel</h2>
+                    <h2 class="govuk-summary-card__title">Land parcel <span id="aac-parcel-reference">—</span></h2>
                     {% if not isEditingLandActions %}
                       <ul class="govuk-summary-card__actions">
                         <li class="govuk-summary-card__action">
@@ -186,11 +176,7 @@
                   <div class="govuk-summary-card__content">
                     <dl class="govuk-summary-list">
                       <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Parcel reference</dt>
-                        <dd class="govuk-summary-list__value" id="aac-parcel-reference">—</dd>
-                      </div>
-                      <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Land covers</dt>
+                        <dt class="govuk-summary-list__key">Land cover</dt>
                         <dd class="govuk-summary-list__value" id="aac-parcel-land-cover">—</dd>
                       </div>
                       <div class="govuk-summary-list__row">
@@ -203,33 +189,39 @@
                   </div>
                 </div>
               </div>
+
+              {# AAC only #}
+              <div id="aac-actions-intro" hidden>
+                <h2 class="govuk-heading-m">About the actions</h2>
+                <p class="govuk-body">Each action will last for 3 years.</p>
+                <p class="govuk-body">The quantity available for each action depends on:</p>
+                <ul class="govuk-list govuk-list--bullet">
+                  <li>the land cover on this parcel</li>
+                  <li>other actions you’ve already selected</li>
+                  <li id="aac-actions-intro-sssi-factor" hidden>site of special scientific interest (SSSI) eligibility</li>
+                  <li id="aac-actions-intro-hefer-factor" hidden>historic or archaeological features eligibility</li>
+                  <li id="aac-actions-intro-ineligible-factor" hidden>whether any of the land is ineligible for the action</li>
+                  <li>land already in existing agreements</li>
+                </ul>
+                <details class="govuk-details" data-module="govuk-details" id="aac-parcel-area-details" hidden>
+                  <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text" id="aac-parcel-area-details-summary">View your existing agreements</span>
+                  </summary>
+                  <div class="govuk-details__text" id="aac-parcel-area-breakdown-list"></div>
+                </details>
+              </div>
             </div>
           </div>
 
-          <div class="govuk-form-group govuk-!-margin-top-2" id="actions-form-group">
+          <div class="govuk-form-group" id="actions-form-group">
             <fieldset class="govuk-fieldset"{% if actionsError %} aria-describedby="actions-selection-error"{% endif %}>
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m app-actions-heading-constrained">
+              {# Visually hidden: screen readers still need the legend to name the checkbox group #}
+              <legend class="govuk-fieldset__legend govuk-visually-hidden">
                 <h2 class="govuk-fieldset__heading" id="actions-heading">Available actions</h2>
               </legend>
 
               <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
-                  {# AAC only: guidance under the list heading. #}
-                  <div id="aac-actions-intro" hidden>
-                    <p class="govuk-body">The quantity available for each action depends on:</p>
-                    <ul class="govuk-list govuk-list--bullet">
-                      <li>the land cover on this parcel</li>
-                      <li>land already in existing agreements</li>
-                      <li>other actions you select</li>
-                      <li id="aac-actions-intro-sssi-factor" hidden>site of special scientific interest (SSSI) eligibility</li>
-                      <li id="aac-actions-intro-hefer-factor" hidden>Historic or archaeological features eligibility</li>
-                      <li id="aac-actions-intro-ineligible-factor" hidden>whether any of the land is ineligible for the action</li>
-                    </ul>
-                    <div id="aac-actions-intro-protected-notes" class="govuk-inset-text" hidden>
-                      <p class="govuk-body govuk-!-margin-bottom-0" id="aac-actions-intro-eligible-note"></p>
-                    </div>
-                    <p class="govuk-body">Each of these actions lasts for 3 years. Read the guidance for each action for what you’ll need to do. All links open in a new tab.</p>
-                  </div>
                   <div id="actions-compatibility-status-sentinel" class="actions-compatibility-status-sentinel" aria-hidden="true"></div>
                   <div class="actions-compatibility-status-slot">
                     <div id="actions-compatibility-status" class="actions-compatibility-status" role="status" aria-live="polite" aria-atomic="true" hidden>
@@ -381,16 +373,39 @@
 {% endblock %}
 
 {% block pageScripts %}
+  <script>
+    // Restore map/list view when returning to select land (Back / Change)
+    (function() {
+      var SELECT_LAND_PATH = '/sfi-grasslands-dev-ready/select-land';
+      var view = 'map';
+      try {
+        view = sessionStorage.getItem('sfiGrasslandsDevReadyParcelView') || 'map';
+      } catch (e) {}
+      var href = view === 'list' ? (SELECT_LAND_PATH + '?view=list') : SELECT_LAND_PATH;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('a[href="' + SELECT_LAND_PATH + '"], a[href^="' + SELECT_LAND_PATH + '?"]'),
+        function(link) {
+          link.setAttribute('href', href);
+        }
+      );
+    })();
+  </script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/umd/index.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-parcel-search.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-map-reset-button.js"></script>
 
   <!-- MapLibre JS -->
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
   <script src="/public/javascripts/sfi-scheme-2026.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-mvp-actions.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-parcel-reference.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-outlying-parcels.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-existing-agreements.js"></script>
+  <script id="limited-area-json" type="application/json">{{ limitedAreaConfig | dump | safe }}</script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-limited-area.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-actions-compatibility-loading.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-aac.js"></script>
 
@@ -405,3 +420,4 @@
 
   <script src="/public/javascripts/sfi-grasslands-dev-ready-select-actions.js"></script>
 {% endblock %}
+

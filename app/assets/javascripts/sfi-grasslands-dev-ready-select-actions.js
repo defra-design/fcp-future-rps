@@ -133,12 +133,7 @@ function isMapAwayFromDefaultView() {
 }
 
 function updateResetMapViewButtonVisibility() {
-  var button = document.getElementById('reset-map-view-button');
-  if (!button) {
-    return;
-  }
-
-  button.hidden = !isMapAwayFromDefaultView();
+  sfiGrasslandsDevReadyMapResetButton.setVisible(interactiveMap, isMapAwayFromDefaultView());
 }
 
 function onMapReady(callback) {
@@ -194,8 +189,23 @@ var interactiveMap = new defra.InteractiveMap('map', {
     backgroundColor: '#f5f5f0'
   },
   plugins: [
-    defra.scaleBarPlugin({ units: 'metric' })
+    defra.scaleBarPlugin({ units: 'metric' }),
+    sfiGrasslandsDevReadyParcelSearch.createPlugin({
+      getParcels: function() { return parcelData; },
+      formatReference: formatParcelReference
+    })
   ]
+});
+
+interactiveMap.on('app:ready', function() {
+  interactiveMap.toggleButtonState('mapControls', 'expanded', true);
+  sfiGrasslandsDevReadyMapResetButton.add(interactiveMap, resetMapToAllParcelsView);
+});
+
+interactiveMap.on('search:match', function(event) {
+  if (event && event.type === 'parcel') {
+    selectParcel(event.parcelId);
+  }
 });
 
 interactiveMap.on('map:ready', function(event) {
@@ -1368,6 +1378,10 @@ Object.keys(parcelData).forEach(function(parcelId) {
   }
 });
 
+if (window.SfiGrasslandsDevReadyOutlyingParcels) {
+  window.SfiGrasslandsDevReadyOutlyingParcels.addTo(parcelData);
+}
+
 if (window.SfiGrasslandsDevReadyParcelReference &&
     typeof window.SfiGrasslandsDevReadyParcelReference.applyToParcelData === 'function') {
   window.SfiGrasslandsDevReadyParcelReference.applyToParcelData(parcelData);
@@ -1379,8 +1393,8 @@ var ACTION_CATALOG =
     ? window.SFI_SCHEME_2026.actions.slice()
     : [];
 
-if (window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && typeof window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.filterCatalog === 'function') {
-  ACTION_CATALOG = window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.filterCatalog(ACTION_CATALOG);
+if (window.SFI_GRASSLANDS_V2_MVP_ACTIONS && typeof window.SFI_GRASSLANDS_V2_MVP_ACTIONS.filterCatalog === 'function') {
+  ACTION_CATALOG = window.SFI_GRASSLANDS_V2_MVP_ACTIONS.filterCatalog(ACTION_CATALOG);
 }
 
 var ACTION_GUIDANCE_URL_OVERRIDES =
@@ -1596,6 +1610,84 @@ var LINEAR_ACTION_CODES = {
   WBD2: true
 };
 
+// Fixed AAC starting maxima — same 2,000 m physical perimeter on both demo parcels.
+// Difference is how many sides the applicant controls (not different action rules):
+// church-field (SO3757 3190) — one side → single-sided actions use perimeter once
+// far-meadow (SO3757 3193) — both sides → single-sided actions use perimeter × 2
+var BOUNDARY_LENGTH_STARTING_MAXIMA = {
+  'church-field': {
+    BND1: 2000,
+    BND2: 2000,
+    CHRW2: 2000,
+    WBD2: 2000
+  },
+  'far-meadow': {
+    BND1: 2000,
+    BND2: 4000,
+    CHRW2: 4000,
+    WBD2: 2000
+  }
+};
+
+// Boundary length reductions (matches AAC) — not hard incompatibility:
+//   BND1 reduces BND2, CHRW2 and WBD2
+//   BND2 / CHRW2 / WBD2 each reduce BND1 only
+//   BND2, CHRW2 and WBD2 do not reduce one another
+// Deductions are proportional to each action's starting length (see getLinearLengthDeductionMultiplier).
+var LINEAR_LENGTH_REDUCED_BY = {
+  BND1: ['BND2', 'CHRW2', 'WBD2'],
+  BND2: ['BND1'],
+  CHRW2: ['BND1'],
+  WBD2: ['BND1']
+};
+
+function getBoundaryLengthStartingMax(parcelId, actionCode) {
+  var byParcel = BOUNDARY_LENGTH_STARTING_MAXIMA[parcelId];
+  if (!byParcel) {
+    return null;
+  }
+  var amount = byParcel[String(actionCode || '').toUpperCase()];
+  return Number.isFinite(amount) ? amount : null;
+}
+
+function getLinearLengthReducers(actionCode) {
+  var normalized = String(actionCode || '').toUpperCase();
+  if (Object.prototype.hasOwnProperty.call(LINEAR_LENGTH_REDUCED_BY, normalized)) {
+    return LINEAR_LENGTH_REDUCED_BY[normalized];
+  }
+  return [];
+}
+
+// Using a share of one action's starting length removes the same share from the other.
+// far-meadow (BND1 2,000 / CHRW2 4,000): 1,000 m CHRW2 takes 500 m off BND1,
+// and 1,000 m BND1 takes 2,000 m off CHRW2. Matching starting lengths give 1:1.
+function getLinearLengthDeductionMultiplier(targetCode, reducerCode, parcelId) {
+  var id = parcelId || currentSelectedParcel || null;
+  var targetMax = getBoundaryLengthStartingMax(id, targetCode);
+  var reducerMax = getBoundaryLengthStartingMax(id, reducerCode);
+  if (!targetMax || !reducerMax) {
+    return 1;
+  }
+  return targetMax / reducerMax;
+}
+
+function getMetresUsedByReducers(actionCode) {
+  var reducers = getLinearLengthReducers(actionCode);
+  var used = 0;
+
+  reducers.forEach(function(reducerCode) {
+    if (!$('input[name="actions"][value="' + reducerCode + '"]').is(':checked')) {
+      return;
+    }
+    var parsed = parseQuantityInput($('#quantity-' + reducerCode.toLowerCase()).val());
+    if (parsed.valid) {
+      used += parsed.value * getLinearLengthDeductionMultiplier(actionCode, reducerCode);
+    }
+  });
+
+  return used;
+}
+
 var SQUARE_METRE_ACTION_CODES = {
   HEF1: true
 };
@@ -1791,9 +1883,15 @@ function getWholeRemainingAreaHa(actionCode) {
     var match = (calculation.actions || []).filter(function(action) {
       return action.code === code;
     })[0];
-    return match && Number.isFinite(Number(match.available))
-      ? Math.max(0, Number(match.available))
-      : 0;
+    if (!match) {
+      return 0;
+    }
+    // Prefer the pool CLIG3 can take (maxAvailable), not "remaining after itself" (often 0)
+    var pool = Number(match.maxAvailable);
+    if (!Number.isFinite(pool) || pool <= 0) {
+      pool = Number(match.available);
+    }
+    return Number.isFinite(pool) ? Math.max(0, pool) : 0;
   }
 
   if (!currentSelectedParcel || !parcelData[currentSelectedParcel]) {
@@ -1934,14 +2032,20 @@ function createActionAvailableHint(actionCode) {
 
 function createClig3FullAreaHint(actionCode) {
   var codeLower = String(actionCode || '').toLowerCase();
-  var hint = document.createElement('span');
-  hint.className = 'app-action-full-area-hint';
+  var hint = document.createElement('p');
+  hint.className = 'govuk-hint app-action-full-area-hint';
   hint.id = 'action-full-area-hint-' + codeLower;
-  hint.textContent = 'This action will use all the available area on this land parcel.';
+  hint.innerHTML = '<strong>This action uses the total remaining area.</strong><br>To add another grassland action, deselect this action and select the other action first. You can then select this action again to use the remaining area.';
   return hint;
 }
 
-function getLinearAvailableMetres(parcel) {
+function getLinearAvailableMetres(parcel, actionCode) {
+  var parcelId = (parcel && (parcel.id || parcel.parcelId)) || currentSelectedParcel || null;
+  var demoMax = getBoundaryLengthStartingMax(parcelId, actionCode);
+  if (demoMax != null) {
+    return demoMax;
+  }
+
   var areaHa = Number(parcel && parcel.availableArea);
   if (!Number.isFinite(areaHa) || areaHa <= 0) {
     return 0;
@@ -1949,7 +2053,7 @@ function getLinearAvailableMetres(parcel) {
 
   // Estimate boundary length from area using a square-equivalent perimeter.
   var areaSqM = areaHa * 10000;
-  return 4 * Math.sqrt(areaSqM);
+  return Math.max(50, Math.round(4 * Math.sqrt(areaSqM)));
 }
 
 function getBuildingSquareMetresAvailable(parcel) {
@@ -2019,6 +2123,12 @@ function getFormatErrorMessage(unit) {
   return 'Enter number of hectares, up to 4 decimal places – for example, 12.3456';
 }
 
+// Hectares must be typed with exactly 4 decimal places, for example 10.0000
+function hasFourDecimalPlaces(rawValue) {
+  var normalised = String(rawValue || '').trim().replace(/,/g, '').replace(/\s/g, '');
+  return /^\d+\.\d{4}$/.test(normalised);
+}
+
 function getOverLimitErrorMessage(unit) {
   if (unit === 'm') {
     return 'Enter a number that is not higher than the available metres';
@@ -2029,12 +2139,6 @@ function getOverLimitErrorMessage(unit) {
   }
 
   return 'Enter a number that is not higher than the available hectares';
-}
-
-// Hectares must be typed with exactly 4 decimal places, for example 10.0000
-function hasFourDecimalPlaces(rawValue) {
-  var normalised = String(rawValue || '').trim().replace(/,/g, '').replace(/\s/g, '');
-  return /^\d+\.\d{4}$/.test(normalised);
 }
 
 function getQuantityCheckbox($quantityInput) {
@@ -2053,16 +2157,27 @@ function getQuantityErrorsStore($quantityInput) {
   return store;
 }
 
+// Quantity errors are still worked out while the user types, but only shown once
+// they have pressed "Save and continue". After that they update live as fields are fixed.
+  // Over-limit and format errors are the exception: they show once the user stops typing
+  // (errors.formatShown / errors.overLimitShown), and over-limit also after an AAC update for
+  // fields pushed over by another entry. They hide again while that field is being edited.
+var quantityErrorsVisible = false;
+
+function setQuantityErrorsVisible(visible) {
+  quantityErrorsVisible = Boolean(visible);
+}
+
 function refreshQuantityFieldDisplay($quantityInput) {
   var errors = getQuantityErrorsStore($quantityInput);
-  var priority = ['format', 'overLimit'];
   var message = null;
 
-  for (var i = 0; i < priority.length; i++) {
-    if (errors[priority[i]]) {
-      message = errors[priority[i]];
-      break;
-    }
+  if (quantityErrorsVisible) {
+    message = errors.format || errors.overLimit || null;
+  } else if (errors.formatShown && errors.format) {
+    message = errors.format;
+  } else if (errors.overLimitShown && !errors.format) {
+    message = errors.overLimit || null;
   }
 
   var $formGroup = $quantityInput.closest('.govuk-form-group');
@@ -2122,6 +2237,11 @@ function requiresWholeNumberQuantity(unit) {
   return isPondUnit(unit) || unit === 'm' || unit === 'm²';
 }
 
+function getQuantityUnitFromInput($quantityInput) {
+  var actionCode = ($quantityInput.attr('id') || '').replace('quantity-', '').toUpperCase();
+  return getQuantityUnitForAction(actionCode);
+}
+
 function updateQuantityFormatErrors($quantityInput) {
   var $checkbox = getQuantityCheckbox($quantityInput);
   var errors = getQuantityErrorsStore($quantityInput);
@@ -2132,8 +2252,8 @@ function updateQuantityFormatErrors($quantityInput) {
     return;
   }
 
-  var unit = $quantityInput.siblings('.govuk-input__suffix').text();
   var actionCode = ($quantityInput.attr('id') || '').replace('quantity-', '').toUpperCase();
+  var unit = getQuantityUnitForAction(actionCode);
   var rawValue = $quantityInput.val();
   var parsed = parseQuantityInput(rawValue);
   // Empty only counts as an error after Continue, so ticking a box doesn't show one straight away
@@ -2229,6 +2349,91 @@ function getExistingAgreementActionLabels(sourceDl) {
   return labels;
 }
 
+function formatExistingAgreementActionLabel(action) {
+  if (window.SfiGrasslandsDevReadyExistingAgreements &&
+    typeof window.SfiGrasslandsDevReadyExistingAgreements.formatLabel === 'function') {
+    return window.SfiGrasslandsDevReadyExistingAgreements.formatLabel(action);
+  }
+  if (!action) {
+    return '';
+  }
+  if (action.name && action.code) {
+    return action.code + ': ' + action.name;
+  }
+  return action.name || action.code || '';
+}
+
+function formatExistingAgreementQuantity(action, agreement) {
+  if (action && action.ha != null && Number.isFinite(Number(action.ha))) {
+    return (Math.round(Number(action.ha) * 10000) / 10000).toFixed(4) + ' ha';
+  }
+  if (agreement && agreement.availableArea) {
+    return String(agreement.availableArea)
+      .replace(/\s*hectares?\s*$/i, ' ha')
+      .trim();
+  }
+  return '—';
+}
+
+function buildExistingAgreementsTable(agreements) {
+  var table = document.createElement('table');
+  table.className = 'govuk-table app-existing-agreements-table govuk-!-margin-bottom-0';
+
+  var caption = document.createElement('caption');
+  caption.className = 'govuk-table__caption govuk-visually-hidden';
+  caption.textContent = 'Existing agreements';
+  table.appendChild(caption);
+
+  var thead = document.createElement('thead');
+  thead.className = 'govuk-table__head';
+  var headRow = document.createElement('tr');
+  headRow.className = 'govuk-table__row';
+  ['Scheme', 'Action', 'Quantity', 'Expires'].forEach(function(headingText) {
+    var th = document.createElement('th');
+    th.className = 'govuk-table__header';
+    th.setAttribute('scope', 'col');
+    th.textContent = headingText;
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+  tbody.className = 'govuk-table__body';
+
+  (agreements || []).forEach(function(agreement) {
+    (agreement.actions || []).forEach(function(action) {
+      var row = document.createElement('tr');
+      row.className = 'govuk-table__row';
+
+      var schemeCell = document.createElement('td');
+      schemeCell.className = 'govuk-table__cell';
+      schemeCell.textContent = agreement.scheme || '—';
+
+      var actionCell = document.createElement('td');
+      actionCell.className = 'govuk-table__cell';
+      actionCell.textContent = formatExistingAgreementActionLabel(action) || '—';
+
+      var quantityCell = document.createElement('td');
+      quantityCell.className = 'govuk-table__cell';
+      quantityCell.textContent = formatExistingAgreementQuantity(action, agreement);
+
+      var expiresCell = document.createElement('td');
+      expiresCell.className = 'govuk-table__cell';
+      expiresCell.textContent = agreement.endDate || '—';
+
+      row.appendChild(schemeCell);
+      row.appendChild(actionCell);
+      row.appendChild(quantityCell);
+      row.appendChild(expiresCell);
+      tbody.appendChild(row);
+    });
+  });
+
+  table.appendChild(tbody);
+  return table;
+}
+
 function appendPreviousAgreementSummaryRow(listEl, keyText, valueText) {
   var row = document.createElement('div');
   row.className = 'govuk-summary-list__row';
@@ -2248,13 +2453,13 @@ function appendPreviousAgreementSummaryRow(listEl, keyText, valueText) {
 
 function formatPreviousAgreementsCountSummary(agreementCount) {
   if (agreementCount === 1) {
-    return '1 previous agreement';
+    return '1 existing agreement';
   }
-  return agreementCount + ' previous agreements';
+  return agreementCount + ' existing agreements';
 }
 
 function formatPreviousAgreementsDetailsLabel(agreementCount) {
-  return 'View ' + agreementCount + ' previous agreement actions';
+  return 'View ' + agreementCount + ' existing agreement actions';
 }
 
 function isActionCodeOnThisPage(code) {
@@ -2262,7 +2467,7 @@ function isActionCodeOnThisPage(code) {
   if (!normalized) {
     return false;
   }
-  var mvpSet = window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codeSet;
+  var mvpSet = window.SFI_GRASSLANDS_V2_MVP_ACTIONS && window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codeSet;
   if (mvpSet) {
     return Boolean(mvpSet[normalized]);
   }
@@ -2272,7 +2477,7 @@ function isActionCodeOnThisPage(code) {
 }
 
 function extractCodeFromPreviousAgreementLabel(label) {
-  var match = String(label || '').match(/\(([A-Z][A-Z0-9]*)\)\s*$/i);
+  var match = String(label || '').match(/^\s*([A-Z][A-Z0-9]*):/i);
   return match ? match[1].toUpperCase() : null;
 }
 
@@ -2300,7 +2505,7 @@ function updatePreviousAgreementsSummary(parcelId) {
   detailsEl.hidden = true;
   sectionEl.hidden = true;
   if (summaryTextEl) {
-    summaryTextEl.textContent = 'View previous agreement actions';
+    summaryTextEl.textContent = 'View existing agreement actions';
   }
 
   var agreements = [];
@@ -2790,7 +2995,7 @@ function renderLandCoverSummary(el, covers) {
     var ha = cover.ha;
     var line = cover.name;
     if (ha != null && Number.isFinite(Number(ha))) {
-      line += ' - ' + formatHaFourDecimals(ha) + ' ha';
+      line += ': ' + formatHaFourDecimals(ha) + ' ha';
     }
     el.appendChild(document.createTextNode(line));
   });
@@ -2809,9 +3014,7 @@ function formatParcelReference(parcel) {
 var ACTION_FEATURE_REQUIREMENTS = {
   AHW2: ['hasArableLand'],
   AHW4: ['hasArableLand'],
-  BND1: ['hasBoundaryFeature'],
-  BND2: ['hasBoundaryFeature'],
-  CHRW2: ['hasBoundaryFeature', 'hasHedgerow'],
+  // Boundary actions (BND1, BND2, CHRW2, WBD2) appear on all land covers — no feature gate.
   CIGL1: ['hasGrasslandHabitat'],
   CIGL2: ['hasGrasslandHabitat'],
   CLIG3: ['hasGrasslandHabitat'],
@@ -2820,8 +3023,7 @@ var ACTION_FEATURE_REQUIREMENTS = {
   SCR2: ['hasScrubMosaic'],
   SPM3: ['hasGrazedHabitat'],
   SPM5: ['hasExtensiveHabitat'],
-  WBD1: ['hasPond'],
-  WBD2: ['hasDitch']
+  WBD1: ['hasPond']
 }; 
 
 var HISTORIC_ASSET_PARCELS = {
@@ -2952,6 +3154,14 @@ var actionCodesInCatalog = ACTION_CATALOG.reduce(function(lookup, action) {
   return lookup;
 }, {});
 
+// Prototype rule: all Boundary actions appear on every land cover / parcel.
+var BOUNDARY_ACTIONS_ALL_LAND_COVERS = {
+  BND1: true,
+  BND2: true,
+  CHRW2: true,
+  WBD2: true
+};
+
 function getEligibleActionsForLandCover(landCover) {
   var eligibleByCode = {};
 
@@ -2962,6 +3172,12 @@ function getEligibleActionsForLandCover(landCover) {
         eligibleByCode[code] = true;
       }
     });
+  });
+
+  Object.keys(BOUNDARY_ACTIONS_ALL_LAND_COVERS).forEach(function(code) {
+    if (actionCodesInCatalog[code]) {
+      eligibleByCode[code] = true;
+    }
   });
 
   return Object.keys(eligibleByCode);
@@ -3006,6 +3222,12 @@ var compatibilityConfig = {
   }
 };
 
+// Keep a full matrix for previous-agreement AAC deductions (includes codes like CIPM2
+// that may not be in the selectable MVP catalog).
+var previousAgreementIncompatibleByCode = JSON.parse(
+  JSON.stringify(compatibilityConfig.incompatibleByCode)
+);
+
 var matrixCompatibilityConfig = null;
 var compatibilityConfigElement = document.getElementById('compatibility-client-config');
 if (compatibilityConfigElement) {
@@ -3017,6 +3239,17 @@ if (compatibilityConfigElement) {
 }
 if (matrixCompatibilityConfig && matrixCompatibilityConfig.incompatibleByCode) {
   compatibilityConfig = matrixCompatibilityConfig;
+  Object.keys(matrixCompatibilityConfig.incompatibleByCode).forEach(function (code) {
+    var merged = previousAgreementIncompatibleByCode[code]
+      ? previousAgreementIncompatibleByCode[code].slice()
+      : [];
+    (matrixCompatibilityConfig.incompatibleByCode[code] || []).forEach(function (other) {
+      if (merged.indexOf(other) === -1) {
+        merged.push(other);
+      }
+    });
+    previousAgreementIncompatibleByCode[code] = merged;
+  });
 }
 
 var mvpActionCodeSet = ACTION_CATALOG.reduce(function(lookup, action) {
@@ -3058,49 +3291,32 @@ var PARCEL_CONSENT_FLAGS = {
   'far-meadow': { sssi: false, hefer: true } // SO3757 3193
 };
 
-var SSSI_CONSENT_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent';
-var HEFER_GUIDANCE_HREF = 'https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#how-to-request-an-sfi-hefer';
-
-function createConsentGuidanceLink(href, text) {
-  var link = document.createElement('a');
-  link.className = 'govuk-link';
-  link.href = href;
-  link.target = '_blank';
-  link.rel = 'noreferrer noopener';
-  link.appendChild(document.createTextNode(text));
-  var hidden = document.createElement('span');
-  hidden.className = 'govuk-visually-hidden';
-  hidden.textContent = ' (opens in new tab)';
-  link.appendChild(hidden);
-  return link;
-}
-
-function setEligibleParcelNote(el, hasSssi, hasHefer) {
-  el.textContent = '';
-  if (!hasSssi && !hasHefer) {
-    return;
+function getPreviousAgreementsForParcel(parcelId) {
+  if (!parcelId || !window.SfiGrasslandsDevReadyExistingAgreements) {
+    return [];
   }
-
-  el.appendChild(document.createTextNode('Some actions require '));
-  if (hasSssi) {
-    el.appendChild(createConsentGuidanceLink(SSSI_CONSENT_GUIDANCE_HREF, 'SSSI consent'));
+  if (typeof window.SfiGrasslandsDevReadyExistingAgreements.getAgreements === 'function') {
+    return window.SfiGrasslandsDevReadyExistingAgreements.getAgreements(parcelId) || [];
   }
-  if (hasSssi && hasHefer) {
-    el.appendChild(document.createTextNode(' or a '));
+  if (typeof window.SfiGrasslandsDevReadyExistingAgreements.get === 'function') {
+    var flatActions = window.SfiGrasslandsDevReadyExistingAgreements.get(parcelId) || [];
+    if (flatActions.length) {
+      return [{
+        scheme: 'Sustainable Farming Incentive',
+        endDate: '',
+        availableArea: '',
+        actions: flatActions
+      }];
+    }
   }
-  if (hasHefer) {
-    el.appendChild(createConsentGuidanceLink(HEFER_GUIDANCE_HREF, 'Historic Environment Farm Environment Record (HEFER)'));
-  }
-  el.appendChild(document.createTextNode('. We’ll tell you what you need for each action.'));
+  return [];
 }
 
 function updateAacActionsIntro() {
-  var notes = document.getElementById('aac-actions-intro-protected-notes');
-  var eligibleNote = document.getElementById('aac-actions-intro-eligible-note');
   var sssiFactor = document.getElementById('aac-actions-intro-sssi-factor');
   var heferFactor = document.getElementById('aac-actions-intro-hefer-factor');
   var ineligibleFactor = document.getElementById('aac-actions-intro-ineligible-factor');
-  if (!notes && !sssiFactor && !heferFactor && !ineligibleFactor) {
+  if (!sssiFactor && !heferFactor && !ineligibleFactor) {
     return;
   }
 
@@ -3118,16 +3334,6 @@ function updateAacActionsIntro() {
   }
   if (ineligibleFactor) {
     ineligibleFactor.hidden = hasProtectedLand;
-  }
-  if (notes) {
-    notes.hidden = !hasProtectedLand;
-  }
-  if (eligibleNote) {
-    if (hasProtectedLand) {
-      setEligibleParcelNote(eligibleNote, hasSssi, hasHefer);
-    } else {
-      eligibleNote.textContent = '';
-    }
   }
 }
 
@@ -3236,19 +3442,18 @@ function createActionCheckboxElements(action) {
   var label = document.createElement('label');
   label.className = 'govuk-label govuk-checkboxes__label';
   label.setAttribute('for', 'action-' + codeLower);
-  label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
+  label.appendChild(document.createTextNode(action.code + ': ' + action.name));
 
+  // Outside the label so clicking the link does not tick the checkbox
+  var guidance = document.createElement('div');
+  guidance.className = 'govuk-checkboxes__hint app-action-guidance';
   var guidanceLink = document.createElement('a');
   guidanceLink.className = 'govuk-link app-action-guidance-link';
   guidanceLink.href = getActionGuidanceUrl(action);
   guidanceLink.target = '_blank';
   guidanceLink.rel = 'noopener noreferrer';
-  guidanceLink.textContent = 'read guidance';
-  guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
-  guidanceLink.addEventListener('click', function(event) {
-    event.stopPropagation();
-  });
-  label.appendChild(guidanceLink);
+  guidanceLink.textContent = 'Read guidance on ' + action.code + ' (opens in new tab)';
+  guidance.appendChild(guidanceLink);
 
   var consentHint = buildActionConsentHint(action.code, consentHintId);
   var describedBy = hintId;
@@ -3267,18 +3472,13 @@ function createActionCheckboxElements(action) {
   var availableHintId = availableHint.id;
   label.appendChild(availableHint);
   describedBy += ' ' + availableHintId;
-  // Outside the conditional so people see it before they select CLIG3
-  if (isWholeRemainingAreaAction(action.code)) {
-    var fullAreaHint = createClig3FullAreaHint(action.code);
-    label.appendChild(fullAreaHint);
-    describedBy += ' ' + fullAreaHint.id;
-  }
   // Nested supplements already sit under a “supplements for CLIG3” legend —
   // no need to repeat the relationship on every label.
   input.setAttribute('aria-describedby', describedBy);
 
   item.appendChild(input);
   item.appendChild(label);
+  item.appendChild(guidance);
 
   var conditional = document.createElement('div');
   conditional.className = 'govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden';
@@ -3300,14 +3500,11 @@ function createActionCheckboxElements(action) {
     amountText.id = 'whole-remaining-summary-' + codeLower;
     amountText.setAttribute('aria-labelledby', qtyLabel.id);
     amountText.innerHTML =
-      '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> hectares</strong>';
+      '<strong><span class="app-whole-remaining-amount" id="whole-remaining-amount-' + codeLower + '">0.0000</span> ha</strong>';
 
-    var supplementHint = document.createElement('p');
-    supplementHint.className = 'govuk-hint govuk-!-margin-bottom-0';
-    supplementHint.id = 'whole-remaining-supplement-hint-' + codeLower;
-    supplementHint.textContent = 'You can add a supplement to CLIG3 on the next page.';
-
-    amountText.setAttribute('aria-describedby', supplementHint.id);
+    // Shown only when selected (conditional panel) — these actions always take the full pool
+    var fullAreaHint = createClig3FullAreaHint(action.code);
+    amountText.setAttribute('aria-describedby', fullAreaHint.id);
 
     var hiddenQty = document.createElement('input');
     hiddenQty.type = 'hidden';
@@ -3318,7 +3515,7 @@ function createActionCheckboxElements(action) {
 
     formGroup.appendChild(qtyLabel);
     formGroup.appendChild(amountText);
-    formGroup.appendChild(supplementHint);
+    formGroup.appendChild(fullAreaHint);
     formGroup.appendChild(hiddenQty);
     conditional.appendChild(formGroup);
     return { item: item, conditional: conditional };
@@ -3425,19 +3622,17 @@ function appendClig3Supplements(clig3Conditional) {
     var label = document.createElement('label');
     label.className = 'govuk-label govuk-radios__label';
     label.setAttribute('for', 'clig3-supplement-' + codeLower);
-    label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
+    label.appendChild(document.createTextNode(action.code + ': ' + action.name));
 
+    var guidance = document.createElement('div');
+    guidance.className = 'govuk-radios__hint app-action-guidance';
     var guidanceLink = document.createElement('a');
     guidanceLink.className = 'govuk-link app-action-guidance-link';
     guidanceLink.href = getActionGuidanceUrl(action);
     guidanceLink.target = '_blank';
     guidanceLink.rel = 'noopener noreferrer';
-    guidanceLink.textContent = 'read guidance';
-    guidanceLink.setAttribute('aria-label', 'Read guidance for ' + action.name + ': ' + action.code + ' (opens in new tab)');
-    guidanceLink.addEventListener('click', function(event) {
-      event.stopPropagation();
-    });
-    label.appendChild(guidanceLink);
+    guidanceLink.textContent = 'Read guidance on ' + action.code + ' (opens in new tab)';
+    guidance.appendChild(guidanceLink);
 
     var hint = document.createElement('span');
     hint.className = 'app-action-hint';
@@ -3457,6 +3652,7 @@ function appendClig3Supplements(clig3Conditional) {
     radio.setAttribute('aria-describedby', hintId + ' ' + availableHint.id);
     item.appendChild(radio);
     item.appendChild(label);
+    item.appendChild(guidance);
     radios.appendChild(item);
 
     // Quantity mirrors CLIG3 applied area — no user input
@@ -3658,12 +3854,17 @@ function ensureSharedParcelLayers(mapInstance) {
       layout: {
         'text-field': ['get', 'displayName'],
         'text-size': 11,
-        'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular']
+        // OpenFreeMap liberty ships Noto Sans — Open Sans can fail to render.
+        'text-font': ['Noto Sans Regular'],
+        // Show every parcel number at farm zoom (labels may overlap slightly).
+        'text-allow-overlap': true,
+        'text-ignore-placement': true,
+        'text-optional': false
       },
       paint: {
         'text-color': '#0b0c0c',
         'text-halo-color': '#ffffff',
-        'text-halo-width': 1
+        'text-halo-width': 1.25
       }
     });
   }
@@ -3981,6 +4182,8 @@ onMapStyleReady(function(mapInstance) {
 });
 
 // Function to restore parcel state from saved selections
+var isRestoringActionSelections = false;
+
 function restoreParcelState(parcelId) {
   if (currentSelectedParcel !== parcelId) {
     return;
@@ -4004,46 +4207,41 @@ function restoreParcelState(parcelId) {
     window.SfiGrasslandsDevReadyActionsCompatibilityLoading.setSuspended(true);
   }
 
+  isRestoringActionSelections = true;
   try {
-    // Restore each saved action
+    // Restore each saved action without firing change handlers (avoids AAC “Updating…”
+    // and GOV.UK checkbox desync that makes uncheck take two clicks).
     savedSelections.actions.forEach(function(action) {
       if (isClig3Supplement(action.code)) {
         return;
       }
       console.log('Restoring action:', action.code, 'quantity:', action.quantity);
-      
-      // Check the checkbox
+
       var $checkbox = $('input[name="actions"][value="' + action.code + '"]');
       if ($checkbox.length > 0) {
         $checkbox.prop('checked', true);
         $checkbox.attr('aria-expanded', 'true');
-        
-        // Show the conditional content by removing the hidden class
+
         var conditionalId = 'conditional-' + action.code.toLowerCase();
         var $conditional = $('#' + conditionalId);
         if ($conditional.length > 0) {
           $conditional
             .removeClass('govuk-checkboxes__conditional--hidden')
             .removeClass('govuk-radios__conditional--hidden');
-          console.log('Showed conditional for:', action.code);
         }
-        
-        // Restore the quantity if it exists
+
         if (action.quantity) {
           var $quantityInput = $('#quantity-' + action.code.toLowerCase());
           if ($quantityInput.length > 0) {
             $quantityInput.val(action.quantity);
-            console.log('Set quantity for:', action.code, 'to:', action.quantity);
           }
         }
-
-        // Sync GOV.UK conditional behaviour, compatibility and area hints
-        $checkbox.trigger('change');
       } else {
         console.log('Checkbox not found for:', action.code);
       }
     });
   } finally {
+    isRestoringActionSelections = false;
     if (window.SfiGrasslandsDevReadyActionsCompatibilityLoading) {
       // Keep suspended if AAC mode is on — AAC owns availability while enabled
       if (!(window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled())) {
@@ -4051,11 +4249,13 @@ function restoreParcelState(parcelId) {
       }
     }
     syncClig3SupplementRadiosFromCheckboxes();
+    // AAC first so CLIG3 quantity sync can read the real available pool
     if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       window.SfiGrasslandsDevReadyAac.render();
     }
+    syncAllWholeRemainingAreaActions();
   }
-  
+
   var hasQueuedActionFocus = Boolean(pendingActionFocusCode);
 
   // Scroll to the actions section only when no specific action focus is queued.
@@ -4065,12 +4265,6 @@ function restoreParcelState(parcelId) {
     $('html, body').animate({
       scrollTop: $actionsSection.offset().top - 20
     }, 500);
-  }
-
-  // Ensure hectare hints are recalculated immediately after state restore.
-  var $anyQuantityInput = $('input[id^="quantity-"]').first();
-  if ($anyQuantityInput.length > 0) {
-    $anyQuantityInput.trigger('input');
   }
 }
 
@@ -4352,22 +4546,22 @@ function getActionListGroups() {
   return [
     {
       id: 'ha',
-      heading: 'Grassland actions',
+      heading: 'Land',
       unit: 'ha'
     },
     {
       id: 'm',
-      heading: 'Boundary actions',
+      heading: 'Boundary',
       unit: 'm'
     },
     {
       id: 'pond',
-      heading: 'Pond actions',
+      heading: 'Ponds',
       unit: 'pond'
     },
     {
       id: 'm2',
-      heading: 'Building actions',
+      heading: 'Buildings',
       unit: 'm²'
     }
   ];
@@ -4401,6 +4595,23 @@ function clearActionListGroupHeadings(container) {
   );
 }
 
+// Only CLIG3 has supplements, so the note only shows when CLIG3 is in the list.
+// Call after updateActionListGroupHeadingVisibility, which shows every lead-in in a visible group.
+function updateSupplementsNoteVisibility() {
+  var note = document.getElementById('actions-supplements-note');
+  if (!note) {
+    return;
+  }
+  var input = document.querySelector(
+    '#actions-checkboxes-container > .govuk-checkboxes__item input[name="actions"][value="CLIG3"]'
+  );
+  var item = input && input.closest('.govuk-checkboxes__item');
+  note.hidden = !item ||
+    item.hidden ||
+    item.getAttribute('data-available-for-parcel') === 'false' ||
+    item.style.display === 'none';
+}
+
 function updateActionListGroupHeadingVisibility() {
   var container = document.getElementById('actions-checkboxes-container');
   if (!container) {
@@ -4412,8 +4623,11 @@ function updateActionListGroupHeadingVisibility() {
     function(heading) {
       var hasVisibleAction = false;
       var sibling = heading.nextElementSibling;
-      while (sibling && !sibling.classList.contains('app-action-list-group-heading') &&
-             !sibling.classList.contains('app-action-list-group-lead-in')) {
+      while (sibling && !sibling.classList.contains('app-action-list-group-heading')) {
+        if (sibling.classList.contains('app-action-list-group-lead-in')) {
+          sibling = sibling.nextElementSibling;
+          continue;
+        }
         if (
           sibling.classList.contains('govuk-checkboxes__item') &&
           sibling.getAttribute('data-available-for-parcel') !== 'false' &&
@@ -4426,9 +4640,10 @@ function updateActionListGroupHeadingVisibility() {
         sibling = sibling.nextElementSibling;
       }
       heading.hidden = !hasVisibleAction;
-      var leadIn = heading.previousElementSibling;
-      if (leadIn && leadIn.classList.contains('app-action-list-group-lead-in')) {
+      var leadIn = heading.nextElementSibling;
+      while (leadIn && leadIn.classList.contains('app-action-list-group-lead-in')) {
         leadIn.hidden = !hasVisibleAction;
+        leadIn = leadIn.nextElementSibling;
       }
     }
   );
@@ -4490,18 +4705,29 @@ function reorderActionOptions(sortedCodes) {
       return;
     }
 
-    if (group.id === 'ha') {
-      var leadIn = document.createElement('p');
-      leadIn.className = 'govuk-body app-action-list-group-lead-in';
-      leadIn.textContent = 'The available quantity will update as you make your selections.';
-      fragment.appendChild(leadIn);
-    }
-
     var heading = document.createElement('h3');
     heading.className = 'govuk-heading-s app-action-list-group-heading';
     heading.setAttribute('data-action-group', group.id);
     heading.textContent = group.heading;
     fragment.appendChild(heading);
+
+    if (group.id === 'ha' || group.id === 'm') {
+      var leadIn = document.createElement('p');
+      leadIn.className = 'govuk-body app-action-list-group-lead-in';
+      leadIn.textContent = group.id === 'ha'
+        ? 'The available area updates automatically as you make your selections.'
+        : 'The available length updates automatically as you make your selections.';
+      fragment.appendChild(leadIn);
+
+      if (group.id === 'ha') {
+        var supplementsNote = document.createElement('p');
+        supplementsNote.className = 'govuk-body app-action-list-group-lead-in';
+        supplementsNote.id = 'actions-supplements-note';
+        supplementsNote.hidden = true;
+        supplementsNote.textContent = 'You can select supplements for your actions when you continue through the service.';
+        fragment.appendChild(supplementsNote);
+      }
+    }
 
     codes.forEach(function(actionCode) {
       var item = findTopLevelActionItem(actionCode);
@@ -4586,6 +4812,7 @@ function applyActionFilters() {
   });
 
   updateActionListGroupHeadingVisibility();
+  updateSupplementsNoteVisibility();
 
   if (currentSelectedParcel && visibleCount === 0) {
     var noResultsTitle = document.getElementById('no-results-title');
@@ -4742,8 +4969,8 @@ function consumeQueuedActionFocus(delayMs) {
 
 // Function to update actions list
 function getAllMvpActionCodes() {
-  if (window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && Array.isArray(window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codes)) {
-    return window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codes.slice();
+  if (window.SFI_GRASSLANDS_V2_MVP_ACTIONS && Array.isArray(window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codes)) {
+    return window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codes.slice();
   }
   return ACTION_CATALOG.map(function(action) {
     return action.code;
@@ -4877,17 +5104,40 @@ function formatBreakdownNumber(value) {
 }
 
 function isPreviousAgreementsToggleOn() {
-  if (window.SfiGrasslandsDevReadyFeatureToggles) {
-    return window.SfiGrasslandsDevReadyFeatureToggles.getQueryFlag('previousAgreements') ||
-      window.SfiGrasslandsDevReadyFeatureToggles.getSessionFlag('sfiGrasslandsDevReadyShowPreviousAgreements');
+  if (window.SfiGrasslandsDevReadyFeatureToggles &&
+      typeof window.SfiGrasslandsDevReadyFeatureToggles.isToggleEnabled === 'function') {
+    return window.SfiGrasslandsDevReadyFeatureToggles.isToggleEnabled('previousAgreements');
   }
   try {
     if (new URLSearchParams(window.location.search).get('previousAgreements') === '1') {
       return true;
     }
-    return window.sessionStorage.getItem('sfiGrasslandsDevReadyShowPreviousAgreements') === '1';
+    var raw = window.sessionStorage.getItem('sfiGrasslandsDevReadyShowPreviousAgreements');
+    if (raw === '1') {
+      return true;
+    }
+    if (raw === '0') {
+      return false;
+    }
+    return true;
   } catch (error) {
-    return false;
+    return true;
+  }
+}
+
+function hideAacPreviousAgreementsDetails() {
+  var detailsEl = document.getElementById('aac-parcel-area-details');
+  var listEl = document.getElementById('aac-parcel-area-breakdown-list');
+  var summaryEl = document.getElementById('aac-parcel-area-details-summary');
+  if (detailsEl) {
+    detailsEl.hidden = true;
+    detailsEl.open = false;
+  }
+  if (listEl) {
+    listEl.innerHTML = '';
+  }
+  if (summaryEl) {
+    summaryEl.textContent = 'View your existing agreements';
   }
 }
 
@@ -4896,6 +5146,8 @@ function updateAacParcelAreaBreakdown() {
   var totalEl = document.getElementById('aac-actions-total-area');
   var referenceEl = document.getElementById('aac-parcel-reference');
   var landCoverEl = document.getElementById('aac-parcel-land-cover');
+  var detailsEl = document.getElementById('aac-parcel-area-details');
+  var listEl = document.getElementById('aac-parcel-area-breakdown-list');
   var bottomPanels = document.querySelector('.app-bottom-panels');
   if (!container) {
     return;
@@ -4908,6 +5160,8 @@ function updateAacParcelAreaBreakdown() {
 
   if (!aacOn || !currentSelectedParcel || !parcelData[currentSelectedParcel]) {
     container.hidden = true;
+    hideAacPreviousAgreementsDetails();
+    updateAacActionsIntro();
     if (totalEl) {
       totalEl.textContent = '—';
     }
@@ -4922,6 +5176,8 @@ function updateAacParcelAreaBreakdown() {
 
   if (typeof window.SfiGrasslandsDevReadyAac.getParcelAreaBreakdown !== 'function') {
     container.hidden = true;
+    hideAacPreviousAgreementsDetails();
+    updateAacActionsIntro();
     return;
   }
 
@@ -4966,6 +5222,28 @@ function updateAacParcelAreaBreakdown() {
   }
 
   container.hidden = false;
+
+  // Existing agreements details (toggle on + parcel has agreements)
+  var previousAgreements = getPreviousAgreementsForParcel(currentSelectedParcel);
+  var detailsSummaryEl = document.getElementById('aac-parcel-area-details-summary');
+
+  if (detailsEl && listEl) {
+    var showPreviousAgreements = isPreviousAgreementsToggleOn();
+    var hasPrevious = previousAgreements.length > 0;
+    listEl.innerHTML = '';
+    if (showPreviousAgreements && hasPrevious) {
+      if (detailsSummaryEl) {
+        detailsSummaryEl.textContent = 'View your existing agreements';
+      }
+      listEl.appendChild(buildExistingAgreementsTable(previousAgreements));
+      detailsEl.hidden = false;
+      detailsEl.open = false;
+    } else {
+      hideAacPreviousAgreementsDetails();
+    }
+  }
+
+  updateAacActionsIntro();
 }
 
 function escapeHtmlText(value) {
@@ -5248,7 +5526,7 @@ $(document).ready(function(){
         parcelSelection.actions.forEach(function(action) {
           var $actionRow = $('<div class="govuk-summary-list__row"></div>');
           var $actionKey = $('<dt class="govuk-summary-list__key"></dt>');
-          $actionKey.append(document.createTextNode(action.name + ' (' + action.code + ')'));
+          $actionKey.append(document.createTextNode(action.code + ': ' + action.name));
           var consentHintLines = getActionConsentHintLines(action.code, parcelId);
           consentHintLines.forEach(function(line) {
             $actionKey.append(
@@ -5350,12 +5628,13 @@ $(document).ready(function(){
     }
 
     var $checkbox = $('input[value="' + actionCode + '"]');
-    var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
+    // First text node only: the label also contains the hint spans
+    var labelText = $checkbox.siblings('.govuk-checkboxes__label').contents().first().text().trim();
 
-    // Extract just the action name (before the colon and code)
+    // Labels read "CODE: Action name"
     var parts = labelText.split(':');
     if (parts.length > 1) {
-      return parts[0].trim();
+      return parts.slice(1).join(':').trim();
     }
     return labelText || code;
   }
@@ -5438,17 +5717,14 @@ $(document).ready(function(){
 
     var parcel = parcelData[currentSelectedParcel];
     var totalAreaHa = parseFloat(parcel.availableArea);
-    var totalAreaM = getLinearAvailableMetres(parcel);
     var totalAreaM2 = getBuildingSquareMetresAvailable(parcel);
     var totals = calculateParcelQuantityTotals();
     var remainingHa = Math.max(0, totalAreaHa - totals.ha);
-    var remainingM = Math.max(0, totalAreaM - totals.m);
     var remainingM2 = Math.max(0, totalAreaM2 - (totals.m2 || 0));
     var isOverLimitHa = totals.ha > totalAreaHa;
-    var isOverLimitM = totals.m > totalAreaM;
     var isOverLimitM2 = (totals.m2 || 0) > totalAreaM2;
     // Pond count is user-declared — do not over-limit against parcel hectares
-    var isOverLimit = isOverLimitHa || isOverLimitM || isOverLimitM2;
+    var isOverLimit = isOverLimitHa || isOverLimitM2;
 
     // Update label available hints (quantity fields no longer show available copy)
     $('.govuk-checkboxes__conditional').each(function() {
@@ -5469,7 +5745,14 @@ $(document).ready(function(){
       if ($suffix.text() === 'ha') {
         setActionAvailableHint(actionCode, remainingHa);
       } else if ($suffix.text() === 'm') {
-        setActionAvailableHint(actionCode, remainingM);
+        // Boundary length reductions: BND1 ↔ BND2/CHRW2/WBD2 (others do not reduce each other)
+        var poolTotalM = getLinearAvailableMetres(parcel, actionCode);
+        var usedByReducers = getMetresUsedByReducers(actionCode);
+        var remainingForPool = Math.max(0, poolTotalM - usedByReducers);
+        setActionAvailableHint(actionCode, remainingForPool);
+        if (usedByReducers > poolTotalM) {
+          isOverLimit = true;
+        }
       } else if ($suffix.text() === 'm²') {
         setActionAvailableHint(actionCode, remainingM2);
       }
@@ -5493,11 +5776,16 @@ $(document).ready(function(){
 
       var suffix = $input.siblings('.govuk-input__suffix').text();
       var parsed = parseQuantityInput($input.val());
+      var actionCode = ($input.attr('id') || '').replace('quantity-', '').toUpperCase();
+      var poolTotalM = getLinearAvailableMetres(parcel, actionCode);
+      var usedByReducers = getMetresUsedByReducers(actionCode);
+      var isOverLimitMForAction = suffix === 'm' && usedByReducers > poolTotalM;
+      var maxAllowedM = Math.max(0, poolTotalM - usedByReducers);
 
-      if (isOverLimit && parsed.valid) {
+      if ((isOverLimit || isOverLimitMForAction) && parsed.valid) {
         if (suffix === 'ha' && isOverLimitHa) {
           errors.overLimit = getOverLimitErrorMessage('ha');
-        } else if (suffix === 'm' && isOverLimitM) {
+        } else if (isOverLimitMForAction || (suffix === 'm' && parsed.value > maxAllowedM + 0.0001)) {
           errors.overLimit = getOverLimitErrorMessage('m');
         } else if (suffix === 'm²' && isOverLimitM2) {
           errors.overLimit = getOverLimitErrorMessage('m²');
@@ -5557,6 +5845,7 @@ $(document).ready(function(){
       return false;
     }
 
+    setQuantityErrorsVisible(true);
     hideQuantityErrorSummary();
 
     if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
@@ -5568,7 +5857,7 @@ $(document).ready(function(){
         $quantityInput.data('requireValue', $quantityInput.is(':visible'));
         updateQuantityFormatErrors($quantityInput);
       });
-      // On Continue, check every quantity — live UI only flags the last edited field
+      // On Continue, re-check every quantity against remaining available
       updateAacQuantityOverLimitErrors({ all: true });
     } else {
       $('input[name="actions"]:checked').each(function() {
@@ -5614,15 +5903,21 @@ $(document).ready(function(){
 
   // Tier 1: live over-limit updates; show format errors for clearly invalid input
   // AAC mode: only show format errors for invalid characters (e.g. "d") — not over-limit here.
+  // Also flag decimals immediately for metres / square metres / ponds (whole numbers only).
   // Live available-hint updates are debounced (see scheduleAacQuantityLiveUpdate).
   $(document).on('input', 'input[id^="quantity-"]', function() {
     var $input = $(this);
     var inputEl = this;
+    var unit = getQuantityUnitFromInput($input);
+    var wholeNumberDecimal =
+      requiresWholeNumberQuantity(unit) && quantityInputHasDecimalPoint($input.val());
 
     if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
-      if (hasClearlyInvalidQuantityInput($input.val())) {
-        clearQuantityAacDebounce();
+      getQuantityErrorsStore($input).overLimitShown = false;
+      getQuantityErrorsStore($input).formatShown = false;
+      if (hasClearlyInvalidQuantityInput($input.val()) || wholeNumberDecimal) {
         updateQuantityFormatErrors($input);
+        scheduleAacQuantityLiveUpdate(inputEl);
       } else {
         var aacErrors = getQuantityErrorsStore($input);
         aacErrors.format = null;
@@ -5632,7 +5927,7 @@ $(document).ready(function(){
       return;
     }
 
-    if ($input.data('blurred') || hasClearlyInvalidQuantityInput($input.val())) {
+    if ($input.data('blurred') || hasClearlyInvalidQuantityInput($input.val()) || wholeNumberDecimal) {
       updateQuantityFormatErrors($input);
     } else {
       var errors = getQuantityErrorsStore($input);
@@ -5643,15 +5938,16 @@ $(document).ready(function(){
     updateAvailableQuantities();
   });
 
-  // Tier 2: format validation when the user leaves the field (default / non-AAC only)
+  // Tier 2: format validation when the user leaves the field
   $(document).on('blur', 'input[id^="quantity-"]', function() {
+    var $input = $(this);
+    $input.data('blurred', true);
+    updateQuantityFormatErrors($input);
+
     if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
       return;
     }
 
-    var $input = $(this);
-    $input.data('blurred', true);
-    updateQuantityFormatErrors($input);
     updateAvailableQuantities();
   });
   
@@ -5663,6 +5959,7 @@ $(document).ready(function(){
     }
 
     hideQuantityErrorSummary();
+    setQuantityErrorsVisible(false);
     resetActionSelectionUiState();
 
     originalSelectParcel(parcelId);
@@ -5696,7 +5993,7 @@ $(document).ready(function(){
         } else if ($suffix.text() === 'ha') {
           setActionAvailableHint(actionCode, parcel.availableArea);
         } else if ($suffix.text() === 'm') {
-          setActionAvailableHint(actionCode, getLinearAvailableMetres(parcel));
+          setActionAvailableHint(actionCode, getLinearAvailableMetres(parcel, actionCode));
         } else if ($suffix.text() === 'm²') {
           setActionAvailableHint(actionCode, getBuildingSquareMetresAvailable(parcel));
         }
@@ -5854,11 +6151,11 @@ $(document).ready(function(){
 
       if (options.fromExistingAgreement) {
         hintText = selectedName && selectedCode
-          ? ('Not compatible with ' + selectedName + ' (' + selectedCode + ') already on this parcel.')
+          ? ('Not compatible with ' + selectedCode + ': ' + selectedName + ' already on this parcel.')
           : 'Not compatible with an existing agreement already on this parcel.';
       } else {
         hintText = selectedName
-          ? ('Not compatible with the selected action: ' + selectedName + ' (' + selectedCode + ').')
+          ? ('Not compatible with the selected action ' + selectedCode + ': ' + selectedName + '.')
           : ('Not compatible with ' + selectedCode + '.');
       }
 
@@ -6002,11 +6299,8 @@ $(document).ready(function(){
 
   function setSessionFlag(storageKey, enabled) {
     try {
-      if (enabled) {
-        window.sessionStorage.setItem(storageKey, '1');
-      } else {
-        window.sessionStorage.removeItem(storageKey);
-      }
+      // Persist explicit off as '0' so default-on toggles stay off when disabled
+      window.sessionStorage.setItem(storageKey, enabled ? '1' : '0');
     } catch (error) {
       // Ignore storage errors in private browsing.
     }
@@ -6018,6 +6312,28 @@ $(document).ready(function(){
     } catch (error) {
       return false;
     }
+  }
+
+  function isFeatureToggleEnabled(queryParam, storageKey, defaultOn) {
+    if (window.SfiGrasslandsDevReadyFeatureToggles &&
+        typeof window.SfiGrasslandsDevReadyFeatureToggles.resolveToggleEnabled === 'function') {
+      return window.SfiGrasslandsDevReadyFeatureToggles.resolveToggleEnabled(queryParam);
+    }
+    if (getFeatureToggleQueryFlag(queryParam)) {
+      return true;
+    }
+    try {
+      var raw = window.sessionStorage.getItem(storageKey);
+      if (raw === '1') {
+        return true;
+      }
+      if (raw === '0') {
+        return false;
+      }
+    } catch (error) {
+      // Ignore storage errors in private browsing.
+    }
+    return Boolean(defaultOn);
   }
 
   // Keep shareable feature-toggle state in the URL, e.g. ?allActions=1
@@ -6072,7 +6388,7 @@ $(document).ready(function(){
     var pageIntro = document.getElementById('actions-mode-intro');
     var aacIntro = document.getElementById('aac-actions-intro');
 
-    // AAC: hint sits under Available actions. Compatibility: stays under the page H1.
+    // AAC: "About the actions" sits under the parcel card. Compatibility: stays under the page H1.
     if (pageIntro) {
       pageIntro.hidden = Boolean(aacEnabled);
     }
@@ -6134,13 +6450,18 @@ $(document).ready(function(){
       enabled: true,
       debug: false,
       // AAC exploration: only genuine policy conflicts — not the full matrix.
-      // Area sharing is handled by remaining eligible area, not binary disable.
+      // Area / length sharing is handled by remaining eligible amounts, not binary disable.
       // CLIG3 and CSAM3 share remaining grassland area (not hard-incompatible).
+      // Boundary: BND1 shares length with BND2/CHRW2/WBD2 via AAC reductions — not hard-blocked.
+      // BND2, CHRW2 and WBD2 are compatible with each other (no mutual reductions).
+      // Single-sided ×2 only when applicant controls both sides (SO3757 3193).
       incompatibleByCode: {
         GRH7: ['GRH8', 'GRH10'],
         GRH8: ['GRH7', 'GRH10'],
         GRH10: ['GRH7', 'GRH8']
       },
+      // Previous-agreement deductions use the full compatibility matrix
+      previousAgreementIncompatibleByCode: previousAgreementIncompatibleByCode,
       getContinueButton: function() {
         return document.getElementById('continue-button');
       },
@@ -6152,7 +6473,8 @@ $(document).ready(function(){
           window.SfiGrasslandsDevReadyAac.render();
         }
         mirrorClig3SupplementAvailableHints();
-        updateAacQuantityOverLimitErrors();
+        // Re-check every quantity — BND1 length conflicts can invalidate other fields.
+        updateAacQuantityOverLimitErrors({ all: true, reveal: true });
         refreshContinueFromActionSelection();
         captureCurrentParcelState();
       }
@@ -6306,7 +6628,7 @@ $(document).ready(function(){
   function wireActionDeductionsToggle() {
     var storageKey = 'sfiGrasslandsDevReadyShowActionDeductions';
     var toggle = document.getElementById('show-action-deductions');
-    var enabled = getFeatureToggleQueryFlag('actionDeductions') || getSessionFlag(storageKey);
+    var enabled = isFeatureToggleEnabled('actionDeductions', storageKey, true);
 
     setSessionFlag(storageKey, enabled);
     if (toggle) {
@@ -6324,7 +6646,7 @@ $(document).ready(function(){
   function wirePreviousAgreementsToggle() {
     var storageKey = 'sfiGrasslandsDevReadyShowPreviousAgreements';
     var toggle = document.getElementById('show-previous-agreements');
-    var enabled = getFeatureToggleQueryFlag('previousAgreements') || getSessionFlag(storageKey);
+    var enabled = isFeatureToggleEnabled('previousAgreements', storageKey, true);
 
     setSessionFlag(storageKey, enabled);
     if (toggle) {
@@ -6485,7 +6807,11 @@ $(document).ready(function(){
     // AAC mode: checking a box is instant — only quantity entry simulates the API wait
     // (CLIG3 commits quantity on check, so conflicts update immediately)
     if (window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled()) {
-      if (isWholeRemainingAreaAction(actionCode) && $(changedCheckbox).is(':checked')) {
+      if (
+        !isRestoringActionSelections &&
+        isWholeRemainingAreaAction(actionCode) &&
+        $(changedCheckbox).is(':checked')
+      ) {
         window.SfiGrasslandsDevReadyAac.runUpdate(actionCode);
       } else {
         window.SfiGrasslandsDevReadyAac.render();
@@ -6511,10 +6837,9 @@ $(document).ready(function(){
     syncAllWholeRemainingAreaActions();
   });
 
-  // Live over-limit errors only appear on the quantity last edited.
-  // Continue still validates every field via { all: true }.
-  var lastQuantityEditedActionCode = null;
-
+  // After any AAC recalculation, re-check every quantity for over-limit.
+  // Shared boundary length (BND1/BND2/CHRW2) can invalidate a field that was
+  // not just edited — e.g. entering CHRW2 must error an existing BND2 entry.
   function updateAacQuantityOverLimitErrors(options) {
     options = options || {};
     if (!(window.SfiGrasslandsDevReadyAac && window.SfiGrasslandsDevReadyAac.isEnabled())) {
@@ -6528,34 +6853,27 @@ $(document).ready(function(){
       byCode[action.code] = action;
     });
 
-    var checkAll = options.all === true;
+    // Default to all fields. Callers can pass actionCode to limit scope.
+    var checkAll = options.all !== false && !options.actionCode;
     var onlyCode = checkAll
       ? null
-      : (options.actionCode
-        ? String(options.actionCode).toUpperCase()
-        : (lastQuantityEditedActionCode || null));
+      : (options.actionCode ? String(options.actionCode).toUpperCase() : null);
 
     $('input[id^="quantity-"]').each(function() {
       var $input = $(this);
       var actionCode = ($input.attr('id') || '').replace('quantity-', '').toUpperCase();
       var errors = getQuantityErrorsStore($input);
 
-      // Live mode: only the last-edited field can show an over-limit error
       if (onlyCode && actionCode !== onlyCode) {
-        if (errors.overLimit) {
-          errors.overLimit = null;
-          refreshQuantityFieldDisplay($input);
-        }
-        return;
-      }
-
-      if (!checkAll && !onlyCode) {
         return;
       }
 
       var $checkbox = getQuantityCheckbox($input);
       // Keep format errors (e.g. letter "d"); only manage over-limit here
       errors.overLimit = null;
+      if (options.reveal) {
+        errors.overLimitShown = true;
+      }
 
       if (!$checkbox.is(':checked')) {
         refreshQuantityFieldDisplay($input);
@@ -6590,6 +6908,9 @@ $(document).ready(function(){
         }
 
         errors.overLimit = getOverLimitErrorMessage(action.unit);
+        if (action.limitedAreaCapped) {
+          errors.overLimit += '. CIGL1 and CIGL2 together can only use 25% of your total farm area';
+        }
       }
 
       refreshQuantityFieldDisplay($input);
@@ -6607,7 +6928,8 @@ $(document).ready(function(){
       return;
     }
 
-    lastQuantityEditedActionCode = actionCode;
+    // Read before anything re-syncs selections from the new value
+    var wasTakingLand = window.SfiGrasslandsDevReadyAac.hasSelection(actionCode);
 
     var $input = $(inputEl);
     $input.data('blurred', true);
@@ -6621,27 +6943,38 @@ $(document).ready(function(){
       $('#conditional-' + actionCode.toLowerCase()).removeClass('govuk-checkboxes__conditional--hidden');
     }
 
-    // Invalid characters (e.g. "d") — show format error only, skip AAC recalculation
+    // Wrong format (e.g. "d" or "23.000" without 4 decimal places) — show the format error
+    // only. The entry takes no land, so "Updating…" only runs to give back a previous amount.
     var errors = getQuantityErrorsStore($input);
     if (errors.format) {
       window.SfiGrasslandsDevReadyAac.setSelectionExcluded(actionCode, true);
       errors.overLimit = null;
+      errors.formatShown = true;
       refreshQuantityFieldDisplay($input);
+      if (wasTakingLand) {
+        window.SfiGrasslandsDevReadyAac.runUpdate(actionCode);
+      }
       refreshContinueFromActionSelection();
       return;
     }
 
     window.SfiGrasslandsDevReadyAac.setSelectionExcluded(actionCode, false);
 
-    updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+    // Check all quantities so shared-pool shrinks surface on related actions
+    updateAacQuantityOverLimitErrors({ all: true });
 
-    // More than is available: error straight away, no "Updating…" spinner,
-    // and the entry doesn't take land from other actions
+    // More than is available: the field's own limit doesn't depend on its value, so the
+    // error can show straight away. The entry doesn't take land from other actions, so
+    // "Updating…" only runs if its previous amount was taking land and must be given back.
     if (errors.overLimit) {
       window.SfiGrasslandsDevReadyAac.setSelectionExcluded(actionCode, true);
-      window.SfiGrasslandsDevReadyAac.render();
-      applyGreyOutCnum2();
-      updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+      // Re-check now it's excluded, so other fields aren't judged against the oversized entry
+      updateAacQuantityOverLimitErrors({ all: true });
+      errors.overLimitShown = true;
+      refreshQuantityFieldDisplay($input);
+      if (wasTakingLand) {
+        window.SfiGrasslandsDevReadyAac.runUpdate(actionCode);
+      }
       refreshContinueFromActionSelection();
       return;
     }
@@ -6652,7 +6985,7 @@ $(document).ready(function(){
     } else {
       window.SfiGrasslandsDevReadyAac.render();
       applyGreyOutCnum2();
-      updateAacQuantityOverLimitErrors({ actionCode: actionCode });
+      updateAacQuantityOverLimitErrors({ all: true });
       captureCurrentParcelState();
     }
     refreshContinueFromActionSelection();
@@ -6764,11 +7097,6 @@ $(document).ready(function(){
       focusFarmByKey(farmKey);
     });
     
-    $('#reset-map-view-button').on('click', function(e) {
-      e.preventDefault();
-      resetMapToAllParcelsView();
-    });
-
     // Click handler for "Back to OS map reference farm selection" link
     $('#back-to-farm-selection-link').on('click', function(e) {
       e.preventDefault();

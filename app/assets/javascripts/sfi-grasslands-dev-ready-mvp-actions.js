@@ -33,7 +33,7 @@
     });
   }
 
-  global.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS = {
+  global.SFI_GRASSLANDS_V2_MVP_ACTIONS = {
     codes: codes,
     codeSet: codeSet,
     filterCatalog: filterCatalog

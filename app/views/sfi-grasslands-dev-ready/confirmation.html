@@ -1,5 +1,6 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/sfi-grasslands-dev-ready/task-list" %}
+{% set showViewAgreementInFooter = true %}
 {% extends "layouts/sfi-grasslands-dev-ready-header.html" %}
 
 {% block pageTitle %}
@@ -53,7 +54,7 @@
         </p>
       {% else %}
         <p class="govuk-body">
-          We’ll email you when your agreement offer is ready for you to check in the Farm and Land Service.
+          We’ll email you when your agreement offer is ready for you to check in Applications and agreements.
         </p>
       {% endif %}
 
@@ -80,10 +81,6 @@
       <p class="govuk-body">
         <a class="govuk-link" href="/sfi-grasslands-dev-ready/view-application" target="_blank" rel="noreferrer noopener">View and print submitted application (opens in new tab)</a>
       </p>
-
-      <a href="/sfi-grasslands-dev-ready/singlefrontdoor/landing/landing" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-        Back to Farm and Land Service
-      </a>
 
     </div>
   </div>

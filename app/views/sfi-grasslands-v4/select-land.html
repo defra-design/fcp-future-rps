@@ -94,40 +94,40 @@
       color: #0b0c0c;
     }
 
-    /* Extended width only while the map is showing */
+    /* Wider than the 960px GOV.UK container only while the map is showing */
     body.app-select-land--wide .govuk-header {
       width: 100%;
     }
 
     body.app-select-land--wide .govuk-header__container {
-      max-width: none;
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       box-sizing: border-box;
     }
 
     body.app-select-land--wide .govuk-header__container.govuk-width-container {
-      max-width: none;
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       padding-left: 20px;
       padding-right: 20px;
       box-sizing: border-box;
     }
 
     body.app-select-land--wide .govuk-service-navigation .govuk-width-container {
-      max-width: none;
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       padding-left: 20px;
       padding-right: 20px;
       box-sizing: border-box;
     }
 
     body.app-select-land--wide > .govuk-width-container {
-      max-width: none;
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       padding-left: 20px;
       padding-right: 20px;
       box-sizing: border-box;
@@ -137,16 +137,6 @@
       max-width: none;
       margin: 0;
       padding: 8px 0 0;
-    }
-
-    body.app-select-land--wide .govuk-main-wrapper .govuk-grid-row {
-      margin: 0;
-    }
-
-    body.app-select-land--wide .govuk-main-wrapper .govuk-grid-column-full {
-      width: 100%;
-      float: none;
-      padding: 0;
     }
 
     .app-map-shell {
@@ -178,7 +168,7 @@
       width: 100%;
       height: calc(100vh - 320px);
       min-height: 420px;
-      max-height: 640px;
+      max-height: 560px;
       border: 2px solid #b1b4b6;
       cursor: pointer;
     }
@@ -4550,7 +4540,7 @@
       document.documentElement.setAttribute('data-parcel-view', currentParcelView);
       rememberParcelView(currentParcelView);
 
-      // Map needs the extended layout; list uses normal GOV.UK content width
+      // Map gets a wider (capped) layout; list uses normal GOV.UK content width
       document.body.classList.toggle('app-select-land--wide', currentParcelView === 'map');
 
       if (currentParcelView === 'list') {

@@ -250,7 +250,11 @@ function buildParcelSelectionsDataFromApplication (req) {
 }
 
 function syncParcelSelectionsData (req) {
-  getSessionData(req).sfiParcelSelectionsData = buildParcelSelectionsDataFromApplication(req)
+  var json = buildParcelSelectionsDataFromApplication(req)
+  var data = getSessionData(req)
+  data.sfiParcelSelectionsData = json
+  // Keep the form field key in sync so agreement / CYA use the same snapshot
+  data.parcelSelectionsData = json
 }
 
 function hasSavedLandAndActions (req) {
@@ -629,7 +633,7 @@ function buildBasketParcels (req) {
       var reference = getParcelDisplayReference(parcel) || 'Unknown parcel'
 
       return Object.assign({}, parcel, summary, {
-        heading: 'Parcel reference ' + reference,
+        heading: 'Land parcel ' + reference,
         parcelReference: reference,
         landCoverLines: formatLandCoverLines(parcel.landCover, parcel.totalArea)
       })
@@ -674,6 +678,21 @@ function removeParcelFromBasket (req, parcelId) {
 }
 
 function loadParcelIntoDraftForEdit (req, parcelId) {
+  // Confirm can show a saved parcel plus a different draft parcel at once.
+  // Editing moves a parcel into the single draft slot — commit any other
+  // in-progress draft first so it is not overwritten and lost from the basket.
+  var existingDraft = getDraftParcel(req)
+  var existingDraftActions = getDraftActions(req)
+  if (
+    existingDraft &&
+    existingDraft.parcelId &&
+    existingDraft.parcelId !== parcelId &&
+    Array.isArray(existingDraftActions) &&
+    existingDraftActions.length > 0
+  ) {
+    commitDraftToApplication(req)
+  }
+
   var parcels = getApplicationParcels(req)
   var parcel = parcels.find(function (entry) {
     return entry.parcelId === parcelId
@@ -837,8 +856,8 @@ module.exports = {
   setDraftActions: setDraftActions,
   clearDraft: clearDraft,
   cancelLandActionsDraft: cancelLandActionsDraft,
-  getLandActionsEditSnapshot: getLandActionsEditSnapshot,
   shouldShowCancelLandActions: shouldShowCancelLandActions,
+  getLandActionsEditSnapshot: getLandActionsEditSnapshot,
   formatLandCover: formatLandCover,
   getParcelDisplayReference: getParcelDisplayReference,
   upsertApplicationParcel: upsertApplicationParcel,

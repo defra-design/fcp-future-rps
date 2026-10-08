@@ -1,0 +1,353 @@
+// Recreated Rural Payments service — layouts/sfi-grasslands-dev-ready-rural-payments.html
+// (sfi-grasslands-dev-ready/rural-payments/sign-in, land-summary and parcel-details)
+// Styled like the live Rural Payments service so it feels like a different service.
+
+$app-rps-black: #0b0c0c;
+$app-rps-blue: #1d70b8;
+$app-rps-focus: #ffdd00;
+
+// Header
+
+.app-rps-header {
+  background: $app-rps-black;
+  border-bottom: 10px solid $app-rps-blue;
+  color: #ffffff;
+}
+
+.app-rps-header__container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 30px;
+  padding: 10px 0;
+}
+
+.app-rps-header__logotype {
+  display: block;
+  fill: currentColor;
+}
+
+.app-rps-header__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 30px;
+}
+
+.app-rps-header__link,
+.app-rps-header__link:link,
+.app-rps-header__link:visited {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.app-rps-header__link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+}
+
+.app-rps-header__link:focus {
+  outline: 3px solid transparent;
+  color: $app-rps-black;
+  background-color: $app-rps-focus;
+  box-shadow: 0 -2px $app-rps-focus, 0 4px $app-rps-black;
+  text-decoration: none;
+}
+
+.app-rps-header__service-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.app-rps-header__navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+// Sign in — older-style thin inputs and brighter green button
+
+.app-rps-input {
+  border: 1px solid #6f777b;
+}
+
+.app-rps-sign-in__password {
+  margin-bottom: 40px;
+}
+
+.app-rps-button {
+  background-color: #00823b;
+}
+
+.app-rps-button:hover {
+  background-color: #00692f;
+}
+
+// Page title with the business name underneath, as on the live service
+
+.app-rps-page-title {
+  margin-bottom: 5px;
+}
+
+.app-rps-page-caption {
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+// Two columns: content 40%, map 60%
+
+@media (min-width: 40.0625em) {
+  .app-rps-column--content {
+    width: 40%;
+  }
+
+  .app-rps-column--map {
+    width: 60%;
+  }
+}
+
+// Business overview
+
+.app-rps-contents__title {
+  margin-bottom: 10px;
+}
+
+.app-rps-contents li {
+  position: relative;
+  margin-bottom: 10px;
+  padding-left: 25px;
+  font-size: 1rem;
+}
+
+.app-rps-contents li::before {
+  content: "\2014";
+  position: absolute;
+  left: 0;
+}
+
+// Grid rows have negative side margins, so inset the divider to line up with the columns
+.app-rps-overview-section {
+  position: relative;
+  margin-top: 30px;
+  padding-top: 20px;
+}
+
+.app-rps-overview-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 15px;
+  left: 15px;
+  border-top: 1px solid #b1b4b6;
+}
+
+.app-rps-overview-section .govuk-list li {
+  margin-bottom: 15px;
+}
+
+.app-rps-overview-table {
+  margin-bottom: 20px;
+}
+
+// Close button
+
+.app-rps-close {
+  padding-top: 20px;
+}
+
+.app-rps-close__button {
+  margin-bottom: 0;
+}
+
+// Date search — inline "Date:" label like the live service
+
+.app-rps-date-search__field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.app-rps-date-search__label {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.app-rps-date-search__input {
+  width: 9em;
+  padding: 2px 5px;
+  height: auto;
+  font-size: 1rem;
+}
+
+.app-rps-date-search__button {
+  margin-bottom: 0;
+}
+
+// Tables — smaller text, as on the live service
+
+.app-rps-table {
+  font-size: 1rem;
+}
+
+.app-rps-table th[scope="row"] {
+  font-weight: 400;
+}
+
+.app-rps-sort-link {
+  font-weight: 700;
+}
+
+// Parcel references read as one code, so keep them on one line
+.app-rps-nowrap {
+  white-space: nowrap;
+}
+
+// Map
+
+.app-rps-map {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.app-rps-map__canvas {
+  width: 100%;
+  height: 520px;
+  background: #f3f2f1;
+}
+
+.app-rps-map__controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+}
+
+.app-rps-map__control {
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 0;
+  background: $app-rps-blue;
+  color: #ffffff;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.app-rps-map__control:hover,
+.app-rps-map__control[aria-pressed="true"] {
+  background: #003078;
+}
+
+.app-rps-map__control:focus {
+  outline: 3px solid $app-rps-focus;
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 2px $app-rps-black;
+}
+
+// Hedges is a toggle, shown as a tick box like the live service
+.app-rps-map__control--toggle::before {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 5px;
+  vertical-align: -0.05em;
+  background: #ffffff;
+}
+
+.app-rps-map__control--toggle[aria-pressed="true"]::before {
+  box-shadow: inset 0 0 0 3px #ffffff;
+  background: $app-rps-black;
+}
+
+// Sign out confirmation dialog
+
+.app-rps-modal {
+  box-sizing: border-box;
+  width: calc(100% - 30px);
+  max-width: 600px;
+  padding: 30px 35px 10px;
+  border: 0;
+  color: $app-rps-black;
+}
+
+.app-rps-modal::backdrop {
+  background: rgba(11, 12, 12, 0.5);
+}
+
+.app-rps-modal__close-form {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.app-rps-modal__close {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $app-rps-black;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.app-rps-modal__close:focus {
+  outline: 3px solid $app-rps-focus;
+  box-shadow: inset 0 0 0 2px $app-rps-black;
+}
+
+.app-rps-modal .govuk-heading-l:focus {
+  outline: none;
+}
+
+.app-rps-modal .govuk-button-group {
+  align-items: center;
+}
+
+// Button that looks like a link (No closes the dialog, it does not go anywhere)
+.app-rps-link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: $app-rps-blue;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1.1875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.app-rps-link-button:hover {
+  color: #003078;
+  text-decoration-thickness: 3px;
+}
+
+// Footer
+
+.app-rps-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 20px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 40.0525em) {
+  .app-rps-map__canvas {
+    height: 360px;
+  }
+}

@@ -21,6 +21,8 @@
     // Entries over their available amount — they don't take land from other actions
     excludedCodes: {},
     incompatibleByCode: {},
+    // Full compatibility matrix — used only for previous-agreement area deductions
+    previousAgreementIncompatibleByCode: {},
     onBusyChange: null,
     onAfterRecalculate: null,
     getContinueButton: null
@@ -45,7 +47,9 @@
 
   // Illustrative ha already used by previous agreements (when not on the Gate Field profile).
   var PREVIOUS_AGREEMENT_HA_BY_PARCEL = {
-    'far-meadow': 2, // CSAM3 1.2 ha + CIGL1 0.8 ha in previous SFI agreements
+    'far-meadow': 16.02, // CSAM3 + CNUM2 + CIPM2 + CIGL1
+    'gate-field': 10.13, // CSAM3 + CNUM2 + CIGL1
+    'church-field': 7.5, // CSAM3 + CIPM2 + GS2
     'brook-field': 1.5,
     'long-meadow': 1,
     'upper-slope': 1.5,
@@ -77,17 +81,35 @@
     HEF1: { sssi: 'not_applicable', hefer: 'hefer_required' }
   }
 
-  // Prototype deduction / base amounts when the parcel has that feature and the rule is ineligible.
+  // Prototype deduction amounts when the parcel has that feature and the rule is ineligible.
+  // Existing-agreement ha (CSAM3 / CIGL1) come from SfiGrasslandsDevReadyExistingAgreements and stack
+  // with these SSSI / HEFER deductions when both apply.
   var PROTECTED_LAND_DEDUCTIONS = {
     CSAM3: {
-      sssi: { unit: 'ha', amount: 2.1, label: 'SSSI area not eligible for this action' },
-      hefer: { unit: 'ha', amount: 2.1, label: 'HEFER area not eligible for this action' }
+      sssi: {
+        unit: 'ha',
+        amount: 2.1,
+        label: 'Site of special scientific interest (SSSI) land not eligible for this action'
+      },
+      hefer: {
+        unit: 'ha',
+        amount: 1.0,
+        label: 'Historic Environment Farm Environment Record (HEFER) land not eligible for this action'
+      }
     },
     CNUM2: {
-      hefer: { unit: 'ha', amount: 2.75, label: 'HEFER area not eligible for this action' }
+      hefer: {
+        unit: 'ha',
+        amount: 2.75,
+        label: 'Historic Environment Farm Environment Record (HEFER) land not eligible for this action'
+      }
     },
     CIGL1: {
-      hefer: { unit: 'ha', amount: 3.6, label: 'HEFER area not eligible for this action' }
+      hefer: {
+        unit: 'ha',
+        amount: 1.0,
+        label: 'Historic Environment Farm Environment Record (HEFER) land not eligible for this action'
+      }
     },
     WBD2: {
       baseAvailable: { unit: 'm', amount: 3002 },
@@ -184,11 +206,8 @@
       }
       exclusions.push({
         featureKey: featureKey,
-        label: deduction.label || (
-          featureKey === 'sssi'
-            ? 'SSSI area not eligible for this action'
-            : 'HEFER area not eligible for this action'
-        ),
+        label: featureKey === 'sssi' ? 'SSSI' : 'HEFER',
+        detail: deduction.label || null,
         amount: amount,
         ha: amount,
         unit: unit
@@ -198,6 +217,164 @@
 
     deduct('sssi')
     deduct('hefer')
+    return remaining
+  }
+
+  function isPreviousAgreementsEnabled () {
+    if (window.SfiGrasslandsDevReadyFeatureToggles &&
+        typeof window.SfiGrasslandsDevReadyFeatureToggles.isToggleEnabled === 'function') {
+      return window.SfiGrasslandsDevReadyFeatureToggles.isToggleEnabled('previousAgreements')
+    }
+    try {
+      return new URLSearchParams(window.location.search).get('previousAgreements') === '1'
+    } catch (error) {
+      return false
+    }
+  }
+
+  // Deduct previous-agreement land only when it is the same action or matrix-incompatible.
+  // Uses the full compatibility matrix (not AAC’s reduced in-session conflict list).
+  function getPreviousAgreementIncompatibilities (code) {
+    var map = state.previousAgreementIncompatibleByCode || {}
+    if (Object.keys(map).length) {
+      return map[String(code || '').toUpperCase()] || []
+    }
+    return getHardIncompatibilities(code)
+  }
+
+  function shouldDeductExistingAgreementAction (candidateCode, existingAction) {
+    var existingCode = String((existingAction && existingAction.code) || '').toUpperCase()
+    var code = String(candidateCode || '').toUpperCase()
+    if (!existingCode || !code) {
+      return false
+    }
+    if (existingCode === code) {
+      return true
+    }
+    var fromCandidate = getPreviousAgreementIncompatibilities(code)
+    if (fromCandidate.indexOf(existingCode) !== -1) {
+      return true
+    }
+    // Symmetric check — matrix should be two-way, but be safe
+    return getPreviousAgreementIncompatibilities(existingCode).indexOf(code) !== -1
+  }
+
+  function applyExistingAgreementDeductions (code, unit, baseEligible, exclusions) {
+    if (unit !== 'ha' || !Number.isFinite(baseEligible)) {
+      return baseEligible
+    }
+    if (!isPreviousAgreementsEnabled()) {
+      return baseEligible
+    }
+    if (!window.SfiGrasslandsDevReadyExistingAgreements) {
+      return baseEligible
+    }
+
+    var allDeductions = []
+    if (typeof window.SfiGrasslandsDevReadyExistingAgreements.getDeductions === 'function') {
+      allDeductions = window.SfiGrasslandsDevReadyExistingAgreements.getDeductions(state.parcelId) || []
+    }
+    var deductions = allDeductions.filter(function (action) {
+      return shouldDeductExistingAgreementAction(code, action)
+    })
+    var remaining = baseEligible
+
+    deductions.forEach(function (action) {
+      var amount = roundHa4(Math.min(Number(action.ha), Math.max(0, remaining)))
+      if (!(amount > 0)) {
+        return
+      }
+      var agreementLabel = window.SfiGrasslandsDevReadyExistingAgreements &&
+        typeof window.SfiGrasslandsDevReadyExistingAgreements.formatLabel === 'function'
+        ? window.SfiGrasslandsDevReadyExistingAgreements.formatLabel(action)
+        : (action.code ? action.code + ': ' : '') + (action.name || '')
+      exclusions.push({
+        featureKey: 'existingAgreement',
+        label: 'Existing agreement',
+        detail: agreementLabel || null,
+        code: action.code || null,
+        name: action.name || null,
+        amount: amount,
+        ha: amount,
+        unit: 'ha'
+      })
+      remaining = roundHa4(remaining - amount)
+    })
+
+    return remaining
+  }
+
+  function isLandCoverEligibleForAction (code, coverName) {
+    var name = String(coverName || '')
+    switch (String(code || '').toUpperCase()) {
+      case 'CSAM3':
+        return /permanent grassland|temporary grass|arable|fallow|leguminous|perennial|crop/i.test(name)
+      case 'SCR2':
+        return /scrub|arable|fallow/i.test(name)
+      case 'CLIG3':
+      case 'CIGL1':
+      case 'CIGL2':
+      case 'CNUM2':
+      case 'GRH7':
+      case 'GRH8':
+      case 'GRH10':
+      case 'GRH12':
+        return /permanent grassland|temporary grass/i.test(name)
+      default:
+        return true
+    }
+  }
+
+  function getIneligibleLandCoverRows (code, profile) {
+    if (!profile || !Array.isArray(profile.landCovers)) {
+      return []
+    }
+    var rows = []
+    profile.landCovers.forEach(function (cover) {
+      var ha = Number(cover && cover.ha)
+      if (!(ha > 0) || isLandCoverEligibleForAction(code, cover.name)) {
+        return
+      }
+      rows.push({
+        name: cover.name,
+        ha: roundHa4(ha)
+      })
+    })
+    return rows
+  }
+
+  // Itemise ineligible land covers (e.g. Scrub for herbal leys) and reduce remaining area.
+  // If the eligible base already excluded those covers, expand first so available stays the same.
+  function applyLandCoverDeductions (code, unit, baseEligible, exclusions, profile) {
+    if (unit !== 'ha' || !Number.isFinite(baseEligible) || !profile) {
+      return baseEligible
+    }
+    var covers = getIneligibleLandCoverRows(code, profile)
+    if (!covers.length) {
+      return baseEligible
+    }
+
+    var coverTotal = covers.reduce(function (sum, cover) {
+      return sum + Number(cover.ha)
+    }, 0)
+    var remaining = roundHa4(baseEligible + coverTotal)
+
+    covers.forEach(function (cover) {
+      var amount = roundHa4(Math.min(Number(cover.ha), Math.max(0, remaining)))
+      if (!(amount > 0)) {
+        return
+      }
+      exclusions.push({
+        featureKey: 'landCover',
+        label: cover.name,
+        detail: cover.name,
+        amount: amount,
+        ha: amount,
+        unit: 'ha'
+      })
+      remaining = roundHa4(remaining - amount)
+    })
+
     return remaining
   }
 
@@ -217,8 +394,8 @@
   }
 
   function getMvpCodes () {
-    if (window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && Array.isArray(window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codes)) {
-      return window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.codes.slice()
+    if (window.SFI_GRASSLANDS_V2_MVP_ACTIONS && Array.isArray(window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codes)) {
+      return window.SFI_GRASSLANDS_V2_MVP_ACTIONS.codes.slice()
     }
     return []
   }
@@ -286,12 +463,6 @@
           ha: null
         })
       }
-      if (parcelId === 'gate-field') {
-        restrictions.push({
-          label: 'Herbal leys (CSAM3) already included in a previous agreement',
-          ha: totalHa > 10 ? 2 : 1
-        })
-      }
     } else {
       if (profile.restrictions && profile.restrictions.sssiHa > 0) {
         restrictions.push({
@@ -310,12 +481,12 @@
     var previousAgreementTotal = 0
     var deductedHa = 0
     restrictions.forEach(function (item) {
-      if (/previous agreement/i.test(item.label) && item.ha != null) {
+      if (/previous agreement|existing agreement/i.test(item.label) && item.ha != null) {
         previousAgreementTotal = Number(item.ha) || 0
       }
       // Do not deduct SSSI/HEFER from parcel Available area — those are action-level.
       // Previous agreements are listed for context only (not deducted).
-      if (/previous agreement/i.test(item.label) || /sssi/i.test(item.label) ||
+      if (/previous agreement|existing agreement/i.test(item.label) || /sssi/i.test(item.label) ||
           /hefer|historic|archaeological/i.test(item.label)) {
         return
       }
@@ -344,12 +515,41 @@
 
   // Convert parcel available hectares into an illustrative eligible length (metres).
   // Match select-actions getLinearAvailableMetres: square-equivalent perimeter.
+  // Demo parcels (SO3757 3190 / 3193) override this with fixed AAC starting maxima.
   function metresFromAvailableHa (availableHa) {
     var ha = Number(availableHa)
     if (!Number.isFinite(ha) || ha <= 0) {
       return 0
     }
     return Math.max(50, Math.round(4 * Math.sqrt(ha * 10000)))
+  }
+
+  // Fixed AAC starting maxima — same 2,000 m physical perimeter on both demo parcels.
+  // Difference is how many sides the applicant controls (not different action rules):
+  // church-field (SO3757 3190) — one side → single-sided actions use perimeter once
+  // far-meadow (SO3757 3193) — both sides → single-sided actions use perimeter × 2
+  var BOUNDARY_LENGTH_STARTING_MAXIMA = {
+    'church-field': {
+      BND1: 2000,
+      BND2: 2000,
+      CHRW2: 2000,
+      WBD2: 2000
+    },
+    'far-meadow': {
+      BND1: 2000,
+      BND2: 4000,
+      CHRW2: 4000,
+      WBD2: 2000
+    }
+  }
+
+  function getBoundaryLengthStartingMax (code) {
+    var byParcel = BOUNDARY_LENGTH_STARTING_MAXIMA[state.parcelId]
+    if (!byParcel) {
+      return null
+    }
+    var amount = byParcel[String(code || '').toUpperCase()]
+    return Number.isFinite(amount) ? amount : null
   }
 
   function squareMetresFromAvailableHa (availableHa) {
@@ -518,6 +718,8 @@
           baseEligible = roundHa4(Math.min(baseEligible, profile.availableHa))
         }
         baseBeforeProtectedLand = baseEligible
+        baseEligible = applyLandCoverDeductions(code, 'ha', baseEligible, exclusions, profile)
+        baseEligible = applyExistingAgreementDeductions(code, 'ha', baseEligible, exclusions)
         baseEligible = applyProtectedLandDeductions(code, 'ha', baseEligible, exclusions)
         break
 
@@ -531,9 +733,17 @@
           eligibleLand.push({ label: 'Eligible arable or fallow land', ha: arableHa })
         }
         if (profile.availableHa != null) {
-          baseEligible = roundHa4(Math.min(baseEligible, profile.availableHa))
+          // SO3757 3193 / 3194: eligible base is the parcel available area
+          // before existing-agreement / protected-land deductions.
+          if ((state.parcelId === 'far-meadow' || state.parcelId === 'gate-field') && grasslandHa > 0) {
+            baseEligible = roundHa4(profile.availableHa)
+          } else {
+            baseEligible = roundHa4(Math.min(baseEligible, profile.availableHa))
+          }
         }
         baseBeforeProtectedLand = baseEligible
+        baseEligible = applyLandCoverDeductions(code, 'ha', baseEligible, exclusions, profile)
+        baseEligible = applyExistingAgreementDeductions(code, 'ha', baseEligible, exclusions)
         baseEligible = applyProtectedLandDeductions(code, 'ha', baseEligible, exclusions)
         break
 
@@ -554,22 +764,28 @@
       case 'BND1':
       case 'BND2':
       case 'CHRW2':
-        unit = 'm'
-        // Reflect parcel available hectares, but keep the action measurement in metres.
-        // Consent / HEFER-required does not change length.
-        baseEligible = metresFromAvailableHa(profile.availableHa != null ? profile.availableHa : profile.totalHa)
-        baseBeforeProtectedLand = baseEligible
-        eligibleLand.push({ label: 'Estimated eligible length from available area', ha: baseEligible, unit: 'm' })
-        break
-
       case 'WBD2':
         unit = 'm'
-        baseEligible = getProtectedLandBaseOverride(code, 'm')
+        // Prefer fixed AAC demo maxima from action sidedness. Do not surface
+        // single-sided or both-sided detail — only the resulting available length.
+        baseEligible = getBoundaryLengthStartingMax(code)
         if (baseEligible == null) {
-          baseEligible = metresFromAvailableHa(profile.availableHa != null ? profile.availableHa : profile.totalHa)
+          if (code === 'WBD2') {
+            baseEligible = getProtectedLandBaseOverride(code, 'm')
+          }
+          if (baseEligible == null) {
+            baseEligible = metresFromAvailableHa(
+              profile.availableHa != null ? profile.availableHa : profile.totalHa
+            )
+          }
+          baseBeforeProtectedLand = baseEligible
+          if (code === 'WBD2') {
+            baseEligible = applyProtectedLandDeductions(code, 'm', baseEligible, exclusions)
+          }
+        } else {
+          // Demo parcels: use the AAC starting maximum as-is (no SSSI length cut).
+          baseBeforeProtectedLand = baseEligible
         }
-        baseBeforeProtectedLand = baseEligible
-        baseEligible = applyProtectedLandDeductions(code, 'm', baseEligible, exclusions)
         eligibleLand.push({ label: 'Estimated eligible length from available area', ha: baseEligible, unit: 'm' })
         break
 
@@ -634,6 +850,11 @@
     return Number.isFinite(value) && value > 0 ? value : 0
   }
 
+  function getLimitedArea () {
+    var limitedArea = window.SfiGrasslandsDevReadyLimitedArea
+    return limitedArea && limitedArea.isEnabled() ? limitedArea : null
+  }
+
   function getHardIncompatibilities (code) {
     return state.incompatibleByCode[code] || []
   }
@@ -694,6 +915,44 @@
     return getSupplementBaseCode(a) === b || getSupplementBaseCode(b) === a
   }
 
+  // Boundary length reductions (not hard incompatibility):
+  //   BND1 reduces BND2, CHRW2 and WBD2
+  //   BND2 / CHRW2 / WBD2 each reduce BND1 only
+  //   BND2, CHRW2 and WBD2 do not reduce one another
+  var LINEAR_LENGTH_REDUCED_BY = {
+    BND1: ['BND2', 'CHRW2', 'WBD2'],
+    BND2: ['BND1'],
+    CHRW2: ['BND1'],
+    WBD2: ['BND1']
+  }
+
+  function getLinearLengthReducers (code) {
+    var normalized = String(code || '').toUpperCase()
+    if (Object.prototype.hasOwnProperty.call(LINEAR_LENGTH_REDUCED_BY, normalized)) {
+      return LINEAR_LENGTH_REDUCED_BY[normalized]
+    }
+    // Non-demo metre actions: no cross-action length reductions.
+    return []
+  }
+
+  function selectedQuantityReducesLinearLength (targetCode, selectedCode) {
+    var reducers = getLinearLengthReducers(targetCode)
+    return reducers.indexOf(String(selectedCode || '').toUpperCase()) !== -1
+  }
+
+  // Deductions are proportional: using a share of one action's starting length removes
+  // the same share from the other. On far-meadow (both sides, BND1 2,000 / CHRW2 4,000)
+  // 1,000 m CHRW2 takes 500 m off BND1, and 1,000 m BND1 takes 2,000 m off CHRW2.
+  // Where starting lengths match (one side controlled, or no fixed maxima) this is 1:1.
+  function getLinearLengthDeductionMultiplier (targetCode, reducerCode) {
+    var targetMax = getBoundaryLengthStartingMax(targetCode)
+    var reducerMax = getBoundaryLengthStartingMax(reducerCode)
+    if (!targetMax || !reducerMax) {
+      return 1
+    }
+    return targetMax / reducerMax
+  }
+
   function getUsedByOtherUnitActions (code, unit) {
     var profile = getWorkingProfile(state.parcelId, state.parcel)
     var selfBase = buildBaseCalculation(code, profile)
@@ -716,6 +975,12 @@
       if (meta.unit !== unit) {
         return
       }
+      // Boundary metres use directed reduction rules, not a single shared pool.
+      if (unit === 'm') {
+        if (!selectedQuantityReducesLinearLength(code, selectedCode)) {
+          return
+        }
+      }
       // Figures above an action's own eligible amount are already invalid.
       // Do not let that excess zero out other actions' available land / errors.
       if (quantity > meta.baseEligible + 0.0001) {
@@ -728,7 +993,9 @@
       // this action's allowance — otherwise selecting CLIG3 after a valid CNUM2
       // entry incorrectly errors CNUM2.
       var competingQuantity = quantity
-      if (
+      if (unit === 'm') {
+        competingQuantity = quantity * getLinearLengthDeductionMultiplier(code, selectedCode)
+      } else if (
         unit === 'ha' &&
         Number.isFinite(selfEligible) &&
         Number.isFinite(Number(meta.baseEligible))
@@ -758,8 +1025,10 @@
       var usedByOthers = getUsedByOtherUnitActions(code, base.unit)
       var available = base.baseEligible
       var allocationNote = null
+      var limitedAreaCapped = false
 
-      // Shared pool by unit: ha actions share hectares; metre actions share length; etc.
+      // Shared pool by unit: ha actions share hectares; metre actions use directed
+      // boundary-length reductions (BND1 vs BND2/CHRW2/WBD2; others compatible).
       // Pond count is open unless protected-land rules give a finite prototype total.
       // Supplements stack on their base and do not compete for exclusive hectares.
       if (base.unit === 'pond' && !Number.isFinite(base.baseEligible)) {
@@ -793,6 +1062,20 @@
             label: 'Used by your other selected actions',
             ha: base.unit === 'ha' ? Math.min(usedByOthers, base.baseEligible) : usedByOthers,
             unit: base.unit
+          }
+        }
+
+        var limitedArea = getLimitedArea()
+        if (base.unit === 'ha' && limitedArea && limitedArea.isLimitedCode(code)) {
+          var limitedMax = limitedArea.getMaxForAction(code, state.parcelId, state.selections)
+          if (limitedMax < available) {
+            allocationNote = {
+              label: 'Limited by the 25% limit for limited-area actions',
+              ha: roundHa4(available - limitedMax),
+              unit: 'ha'
+            }
+            available = limitedMax
+            limitedAreaCapped = true
           }
         }
       }
@@ -838,7 +1121,9 @@
       } else if (remainingForInput <= 0 && selectedQuantity <= 0) {
         status = 'unavailable'
         statusText = 'Unavailable'
-        if (usedByOthers > 0) {
+        if (limitedAreaCapped) {
+          summaryReason = 'You have used all of your 25% limit for limited-area actions'
+        } else if (usedByOthers > 0) {
           summaryReason = base.unit === 'm'
             ? 'No metres are left for this action. They are already being used by your other selected actions.'
             : base.unit === 'm²'
@@ -881,6 +1166,7 @@
         eligibleLand: base.eligibleLand,
         exclusions: base.exclusions,
         allocationNote: allocationNote,
+        limitedAreaCapped: limitedAreaCapped,
         hardConflict: hardConflict,
         baseEligible: base.baseEligible,
         baseBeforeProtectedLand: breakdownBase,
@@ -1053,10 +1339,17 @@
     if (!item) {
       return null
     }
-    if (item.featureKey === 'sssi' || item.featureKey === 'hefer') {
+    if (item.featureKey === 'sssi' || item.featureKey === 'hefer' ||
+        item.featureKey === 'existingAgreement' || item.featureKey === 'landCover') {
       return item.featureKey
     }
     var text = String(item.label || '')
+    if (/existing agreement|previous agreement/i.test(text)) {
+      return 'existingAgreement'
+    }
+    if (/land cover|scrub/i.test(text)) {
+      return 'landCover'
+    }
     if (/sssi/i.test(text)) {
       return 'sssi'
     }
@@ -1066,7 +1359,58 @@
     return null
   }
 
-  function getProtectedLandDeductionRows (action) {
+  function formatAvailabilityDeductionLabel (item, featureKey) {
+    if (featureKey === 'existingAgreement') {
+      if (item.detail) {
+        return item.detail
+      }
+      if (item.name && item.code) {
+        return item.code + ': ' + item.name
+      }
+      if (window.SfiGrasslandsDevReadyExistingAgreements &&
+          typeof window.SfiGrasslandsDevReadyExistingAgreements.formatLabel === 'function' &&
+          (item.code || item.name)) {
+        return window.SfiGrasslandsDevReadyExistingAgreements.formatLabel(item)
+      }
+      if (item.label && !/^existing agreement$/i.test(String(item.label)) &&
+          !/^previous agreement$/i.test(String(item.label))) {
+        return item.label
+      }
+      return 'Existing agreement'
+    }
+    if (featureKey === 'sssi') {
+      return 'Sites of special scientific interest (SSSI)'
+    }
+    if (featureKey === 'hefer') {
+      return 'Historic and archaeological features'
+    }
+    if (featureKey === 'landCover') {
+      return item.detail || item.label || 'Land cover'
+    }
+    return item.label || item.detail || 'Other'
+  }
+
+  var DEDUCTION_GROUPS = [
+    { id: 'landCover', title: 'Land cover', keys: ['landCover'] },
+    { id: 'existingAgreements', title: 'Existing agreements', keys: ['existingAgreement'] },
+    { id: 'featuresOnLand', title: 'Features on the land', keys: ['sssi', 'hefer'] }
+  ]
+
+  function groupAvailabilityDeductions (rows) {
+    return DEDUCTION_GROUPS.map(function (group) {
+      return {
+        id: group.id,
+        title: group.title,
+        rows: (rows || []).filter(function (row) {
+          return group.keys.indexOf(row.featureKey) !== -1
+        })
+      }
+    }).filter(function (group) {
+      return group.rows.length > 0
+    })
+  }
+
+  function getAvailabilityDeductionRows (action) {
     if (!action || !Array.isArray(action.exclusions)) {
       return []
     }
@@ -1080,10 +1424,17 @@
       var unit = item.unit || action.unit || 'ha'
       rows.push({
         featureKey: featureKey,
-        label: featureKey === 'sssi' ? 'SSSI deduction' : 'HEFER deduction',
+        label: formatAvailabilityDeductionLabel(item, featureKey),
+        detail: item.detail || null,
         amount: unit === 'ha' ? roundHa4(Number(amount)) : Math.round(Number(amount)),
         unit: unit
       })
+    })
+
+    // Stable order: land cover, existing agreement, then SSSI, then HEFER
+    var order = { landCover: 1, existingAgreement: 2, sssi: 3, hefer: 4 }
+    rows.sort(function (a, b) {
+      return (order[a.featureKey] || 9) - (order[b.featureKey] || 9)
     })
     return rows
   }
@@ -1113,22 +1464,38 @@
 
   function formatBreakdownDeduction (amount, unit) {
     if (unit === 'm') {
-      return '−' + Math.round(amount).toLocaleString('en-GB') + ' m'
+      return Math.round(amount).toLocaleString('en-GB') + ' m'
     }
     if (unit === 'pond') {
-      return '−' + Math.round(amount)
+      return String(Math.round(amount))
     }
-    return '−' + Number(amount).toFixed(4) + ' ha'
+    return Number(amount).toFixed(4) + ' ha'
   }
 
-  // Display-only: show SSSI / HEFER deductions. Lives in the checkbox conditional.
+  function formatBreakdownTotal (amount, unit) {
+    if (unit === 'm') {
+      return Math.round(amount).toLocaleString('en-GB') + ' m'
+    }
+    if (unit === 'pond') {
+      return String(Math.round(amount))
+    }
+    return Number(amount).toFixed(4) + ' ha'
+  }
+
+  // Show exclusions that reduce this action’s available quantity.
   function applyAvailabilityBreakdown (item, action) {
     var conditional = action && action.code ? getActionConditional(action.code) : null
     clearAvailabilityBreakdown(item)
     clearAvailabilityBreakdown(conditional)
 
+    // Show whenever this action has area/length deductions (existing agreement, SSSI, HEFER, etc.)
     if (!isActionDeductionBreakdownEnabled()) {
-      return
+      var hasAnyDeduction = (action.exclusions || []).some(function (exclusion) {
+        return Boolean(getProtectedLandFeatureKey(exclusion))
+      })
+      if (!hasAnyDeduction) {
+        return
+      }
     }
 
     if (!item || !action || !conditional) {
@@ -1142,7 +1509,7 @@
       return
     }
 
-    var deductions = getProtectedLandDeductionRows(action)
+    var deductions = getAvailabilityDeductionRows(action)
     if (!deductions.length) {
       return
     }
@@ -1162,24 +1529,106 @@
 
     var text = document.createElement('div')
     text.className = 'govuk-details__text'
-    var list = document.createElement('dl')
-    list.className = 'govuk-summary-list app-action-availability-details__list'
 
-    deductions.forEach(function (deduction) {
-      var row = document.createElement('div')
-      row.className = 'govuk-summary-list__row'
-      var key = document.createElement('dt')
-      key.className = 'govuk-summary-list__key'
-      key.textContent = deduction.label
-      var value = document.createElement('dd')
-      value.className = 'govuk-summary-list__value'
-      value.textContent = formatBreakdownDeduction(deduction.amount, deduction.unit || action.unit)
-      row.appendChild(key)
-      row.appendChild(value)
-      list.appendChild(row)
+    var intro = document.createElement('p')
+    intro.className = 'govuk-body-s govuk-!-margin-bottom-3'
+    intro.textContent = 'Some of this land cannot be used for this action because of its land cover, existing agreements or features on the land.'
+    text.appendChild(intro)
+
+    var list = document.createElement('table')
+    list.className = 'govuk-table app-action-availability-details__table govuk-!-margin-bottom-0'
+
+    var caption = document.createElement('caption')
+    caption.className = 'govuk-table__caption govuk-visually-hidden'
+    caption.textContent = 'Deductions from available ' + (action.unit === 'm' ? 'length' : 'area')
+    list.appendChild(caption)
+
+    var head = document.createElement('thead')
+    head.className = 'govuk-table__head'
+    var headRow = document.createElement('tr')
+    headRow.className = 'govuk-table__row'
+
+    var reasonHead = document.createElement('th')
+    reasonHead.className = 'govuk-table__header'
+    reasonHead.setAttribute('scope', 'col')
+    reasonHead.textContent = 'Reason'
+
+    var areaHead = document.createElement('th')
+    areaHead.className = 'govuk-table__header govuk-table__header--numeric'
+    areaHead.setAttribute('scope', 'col')
+    areaHead.textContent = 'Land not available'
+
+    headRow.appendChild(reasonHead)
+    headRow.appendChild(areaHead)
+    head.appendChild(headRow)
+    list.appendChild(head)
+
+    var body = document.createElement('tbody')
+    body.className = 'govuk-table__body'
+
+    var groups = groupAvailabilityDeductions(deductions)
+    // Always show group titles (e.g. Existing agreements) so the reason is clear
+    var showGroupHeaders = groups.length > 0
+    var totalUnavailable = 0
+
+    groups.forEach(function (group) {
+      if (showGroupHeaders) {
+        var groupRow = document.createElement('tr')
+        groupRow.className = 'govuk-table__row app-action-availability-details__group'
+
+        var groupHeader = document.createElement('th')
+        groupHeader.className = 'govuk-table__header'
+        groupHeader.setAttribute('scope', 'rowgroup')
+        groupHeader.setAttribute('colspan', '2')
+        groupHeader.textContent = group.title
+
+        groupRow.appendChild(groupHeader)
+        body.appendChild(groupRow)
+      }
+
+      group.rows.forEach(function (deduction) {
+        totalUnavailable = roundForUnit(
+          totalUnavailable + Number(deduction.amount),
+          deduction.unit || action.unit
+        )
+
+        var row = document.createElement('tr')
+        row.className = 'govuk-table__row app-action-availability-details__reason-row'
+
+        var reasonCell = document.createElement('td')
+        reasonCell.className = 'govuk-table__cell' +
+          (showGroupHeaders ? ' app-action-availability-details__reason' : '')
+        reasonCell.textContent = deduction.label
+
+        var areaCell = document.createElement('td')
+        areaCell.className = 'govuk-table__cell govuk-table__cell--numeric'
+        areaCell.textContent = formatBreakdownDeduction(deduction.amount, deduction.unit || action.unit)
+
+        row.appendChild(reasonCell)
+        row.appendChild(areaCell)
+        body.appendChild(row)
+      })
     })
 
+    var totalRow = document.createElement('tr')
+    totalRow.className = 'govuk-table__row app-action-availability-details__total-row'
+
+    var totalKey = document.createElement('th')
+    totalKey.className = 'govuk-table__header'
+    totalKey.setAttribute('scope', 'row')
+    totalKey.textContent = 'Total land not available'
+
+    var totalValue = document.createElement('td')
+    totalValue.className = 'govuk-table__cell govuk-table__cell--numeric'
+    totalValue.textContent = formatBreakdownTotal(totalUnavailable, action.unit)
+
+    totalRow.appendChild(totalKey)
+    totalRow.appendChild(totalValue)
+    body.appendChild(totalRow)
+
+    list.appendChild(body)
     text.appendChild(list)
+
     details.appendChild(text)
 
     // Show below the quantity field when the checkbox conditional opens
@@ -1265,8 +1714,8 @@
     if (/sssi/i.test(text)) {
       return 'because of SSSI restrictions'
     }
-    if (/previous agreement/i.test(text)) {
-      return 'because it is already included in a previous agreement'
+    if (/previous agreement|existing agreement/i.test(text)) {
+      return 'because it is already included in an existing agreement'
     }
     if (/habitat|hefer|historic/i.test(text)) {
       return 'because of additional habitat requirements'
@@ -1701,6 +2150,9 @@
     if (options.incompatibleByCode) {
       state.incompatibleByCode = options.incompatibleByCode
     }
+    if (options.previousAgreementIncompatibleByCode) {
+      state.previousAgreementIncompatibleByCode = options.previousAgreementIncompatibleByCode
+    }
     if (typeof options.onBusyChange === 'function') {
       state.onBusyChange = options.onBusyChange
     }
@@ -1727,6 +2179,10 @@
     runUpdate: runUpdate,
     syncSelectionsFromDom: syncSelectionsFromDom,
     setSelectionExcluded: setSelectionExcluded,
+    // True if the action's quantity was counted in the last calculation (so it was taking land)
+    hasSelection: function (code) {
+      return Boolean(state.selections[String(code || '').toUpperCase()])
+    },
     applyToCheckboxes: applyToCheckboxes,
     getSelectionsForSave: getSelectionsForSave,
     getParcelAreaBreakdown: getParcelAreaBreakdown,

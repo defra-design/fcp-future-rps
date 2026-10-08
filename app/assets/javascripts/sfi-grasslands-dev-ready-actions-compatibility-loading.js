@@ -341,11 +341,11 @@
 
       if (conflict.fromExistingAgreement) {
         hintText = conflict.name && conflict.code
-          ? ('Not compatible with ' + conflict.name + ' (' + conflict.code + ') already on this parcel.')
+          ? ('Not compatible with ' + conflict.code + ': ' + conflict.name + ' already on this parcel.')
           : 'Not compatible with an existing agreement already on this parcel.'
       } else {
         hintText = conflict.name
-          ? ('Not compatible with the selected action: ' + conflict.name + ' (' + conflict.code + ').')
+          ? ('Not compatible with the selected action ' + conflict.code + ': ' + conflict.name + '.')
           : ('Not compatible with ' + conflict.code + '.')
       }
 

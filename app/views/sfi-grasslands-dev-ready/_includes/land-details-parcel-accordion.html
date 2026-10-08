@@ -1,0 +1,61 @@
+{# Parcel list as GOV.UK accordion — used by land-details list view.
+   Optional `selectedParcelId` expands that section. #}
+{% set selectedId = selectedParcelId if selectedParcelId else (parcel.id if parcel else null) %}
+
+<div class="app-land-details-parcel-list">
+  <h2 class="govuk-heading-m app-land-details-parcel-list__heading">Land parcels</h2>
+  <div class="govuk-accordion" data-module="govuk-accordion" id="land-details-parcel-accordion" data-remember-expanded="false">
+    {% for item in parcels %}
+      {% set sectionIndex = loop.index %}
+      <div
+        class="govuk-accordion__section{% if selectedId and item.id == selectedId %} govuk-accordion__section--expanded{% endif %}"
+        data-parcel-id="{{ item.id }}"
+        data-parcel-reference="{{ item.parcelReference }}"
+      >
+        <div class="govuk-accordion__section-header">
+          <h3 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="land-details-parcel-accordion-heading-{{ sectionIndex }}">
+              {{ item.parcelReference }}
+            </span>
+          </h3>
+          <div class="govuk-accordion__section-summary govuk-body">
+            {{ item.totalAreaLabel }}
+          </div>
+        </div>
+        <div id="land-details-parcel-accordion-content-{{ sectionIndex }}" class="govuk-accordion__section-content">
+          <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Land cover</dt>
+              <dd class="govuk-summary-list__value">
+                {% for cover in item.landCovers %}
+                  {{ cover.line }}{% if not loop.last %}<br>{% endif %}
+                {% endfor %}
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Total area</dt>
+              <dd class="govuk-summary-list__value">{{ item.totalAreaLabel }}</dd>
+            </div>
+            <div class="govuk-summary-list__row{% if not item.requirements.show %} govuk-summary-list__row--no-border{% endif %}">
+              <dt class="govuk-summary-list__key">Available actions</dt>
+              <dd class="govuk-summary-list__value">{{ item.availableActionsCount }}</dd>
+            </div>
+            {% if item.requirements.show %}
+              <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+                <dt class="govuk-summary-list__key">Requirements</dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                    {% for requirement in item.requirements.items %}
+                      <li>{{ requirement }}</li>
+                    {% endfor %}
+                  </ul>
+                </dd>
+              </div>
+            {% endif %}
+          </dl>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

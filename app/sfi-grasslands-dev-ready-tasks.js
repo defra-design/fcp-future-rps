@@ -5,6 +5,7 @@
  */
 
 var TASK_IDS = {
+  beforeYouStart: 'beforeYouStart',
   checkBusinessDetails: 'checkBusinessDetails',
   checkLandDetails: 'checkLandDetails',
   confirmEligible: 'confirmEligible',
@@ -22,6 +23,7 @@ var STATUS = {
 }
 
 var DEFAULT_TASKS = {
+  beforeYouStart: STATUS.NOT_STARTED,
   checkBusinessDetails: STATUS.NOT_STARTED,
   checkLandDetails: STATUS.NOT_STARTED,
   confirmEligible: STATUS.NOT_STARTED,
@@ -33,6 +35,7 @@ var DEFAULT_TASKS = {
 var SELECT_LAND_HREF = '/sfi-grasslands-dev-ready/select-land'
 
 var IN_PROGRESS_TASKS = [
+  TASK_IDS.beforeYouStart,
   TASK_IDS.checkBusinessDetails,
   TASK_IDS.checkLandDetails,
   TASK_IDS.confirmEligible
@@ -165,6 +168,12 @@ function syncFromSessionAnswers (req, options) {
   var tasks = ensureTasks(req)
   var hasSelectedLand = options && options.hasSelectedLand
 
+  if (data['land-eligible-answer'] !== 'yes') {
+    // Page removed from v4 — keep the task completed so later tasks unlock
+    data['land-eligible-answer'] = 'yes'
+  }
+  tasks.beforeYouStart = STATUS.COMPLETED
+
   if (data['business-details-answer'] === 'yes') {
     tasks.checkBusinessDetails = STATUS.COMPLETED
   } else if (data['business-details-answer'] === 'no' && tasks.checkBusinessDetails !== STATUS.COMPLETED) {
@@ -228,6 +237,8 @@ function getResolvedTaskStates (req) {
   var checkAnswersStored = getStoredStatus(req, TASK_IDS.checkAnswers)
   var submitStored = getStoredStatus(req, TASK_IDS.submitApplication)
 
+  // beforeYouStart page removed from v4 — treat as complete so Check your details is first
+  var beforeYouStartCompleted = true
   var businessCompleted = businessStored === STATUS.COMPLETED
   var landDetailsCompleted = landDetailsStored === STATUS.COMPLETED
   var eligibleCompleted = eligibleStored === STATUS.COMPLETED
@@ -236,7 +247,14 @@ function getResolvedTaskStates (req) {
   var checkAnswersCompleted = checkAnswersStored === STATUS.COMPLETED
   var submitCompleted = submitStored === STATUS.COMPLETED
 
-  // Check before you start — one task at a time, in list order
+  // Kept for status maps / redirects; not shown on the task list
+  var beforeYouStart = resolveCheckTask(
+    STATUS.COMPLETED,
+    beforeYouStartCompleted,
+    '/sfi-grasslands-dev-ready/check-business-details',
+    true
+  )
+
   var checkBusinessDetails = resolveCheckTask(
     businessStored,
     businessCompleted,
@@ -333,6 +351,7 @@ function getResolvedTaskStates (req) {
   if (section3Complete) completedSections += 1
 
   return {
+    beforeYouStart: beforeYouStart,
     checkBusinessDetails: checkBusinessDetails,
     checkLandDetails: checkLandDetails,
     confirmEligible: confirmEligible,
@@ -398,6 +417,7 @@ function getTaskListPageData (req) {
 function getTaskStatusesForView (req) {
   var states = getResolvedTaskStates(req)
   return {
+    beforeYouStart: states.beforeYouStart.status,
     checkBusinessDetails: states.checkBusinessDetails.status,
     checkLandDetails: states.checkLandDetails.status,
     confirmEligible: states.confirmEligible.status,

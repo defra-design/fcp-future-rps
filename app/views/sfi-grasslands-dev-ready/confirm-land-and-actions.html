@@ -15,12 +15,12 @@
 
   {% if fromCheckYourAnswers %}
     {{ govukBackLink({
-      text: "Back to check your answers",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/check-your-answers"
     }) }}
   {% else %}
     {{ govukBackLink({
-      text: "Back to task list",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/task-list"
     }) }}
   {% endif %}
@@ -69,7 +69,7 @@
           <div class="govuk-summary-card app-confirm-parcel-card" id="parcel-{{ parcel.parcelId }}">
             <div class="govuk-summary-card__title-wrapper">
               <h2 class="govuk-summary-card__title">
-                Parcel reference <span class="app-confirm-parcel-card__title-ref">{{ parcelRef }}</span>
+                Land parcel <span class="app-confirm-parcel-card__title-ref">{{ parcelRef }}</span>
               </h2>
               <ul class="govuk-summary-card__actions">
                 <li class="govuk-summary-card__action">
@@ -96,7 +96,7 @@
                   {% for action in parcel.actions %}
                     <tr class="govuk-table__row">
                       <td class="govuk-table__cell">
-                        {{ action.name }} ({{ action.code }})
+                        {{ action.code }}: {{ action.name }}
                         {% if action.consentHint %}
                           <span class="app-confirm-parcel-card__hint">{{ action.consentHint }}</span>
                         {% endif %}
@@ -105,7 +105,7 @@
                       <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.yearlyPaymentFormatted }}</td>
                       <td class="govuk-table__cell govuk-table__cell--numeric">
                         <a class="govuk-link" href="/sfi-grasslands-dev-ready/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
-                          Change<span class="govuk-visually-hidden"> {{ action.name }} ({{ action.code }})</span>
+                          Change<span class="govuk-visually-hidden"> {{ action.code }}: {{ action.name }}</span>
                         </a>
                       </td>
                     </tr>
@@ -129,18 +129,19 @@
         {% endfor %}
         {% include "sfi-grasslands-dev-ready/_includes/payment-summary-card.html" %}
 
-        <form action="/sfi-grasslands-dev-ready/confirm-land-and-actions" method="post">
+        <form action="/sfi-grasslands-dev-ready/confirm-land-and-actions" method="post" id="confirm-land-actions-form">
           {% if fromCheckYourAnswers %}
             <input type="hidden" name="from" value="check-your-answers">
           {% endif %}
+          <input type="hidden" name="parcelView" id="parcel-view-preference" value="map">
           <div class="govuk-button-group">
             {% if fromCheckYourAnswers %}
               <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="returnToCya">
-                Save and continue
+                Continue
               </button>
             {% else %}
               <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="save">
-                Save and continue
+                Continue
               </button>
             {% endif %}
             <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" name="confirmAction" value="addAnother">
@@ -151,4 +152,29 @@
       {% endif %}
     </div>
   </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script>
+    (function() {
+      var SELECT_LAND_PATH = '/sfi-grasslands-dev-ready/select-land';
+      var view = 'map';
+      try {
+        view = sessionStorage.getItem('sfiGrasslandsDevReadyParcelView') || 'map';
+      } catch (e) {}
+
+      var preference = document.getElementById('parcel-view-preference');
+      if (preference) {
+        preference.value = view === 'list' ? 'list' : 'map';
+      }
+
+      var href = view === 'list' ? (SELECT_LAND_PATH + '?view=list') : SELECT_LAND_PATH;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('a[href="' + SELECT_LAND_PATH + '"], a[href^="' + SELECT_LAND_PATH + '?"]'),
+        function(link) {
+          link.setAttribute('href', href);
+        }
+      );
+    })();
+  </script>
 {% endblock %}

@@ -47,7 +47,7 @@
           <div class="govuk-summary-card app-confirm-parcel-card" id="parcel-{{ parcel.parcelId }}">
             <div class="govuk-summary-card__title-wrapper">
               <h3 class="govuk-summary-card__title">
-                Parcel reference <span class="app-confirm-parcel-card__title-ref">{{ parcelRef }}</span>
+                Land parcel <span class="app-confirm-parcel-card__title-ref">{{ parcelRef }}</span>
               </h3>
             </div>
             <div class="govuk-summary-card__content">
@@ -66,7 +66,7 @@
                   {% for action in parcel.actions %}
                     <tr class="govuk-table__row">
                       <td class="govuk-table__cell">
-                        {{ action.name }} ({{ action.code }})
+                        {{ action.code }}: {{ action.name }}
                         {% if action.consentHint %}
                           <span class="app-confirm-parcel-card__hint">{{ action.consentHint }}</span>
                         {% endif %}

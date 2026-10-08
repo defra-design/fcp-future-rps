@@ -9,7 +9,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    <form method="post" action="singlefrontdoor/start/your-businesses-list">
+    <form method="{{ signInMethod or 'post' }}" action="{{ signInContinueUrl or 'singlefrontdoor/start/your-businesses-list' }}">
       <h1 class="govuk-heading-l">
         Sign in to Farm and Land Service
       </h1>

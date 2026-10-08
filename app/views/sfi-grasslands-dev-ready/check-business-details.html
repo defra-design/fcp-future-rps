@@ -13,12 +13,12 @@
   {% set fromCheckYourAnswers = (returnTo == 'check-your-answers') or (data['sfiEligibilityReturnTo'] == 'check-your-answers') %}
   {% if fromCheckYourAnswers %}
     {{ govukBackLink({
-      text: "Back to check your answers",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/check-your-answers"
     }) }}
   {% else %}
     {{ govukBackLink({
-      text: "Back to task list",
+      text: "Back",
       href: "/sfi-grasslands-dev-ready/task-list"
     }) }}
   {% endif %}
@@ -112,7 +112,7 @@
         </div>
 
         <button type="submit" class="govuk-button" data-module="govuk-button">
-          Continue
+          Save and continue
         </button>
       </form>
 

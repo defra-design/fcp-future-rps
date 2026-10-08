@@ -1,0 +1,104 @@
+// Styles for sfi-grasslands-dev-ready/select-land-clusters.html
+// Parcel colours match select-land; cluster circles use GOV.UK blue.
+
+$app-cluster-blue: #1d70b8;
+$app-parcel-fill: #f1deb8;
+$app-parcel-border: #8a5a44;
+$app-selected-fill: #ffdd00;
+
+.app-cluster-map {
+  border: 1px solid #b1b4b6;
+  margin-bottom: 15px;
+
+  #map {
+    height: 560px;
+  }
+}
+
+.app-cluster-map-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 30px;
+  margin: 0 0 40px;
+  padding: 0;
+  list-style: none;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 16px;
+  color: #0b0c0c;
+
+  li {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.app-cluster-map-key__swatch {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.app-cluster-map-key__swatch--parcel {
+  background: $app-parcel-fill;
+  border: 2px solid $app-parcel-border;
+}
+
+.app-cluster-map-key__swatch--selected {
+  background: $app-selected-fill;
+  border: 2px solid #0b0c0c;
+}
+
+.app-cluster-map-key__swatch--cluster {
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: $app-cluster-blue;
+  box-shadow: 0 0 0 1px $app-cluster-blue;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+// govuk-summary-list sets display, which beats the hidden attribute
+#selected-parcel-details[hidden] {
+  display: none;
+}
+
+.app-cluster-site-list li {
+  margin-bottom: 10px;
+}
+
+// Looks like a link, behaves like a button (it moves the map, it doesn't go to a page)
+.app-cluster-site-list__button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: $app-cluster-blue;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.1578em;
+  cursor: pointer;
+
+  &:hover {
+    color: #003078;
+    text-decoration-thickness: 3px;
+  }
+
+  &:focus {
+    outline: 3px solid transparent;
+    background-color: $app-selected-fill;
+    box-shadow: 0 -2px $app-selected-fill, 0 4px #0b0c0c;
+    color: #0b0c0c;
+    text-decoration: none;
+  }
+}
+
+.app-cluster-site-list__count {
+  display: block;
+  color: #505a5f;
+}

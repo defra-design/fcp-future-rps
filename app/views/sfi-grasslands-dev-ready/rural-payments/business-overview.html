@@ -1,0 +1,201 @@
+{% extends "layouts/sfi-grasslands-dev-ready-rural-payments.html" %}
+
+{% set pageName = "Business overview" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to your businesses",
+    href: "#"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l app-rps-page-title">Business overview</h1>
+      <p class="govuk-caption-m app-rps-page-caption">{{ businessName }}</p>
+
+      <p class="govuk-body">Manage different areas of your business here.</p>
+
+      <nav aria-labelledby="rps-contents-title">
+        <h2 id="rps-contents-title" class="govuk-heading-s app-rps-contents__title">Contents</h2>
+        <ul class="govuk-list app-rps-contents">
+          <li><a class="govuk-link" href="#permissions">Give people permission to act for this business</a></li>
+          <li><a class="govuk-link" href="#business-summary">Business summary</a></li>
+          <li><a class="govuk-link" href="#land">Land</a></li>
+          <li><a class="govuk-link" href="#expanded-sfi">Expanded Sustainable Farming Incentive (SFI) offer and Countryside Stewardship Higher Tier</a></li>
+          <li><a class="govuk-link" href="#sfi26">Apply for or manage an SFI26 agreement</a></li>
+          <li><a class="govuk-link" href="#sfi2023">Sustainable Farming Incentive 2023</a></li>
+          <li><a class="govuk-link" href="#bps">Basic Payment Scheme</a></li>
+          <li><a class="govuk-link" href="#countryside-stewardship">Countryside Stewardship</a></li>
+          <li><a class="govuk-link" href="#csht-claims">Countryside Stewardship Higher Tier (CSHT) claims</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <h2 class="govuk-heading-s">Business details</h2>
+      <p class="govuk-body-s">
+        {{ businessName }}<br>
+        Canal Walk<br>
+        Newbury<br>
+        Berkshire
+      </p>
+      <p class="govuk-body-s">
+        Email: alfred.waldron@agilefarm.co.uk<br>
+        Mobile: 01234 031670
+      </p>
+      <ul class="govuk-list govuk-body-s">
+        <li><a class="govuk-link" href="#">View and amend your business details</a></li>
+        <li><a class="govuk-link" href="#">View and amend your bank details</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="permissions" aria-labelledby="permissions-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="permissions-title" class="govuk-heading-s">Give people permission to act for this business</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">This permission allows someone (including agents) to act for this business in the Rural Payments service. Choose a name from the list below to see their permission levels.</p>
+      <table class="govuk-table govuk-table--small-text-until-tablet app-rps-overview-table">
+        <caption class="govuk-table__caption govuk-visually-hidden">People with permission to act for this business</caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Full Name</th>
+            <th scope="col" class="govuk-table__header">Relationship</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" href="#">Leslie Davis</a></td>
+            <td class="govuk-table__cell">Business Partner</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" href="#">Lyndsay Clark</a></td>
+            <td class="govuk-table__cell">Helper</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" href="#">Jeffrey Harris</a></td>
+            <td class="govuk-table__cell">Helper</td>
+          </tr>
+        </tbody>
+      </table>
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">Add people</a></li>
+        <li><a class="govuk-link" href="#">Add people from a firm of agents</a></li>
+        <li><a class="govuk-link" href="#">Remove people</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="business-summary" aria-labelledby="business-summary-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="business-summary-title" class="govuk-heading-s">Business summary</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">Check and print the details we have for your business. These include business details, entitlements, land and land use details and any common land rights you have.</p>
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">Business summary</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="land" aria-labelledby="land-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="land-title" class="govuk-heading-s">Land</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">View maps of your land, transfer land to another business or make changes to your land use.</p>
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="/sfi-grasslands-dev-ready/rural-payments/land-summary">View land</a></li>
+        <li><a class="govuk-link" href="#">Transfer land</a></li>
+        <li><a class="govuk-link" href="#">Update Land Use</a></li>
+        <li><a class="govuk-link" href="#">Request Rural Land Changes</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="expanded-sfi" aria-labelledby="expanded-sfi-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="expanded-sfi-title" class="govuk-heading-s">Expanded Sustainable Farming Incentive (SFI) offer and Countryside Stewardship Higher Tier</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">Apply for the expanded SFI offer or Countryside Stewardship Higher Tier</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="sfi26" aria-labelledby="sfi26-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="sfi26-title" class="govuk-heading-s">Apply for or manage an SFI26 agreement</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">Apply for or manage an SFI26 agreement</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="sfi2023" aria-labelledby="sfi2023-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="sfi2023-title" class="govuk-heading-s">Sustainable Farming Incentive 2023</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">Sustainable Farming Incentive 2023</a></li>
+        <li><a class="govuk-link" href="#">Pilot Sustainable Farming Incentive</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="bps" aria-labelledby="bps-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="bps-title" class="govuk-heading-s">Basic Payment Scheme</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">Check what entitlements you have for the Basic Payment Scheme or view past applications.</p>
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">View entitlements</a></li>
+        <li><a class="govuk-link" href="#">View a previous BPS application</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="delinked-payments" aria-labelledby="delinked-payments-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="delinked-payments-title" class="govuk-heading-s">Delinked Payments</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">View and transfer reference data</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="countryside-stewardship" aria-labelledby="countryside-stewardship-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="countryside-stewardship-title" class="govuk-heading-s">Countryside Stewardship</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">Apply to join the Countryside Stewardship scheme and submit your claims.</p>
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">Countryside Stewardship Mid Tier Applications</a></li>
+        <li><a class="govuk-link" href="#">Countryside Stewardship applications</a></li>
+        <li><a class="govuk-link" href="#">Countryside Stewardship claims</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="govuk-grid-row app-rps-overview-section" id="csht-claims" aria-labelledby="csht-claims-title">
+    <div class="govuk-grid-column-one-third">
+      <h2 id="csht-claims-title" class="govuk-heading-s">Countryside Stewardship Higher Tier (CSHT) claims</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <ul class="govuk-list govuk-body">
+        <li><a class="govuk-link" href="#">Claim for items in CSHT agreements that start from 2025</a></li>
+      </ul>
+    </div>
+  </section>
+{% endblock %}

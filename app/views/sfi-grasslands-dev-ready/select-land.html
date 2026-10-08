@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-dev-ready-header.html" %}
 
 {% block pageTitle %}
-  Select your land parcels
+  Select a land parcel
 {% endblock %}
 
 {% block beforeContent %}
@@ -19,67 +19,134 @@
 
   <!-- MapLibre CSS -->
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-dev-ready-select-land.css">
+  <script>
+    // Apply map/list layout from the URL before paint (full page load on toggle)
+    (function() {
+      var view = 'map';
+      try {
+        view = new URLSearchParams(window.location.search).get('view') === 'list' ? 'list' : 'map';
+      } catch (e) {}
+      document.documentElement.setAttribute('data-parcel-view', view);
+      if (view === 'map') {
+        document.body.classList.add('app-select-land--wide');
+      } else {
+        document.body.classList.remove('app-select-land--wide');
+      }
+      window.__initialParcelView = view;
+    })();
+  </script>
   <style>
-    .govuk-header {
+    html[data-parcel-view="list"] #parcel-map-view {
+      display: none !important;
+    }
+
+    html[data-parcel-view="map"] #parcel-list-view {
+      display: none !important;
+    }
+
+    #summary-parcel-added-tag,
+    .app-parcel-list-view .govuk-tag,
+    .app-parcel-status-tag {
+      white-space: nowrap;
+      font-size: 16px;
+      line-height: 1.25;
+      vertical-align: middle;
+    }
+
+    /* .govuk-tag { display: inline-block } overrides the HTML hidden attribute */
+    .app-parcel-status-tag[hidden] {
+      display: none !important;
+    }
+
+    /* .govuk-error-message { display: block } overrides the HTML hidden attribute */
+    #map-field-error[hidden],
+    #parcel-list-field-error[hidden] {
+      display: none !important;
+    }
+
+    .app-parcel-list-view .govuk-radios__hint .app-parcel-status-tag + .app-parcel-status-tag {
+      margin-left: 8px;
+    }
+
+    /* Exact match for select-actions payment rate / hectares available hints */
+    .app-parcel-list-view .app-action-hint {
+      display: block;
+      margin-top: 2px;
+      margin-bottom: 0;
+      padding: 0;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .app-parcel-list-view .app-parcel-list__added-tag {
+      display: inline-block;
+      margin-top: 10px;
+      margin-left: 0;
+      vertical-align: middle;
+    }
+
+    /* Match map key colours */
+    .app-parcel-status-tag--added {
+      background-color: #CFE4DC;
+      color: #0b0c0c;
+    }
+
+    /* Wider than the 960px GOV.UK container only while the map is showing */
+    body.app-select-land--wide .govuk-header {
       width: 100%;
     }
 
-    .govuk-header__container {
-      max-width: none;
+    body.app-select-land--wide .govuk-header__container {
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       box-sizing: border-box;
     }
 
-    .govuk-header__container.govuk-width-container {
-      max-width: none;
+    body.app-select-land--wide .govuk-header__container.govuk-width-container {
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       padding-left: 20px;
       padding-right: 20px;
       box-sizing: border-box;
     }
 
-    .govuk-service-navigation .govuk-width-container {
-      max-width: none;
+    body.app-select-land--wide .govuk-service-navigation .govuk-width-container {
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       padding-left: 20px;
       padding-right: 20px;
       box-sizing: border-box;
     }
 
-    body > .govuk-width-container {
-      max-width: none;
+    body.app-select-land--wide > .govuk-width-container {
+      max-width: 1200px;
       width: 100%;
-      margin: 0;
+      margin: 0 auto;
       padding-left: 20px;
       padding-right: 20px;
       box-sizing: border-box;
     }
 
-    .govuk-main-wrapper {
+    body.app-select-land--wide .govuk-main-wrapper {
       max-width: none;
       margin: 0;
       padding: 8px 0 0;
     }
 
-    .govuk-main-wrapper .govuk-grid-row {
-      margin: 0;
-    }
-
-    .govuk-main-wrapper .govuk-grid-column-full {
-      width: 100%;
-      float: none;
-      padding: 0;
-    }
-
     .app-map-shell {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(240px, 1fr);
-      gap: 24px;
-      align-items: start;
+      display: block;
       overflow-anchor: none;
+    }
+
+    .app-map-shell[hidden],
+    .app-parcel-list-view[hidden] {
+      display: none !important;
     }
 
     .app-bottom-panels {
@@ -101,7 +168,7 @@
       width: 100%;
       height: calc(100vh - 320px);
       min-height: 420px;
-      max-height: 640px;
+      max-height: 560px;
       border: 2px solid #b1b4b6;
       cursor: pointer;
     }
@@ -130,15 +197,31 @@
       min-width: 0;
     }
 
-    /* .govuk-error-message { display: block } overrides the HTML hidden attribute */
-    #map-field-error[hidden] {
-      display: none !important;
+    .app-land-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
+      gap: 24px;
+      align-items: start;
+      margin-top: 0;
+    }
+
+    body:not(.app-select-land--wide) .app-land-layout {
+      grid-template-columns: minmax(0, 2fr) minmax(14rem, 18rem);
+    }
+
+    .app-land-layout__main {
+      min-width: 0;
+    }
+
+    .app-land-layout__aside {
+      min-width: 0;
     }
 
     .app-application-summary {
       display: block;
       margin-top: 0;
       min-width: 0;
+      max-width: none;
     }
 
     .app-application-summary__inner {
@@ -166,6 +249,76 @@
       border-bottom: 1px solid #b1b4b6;
       padding-top: 10px;
       padding-bottom: 10px;
+    }
+
+    .app-application-summary .govuk-table__cell:first-child {
+      white-space: nowrap;
+      padding-right: 15px;
+    }
+
+    .app-application-summary .govuk-table__cell--numeric {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 40.0625em) {
+      .app-land-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    html[data-parcel-view="list"] #parcel-map-key {
+      display: none !important;
+    }
+
+    .app-map-key {
+      margin-top: 25px;
+    }
+
+    .app-map-key__heading {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-family: "GDS Transport", arial, sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      line-height: 1.31579;
+      color: #0b0c0c;
+    }
+
+    .app-map-key__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .app-map-key__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .app-map-key__item:last-child {
+      margin-bottom: 0;
+    }
+
+    .app-map-key__swatch {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      border: 2px solid;
+    }
+
+    .app-map-key__swatch--available {
+      background-color: #F1DEB8;
+      border-color: #8A5A44;
+    }
+
+    .app-map-key__swatch--added {
+      background-color: #CFE4DC;
+      border-color: #083D29;
     }
 
     .app-application-summary__selected {
@@ -224,45 +377,6 @@
       line-height: 1.25;
     }
 
-    .map-reset-view-button {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-      padding: 8px 12px;
-      background: #ffffff;
-      border: 2px solid #0b0c0c;
-      box-shadow: 0 2px 4px rgba(11, 12, 12, 0.15);
-      font-family: "GDS Transport", arial, sans-serif;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.25;
-      color: #0b0c0c;
-      cursor: pointer;
-    }
-
-    .map-reset-view-button:hover {
-      background: #f3f2f1;
-    }
-
-    .map-reset-view-button:focus {
-      outline: 3px solid transparent;
-      box-shadow: 0 0 0 3px #ffdd00, 0 2px 4px rgba(11, 12, 12, 0.15);
-    }
-
-    .map-reset-view-button__icon {
-      flex-shrink: 0;
-      width: 20px;
-      height: 20px;
-    }
-
-    .map-reset-view-button[hidden] {
-      display: none;
-    }
     .im-map,
     .maplibregl-map {
       font-family: "GDS Transport", arial, sans-serif;
@@ -460,28 +574,27 @@
     }
 
     @media (max-width: 1023px) {
-      .govuk-header__container.govuk-width-container {
+      body.app-select-land--wide .govuk-header__container.govuk-width-container {
         padding-left: 15px;
         padding-right: 15px;
       }
 
-      .govuk-service-navigation .govuk-width-container {
+      body.app-select-land--wide .govuk-service-navigation .govuk-width-container {
         padding-left: 15px;
         padding-right: 15px;
       }
 
-      body > .govuk-width-container {
+      body.app-select-land--wide > .govuk-width-container {
         padding-left: 15px;
         padding-right: 15px;
       }
 
-      .govuk-main-wrapper {
+      body.app-select-land--wide .govuk-main-wrapper {
         padding: 8px 0 0;
       }
 
       .app-map-shell {
-        grid-template-columns: 1fr;
-        gap: 16px;
+        display: block;
       }
 
       .app-bottom-panels {
@@ -503,7 +616,7 @@
   </style>
 
   {{ govukBackLink({
-    text: showCancelToLandAndActions and "Back to your land and actions" or "Back to task list",
+    text: "Back",
     href: showCancelToLandAndActions and "/sfi-grasslands-dev-ready/cancel-land-actions-draft" or "/sfi-grasslands-dev-ready/task-list"
   }) }}
 {% endblock %}
@@ -520,7 +633,7 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list" id="parcel-selection-error-summary-list">
           <li>
-            <a href="#map-field">Select a land parcel on the map before you continue.</a>
+            <a href="#map-field" id="parcel-selection-error-link">Select a land parcel before you continue.</a>
           </li>
         </ul>
       </div>
@@ -528,57 +641,74 @@
 
     {% set journeySection = "Select land and actions" %}
     {% include "sfi-grasslands-dev-ready/_includes/journey-caption.html" %}
-    <h1 class="govuk-heading-l" id="page-heading">Select your land parcels</h1>
-    <p id="select-parcel-text" class="govuk-body">Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).</p>
+    <h1 class="govuk-heading-l" id="page-heading">Select a land parcel</h1>
+    <p id="select-parcel-text" class="govuk-body">Select a parcel from the map or the list of your parcels.</p>
     <p id="map-keyboard-hint" class="govuk-visually-hidden">
       Use the arrow keys to move between land parcels. Press Enter or Space to select a parcel.
     </p>
-    <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a land parcel from the map. You'll be able to select actions for the land on the next page (and add more land parcels when you have finished).</p>
+    <p id="choose-parcel-text" class="govuk-body" style="display: none;">Select a parcel from the map or the list of your parcels.</p>
+    <div class="govuk-inset-text">
+      You need to add each parcel individually. You can select actions and supplements for each parcel when you continue through the service.
+    </div>
     <p id="selected-parcel-text" style="display: none;"></p>
     <script type="application/json" id="draft-parcel-json">{% if draftParcel %}{{ draftParcel | dump | safe }}{% else %}null{% endif %}</script>
+
+    <p class="govuk-body app-parcel-view-toggle govuk-!-margin-top-4">
+      <a class="govuk-link" id="parcel-view-toggle" href="?view=list">View parcels as a list</a>
+    </p>
 
   </div>
 </div>
 
-{# Map + farm summary use full width; intro and selected parcel stay two-thirds #}
+{# Map / list + farm summary use full width; intro and selected parcel stay two-thirds #}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
 
-    <div class="app-map-shell govuk-!-margin-top-6">
-      <div class="govuk-form-group" id="map-form-group">
-        <span class="govuk-label govuk-visually-hidden" id="map-field-label">
-          Select a land parcel on the map
-        </span>
-        <p class="govuk-error-message" id="map-field-error" hidden>
-          <span class="govuk-visually-hidden">Error:</span>
-          <span id="map-field-error-text">Select a land parcel on the map before you continue.</span>
-        </p>
-        <div
-          id="map-field"
-          class="app-map-field map-viewport"
-          tabindex="0"
-          role="application"
-          aria-labelledby="map-field-label"
-          aria-describedby="select-parcel-text map-keyboard-hint"
-          aria-required="true"
-        >
-          <div id="map"></div>
-          <button type="button" id="reset-map-view-button" class="map-reset-view-button" hidden aria-label="Show all parcels on the map" title="Show all parcels on the map">
-            <svg class="map-reset-view-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M8 4H4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 4h4v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8 20H4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16 20h4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <rect x="7" y="7" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"></rect>
-            </svg>
-            Show all parcels
-          </button>
+    <div class="app-land-layout">
+      <div class="app-land-layout__main">
+        <div id="parcel-map-view" class="app-map-shell">
+          <div class="govuk-form-group" id="map-form-group">
+            <span class="govuk-label govuk-visually-hidden" id="map-field-label">
+              Select a land parcel on the map
+            </span>
+            <p class="govuk-error-message" id="map-field-error" hidden>
+              <span class="govuk-visually-hidden">Error:</span>
+              <span id="map-field-error-text">Select a land parcel before you continue.</span>
+            </p>
+            <div
+              id="map-field"
+              class="app-map-field map-viewport"
+              tabindex="0"
+              role="application"
+              aria-labelledby="map-field-label"
+              aria-describedby="select-parcel-text map-keyboard-hint"
+              aria-required="true"
+            >
+              <div id="map"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="parcel-list-view" class="app-parcel-list-view" hidden>
+          <div class="govuk-form-group" id="parcel-list-form-group">
+            <fieldset class="govuk-fieldset" id="parcel-list-fieldset">
+              <legend class="govuk-fieldset__legend govuk-visually-hidden">
+                Select a land parcel
+              </legend>
+              <p class="govuk-error-message" id="parcel-list-field-error" hidden>
+                <span class="govuk-visually-hidden">Error:</span>
+                <span id="parcel-list-field-error-text">Select a land parcel before you continue.</span>
+              </p>
+              <div class="govuk-radios" id="parcel-list-radios">
+                {# Populated from the same parcelData as the map #}
+              </div>
+            </fieldset>
+          </div>
         </div>
       </div>
 
-      <div class="app-application-summary" id="os-map-references">
+      <aside class="app-land-layout__aside app-application-summary" id="os-map-references" aria-label="Farm summary">
         <div class="app-application-summary__inner farm-info-panel" id="blackberry-farm-info">
-          {% set selectedParcels = applicationParcels or [] %}
           <table class="govuk-table">
             <caption class="govuk-table__caption">Agile Farm</caption>
             <tbody class="govuk-table__body">
@@ -592,28 +722,21 @@
               </tr>
             </tbody>
           </table>
-          {% if selectedParcels | length %}
-            <div class="app-application-summary__selected">
-              <h3 class="app-application-summary__selected-heading">
-                Parcels in your application
-              </h3>
-              <dl class="govuk-summary-list">
-                {% for parcel in selectedParcels %}
-                  {% set parcelRef = parcel.parcelReference or parcel.osReference or parcel.parcelName or parcel.parcelId %}
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key govuk-visually-hidden">
-                      Parcel reference
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                      {{ parcelRef }}
-                    </dd>
-                  </div>
-                {% endfor %}
-              </dl>
-            </div>
-          {% endif %}
+          <div class="app-map-key" id="parcel-map-key" aria-label="Map key">
+            <h3 class="app-map-key__heading">Map key</h3>
+            <ul class="app-map-key__list">
+              <li class="app-map-key__item">
+                <span class="app-map-key__swatch app-map-key__swatch--available" aria-hidden="true"></span>
+                <span class="govuk-body govuk-!-margin-bottom-0">Available</span>
+              </li>
+              <li class="app-map-key__item">
+                <span class="app-map-key__swatch app-map-key__swatch--added" aria-hidden="true"></span>
+                <span class="govuk-body govuk-!-margin-bottom-0">Added to application</span>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </aside>
     </div>
 
     {# Kept for existing parcel-selection JS; not shown in the land-only layout #}
@@ -639,8 +762,11 @@
       <h2 class="govuk-heading-m" id="selected-parcel-summary-heading">Selected land parcel</h2>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Parcel reference</dt>
-          <dd class="govuk-summary-list__value" id="summary-parcel-reference">{% if hasDraftParcel %}{{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}{% else %}-{% endif %}</dd>
+          <dt class="govuk-summary-list__key">Land parcel</dt>
+          <dd class="govuk-summary-list__value">
+            <span id="summary-parcel-reference">{% if hasDraftParcel %}{{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}{% else %}-{% endif %}</span>
+            <strong class="govuk-tag app-parcel-status-tag app-parcel-status-tag--added govuk-!-margin-left-2" id="summary-parcel-added-tag" hidden>Added to application</strong>
+          </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="#" id="clear-parcel-selection-link">Change<span class="govuk-visually-hidden"> parcel selection</span></a>
           </dd>
@@ -701,9 +827,6 @@
           </dd>
         </div>
       </dl>
-      <div id="summary-parcel-no-actions" class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0" hidden>
-        <p class="govuk-body govuk-!-margin-bottom-0">There are no actions available for this land parcel. Select another land parcel to continue.</p>
-      </div>
     </div>
 
     <form action="/sfi-grasslands-dev-ready/select-land" method="post" id="continue-form" class="govuk-!-margin-top-6">
@@ -1082,14 +1205,19 @@
   <script src="/plugin-assets/%40defra%2Finteractive-map/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/umd/index.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-parcel-search.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-map-reset-button.js"></script>
 
   <!-- MapLibre JS -->
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
   <script src="/public/javascripts/sfi-scheme-2026.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-mvp-actions.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-parcel-reference.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-outlying-parcels.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-existing-agreements.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-aac.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-select-land-map-clusters.js"></script>
 
   <!-- Pass server data to JavaScript -->
   <script id="application-parcels-data" type="application/json">{{ (applicationParcels or []) | dump | safe }}</script>
@@ -1208,12 +1336,74 @@
       }
     }
 
+    // Room for the cluster circles, plus a strip on the right for the zoom and pan controls
+    var ALL_PARCELS_FIT_PADDING_PX = { top: 40, right: 140, bottom: 40, left: 40 };
+
+    function getAllParcelsCamera() {
+      var allLatLngs = [];
+      Object.keys(parcelData).forEach(function(parcelId) {
+        var coords = parcelData[parcelId].coords;
+        if (Array.isArray(coords)) {
+          allLatLngs = allLatLngs.concat(coords);
+        }
+      });
+
+      if (!rawMap || !allLatLngs.length || typeof rawMap.cameraForBounds !== 'function') {
+        return null;
+      }
+
+      var camera = rawMap.cameraForBounds(createBoundsFromLatLngs(allLatLngs).toMapLibreBounds(), {
+        padding: ALL_PARCELS_FIT_PADDING_PX,
+        maxZoom: ALL_FARMS_MAP_ZOOM
+      });
+
+      if (!camera || !camera.center || !Number.isFinite(camera.zoom)) {
+        return null;
+      }
+
+      var center = Array.isArray(camera.center)
+        ? { lng: camera.center[0], lat: camera.center[1] }
+        : camera.center;
+      return { lat: center.lat, lng: center.lng, zoom: camera.zoom };
+    }
+
+    // Fits every parcel, so outlying sites show as clusters on load and after "View all land parcels"
     function establishDefaultMapView() {
-      defaultMapView = {
+      defaultMapView = getAllParcelsCamera() || {
         lat: ALL_FARMS_MAP_CENTER[0],
         lng: ALL_FARMS_MAP_CENTER[1],
         zoom: ALL_FARMS_MAP_ZOOM
       };
+    }
+
+    var SAVED_MAP_VIEW_KEY = 'sfiGrasslandsDevReadySelectLandMapView';
+
+    function saveMapView() {
+      if (!rawMap) {
+        return;
+      }
+      var center = rawMap.getCenter();
+      try {
+        sessionStorage.setItem(SAVED_MAP_VIEW_KEY, JSON.stringify({
+          lat: center.lat,
+          lng: center.lng,
+          zoom: rawMap.getZoom()
+        }));
+      } catch (error) {
+        // Storage can be unavailable (private browsing); the map still works without it.
+      }
+    }
+
+    function getSavedMapView() {
+      try {
+        var view = JSON.parse(sessionStorage.getItem(SAVED_MAP_VIEW_KEY));
+        if (view && Number.isFinite(view.lat) && Number.isFinite(view.lng) && Number.isFinite(view.zoom)) {
+          return view;
+        }
+      } catch (error) {
+        // Ignore missing or broken saved values
+      }
+      return null;
     }
 
     function isMapAwayFromDefaultView() {
@@ -1231,12 +1421,7 @@
     }
 
     function updateResetMapViewButtonVisibility() {
-      var button = document.getElementById('reset-map-view-button');
-      if (!button) {
-        return;
-      }
-
-      button.hidden = !isMapAwayFromDefaultView();
+      sfiGrasslandsDevReadyMapResetButton.setVisible(interactiveMap, isMapAwayFromDefaultView());
     }
 
     function onMapReady(callback) {
@@ -1292,8 +1477,23 @@
         backgroundColor: '#f5f5f0'
       },
       plugins: [
-        defra.scaleBarPlugin({ units: 'metric' })
+        defra.scaleBarPlugin({ units: 'metric' }),
+        sfiGrasslandsDevReadyParcelSearch.createPlugin({
+          getParcels: function() { return parcelData; },
+          formatReference: formatParcelReference
+        })
       ]
+    });
+
+    interactiveMap.on('app:ready', function() {
+      interactiveMap.toggleButtonState('mapControls', 'expanded', true);
+      sfiGrasslandsDevReadyMapResetButton.add(interactiveMap, resetMapToAllParcelsView);
+    });
+
+    interactiveMap.on('search:match', function(event) {
+      if (event && event.type === 'parcel') {
+        selectParcel(event.parcelId, { zoomToParcel: true });
+      }
     });
 
     interactiveMap.on('map:ready', function(event) {
@@ -1309,20 +1509,24 @@
         rawMap.scrollZoom.disable();
       }
 
+      // Once land has been added, come back to where the user was working.
+      // Before that, show every parcel. This runs before the ready callbacks so a parcel
+      // being restored can still zoom to itself.
+      establishDefaultMapView();
+      var hasAddedLand = Object.keys(applicationParcelIds).length > 0;
+      var startView = (hasAddedLand && getSavedMapView()) || defaultMapView;
+      rawMap.jumpTo({
+        center: [startView.lng, startView.lat],
+        zoom: startView.zoom
+      });
+
       mapReadyCallbacks.splice(0).forEach(function(callback) {
         callback(rawMap);
       });
 
-      establishDefaultMapView();
+      rawMap.on('moveend', saveMapView);
       rawMap.on('moveend', updateResetMapViewButtonVisibility);
-      rawMap.once('idle', function() {
-        if (isMapAwayFromDefaultView()) {
-          resetMapToAllParcelsView();
-          return;
-        }
-
-        updateResetMapViewButtonVisibility();
-      });
+      rawMap.once('idle', updateResetMapViewButtonVisibility);
     });
 
     window.addEventListener('resize', function() {
@@ -2417,6 +2621,10 @@
       }
     });
 
+    if (window.SfiGrasslandsDevReadyOutlyingParcels) {
+      window.SfiGrasslandsDevReadyOutlyingParcels.addTo(parcelData);
+    }
+
     if (window.SfiGrasslandsDevReadyParcelReference &&
         typeof window.SfiGrasslandsDevReadyParcelReference.applyToParcelData === 'function') {
       window.SfiGrasslandsDevReadyParcelReference.applyToParcelData(parcelData);
@@ -2427,8 +2635,8 @@
         ? window.SFI_SCHEME_2026.actions.slice()
         : [];
 
-    if (window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS && typeof window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.filterCatalog === 'function') {
-      ACTION_CATALOG = window.SFI_GRASSLANDS_DEV_READY_MVP_ACTIONS.filterCatalog(ACTION_CATALOG);
+    if (window.SFI_GRASSLANDS_V2_MVP_ACTIONS && typeof window.SFI_GRASSLANDS_V2_MVP_ACTIONS.filterCatalog === 'function') {
+      ACTION_CATALOG = window.SFI_GRASSLANDS_V2_MVP_ACTIONS.filterCatalog(ACTION_CATALOG);
     }
 
     var ACTION_GUIDANCE_URL_OVERRIDES =
@@ -3313,9 +3521,7 @@
     var ACTION_FEATURE_REQUIREMENTS = {
       AHW2: ['hasArableLand'],
       AHW4: ['hasArableLand'],
-      BND1: ['hasBoundaryFeature'],
-      BND2: ['hasBoundaryFeature'],
-      CHRW2: ['hasBoundaryFeature', 'hasHedgerow'],
+      // Boundary actions (BND1, BND2, CHRW2, WBD2) appear on all land covers — no feature gate.
       CIGL1: ['hasGrasslandHabitat'],
       CIGL2: ['hasGrasslandHabitat'],
       CLIG3: ['hasGrasslandHabitat'],
@@ -3324,8 +3530,7 @@
       SCR2: ['hasScrubMosaic'],
       SPM3: ['hasGrazedHabitat'],
       SPM5: ['hasExtensiveHabitat'],
-      WBD1: ['hasPond'],
-      WBD2: ['hasDitch']
+      WBD1: ['hasPond']
     }; 
 
     var HISTORIC_ASSET_PARCELS = {
@@ -3453,6 +3658,14 @@
       return lookup;
     }, {});
 
+    // Prototype rule: all Boundary actions appear on every land cover / parcel.
+    var BOUNDARY_ACTIONS_ALL_LAND_COVERS = {
+      BND1: true,
+      BND2: true,
+      CHRW2: true,
+      WBD2: true
+    };
+
     function getEligibleActionsForLandCover(landCover) {
       var eligibleByCode = {};
 
@@ -3463,6 +3676,12 @@
             eligibleByCode[code] = true;
           }
         });
+      });
+
+      Object.keys(BOUNDARY_ACTIONS_ALL_LAND_COVERS).forEach(function(code) {
+        if (actionCodesInCatalog[code]) {
+          eligibleByCode[code] = true;
+        }
       });
 
       return Object.keys(eligibleByCode);
@@ -3564,23 +3783,26 @@
         var label = document.createElement('label');
         label.className = 'govuk-label govuk-checkboxes__label';
         label.setAttribute('for', 'action-' + codeLower);
-        label.appendChild(document.createTextNode(action.name + ': ' + action.code + ' - '));
-
-        var guidanceLink = document.createElement('a');
-        guidanceLink.className = 'govuk-link';
-        guidanceLink.href = getActionGuidanceUrl(action);
-        guidanceLink.target = '_blank';
-        guidanceLink.rel = 'noopener noreferrer';
-        guidanceLink.textContent = 'read guidance (opens in new tab)';
-        label.appendChild(guidanceLink);
+        label.appendChild(document.createTextNode(action.code + ': ' + action.name));
 
         var hint = document.createElement('div');
         hint.className = 'govuk-hint govuk-checkboxes__hint';
         hint.textContent = 'Payment rate per year: ' + action.rateText;
 
+        var guidance = document.createElement('div');
+        guidance.className = 'govuk-checkboxes__hint govuk-!-margin-top-1';
+        var guidanceLink = document.createElement('a');
+        guidanceLink.className = 'govuk-link govuk-!-font-size-16';
+        guidanceLink.href = getActionGuidanceUrl(action);
+        guidanceLink.target = '_blank';
+        guidanceLink.rel = 'noopener noreferrer';
+        guidanceLink.textContent = 'Read guidance on ' + action.code + ' (opens in new tab)';
+        guidance.appendChild(guidanceLink);
+
         item.appendChild(input);
         item.appendChild(label);
         item.appendChild(hint);
+        item.appendChild(guidance);
         container.appendChild(item);
 
         var conditional = document.createElement('div');
@@ -3682,49 +3904,66 @@
       }
     }
 
-    function defaultStyle(feature) {
+    // Status colours matched to map legend (selected stays GOV.UK yellow)
+    var PARCEL_STATUS_COLOURS = {
+      availableFill: '#F1DEB8',
+      availableBorder: '#8A5A44',
+      selectedFill: '#FFDD00',
+      addedFill: '#CFE4DC',
+      addedBorder: '#083D29',
+      darkBorder: '#0b0c0c'
+    };
+
+    function defaultStyle() {
       return {
-        fillColor: feature.properties.color,
+        appState: 'rest',
+        fillColor: PARCEL_STATUS_COLOURS.availableFill,
         weight: 2,
         opacity: 1,
-        color: '#0b0c0c',
-        fillOpacity: 0.5
+        color: PARCEL_STATUS_COLOURS.availableBorder,
+        fillOpacity: 0.9
       };
     }
 
-    // Already in the application — muted so unused parcels stand out
-    function addedStyle(feature) {
+    // Already in the application — mint green from legend
+    function addedStyle() {
       return {
-        fillColor: '#b1b4b6',
+        appState: 'rest',
+        fillColor: PARCEL_STATUS_COLOURS.addedFill,
         weight: 2,
         opacity: 1,
-        color: '#505a5f',
-        fillOpacity: 0.35
+        color: PARCEL_STATUS_COLOURS.addedBorder,
+        fillOpacity: 0.9
       };
     }
 
-    function restingStyle(parcelId, feature) {
-      return isParcelAlreadyAdded(parcelId) ? addedStyle(feature) : defaultStyle(feature);
+    function restingStyle(parcelId) {
+      if (isParcelAlreadyAdded(parcelId)) {
+        return addedStyle();
+      }
+      return defaultStyle();
     }
 
-    // Highlight style
-    function highlightStyle(feature) {
+    // Hover highlight — thicker dark border; fill stays status-driven via feature-state
+    function highlightStyle() {
       return {
-        fillColor: feature.properties.color,
-        weight: 4,
+        appState: 'hover',
+        fillColor: PARCEL_STATUS_COLOURS.availableFill,
+        weight: 3,
         opacity: 1,
-        color: '#ffdd00',
-        fillOpacity: 0.7
+        color: PARCEL_STATUS_COLOURS.darkBorder,
+        fillOpacity: 0.95
       };
     }
 
-    // Selected style
-    function selectedStyle(feature) {
+    // Selected — GOV.UK yellow with thicker dark border
+    function selectedStyle() {
       return {
-        fillColor: feature.properties.color,
-        weight: 1,
+        appState: 'selected',
+        fillColor: PARCEL_STATUS_COLOURS.selectedFill,
+        weight: 3,
         opacity: 1,
-        color: '#00703c',
+        color: PARCEL_STATUS_COLOURS.darkBorder,
         fillOpacity: 1
       };
     }
@@ -3733,6 +3972,7 @@
     var PARCEL_FILL_LAYER_ID = 'parcels-fill';
     var PARCEL_LINE_LAYER_ID = 'parcels-line';
     var PARCEL_LABEL_LAYER_ID = 'parcels-labels';
+
     var parcelFeatureCollection = { type: 'FeatureCollection', features: [] };
     var parcelLayerEventsBound = false;
     var hoveredParcelId = null;
@@ -3789,67 +4029,40 @@
         });
       }
 
+      // Fill by status: selected > added > available (hover keeps status fill)
       var fillColorExpr = [
         'case',
-        ['all',
-          ['any',
-            ['boolean', ['feature-state', 'added'], false],
-            ['==', ['get', 'added'], true]
-          ],
-          ['!', ['boolean', ['feature-state', 'selected'], false]],
-          ['!', ['boolean', ['feature-state', 'hover'], false]]
-        ], '#b1b4b6',
-        ['get', 'color']
+        ['boolean', ['feature-state', 'selected'], false], PARCEL_STATUS_COLOURS.selectedFill,
+        ['any',
+          ['boolean', ['feature-state', 'added'], false],
+          ['==', ['get', 'added'], true]
+        ], PARCEL_STATUS_COLOURS.addedFill,
+        PARCEL_STATUS_COLOURS.availableFill
       ];
       var fillOpacityExpr = [
         'case',
         ['boolean', ['feature-state', 'selected'], false], 1,
-        ['boolean', ['feature-state', 'hover'], false], 0.7,
-        ['any',
-          ['boolean', ['feature-state', 'added'], false],
-          ['==', ['get', 'added'], true]
-        ], 0.45,
-        0.5
+        ['boolean', ['feature-state', 'hover'], false], 0.95,
+        0.9
       ];
       var lineColorExpr = [
         'case',
-        ['boolean', ['feature-state', 'selected'], false], '#00703c',
-        ['boolean', ['feature-state', 'hover'], false], '#ffdd00',
+        ['boolean', ['feature-state', 'selected'], false], PARCEL_STATUS_COLOURS.darkBorder,
+        ['boolean', ['feature-state', 'hover'], false], PARCEL_STATUS_COLOURS.darkBorder,
         ['any',
           ['boolean', ['feature-state', 'added'], false],
           ['==', ['get', 'added'], true]
-        ], '#505a5f',
-        '#0b0c0c'
+        ], PARCEL_STATUS_COLOURS.addedBorder,
+        PARCEL_STATUS_COLOURS.availableBorder
       ];
       var lineWidthExpr = [
         'case',
-        ['boolean', ['feature-state', 'selected'], false], 1,
-        ['boolean', ['feature-state', 'hover'], false], 4,
+        ['boolean', ['feature-state', 'selected'], false], 3,
+        ['boolean', ['feature-state', 'hover'], false], 3,
         2
       ];
-      var lineOpacityExpr = [
-        'case',
-        ['all',
-          ['any',
-            ['boolean', ['feature-state', 'added'], false],
-            ['==', ['get', 'added'], true]
-          ],
-          ['!', ['boolean', ['feature-state', 'selected'], false]],
-          ['!', ['boolean', ['feature-state', 'hover'], false]]
-        ], 0.75,
-        1
-      ];
-      var labelColorExpr = [
-        'case',
-        ['all',
-          ['any',
-            ['boolean', ['feature-state', 'added'], false],
-            ['==', ['get', 'added'], true]
-          ],
-          ['!', ['boolean', ['feature-state', 'selected'], false]]
-        ], '#505a5f',
-        '#0b0c0c'
-      ];
+      var lineOpacityExpr = 1;
+      var labelColorExpr = '#0b0c0c';
 
       if (!mapInstance.getLayer(PARCEL_FILL_LAYER_ID)) {
         mapInstance.addLayer({
@@ -3890,13 +4103,13 @@
           source: PARCEL_SOURCE_ID,
           layout: {
             'text-field': ['get', 'displayName'],
-            'text-size': 11,
+            'text-size': ['interpolate', ['linear'], ['zoom'], 13, 11, 16, 13],
             'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular']
           },
           paint: {
             'text-color': labelColorExpr,
             'text-halo-color': '#ffffff',
-            'text-halo-width': 1
+            'text-halo-width': 1.5
           }
         });
       } else {
@@ -3920,9 +4133,14 @@
         hoveredParcelId = null;
       }
 
+      function isOverCluster(event) {
+        return Boolean(window.SfiGrasslandsDevReadySelectLandMapClusters &&
+          window.SfiGrasslandsDevReadySelectLandMapClusters.isClusterAt(mapInstance, event.point));
+      }
+
       function handleHover(event) {
         var parcelId = getParcelIdFromMapEvent(event);
-        if (!parcelId || parcelId === hoveredParcelId) {
+        if (!parcelId || parcelId === hoveredParcelId || isOverCluster(event)) {
           return;
         }
 
@@ -3939,7 +4157,7 @@
 
       function handleClick(event) {
         var parcelId = getParcelIdFromMapEvent(event);
-        if (!parcelId) {
+        if (!parcelId || isOverCluster(event)) {
           return;
         }
 
@@ -4061,8 +4279,19 @@
       });
 
       function applyStyle(nextStyle) {
-        var selected = !!(nextStyle && nextStyle.color === '#00703c');
-        var hover = !!(nextStyle && nextStyle.color === '#ffdd00' && !selected);
+        var appState = nextStyle && nextStyle.appState;
+        var selected = appState === 'selected';
+        var hover = appState === 'hover';
+        // Fallback for any callers that still pass border-colour-based styles
+        if (!appState && nextStyle) {
+          selected = nextStyle.fillColor === PARCEL_STATUS_COLOURS.selectedFill ||
+            nextStyle.color === '#00703c';
+          hover = !selected && (
+            nextStyle.appState === 'hover' ||
+            nextStyle.color === '#ffdd00' ||
+            nextStyle.weight >= 3
+          );
+        }
         visualState.selected = selected;
         visualState.hover = hover;
         applyParcelVisualState(parcelId, selected, hover);
@@ -4189,7 +4418,7 @@
 
       polygon.on('mouseover', function() {
         if (currentSelectedParcel !== parcelId) {
-          this.setStyle(highlightStyle(this.feature));
+          this.setStyle(highlightStyle());
         }
         closeAllParcelPopups(parcelId);
         this.openPopup();
@@ -4197,7 +4426,7 @@
 
       polygon.on('mouseout', function() {
         if (currentSelectedParcel !== parcelId) {
-          this.setStyle(restingStyle(parcelId, this.feature));
+          this.setStyle(restingStyle(parcelId));
         }
         this.closePopupWithDelay();
       });
@@ -4215,13 +4444,20 @@
     onMapStyleReady(function(mapInstance) {
       ensureSharedParcelLayers(mapInstance);
 
+      if (window.SfiGrasslandsDevReadySelectLandMapClusters) {
+        window.SfiGrasslandsDevReadySelectLandMapClusters.attach(mapInstance, {
+          parcelData: parcelData,
+          labelLayerId: PARCEL_LABEL_LAYER_ID
+        });
+      }
+
       Object.keys(parcelPolygons).forEach(function(parcelId) {
         var polygon = parcelPolygons[parcelId];
         if (polygon && polygon._syncVisualState) {
           polygon._syncVisualState();
         }
         if (polygon && isParcelAlreadyAdded(parcelId) && currentSelectedParcel !== parcelId) {
-          polygon.setStyle(addedStyle(polygon.feature));
+          polygon.setStyle(addedStyle());
         }
       });
     });
@@ -4238,16 +4474,288 @@
             if (!item.querySelector('.app-parcel-list-item__status')) {
               var status = document.createElement('span');
               status.className = 'app-parcel-list-item__status';
-              status.textContent = 'Already in your application';
+              status.textContent = 'Added to application';
               item.appendChild(status);
             }
           }
-          link.setAttribute('aria-description', 'Already in your application');
+          link.setAttribute('aria-description', 'Added to application');
         });
       });
     }
 
     markAddedParcelsInList();
+
+    var PARCEL_VIEW_STORAGE_KEY = 'sfiGrasslandsDevReadyParcelView';
+
+    var currentParcelView = (window.__initialParcelView === 'list') ? 'list' : 'map';
+
+    function rememberParcelView(view) {
+      try {
+        sessionStorage.setItem(PARCEL_VIEW_STORAGE_KEY, view === 'list' ? 'list' : 'map');
+      } catch (e) {}
+    }
+
+    function getParcelViewFromUrl() {
+      try {
+        return new URLSearchParams(window.location.search).get('view') === 'list' ? 'list' : 'map';
+      } catch (e) {
+        return 'map';
+      }
+    }
+
+    function buildParcelViewHref(view) {
+      var url = new URL(window.location.href);
+      if (view === 'list') {
+        url.searchParams.set('view', 'list');
+        url.searchParams.delete('map:center');
+        url.searchParams.delete('map:zoom');
+      } else {
+        url.searchParams.delete('view');
+      }
+      return url.pathname + url.search + url.hash;
+    }
+
+    function updateParcelViewToggleLink() {
+      var toggle = document.getElementById('parcel-view-toggle');
+      if (!toggle) {
+        return;
+      }
+      if (currentParcelView === 'list') {
+        toggle.textContent = 'View parcels on a map';
+        toggle.setAttribute('href', buildParcelViewHref('map'));
+      } else {
+        toggle.textContent = 'View parcels as a list';
+        toggle.setAttribute('href', buildParcelViewHref('list'));
+      }
+    }
+
+    function setParcelView(view) {
+      var mapView = document.getElementById('parcel-map-view');
+      var listView = document.getElementById('parcel-list-view');
+      if (!mapView || !listView) {
+        return;
+      }
+
+      currentParcelView = view === 'list' ? 'list' : 'map';
+      document.documentElement.setAttribute('data-parcel-view', currentParcelView);
+      rememberParcelView(currentParcelView);
+
+      // Map gets a wider (capped) layout; list uses normal GOV.UK content width
+      document.body.classList.toggle('app-select-land--wide', currentParcelView === 'map');
+
+      if (currentParcelView === 'list') {
+        mapView.hidden = true;
+        mapView.style.display = 'none';
+        listView.hidden = false;
+        listView.style.display = '';
+        syncParcelListSelection(currentSelectedParcel);
+        var listSummary = document.getElementById('selected-parcel-summary');
+        if (listSummary) {
+          listSummary.hidden = true;
+        }
+        updateContinueForSelectedParcel(currentSelectedParcel);
+      } else {
+        listView.hidden = true;
+        listView.style.display = 'none';
+        mapView.hidden = false;
+        mapView.style.display = '';
+        if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
+          parcelPolygons[currentSelectedParcel].setStyle(
+            selectedStyle()
+          );
+        }
+        var mapSummary = document.getElementById('selected-parcel-summary');
+        if (mapSummary && currentSelectedParcel) {
+          mapSummary.hidden = false;
+        }
+        updateContinueForSelectedParcel(currentSelectedParcel);
+        window.setTimeout(function() {
+          if (typeof map !== 'undefined' && map) {
+            if (typeof map.resize === 'function') {
+              map.resize();
+            } else if (typeof map.invalidateSize === 'function') {
+              map.invalidateSize();
+            }
+          }
+        }, 50);
+      }
+
+      updateParcelViewToggleLink();
+    }
+
+    function initParcelViewToggle() {
+      // Apply view from the URL after a real navigation (link click)
+      setParcelView(getParcelViewFromUrl());
+
+      var listRadios = document.getElementById('parcel-list-radios');
+      if (listRadios && listRadios.getAttribute('data-list-radios') !== 'true') {
+        listRadios.setAttribute('data-list-radios', 'true');
+        listRadios.addEventListener('change', function(event) {
+          var target = event.target;
+          if (!target || target.name !== 'selected-parcel-list') {
+            return;
+          }
+          syncParcelListConditionals();
+          selectParcel(target.value, { skipMapMove: true, scrollToSummary: false });
+        });
+      }
+    }
+
+    function getSortedParcelIds() {
+      return Object.keys(parcelData).sort(function(a, b) {
+        var refA = formatParcelReference(Object.assign({ id: a, parcelId: a }, parcelData[a])) || a;
+        var refB = formatParcelReference(Object.assign({ id: b, parcelId: b }, parcelData[b])) || b;
+        return refA.localeCompare(refB, 'en-GB', { numeric: true });
+      });
+    }
+
+
+    function syncParcelListSelection(parcelId) {
+      var radios = document.querySelectorAll('input[name="selected-parcel-list"]');
+      Array.prototype.forEach.call(radios, function(radio) {
+        radio.checked = Boolean(parcelId) && radio.value === parcelId;
+      });
+      syncParcelListConditionals();
+    }
+
+    function syncParcelListConditionals() {
+      var inputs = document.querySelectorAll('#parcel-list-radios input[type="radio"]');
+      Array.prototype.forEach.call(inputs, function(input) {
+        var targetId = input.getAttribute('aria-controls');
+        if (!targetId) {
+          return;
+        }
+        var conditional = document.getElementById(targetId);
+        if (!conditional || !conditional.classList.contains('govuk-radios__conditional')) {
+          return;
+        }
+        // Same behaviour as GOV.UK Radios conditional reveals
+        var isOpen = input.checked;
+        input.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        conditional.classList.toggle('govuk-radios__conditional--hidden', !isOpen);
+      });
+    }
+
+    // Same rows as the map view's "Selected land parcel" summary, minus the parcel
+    // reference (already in the radio label) and the Change link
+    function buildParcelListDetails(parcelId, parcel) {
+      var list = document.createElement('dl');
+      list.className = 'govuk-summary-list app-parcel-list__summary';
+
+      function addRow(key) {
+        var row = document.createElement('div');
+        row.className = 'govuk-summary-list__row';
+        var dt = document.createElement('dt');
+        dt.className = 'govuk-summary-list__key';
+        dt.textContent = key;
+        var dd = document.createElement('dd');
+        dd.className = 'govuk-summary-list__value';
+        row.appendChild(dt);
+        row.appendChild(dd);
+        list.appendChild(row);
+        return dd;
+      }
+
+      renderLandCoverSummary(
+        addRow('Land covers'),
+        getParcelLandCovers(parcel.landCover),
+        parcel.totalArea,
+        parcelId,
+        parcel
+      );
+      addRow('Total area').textContent = parcel.totalArea
+        ? (formatHaFourDecimals(parcel.totalArea) + ' ha')
+        : '-';
+      addRow('Available actions').textContent = String(getParcelAvailableActionsCount(parcelId, parcel));
+
+      var requirementsEl = addRow('Requirements');
+      if (!renderParcelRequirements(requirementsEl, parcelId)) {
+        list.removeChild(requirementsEl.parentNode);
+      }
+
+      return list;
+    }
+
+    function buildParcelList() {
+      var container = document.getElementById('parcel-list-radios');
+      if (!container) {
+        return;
+      }
+
+      container.innerHTML = '';
+      container.className = 'govuk-radios';
+      // Built dynamically — we sync conditionals ourselves (see syncParcelListConditionals)
+
+      getSortedParcelIds().forEach(function(parcelId) {
+        var parcel = parcelData[parcelId];
+        if (!parcel) {
+          return;
+        }
+
+        var reference = formatParcelReference(Object.assign({ id: parcelId, parcelId: parcelId }, parcel)) || parcelId;
+        var conditionalId = 'conditional-parcel-list-' + parcelId;
+
+        var item = document.createElement('div');
+        item.className = 'govuk-radios__item';
+
+        var input = document.createElement('input');
+        input.className = 'govuk-radios__input';
+        input.id = 'parcel-list-' + parcelId;
+        input.name = 'selected-parcel-list';
+        input.type = 'radio';
+        input.value = parcelId;
+        input.setAttribute('aria-controls', conditionalId);
+        input.setAttribute('aria-expanded', 'false');
+        if (currentSelectedParcel === parcelId) {
+          input.checked = true;
+        }
+
+        var label = document.createElement('label');
+        label.className = 'govuk-label govuk-radios__label';
+        label.setAttribute('for', input.id);
+        label.appendChild(document.createTextNode(reference));
+
+        var describedByParts = [];
+
+        var totalAreaId = 'parcel-list-total-area-' + parcelId;
+        var totalAreaLine = document.createElement('span');
+        totalAreaLine.className = 'app-action-hint';
+        totalAreaLine.id = totalAreaId;
+        totalAreaLine.textContent = 'Total area: ' +
+          (parcel.totalArea ? (formatHaFourDecimals(parcel.totalArea) + ' ha') : '-');
+        label.appendChild(totalAreaLine);
+
+        describedByParts.push(totalAreaId);
+
+        if (isParcelAlreadyAdded(parcelId)) {
+          var addedTagId = 'parcel-list-added-' + parcelId;
+          var addedTag = document.createElement('strong');
+          addedTag.className = 'govuk-tag app-parcel-status-tag app-parcel-status-tag--added app-parcel-list__added-tag';
+          addedTag.id = addedTagId;
+          addedTag.textContent = 'Added to application';
+          label.appendChild(addedTag);
+          describedByParts.push(addedTagId);
+        }
+
+        item.appendChild(input);
+        item.appendChild(label);
+
+        input.setAttribute('aria-describedby', describedByParts.join(' '));
+
+        container.appendChild(item);
+
+        var conditional = document.createElement('div');
+        conditional.className = 'govuk-radios__conditional govuk-radios__conditional--hidden';
+        conditional.id = conditionalId;
+        conditional.appendChild(buildParcelListDetails(parcelId, parcel));
+        container.appendChild(conditional);
+      });
+
+      syncParcelListConditionals();
+    }
+
+    buildParcelList();
+    initParcelViewToggle();
     updateFarmSummary();
 
     // Function to restore parcel state from saved selections
@@ -4327,187 +4835,27 @@
       return lines.join(', ');
     }
 
-    function getExistingAgreementFieldValue(sourceDl, labelText) {
-      if (!sourceDl) {
-        return '';
-      }
-
-      var rows = sourceDl.querySelectorAll('.govuk-summary-list__row');
-      for (var i = 0; i < rows.length; i++) {
-        var key = rows[i].querySelector('.govuk-summary-list__key');
-        var value = rows[i].querySelector('.govuk-summary-list__value');
-        if (!key || !value) {
-          continue;
-        }
-        if ((key.textContent || '').trim() === labelText) {
-          return (value.textContent || '').replace(/\s+/g, ' ').trim();
-        }
-      }
-      return '';
-    }
-
-    function getExistingAgreementActionLabels(sourceDl) {
-      if (!sourceDl) {
-        return [];
-      }
-
-      var labels = [];
-      sourceDl.querySelectorAll('ul.govuk-list li').forEach(function(item) {
-        var text = (item.textContent || '').replace(/\s+/g, ' ').trim();
-        if (!text) {
-          return;
-        }
-
-        var parts = text.split(':');
-        if (parts.length >= 2 && !/\([A-Z0-9]+\)$/.test(text)) {
-          var code = parts[parts.length - 1].trim();
-          var name = parts.slice(0, -1).join(':').trim();
-          labels.push(name + ' (' + code + ')');
-        } else {
-          labels.push(text);
-        }
-      });
-      return labels;
-    }
-
-    function appendSummaryRow(listEl, keyText, valueText) {
-      var row = document.createElement('div');
-      row.className = 'govuk-summary-list__row';
-
-      var key = document.createElement('dt');
-      key.className = 'govuk-summary-list__key';
-      key.textContent = keyText;
-
-      var value = document.createElement('dd');
-      value.className = 'govuk-summary-list__value';
-      value.textContent = valueText;
-
-      row.appendChild(key);
-      row.appendChild(value);
-      listEl.appendChild(row);
-    }
-
-    function formatPreviousAgreementsCountSummary(agreementCount) {
-      if (agreementCount === 1) {
-        return '1 previous agreement';
-      }
-
-      return agreementCount + ' previous agreements';
-    }
-
-    function formatPreviousAgreementsDetailsLabel(agreementCount) {
-      return 'View ' + agreementCount + ' previous agreement actions';
-    }
-
-    function updatePreviousAgreementsSummary(parcelId) {
-      // Prototype: previous-agreement actions UI removed from this journey
-      return;
-      var sectionEl = document.getElementById('previous-agreements-section');
-      var summaryEl = document.getElementById('previous-agreements-summary');
-      var summaryTextEl = document.getElementById('previous-agreements-summary-text');
-      var detailsEl = document.getElementById('previous-agreements-details');
-      var detailEl = document.getElementById('previous-agreements-detail');
-      if (!sectionEl || !summaryEl || !detailsEl || !detailEl) {
-        return;
-      }
-
-      detailEl.innerHTML = '';
-      detailsEl.removeAttribute('open');
-      detailsEl.hidden = true;
-      sectionEl.hidden = true;
-      if (summaryTextEl) {
-        summaryTextEl.textContent = 'View previous agreement actions';
-      }
-
-      var sourceHeading = document.getElementById('existing-' + parcelId);
-      var agreementBlocks = [];
-      var sourceEl = sourceHeading ? sourceHeading.nextElementSibling : null;
-      while (sourceEl && sourceEl.tagName === 'DL') {
-        agreementBlocks.push(sourceEl);
-        sourceEl = sourceEl.nextElementSibling;
-      }
-
-      var agreements = agreementBlocks.map(function(sourceDl) {
-        return {
-          scheme: getExistingAgreementFieldValue(sourceDl, 'Scheme'),
-          endDate: getExistingAgreementFieldValue(sourceDl, 'Agreement end date') ||
-            getExistingAgreementFieldValue(sourceDl, 'End date'),
-          availableArea: getExistingAgreementFieldValue(sourceDl, 'Available area'),
-          actionLabels: getExistingAgreementActionLabels(sourceDl)
-        };
-      }).filter(function(agreement) {
-        return agreement.actionLabels.length > 0;
-      });
-
-      if (!agreements.length) {
-        return;
-      }
-
-      summaryEl.textContent = formatPreviousAgreementsCountSummary(agreements.length);
-      if (summaryTextEl) {
-        summaryTextEl.textContent = formatPreviousAgreementsDetailsLabel(agreements.length);
-      }
-      sectionEl.hidden = false;
-
-      agreements.forEach(function(agreement, index) {
-        var list = document.createElement('dl');
-        list.className = 'govuk-summary-list';
-        if (index > 0) {
-          list.className += ' govuk-!-margin-top-6';
-        }
-
-        if (agreement.scheme) {
-          appendSummaryRow(list, 'Scheme', agreement.scheme);
-        }
-        if (agreement.endDate) {
-          appendSummaryRow(list, 'Agreement end date', agreement.endDate);
-        }
-        if (agreement.availableArea) {
-          appendSummaryRow(list, 'Available area', agreement.availableArea);
-        }
-
-        var actionsRow = document.createElement('div');
-        actionsRow.className = 'govuk-summary-list__row';
-
-        var actionsKey = document.createElement('dt');
-        actionsKey.className = 'govuk-summary-list__key';
-        actionsKey.textContent = 'Existing actions';
-
-        var actionsValue = document.createElement('dd');
-        actionsValue.className = 'govuk-summary-list__value';
-
-        var actionsList = document.createElement('ul');
-        actionsList.className = 'govuk-list';
-        agreement.actionLabels.forEach(function(label) {
-          var item = document.createElement('li');
-          item.textContent = label;
-          actionsList.appendChild(item);
-        });
-
-        actionsValue.appendChild(actionsList);
-        actionsRow.appendChild(actionsKey);
-        actionsRow.appendChild(actionsValue);
-        list.appendChild(actionsRow);
-
-        detailEl.appendChild(list);
-      });
-
-      detailsEl.hidden = false;
-    }
-
     function hideParcelSelectionError() {
       var $summary = $('#parcel-selection-error-summary');
-      var formGroup = document.getElementById('map-form-group');
+      var mapFormGroup = document.getElementById('map-form-group');
+      var listFormGroup = document.getElementById('parcel-list-form-group');
       var mapField = document.getElementById('map-field');
       var mapFieldError = document.getElementById('map-field-error');
+      var listFieldError = document.getElementById('parcel-list-field-error');
 
       $summary.prop('hidden', true).attr('aria-hidden', 'true');
 
-      if (formGroup) {
-        formGroup.classList.remove('govuk-form-group--error');
+      if (mapFormGroup) {
+        mapFormGroup.classList.remove('govuk-form-group--error');
+      }
+      if (listFormGroup) {
+        listFormGroup.classList.remove('govuk-form-group--error');
       }
       if (mapFieldError) {
         mapFieldError.hidden = true;
+      }
+      if (listFieldError) {
+        listFieldError.hidden = true;
       }
       if (mapField) {
         mapField.removeAttribute('aria-invalid');
@@ -4521,30 +4869,41 @@
     }
 
     function showParcelSelectionError(message) {
-      var errorMessage = message || 'Select a land parcel on the map before you continue.';
+      var errorMessage = message || 'Select a land parcel before you continue.';
       var $summary = $('#parcel-selection-error-summary');
       var $list = $('#parcel-selection-error-summary-list');
-      var formGroup = document.getElementById('map-form-group');
+      var formGroup = document.getElementById(
+        currentParcelView === 'list' ? 'parcel-list-form-group' : 'map-form-group'
+      );
       var mapField = document.getElementById('map-field');
-      var mapFieldError = document.getElementById('map-field-error');
-      var mapFieldErrorText = document.getElementById('map-field-error-text');
+      var errorTarget = currentParcelView === 'list' ? '#parcel-list-fieldset' : '#map-field';
+      var errorLink = document.getElementById('parcel-selection-error-link');
+      var inlineError = document.getElementById(
+        currentParcelView === 'list' ? 'parcel-list-field-error' : 'map-field-error'
+      );
+      var inlineErrorText = document.getElementById(
+        currentParcelView === 'list' ? 'parcel-list-field-error-text' : 'map-field-error-text'
+      );
 
       $list.html(
-        '<li><a href="#map-field">' + errorMessage + '</a></li>'
+        '<li><a href="' + errorTarget + '" id="parcel-selection-error-link">' + errorMessage + '</a></li>'
       );
       $summary.prop('hidden', false).attr('aria-hidden', 'false');
 
-      if (mapFieldErrorText) {
-        mapFieldErrorText.textContent = errorMessage;
+      if (errorLink) {
+        errorLink.setAttribute('href', errorTarget);
       }
-      if (mapFieldError) {
-        mapFieldError.hidden = false;
+      if (inlineErrorText) {
+        inlineErrorText.textContent = errorMessage;
+      }
+      if (inlineError) {
+        inlineError.hidden = false;
       }
 
       if (formGroup) {
         formGroup.classList.add('govuk-form-group--error');
       }
-      if (mapField) {
+      if (mapField && currentParcelView === 'map') {
         mapField.setAttribute('aria-invalid', 'true');
         mapField.setAttribute('aria-describedby', 'map-field-error select-parcel-text map-keyboard-hint');
       }
@@ -4557,14 +4916,6 @@
       if ($summary.length) {
         $summary[0].focus();
       }
-    }
-
-    function parcelHasAvailableActions(parcelId) {
-      var parcel = parcelData[parcelId];
-      if (!parcel) {
-        return false;
-      }
-      return Array.isArray(parcel.actions) && parcel.actions.length > 0;
     }
 
     function updateContinueForSelectedParcel(parcelId) {
@@ -4611,17 +4962,6 @@
       return true;
     }
 
-    function updateSelectedParcelNoActionsInset(parcelId, parcel) {
-      var inset = document.getElementById('summary-parcel-no-actions');
-      if (!inset) {
-        return;
-      }
-      if (!parcelId || !parcel) {
-        inset.hidden = true;
-        return;
-      }
-      inset.hidden = getParcelAvailableActionsCount(parcelId, parcel) !== 0;
-    }
 
     function updateSelectedParcelSummary(parcelId, parcel, osRefDisplay) {
       var summary = document.getElementById('selected-parcel-summary');
@@ -4668,8 +5008,6 @@
         }
       }
 
-      updateSelectedParcelNoActionsInset(parcelId, parcel);
-
       document.getElementById('selectedParcelId').value = parcelId || '';
       document.getElementById('selectedParcelName').value = reference || '';
       document.getElementById('selectedParcelOsRef').value = reference || '';
@@ -4682,10 +5020,16 @@
       document.getElementById('selectedParcelAvailableArea').value =
         availableForActions != null ? formatHaFourDecimals(availableForActions) : (parcel.availableArea || '');
 
-      updatePreviousAgreementsSummary(parcelId);
       updateContinueForSelectedParcel(parcelId);
 
-      summary.hidden = false;
+      var added = isParcelAlreadyAdded(parcelId);
+      var addedTag = document.getElementById('summary-parcel-added-tag');
+      if (addedTag) {
+        addedTag.hidden = !added;
+      }
+
+      // List view: details live in the radio conditional (Figma). Map view: show summary below.
+      summary.hidden = currentParcelView === 'list';
       hideParcelSelectionError();
 
       var statusEl = document.getElementById('parcel-selection-status');
@@ -4695,11 +5039,13 @@
           statusEl.textContent = 'Selected land parcel: ' + (reference || 'parcel') + '.';
         }, 50);
       }
+
+      syncParcelListSelection(parcelId);
     }
 
     function clearSelectedParcel() {
       if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-        parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
+        parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel));
       }
       currentSelectedParcel = null;
       clearKeyboardParcelHighlight();
@@ -4707,6 +5053,11 @@
       var summary = document.getElementById('selected-parcel-summary');
       if (summary) {
         summary.hidden = true;
+      }
+
+      var addedTag = document.getElementById('summary-parcel-added-tag');
+      if (addedTag) {
+        addedTag.hidden = true;
       }
 
       ['selectedParcelId', 'selectedParcelName', 'selectedParcelOsRef', 'selectedParcelReference', 'selectedParcelTotalArea', 'selectedParcelLandCover', 'selectedParcelAvailableArea'].forEach(function(id) {
@@ -4725,10 +5076,10 @@
         requirementsEl.textContent = '';
       }
 
-      updateSelectedParcelNoActionsInset(null, null);
-
       updateContinueForSelectedParcel(null);
       hideParcelSelectionError();
+
+      syncParcelListSelection(null);
 
       Array.prototype.forEach.call(document.querySelectorAll('.farm-info-panel'), function(panel) {
         panel.style.display = '';
@@ -4796,6 +5147,11 @@
     }
 
     // Function to select a parcel
+    // Close enough to see the parcel's shape, far enough to see its neighbours
+    var PARCEL_VIEW_MAX_ZOOM = 15;
+    var PARCEL_VIEW_MIN_ZOOM = 13;
+    var PARCEL_VIEW_PADDING_PX = 80;
+
     function selectParcel(parcelId, options) {
       var parcel = parcelData[parcelId];
       if (!parcel) return;
@@ -4811,14 +5167,14 @@
 
       // Reset previous selection
       if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-        parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
+        parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel));
       }
 
       // Set new selection
       currentSelectedParcel = parcelId;
       keyboardFocusedParcelId = parcelId;
       if (parcelPolygons[parcelId]) {
-        parcelPolygons[parcelId].setStyle(selectedStyle(parcelPolygons[parcelId].feature));
+        parcelPolygons[parcelId].setStyle(selectedStyle());
       }
 
       // Update UI
@@ -4844,7 +5200,7 @@
       }
 
       // Keep land-selection heading; fill summary panel instead of showing actions
-      document.getElementById('page-heading').textContent = 'Select your land parcels';
+      document.getElementById('page-heading').textContent = 'Select a land parcel';
       document.getElementById('select-parcel-text').style.display = 'block';
       document.getElementById('choose-parcel-text').style.display = 'none';
       document.getElementById('selected-parcel-text').style.display = 'none';
@@ -4946,11 +5302,15 @@
         }, 200);
       }
 
-      // Pan map to parcel - maintain zoom if switching between parcels
+      // Zoom to the parcel on search, first selection, or when it would be hidden in a cluster.
+      // Otherwise pan and keep the zoom, so moving between parcels feels steady.
       if (!options.skipMapMove && parcelPolygons[parcelId]) {
-        if (isFirstSelection) {
-          // First selection, fit bounds
-          map.fitBounds(parcelPolygons[parcelId].getBounds(), {padding: [50, 50]});
+        var isZoomedOutTooFar = map.getZoom() < PARCEL_VIEW_MIN_ZOOM;
+        if (options.zoomToParcel || isFirstSelection || isZoomedOutTooFar) {
+          map.fitBounds(parcelPolygons[parcelId].getBounds(), {
+            padding: PARCEL_VIEW_PADDING_PX,
+            maxZoom: PARCEL_VIEW_MAX_ZOOM
+          });
         } else {
           // Switching parcels, just pan to center maintaining zoom
           map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
@@ -4965,15 +5325,7 @@
     // Function to select parcel from list
     function selectParcelById(parcelId) {
       selectParcel(parcelId);
-      // Only zoom if no parcel is currently selected, otherwise just pan
-      if (parcelPolygons[parcelId]) {
-        if (currentSelectedParcel === null) {
-          map.setView(parcelPolygons[parcelId].getBounds().getCenter(), 14);
-        } else {
-          map.panTo(parcelPolygons[parcelId].getBounds().getCenter());
-        }
-        closeAllParcelPopups();
-      }
+      closeAllParcelPopups();
       // Scroll to map
       document.getElementById('map').scrollIntoView({behavior: 'smooth', block: 'center'});
     }
@@ -5012,7 +5364,7 @@
       }
       if (keyboardFocusedParcelId !== currentSelectedParcel && parcelPolygons[keyboardFocusedParcelId]) {
         parcelPolygons[keyboardFocusedParcelId].setStyle(
-          restingStyle(keyboardFocusedParcelId, parcelPolygons[keyboardFocusedParcelId].feature)
+          restingStyle(keyboardFocusedParcelId)
         );
       }
       keyboardFocusedParcelId = null;
@@ -5029,14 +5381,14 @@
           keyboardFocusedParcelId !== currentSelectedParcel &&
           parcelPolygons[keyboardFocusedParcelId]) {
         parcelPolygons[keyboardFocusedParcelId].setStyle(
-          restingStyle(keyboardFocusedParcelId, parcelPolygons[keyboardFocusedParcelId].feature)
+          restingStyle(keyboardFocusedParcelId)
         );
       }
 
       keyboardFocusedParcelId = parcelId;
 
       if (parcelId !== currentSelectedParcel) {
-        parcelPolygons[parcelId].setStyle(highlightStyle(parcelPolygons[parcelId].feature));
+        parcelPolygons[parcelId].setStyle(highlightStyle());
       }
 
       if (!options.skipPan && typeof map !== 'undefined' && map && typeof map.panTo === 'function') {
@@ -5096,6 +5448,10 @@
       });
 
       mapField.addEventListener('keydown', function(event) {
+        // The search box and map buttons sit inside the map field, so their keys bubble up here
+        if (event.target !== mapField && event.target.closest('input, textarea, select, button, a, [role="listbox"]')) {
+          return;
+        }
         var key = event.key;
         if (key === 'ArrowRight' || key === 'ArrowDown') {
           event.preventDefault();
@@ -5466,12 +5822,7 @@
         
         // Select the parcel after a short delay to ensure map is ready
         setTimeout(function() {
-          selectParcel(selectedParcelId);
-          
-          // Zoom to the parcel
-          if (parcelPolygons[selectedParcelId]) {
-            map.fitBounds(parcelPolygons[selectedParcelId].getBounds(), {padding: [50, 50]});
-          }
+          selectParcel(selectedParcelId, { zoomToParcel: true });
 
           enableReturnFromCheckYourAnswersFlow();
         }, 500);
@@ -5491,10 +5842,7 @@
 
         if (parcelIdToRestore) {
           onMapReady(function() {
-            selectParcel(parcelIdToRestore, { skipMapMove: false, scrollToSummary: false });
-            if (parcelPolygons[parcelIdToRestore]) {
-              map.fitBounds(parcelPolygons[parcelIdToRestore].getBounds(), { padding: [50, 50] });
-            }
+            selectParcel(parcelIdToRestore, { zoomToParcel: true, scrollToSummary: false });
           });
         }
       } catch (draftErr) {
@@ -5647,7 +5995,7 @@
             
             parcelSelection.actions.forEach(function(action) {
               var $actionRow = $('<div class="govuk-summary-list__row"></div>');
-              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.name + ' (' + action.code + ')');
+              var $actionKey = $('<dt class="govuk-summary-list__key"></dt>').text(action.code + ': ' + action.name);
               var $actionValue = $('<dd class="govuk-summary-list__value"></dd>');
               
               var payment = null;
@@ -5734,10 +6082,10 @@
         var $checkbox = $('input[value="' + actionCode + '"]');
         var labelText = $checkbox.siblings('.govuk-checkboxes__label').text().trim();
         
-        // Extract just the action name (before the colon and code)
+        // Labels read "CODE: Action name"
         var parts = labelText.split(':');
         if (parts.length > 1) {
-          return parts[0].trim();
+          return parts.slice(1).join(':').trim();
         }
         return labelText;
       }
@@ -6189,7 +6537,7 @@
         closeAllParcelPopups();
 
         if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-          parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
+          parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel));
         }
         currentSelectedParcel = null;
 
@@ -6207,7 +6555,7 @@
         document.getElementById('action-instruction').style.display = 'none';
         document.getElementById('parcels-actions-summary-section').style.display = 'block';
         // Keep the canonical land-page heading (do not flash a shorter title)
-        document.getElementById('page-heading').textContent = 'Select your land parcels';
+        document.getElementById('page-heading').textContent = 'Select a land parcel';
 
         var parcelInfoContainer = document.getElementById('parcel-info-container');
         if (parcelInfoContainer) {
@@ -6280,11 +6628,6 @@
           focusFarmByKey(farmKey);
         });
         
-        $('#reset-map-view-button').on('click', function(e) {
-          e.preventDefault();
-          resetMapToAllParcelsView();
-        });
-
         // Click handler for "Back to OS map reference farm selection" link
         $('#back-to-farm-selection-link').on('click', function(e) {
           e.preventDefault();
@@ -6341,7 +6684,7 @@
           document.getElementById('parcels-list-section').style.display = 'none';
           
           // Reset page heading
-          document.getElementById('page-heading').textContent = 'Select your land parcels';
+          document.getElementById('page-heading').textContent = 'Select a land parcel';
           document.getElementById('select-parcel-text').style.display = 'block';
           document.getElementById('choose-parcel-text').style.display = 'none';
           document.getElementById('selected-parcel-text').style.display = 'none';
@@ -6351,7 +6694,7 @@
           
           // Reset selected parcel styling
           if (currentSelectedParcel && parcelPolygons[currentSelectedParcel]) {
-            parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel, parcelPolygons[currentSelectedParcel].feature));
+            parcelPolygons[currentSelectedParcel].setStyle(restingStyle(currentSelectedParcel));
           }
           
           // Clear current selection (but keep data in parcelSelections)
@@ -6369,23 +6712,27 @@
             showParcelSelectionError();
             return false;
           }
-          if (!parcelHasAvailableActions(parcelId)) {
-            e.preventDefault();
-            showParcelSelectionError(
-              'There are no actions available for this land parcel. Select another land parcel to continue.'
-            );
-            return false;
-          }
           hideParcelSelectionError();
+          rememberParcelView(currentParcelView);
           sessionStorage.removeItem('editingFromCheckYourAnswers');
         });
 
-        // Error summary link focuses the map field (required control)
+        // Error summary link focuses the selected control (map or list)
         $(document).on('click', '#parcel-selection-error-summary a[href="#map-field"]', function(e) {
           e.preventDefault();
           var mapField = document.getElementById('map-field');
           if (mapField) {
             mapField.focus();
+          }
+        });
+        $(document).on('click', '#parcel-selection-error-summary a[href="#parcel-list-fieldset"]', function(e) {
+          e.preventDefault();
+          var listFieldset = document.getElementById('parcel-list-fieldset');
+          var checked = listFieldset && listFieldset.querySelector('input[type="radio"]:checked');
+          if (checked) {
+            checked.focus();
+          } else if (listFieldset) {
+            listFieldset.focus();
           }
         });
 
