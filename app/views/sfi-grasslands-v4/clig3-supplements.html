@@ -19,6 +19,7 @@
   {% set options = supplementOptions or [] %}
   {% set selectedCode = selectedSupplementCode or '' %}
   {% set selectedQuantity = selectedSupplementQuantity or '' %}
+  {% set appliedAreaText = clig3AreaFormatted or '0.0000 hectares' %}
   {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or false %}
   {% set error = quantityError or null %}
 
@@ -35,10 +36,31 @@
       line-height: 1.25;
     }
 
+    .app-action-full-area-hint {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 0;
+      padding: 0;
+      color: #505a5f;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
     .app-action-guidance-link {
       font-size: 16px;
       line-height: 1.25;
       font-weight: 400;
+    }
+
+    [data-whole-remaining-area] .govuk-label {
+      font-weight: 400;
+    }
+
+    [data-whole-remaining-area] .govuk-hint {
+      color: #505a5f;
+      font-size: 16px;
+      line-height: 1.25;
     }
   </style>
 
@@ -119,36 +141,37 @@
                 </div>
                 <div class="govuk-radios__conditional{% if selectedCode != option.code %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ option.code | lower }}">
                   {% if option.requiresQuantityInput %}
-                    {% set quantityId = 'quantity-' + (option.code | lower) %}
-                    {% set hasQuantityError = error and error.fieldId == quantityId %}
-                    {% set quantityDescribedBy %}{% if option.quantityHint %}{{ quantityId }}-hint {% endif %}{% if hasQuantityError %}{{ quantityId }}-error{% endif %}{% endset %}
-                    <div class="govuk-form-group{% if hasQuantityError %} govuk-form-group--error{% endif %} govuk-!-margin-bottom-0">
-                      <label class="govuk-label" for="{{ quantityId }}">
+                    <div class="govuk-form-group{% if error and error.fieldId == ('quantity-' + (option.code | lower)) %} govuk-form-group--error{% endif %} govuk-!-margin-bottom-0">
+                      <label class="govuk-label" for="quantity-{{ option.code | lower }}">
                         Quantity
                       </label>
-                      {% if option.quantityHint %}
-                        <div id="{{ quantityId }}-hint" class="govuk-hint">
-                          {{ option.quantityHint }}
-                        </div>
-                      {% endif %}
-                      {% if hasQuantityError %}
-                        <p id="{{ quantityId }}-error" class="govuk-error-message">
+                      {% if error and error.fieldId == ('quantity-' + (option.code | lower)) %}
+                        <p id="quantity-{{ option.code | lower }}-error" class="govuk-error-message">
                           <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
                         </p>
                       {% endif %}
                       <div class="govuk-input__wrapper">
                         <input
-                          class="govuk-input govuk-input--width-5{% if hasQuantityError %} govuk-input--error{% endif %}"
-                          id="{{ quantityId }}"
-                          name="{{ quantityId }}"
+                          class="govuk-input govuk-input--width-5{% if error and error.fieldId == ('quantity-' + (option.code | lower)) %} govuk-input--error{% endif %}"
+                          id="quantity-{{ option.code | lower }}"
+                          name="quantity-{{ option.code | lower }}"
                           type="text"
                           inputmode="decimal"
                           spellcheck="false"
                           value="{% if selectedCode == option.code %}{{ selectedQuantity }}{% endif %}"
-                          {% if quantityDescribedBy | trim %}aria-describedby="{{ quantityDescribedBy | trim }}"{% endif %}
+                          {% if error and error.fieldId == ('quantity-' + (option.code | lower)) %}aria-describedby="quantity-{{ option.code | lower }}-error"{% endif %}
                         >
                         <div class="govuk-input__suffix" aria-hidden="true">ha</div>
                       </div>
+                    </div>
+                  {% elif option.appliesFullClig3Area %}
+                    <div class="govuk-form-group govuk-!-margin-bottom-0" data-whole-remaining-area="true">
+                      <p class="govuk-label govuk-!-margin-bottom-1">
+                        Quantity
+                      </p>
+                      <p class="govuk-body govuk-!-margin-bottom-0">
+                        <strong>{{ appliedAreaText }}</strong>
+                      </p>
                     </div>
                   {% endif %}
                 </div>

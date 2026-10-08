@@ -278,6 +278,23 @@
   line-height: 1.25;
 }
 
+.app-action-full-area-hint {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding: 0;
+  max-width: 75%; // roughly govuk-grid-column-three-quarters
+}
+
+#actions-section .govuk-checkboxes__conditional .app-action-full-area-hint {
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding-left: 0;
+  color: #505a5f;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
 .app-action-consent-hint {
   display: block;
   margin-top: 2px;
@@ -573,6 +590,17 @@
 
 .app-aac-parcel-summary__hint:last-child {
   margin-bottom: 0;
+}
+
+/* CLIG3: stacked quantity — label, amount, then hint */
+#actions-section [data-whole-remaining-area] .govuk-label {
+  font-weight: 700;
+}
+
+#actions-section [data-whole-remaining-area] .govuk-hint {
+  color: #505a5f;
+  font-size: 16px;
+  line-height: 1.25;
 }
 
 /* AAC on: single column — no side parcel / previous-agreements panel */
