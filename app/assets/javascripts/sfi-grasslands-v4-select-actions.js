@@ -2159,9 +2159,9 @@ function getQuantityErrorsStore($quantityInput) {
 
 // Quantity errors are still worked out while the user types, but only shown once
 // they have pressed "Save and continue". After that they update live as fields are fixed.
-  // Over-limit errors are the exception: they show once the user stops typing, or after an
-  // AAC update for fields pushed over by another entry (errors.overLimitShown). They hide
-  // again while that field is being edited.
+  // Over-limit and format errors are the exception: they show once the user stops typing
+  // (errors.formatShown / errors.overLimitShown), and over-limit also after an AAC update for
+  // fields pushed over by another entry. They hide again while that field is being edited.
 var quantityErrorsVisible = false;
 
 function setQuantityErrorsVisible(visible) {
@@ -2174,6 +2174,8 @@ function refreshQuantityFieldDisplay($quantityInput) {
 
   if (quantityErrorsVisible) {
     message = errors.format || errors.overLimit || null;
+  } else if (errors.formatShown && errors.format) {
+    message = errors.format;
   } else if (errors.overLimitShown && !errors.format) {
     message = errors.overLimit || null;
   }
@@ -5912,9 +5914,10 @@ $(document).ready(function(){
 
     if (window.SfiGrasslandsV4Aac && window.SfiGrasslandsV4Aac.isEnabled()) {
       getQuantityErrorsStore($input).overLimitShown = false;
+      getQuantityErrorsStore($input).formatShown = false;
       if (hasClearlyInvalidQuantityInput($input.val()) || wholeNumberDecimal) {
-        clearQuantityAacDebounce();
         updateQuantityFormatErrors($input);
+        scheduleAacQuantityLiveUpdate(inputEl);
       } else {
         var aacErrors = getQuantityErrorsStore($input);
         aacErrors.format = null;
@@ -6940,12 +6943,17 @@ $(document).ready(function(){
       $('#conditional-' + actionCode.toLowerCase()).removeClass('govuk-checkboxes__conditional--hidden');
     }
 
-    // Invalid characters (e.g. "d") — show format error only, skip AAC recalculation
+    // Wrong format (e.g. "d" or "23.000" without 4 decimal places) — show the format error
+    // only. The entry takes no land, so "Updating…" only runs to give back a previous amount.
     var errors = getQuantityErrorsStore($input);
     if (errors.format) {
       window.SfiGrasslandsV4Aac.setSelectionExcluded(actionCode, true);
       errors.overLimit = null;
+      errors.formatShown = true;
       refreshQuantityFieldDisplay($input);
+      if (wasTakingLand) {
+        window.SfiGrasslandsV4Aac.runUpdate(actionCode);
+      }
       refreshContinueFromActionSelection();
       return;
     }
