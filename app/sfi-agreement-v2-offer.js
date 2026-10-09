@@ -258,7 +258,25 @@ var EXAMPLE_PARCEL_SELECTIONS = {
   }
 }
 
-function compareByActionName (a, b) {
+// Same grouping as the select actions page: land, boundaries, ponds, buildings
+function unitGroupRank (unit) {
+  if (unit === 'm') {
+    return 1
+  }
+  if (unit === 'pond' || unit === 'ponds') {
+    return 2
+  }
+  if (unit === 'm2' || unit === 'm²') {
+    return 3
+  }
+  return 0
+}
+
+function compareActionRows (a, b) {
+  var groupCompare = unitGroupRank(a.unit) - unitGroupRank(b.unit)
+  if (groupCompare !== 0) {
+    return groupCompare
+  }
   var nameCompare = String(a.name || a.label || '').localeCompare(String(b.name || b.label || ''), 'en-GB', {
     sensitivity: 'base'
   })
@@ -305,6 +323,7 @@ function buildOfferRows (parcelSelections) {
         code: code,
         name: actionName,
         label: code + ': ' + actionName,
+        unit: unit,
         quantityText: formatQuantity(quantity, unit)
       })
 
@@ -345,7 +364,7 @@ function buildOfferRows (parcelSelections) {
     }
   })
 
-  detailRows.sort(compareByActionName)
+  detailRows.sort(compareActionRows)
 
   var actionRows = Object.keys(byCode).map(function (code) {
     var row = byCode[code]
@@ -374,7 +393,7 @@ function buildOfferRows (parcelSelections) {
       threeYearPayment: threeYearPayment,
       threeYearPaymentText: formatMoney(threeYearPayment)
     }
-  }).sort(compareByActionName)
+  }).sort(compareActionRows)
 
   var yearOneTotal = actionRows.reduce(function (sum, row) {
     return sum + row.yearOnePayment
