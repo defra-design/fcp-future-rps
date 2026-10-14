@@ -1,0 +1,4 @@
+{% set eligibilityReturnTo = returnTo or data['eligibilityReturnTo'] %}
+{% if eligibilityReturnTo %}
+  <input type="hidden" name="returnTo" value="{{ eligibilityReturnTo }}">
+{% endif %}

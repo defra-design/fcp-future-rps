@@ -1,0 +1,301 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4b/task-list" %}
+{% extends "layouts/sfi-grasslands-v4b-header.html" %}
+
+{% block pageTitle %}
+  {% if errors.length %}Error: {% endif %}Select land parcels
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4b/_includes/account-bar.html" %}
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/dist/css/index.css">
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/css/index.css">
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/css/index.css">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v4b-select-parcels.css">
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v4b/select-revenue-actions"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if errors.length %}
+      {% set errorList = [] %}
+      {% for error in errors %}
+        {% set errorList = (errorList.push({
+          text: error.text,
+          href: error.href if error.href else "#v4bQuantity-" + error.code
+        }), errorList) %}
+      {% endfor %}
+      {{ govukErrorSummary({ titleText: "There is a problem", errorList: errorList }) }}
+    {% endif %}
+
+    {% set journeySection = "Select land and actions" %}
+    {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
+    <h1 class="govuk-heading-l">Select land parcels</h1>
+
+    <p class="govuk-body">Select a land parcel on the map and enter how much of each action you want to do there. Save your actions, then repeat for each land parcel. When you have finished, select 'Save and continue'.</p>
+
+  </div>
+</div>
+
+<form method="post" action="/sfi-grasslands-v4b/select-parcels" novalidate>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="app-v4b-map">
+        <p id="v4b-map-keyboard-hint" class="govuk-visually-hidden">
+          Use the arrow keys to move between land parcels. Press Enter or Space to select a parcel.
+        </p>
+        <div id="v4b-map-status" class="govuk-visually-hidden" role="status" aria-live="polite"></div>
+        <div
+          id="v4b-map-field"
+          class="app-v4b-map__field"
+          tabindex="0"
+          role="application"
+          aria-label="Select a land parcel on the map"
+          aria-describedby="v4b-map-keyboard-hint"
+        >
+          <div id="v4b-parcel-map" class="app-v4b-map__canvas" tabindex="-1"></div>
+        </div>
+        <ul class="govuk-list govuk-body-s app-v4b-map__key" aria-label="Map key">
+          <li><span class="app-v4b-map__swatch app-v4b-map__swatch--available"></span>Available</li>
+          <li><span class="app-v4b-map__swatch app-v4b-map__swatch--selected"></span>Selected</li>
+          <li><span class="app-v4b-map__swatch app-v4b-map__swatch--added"></span>Actions added</li>
+          <li><span class="app-v4b-map__swatch app-v4b-map__swatch--unavailable"></span>No actions available</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      {% include "sfi-grasslands-v4b/_includes/land-details-farm-summary.html" %}
+      <div class="govuk-summary-card app-v4b-interested">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Selected actions</h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="/sfi-grasslands-v4b/select-revenue-actions">Change<span class="govuk-visually-hidden"> selected actions</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <ul class="govuk-list govuk-body-s app-v4b-interested__list">
+            {% for action in interestedActions %}
+              <li><strong>{{ action.code }}</strong>: {{ action.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      {% if selectedParcel %}
+        <div class="app-v4b-panel" id="selected-parcel" tabindex="-1">
+          <input type="hidden" name="v4bParcelId" value="{{ selectedParcel.parcelId }}">
+
+          <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Available actions for selected land parcel</h2>
+          {% if parcelActions.length %}
+            <p class="govuk-body">Only actions that are compatible with this land cover are shown.</p>
+          {% endif %}
+          <dl class="govuk-summary-list{% if parcelActions.length %} govuk-!-margin-bottom-6{% else %} govuk-!-margin-bottom-4{% endif %} app-v4b-parcel-summary">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Land parcel</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.parcelReference }}</dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels#v4b-parcel-map">Change<span class="govuk-visually-hidden"> land parcel</span></a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Land cover</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.landCoverSummary }}</dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Total area</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.totalAreaShort }}</dd>
+            </div>
+          </dl>
+          {% if parcelActions.length %}
+          <div class="app-v4b-actions">
+
+        {% for action in parcelActions %}
+          {% set fieldId = "v4bQuantity-" + action.code %}
+          <div class="app-v4b-action" id="v4b-action-{{ action.code }}" data-v4b-action="{{ action.code }}">
+            <h3 class="govuk-heading-s app-v4b-action__title">{{ action.code }}: {{ action.name }}</h3>
+            <div class="app-v4b-action__hints" id="{{ fieldId }}-hints">
+              {% if action.consentHint %}
+                <span class="app-v4b-action__consent">{{ action.consentHint }}</span>
+              {% endif %}
+              <span class="app-v4b-action__hint">{{ action.rateShortText }}</span>
+              <span class="app-v4b-action__hint" data-v4b-available>Checking what is available</span>
+            </div>
+
+            <div class="app-v4b-action__messages" id="{{ fieldId }}-messages">
+              <p class="govuk-body-s govuk-!-margin-bottom-2" data-v4b-reason hidden></p>
+              <ul class="govuk-list govuk-list--bullet govuk-body-s" data-v4b-exclusions hidden></ul>
+              {% if action.supplementOf %}
+                <p class="govuk-body-s govuk-!-margin-bottom-2">This is a supplement to {{ action.supplementOf }}. You can add it to some or all of the area you enter for {{ action.supplementOf }}.</p>
+              {% endif %}
+            </div>
+
+            {{ govukInput({
+              id: fieldId,
+              name: fieldId,
+              label: {
+                html: 'Quantity<span class="govuk-visually-hidden"> for ' + action.code + '</span>',
+                classes: "app-v4b-action__quantity-label"
+              },
+              suffix: { text: action.unitLabel.suffix },
+              inputmode: "decimal" if action.unit == "ha" else "numeric",
+              spellcheck: false,
+              classes: "govuk-input--width-5",
+              formGroup: { classes: "govuk-!-margin-bottom-0" },
+              value: quantities[action.code],
+              errorMessage: { text: errorsByCode[action.code] } if errorsByCode[action.code] else undefined,
+              describedBy: fieldId + "-hints " + fieldId + "-messages",
+              attributes: {
+                "data-v4b-quantity": action.code
+              }
+            }) }}
+            <input type="hidden" name="v4bMax-{{ action.code }}" value="" data-v4b-max="{{ action.code }}">
+            <input type="hidden" name="v4bUnavailable-{{ action.code }}" value="" data-v4b-unavailable="{{ action.code }}">
+          </div>
+        {% endfor %}
+          </div>
+          <div class="govuk-button-group app-v4b-panel__buttons">
+            {{ govukButton({
+              text: "Save actions to this land parcel",
+              name: "v4bIntent",
+              value: "save"
+            }) }}
+          </div>
+          {% else %}
+            {{ govukInsetText({
+              html: '<p class="govuk-body">You cannot add any actions for this land parcel. This could be because:</p>
+              <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                <li>no actions are available for this parcel</li>
+                <li>you have existing actions for this parcel in a previous agreement</li>
+              </ul>',
+              classes: "govuk-!-margin-bottom-8"
+            }) }}
+          {% endif %}
+        </div>
+      {% else %}
+        {{ govukInsetText({
+          text: "Select a land parcel to enter quantities for your actions."
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+
+  {% if savedParcelCount %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full app-v4b-saved">
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-4" id="parcels-list" tabindex="-1">Added to application</h2>
+      {% for parcel in parcels %}
+        {% if parcel.savedCount %}
+        <div class="govuk-summary-card app-v4b-saved-card" id="parcel-{{ parcel.parcelId }}">
+          <div class="govuk-summary-card__title-wrapper">
+            <h3 class="govuk-summary-card__title">
+              Land parcel {{ parcel.parcelReference }}
+            </h3>
+            <ul class="govuk-summary-card__actions">
+              <li class="govuk-summary-card__action">
+                <a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ parcel.parcelId }}?returnTo=select-parcels">
+                  Remove parcel<span class="govuk-visually-hidden"> {{ parcel.parcelReference }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="govuk-summary-card__content">
+            <table class="govuk-table">
+              <caption class="govuk-table__caption govuk-visually-hidden">
+                Actions on land parcel {{ parcel.parcelReference }}
+              </caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Action</th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--numeric">Quantity</th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--numeric">Yearly payment</th>
+                  <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Change</span></th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                {% for saved in parcel.savedActions %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ saved.code }}: {{ saved.name }}</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">{{ saved.quantityDisplay }}</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">{{ saved.yearlyPaymentFormatted }}</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                      <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?parcel={{ parcel.parcelId }}#v4b-action-{{ saved.code }}">
+                        Change<span class="govuk-visually-hidden"> {{ saved.code }}: {{ saved.name }}</span>
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                <tr class="govuk-table__row app-v4b-saved-card__subtotal">
+                  <th scope="row" class="govuk-table__cell">Subtotal</th>
+                  <td class="govuk-table__cell"></td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.savedYearlyPaymentFormatted }}</td>
+                  <td class="govuk-table__cell"></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="govuk-body app-v4b-saved-card__change">
+              <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?parcel={{ parcel.parcelId }}#selected-parcel">
+                Change actions on this parcel<span class="govuk-visually-hidden"> {{ parcel.parcelReference }}</span>
+              </a>
+            </p>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-v4b-continue">
+      {{ govukButton({
+        text: "Save and continue",
+        name: "v4bIntent",
+        value: "continue",
+        classes: "govuk-button--secondary" if selectedParcel else ""
+      }) }}
+    </div>
+  </div>
+</form>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/plugin-assets/%40defra%2Finteractive-map/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/umd/index.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4b-parcel-search.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4b-map-reset-button.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
+  <script id="v4b-map-parcels-json" type="application/json">{{ mapParcels | dump | safe }}</script>
+  <script src="/public/javascripts/sfi-grasslands-v4b-select-land-map-clusters.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-map.js"></script>
+
+  {% if parcelClientConfig %}
+    <script src="/public/javascripts/sfi-scheme-2026.js"></script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-mvp-actions.js"></script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-parcel-reference.js"></script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-outlying-parcels.js"></script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-existing-agreements.js"></script>
+    <script id="limited-area-json" type="application/json">{{ limitedAreaConfig | dump | safe }}</script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-limited-area.js"></script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-aac.js"></script>
+    <script id="v4b-parcel-json" type="application/json">{{ parcelClientConfig | dump | safe }}</script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels.js"></script>
+  {% endif %}
+{% endblock %}

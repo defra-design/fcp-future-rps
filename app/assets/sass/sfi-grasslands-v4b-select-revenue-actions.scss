@@ -1,0 +1,60 @@
+// Select actions — app/views/sfi-grasslands-v4b/select-revenue-actions.html
+
+.app-v4b-revenue-actions .govuk-checkboxes__item {
+  margin-bottom: 10px;
+}
+
+// Default label padding leaves a gap under the payment rate
+.app-v4b-revenue-actions .govuk-checkboxes__label {
+  padding-bottom: 0;
+}
+
+// Payment rate sits under the action name, inside the label
+.app-v4b-action-hint {
+  display: block;
+  margin-top: 0;
+  color: #505a5f;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+// Guidance link sits under the rate, outside the label so it does not tick the box
+.app-v4b-revenue-actions .govuk-checkboxes__hint {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 2px;
+  padding-bottom: 0;
+}
+
+.app-v4b-guidance-link {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+// Supplements revealed under CLIG3
+.app-v4b-revenue-actions .govuk-checkboxes__conditional {
+  margin-bottom: 10px;
+  margin-top: 5px;
+  padding-bottom: 0;
+  padding-top: 10px;
+}
+
+.app-v4b-revenue-actions .govuk-checkboxes__conditional .govuk-form-group {
+  margin-bottom: 0;
+}
+
+.app-v4b-clig3-supplements .govuk-fieldset__legend {
+  margin-bottom: 5px;
+}
+
+.app-v4b-clig3-supplements .govuk-fieldset > .govuk-hint {
+  margin-bottom: 10px;
+}
+
+// application.scss sets padding-left: 0 on hints inside a conditional reveal,
+// which pulls the guidance link back under the checkbox
+.app-v4b-clig3-supplements .govuk-checkboxes__hint {
+  padding-left: 59px !important;
+}

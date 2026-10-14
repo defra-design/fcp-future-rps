@@ -1,0 +1,40 @@
+// Header tools for layouts/sfi-grasslands-v4b-header.html
+
+.app-v4b-header__bar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.app-v4b-refresh {
+  align-items: center;
+  display: inline-flex;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 6px;
+  line-height: 1;
+  margin-left: 15px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.govuk-header .app-v4b-refresh:link,
+.govuk-header .app-v4b-refresh:visited,
+.govuk-header .app-v4b-refresh:hover {
+  color: #ffffff;
+}
+
+.govuk-header .app-v4b-refresh:hover {
+  text-decoration: underline;
+}
+
+.govuk-header .app-v4b-refresh:focus {
+  color: #0b0c0c;
+}
+
+.app-v4b-refresh__icon {
+  fill: currentColor;
+  height: 18px;
+  width: 18px;
+}

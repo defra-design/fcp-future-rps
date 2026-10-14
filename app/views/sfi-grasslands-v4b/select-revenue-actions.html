@@ -1,0 +1,110 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4b/task-list" %}
+{% extends "layouts/sfi-grasslands-v4b-header.html" %}
+
+{% block pageTitle %}
+  {% if errors %}Error: {% endif %}Select actions and capital items
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4b/_includes/account-bar.html" %}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v4b-select-revenue-actions.css">
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v4b/task-list"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if errors %}
+      {% set errorList = [] %}
+      {% if errors.actions %}
+        {% set errorList = (errorList.push({ text: errors.actions, href: "#v4bRevenueActions" }), errorList) %}
+      {% endif %}
+      {{ govukErrorSummary({ titleText: "There is a problem", errorList: errorList }) }}
+    {% endif %}
+
+    <form method="post" action="/sfi-grasslands-v4b/select-revenue-actions" novalidate>
+      {% set journeySection = "Select land and actions" %}
+      {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Select actions and capital items</h1>
+      <p class="govuk-body">Select all that apply. You will choose which land parcels to use them on next.</p>
+
+      {% macro actionLabel(action) -%}
+        {{ action.code }}: {{ action.name }}<span class="app-v4b-action-hint">{{ action.rateShortText }}</span>
+      {%- endmacro %}
+      {% macro actionGuidance(action) -%}
+        <a class="govuk-link app-v4b-guidance-link" href="{{ action.guidanceUrl }}" target="_blank" rel="noopener noreferrer">Read guidance on {{ action.code }} (opens in new tab)</a>
+      {%- endmacro %}
+
+      {% set supplementItems = [] %}
+      {% for supplement in supplements %}
+        {% set supplementItems = (supplementItems.push({
+          value: supplement.code,
+          html: actionLabel(supplement),
+          hint: { html: actionGuidance(supplement) },
+          checked: supplement.code in selectedCodes
+        }), supplementItems) %}
+      {% endfor %}
+
+      {% set clig3SupplementsHtml %}
+        {{ govukCheckboxes({
+          idPrefix: "v4bClig3Supplements",
+          name: "v4bClig3Supplements",
+          formGroup: { classes: "govuk-!-margin-bottom-0 app-v4b-clig3-supplements" },
+          fieldset: {
+            legend: {
+              text: "Supplements",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            text: "These are supplements to CLIG3. They are paid on top of CLIG3, on the same land."
+          },
+          items: supplementItems
+        }) }}
+      {% endset %}
+
+      {% set actionItems = [] %}
+      {% for action in actions %}
+        {% set actionItems = (actionItems.push({
+          value: action.code,
+          html: actionLabel(action),
+          hint: { html: actionGuidance(action) },
+          checked: action.code in selectedCodes,
+          conditional: { html: clig3SupplementsHtml } if action.code == "CLIG3"
+        }), actionItems) %}
+      {% endfor %}
+
+      {{ govukCheckboxes({
+        idPrefix: "v4bRevenueActions",
+        name: "v4bRevenueActions",
+        classes: "app-v4b-revenue-actions",
+        fieldset: {
+          legend: {
+            text: "Select actions and capital items",
+            classes: "govuk-visually-hidden"
+          }
+        },
+        errorMessage: { text: errors.actions } if errors and errors.actions else undefined,
+        items: actionItems
+      }) }}
+
+      {% if hasSavedParcels %}
+        {{ govukInsetText({
+          text: "If you deselect an action you have already added to a land parcel, it stays on that parcel. You can remove it from the parcel later."
+        }) }}
+      {% endif %}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}

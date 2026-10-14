@@ -1,0 +1,268 @@
+// Select land parcels (actions first) — app/views/sfi-grasslands-v4b/select-parcels.html
+
+$app-v4b-border: #b1b4b6;
+$app-v4b-light-grey: #f3f2f1;
+
+.app-land-details-farm-summary {
+  margin-bottom: 20px;
+
+  .govuk-table {
+    margin-bottom: 0;
+  }
+
+  .govuk-table__caption {
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .govuk-table__header,
+  .govuk-table__cell {
+    border-bottom: 1px solid $app-v4b-border;
+    font-weight: 400;
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+
+  .govuk-table__header {
+    padding-right: 15px;
+  }
+
+  .govuk-table__body .govuk-table__row:last-child .govuk-table__header,
+  .govuk-table__body .govuk-table__row:last-child .govuk-table__cell {
+    border-bottom: 0;
+    box-shadow: none;
+  }
+}
+
+.app-v4b-interested__list {
+  margin-bottom: 0;
+
+  li {
+    margin-bottom: 8px;
+  }
+
+  li:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.app-v4b-map {
+  margin-bottom: 30px;
+}
+
+.app-v4b-map__canvas {
+  border: 1px solid $app-v4b-border;
+  min-height: 360px;
+}
+
+.app-v4b-map__field:focus {
+  outline: 3px solid #fd0;
+  outline-offset: 0;
+}
+
+.app-v4b-map__field:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.app-v4b-map__key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 20px;
+  margin-top: 10px;
+
+  li {
+    align-items: center;
+    display: flex;
+    margin-bottom: 0;
+  }
+}
+
+.app-v4b-map__swatch {
+  border: 2px solid #8a5a44;
+  display: inline-block;
+  height: 16px;
+  margin-right: 8px;
+  width: 24px;
+}
+
+.app-v4b-map__swatch--available {
+  background-color: #f1deb8;
+}
+
+.app-v4b-map__swatch--selected {
+  background-color: #fd0;
+  border-color: #0b0c0c;
+}
+
+.app-v4b-map__swatch--added {
+  background-color: #cfe4dc;
+  border-color: #083d29;
+}
+
+.app-v4b-map__swatch--unavailable {
+  background-color: #e5e6e7;
+  border-color: #505a5f;
+}
+
+.app-v4b-parcel-picker li {
+  margin-bottom: 10px;
+}
+
+.app-v4b-parcel-picker__meta {
+  color: #505a5f;
+  display: block;
+}
+
+.app-v4b-saved {
+  margin-top: 20px;
+}
+
+.app-v4b-saved-card {
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .govuk-summary-card__title,
+  .govuk-summary-card__action,
+  .govuk-table__header,
+  .govuk-table__cell,
+  .app-v4b-saved-card__change {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  .govuk-table {
+    margin-bottom: 0;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .govuk-table th:nth-child(2),
+  .govuk-table td:nth-child(2) {
+    width: 8.5rem;
+  }
+
+  .govuk-table th:nth-child(3),
+  .govuk-table td:nth-child(3) {
+    width: 9.5rem;
+  }
+
+  .govuk-table th:nth-child(4),
+  .govuk-table td:nth-child(4) {
+    width: 5.5rem;
+  }
+}
+
+.app-v4b-saved-card__subtotal .govuk-table__cell {
+  border-bottom: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: 400;
+}
+
+.app-v4b-saved-card__subtotal th.govuk-table__cell {
+  font-weight: 700;
+}
+
+.app-v4b-saved-card__change {
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
+.app-v4b-continue {
+  margin-top: 30px;
+}
+
+.app-v4b-panel {
+  margin-top: 20px;
+  max-width: 960px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.app-v4b-panel__summary {
+  background-color: $app-v4b-light-grey;
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.app-v4b-parcel-summary {
+  max-width: 640px;
+
+  .govuk-summary-list__row:last-child {
+    border-bottom: 0;
+  }
+}
+
+.app-v4b-panel__buttons {
+  margin-top: 30px;
+}
+
+.app-v4b-actions {
+  border-top: 1px solid $app-v4b-border;
+  max-width: 640px;
+}
+
+.app-v4b-action {
+  border-bottom: 1px solid $app-v4b-border;
+  padding: 20px 0 25px;
+
+  &:focus-within {
+    scroll-margin-top: 20px;
+  }
+}
+
+.app-v4b-action--unavailable {
+  color: #505a5f;
+
+  .govuk-input {
+    background-color: $app-v4b-light-grey;
+  }
+}
+
+.app-v4b-action__facts {
+  margin-bottom: 10px;
+
+  .govuk-summary-list__key,
+  .govuk-summary-list__value {
+    padding-bottom: 4px;
+    padding-top: 4px;
+  }
+}
+
+.app-v4b-action__title {
+  font-size: 1.1875rem;
+  font-weight: 400;
+  line-height: 1.3157894737;
+  margin-bottom: 0;
+}
+
+.app-v4b-action__hints {
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+
+.app-v4b-action__consent,
+.app-v4b-action__hint {
+  display: block;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+.app-v4b-action__consent {
+  color: #0b0c0c;
+}
+
+.app-v4b-action__hint {
+  color: #505a5f;
+}
+
+.app-v4b-action__messages:empty {
+  display: none;
+}

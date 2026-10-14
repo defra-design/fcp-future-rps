@@ -1,0 +1,24 @@
+{# Expects `summary` from summariseBasket (yearly payment, duration, estimated total). #}
+<div class="govuk-summary-card app-confirm-parcel-card govuk-!-margin-bottom-9">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">
+      Payment summary
+    </h2>
+  </div>
+  <div class="govuk-summary-card__content">
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Yearly payment</dt>
+        <dd class="govuk-summary-list__value">{{ summary.totalYearlyPaymentFormatted if summary and summary.totalYearlyPaymentFormatted else '£0.00' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Agreement duration</dt>
+        <dd class="govuk-summary-list__value">{{ summary.agreementDurationFormatted if summary and summary.agreementDurationFormatted else '3 years' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Estimated payment over {{ summary.agreementDurationYears if summary and summary.agreementDurationYears else 3 }} years</dt>
+        <dd class="govuk-summary-list__value">{{ summary.estimatedTotalPaymentFormatted if summary and summary.estimatedTotalPaymentFormatted else '£0.00' }}</dd>
+      </div>
+    </dl>
+  </div>
+</div>

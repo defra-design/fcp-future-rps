@@ -4,6 +4,11 @@
 
 {% set pageName="Home" %}
 
+{% block stylesheets %}
+  {{ super() }}
+  <link rel="stylesheet" href="/public/stylesheets/index.css">
+{% endblock %}
+
 {% block beforeContent %}{% endblock %}
 
 {% block content %}
@@ -22,11 +27,10 @@
 
   <div class="govuk-grid-column-full">
 
-    <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-table__caption--l">
-        For developers
-      </caption>
+    <h2 class="govuk-heading-l">Private Beta</h2>
 
+    <h3 class="govuk-heading-m" id="private-beta-for-developers">For developers</h3>
+    <table class="govuk-table" aria-labelledby="private-beta-for-developers">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header" style="width:150px">Version</th>
@@ -53,11 +57,8 @@
       </tbody>
     </table>
 
-    <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-table__caption--l">
-        Private Beta
-      </caption>
-
+    <h3 class="govuk-heading-m govuk-!-margin-top-6" id="private-beta-agreement">Agreement</h3>
+    <table class="govuk-table" aria-labelledby="private-beta-agreement">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header" style="width:150px">Version</th>
@@ -99,10 +100,40 @@
             <p class="govuk-body">Version 1</p>
           </td>
         </tr>
+      </tbody>
+    </table>
+
+    <h3 class="govuk-heading-m govuk-!-margin-top-6" id="private-beta-application">Application</h3>
+    <table class="govuk-table" aria-labelledby="private-beta-application">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header" style="width:150px">Version</th>
+          <th scope="col" class="govuk-table__header" style="width:200px">Status</th>
+          <th scope="col" class="govuk-table__header">Description</th>
+        </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">
-            <a href="sfi-grasslands-v4/index">SFI Grasslands</a><br>
-            <p class="govuk-body-s">Version 4</p>
+            <a href="sfi-grasslands-v4b/index">SFI Grasslands</a><br>
+            <p class="govuk-body-s">Version 4b</p>
+          </th>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-1">
+              In progress
+            </strong><br>
+            Started 12/10/2026<br>
+            Tested w/c tbc
+          </td>
+          <td class="govuk-table__cell">
+            <p class="govuk-body">New journey exploration, branched from Version 4a.</p>
+          </td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">
+            <a href="sfi-grasslands-v4a/index">SFI Grasslands</a><br>
+            <p class="govuk-body-s">Version 4a</p>
           </th>
           <td class="govuk-table__cell">
             <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-1">
@@ -112,7 +143,7 @@
             Tested w/c tbc
           </td>
           <td class="govuk-table__cell">
-            <p class="govuk-body">Iteration 4 — boundary length AAC (one-sided / both-sided parcels) and related select-actions updates.</p>
+            <p class="govuk-body">Iteration 4 - final version for dev (as is flow) - includes small amends from UR. Jounrey is based on the Parcel > Action > Basket flow </p>
           </td>
         </tr>
         <tr class="govuk-table__row">
@@ -162,6 +193,9 @@
         </tr>
       </tbody>
     </table>
+
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible app-index-section-break">
+
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--l">
         Previous prototype versions
@@ -317,7 +351,7 @@
       </tbody>
     </table>
 
-    <hr class="govuk-section-break govuk-section-break--xl">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible app-index-section-break">
 
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--l">
@@ -453,7 +487,7 @@
       </tbody>
     </table>
 
-    <hr class="govuk-section-break govuk-section-break--xl">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible app-index-section-break">
 
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--l">

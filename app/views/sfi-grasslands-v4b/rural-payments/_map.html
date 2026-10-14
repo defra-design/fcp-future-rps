@@ -1,0 +1,11 @@
+{# Map used on Rural Payments land summary and parcel details. Set showHedgesControl before including. #}
+<div class="app-rps-map" data-rps-map>
+  <div class="app-rps-map__controls" role="group" aria-label="Map options">
+    {% if showHedgesControl %}
+      <button type="button" class="app-rps-map__control app-rps-map__control--toggle" aria-pressed="false" data-rps-hedges>Hedges</button>
+    {% endif %}
+    <button type="button" class="app-rps-map__control" aria-pressed="false" data-rps-basemap="map">Map</button>
+    <button type="button" class="app-rps-map__control" aria-pressed="true" data-rps-basemap="photo">Photo</button>
+  </div>
+  <div id="rural-payments-map" class="app-rps-map__canvas" role="region" aria-label="Map of land parcels"></div>
+</div>
