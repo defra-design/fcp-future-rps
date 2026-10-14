@@ -22,12 +22,14 @@ var ACTIONS = [
   { code: 'CHRW2', name: 'Manage hedgerows', unit: 'm', rate: 13, rateText: '£13 per 100 metres (one side) each year' },
   { code: 'CIGL1', name: 'Take grassland field corners or blocks out of management', unit: 'ha', rate: 333, rateText: '£333 per hectare each year' },
   { code: 'CIGL2', name: 'Winter bird food on improved grassland', unit: 'ha', rate: 515, rateText: '£515 per hectare each year' },
-  { code: 'CLIG3', name: 'Manage grassland with very low nutrient inputs', unit: 'ha', rate: 151, rateText: '£151 per hectare each year' },
+  // CLIG3 always takes all the eligible land left after the other actions on the parcel
+  { code: 'CLIG3', name: 'Manage grassland with very low nutrient inputs', unit: 'ha', rate: 151, rateText: '£151 per hectare each year', wholeRemainingArea: true },
   { code: 'CNUM2', name: 'Legumes on improved grassland', unit: 'ha', rate: 102, rateText: '£102 per hectare each year' },
   { code: 'CSAM3', name: 'Herbal leys', unit: 'ha', rate: 224, rateText: '£224 per hectare each year' },
   { code: 'GRH7', name: 'Haymaking supplement', unit: 'ha', rate: 157, rateText: '£157 per hectare each year', supplementOf: 'CLIG3' },
   { code: 'GRH8', name: 'Haymaking supplement (late cut)', unit: 'ha', rate: 187, rateText: '£187 per hectare each year', supplementOf: 'CLIG3' },
-  { code: 'GRH10', name: 'Lenient grazing supplement', unit: 'ha', rate: 28, rateText: '£28 per hectare each year', supplementOf: 'CLIG3' },
+  // GRH10 always covers all the CLIG3 area on the parcel. GRH7 and GRH8 can cover part of it.
+  { code: 'GRH10', name: 'Lenient grazing supplement', unit: 'ha', rate: 28, rateText: '£28 per hectare each year', supplementOf: 'CLIG3', fullBaseArea: true },
   { code: 'GRH12', name: 'Manage rough grassland for upland breeding waders', unit: 'ha', rate: 203, rateText: '£203 per hectare each year' },
   { code: 'HEF1', name: 'Maintain weatherproof traditional farm or forestry buildings', unit: 'm²', rate: 5, rateText: '£5 per square metre each year' },
   { code: 'SCR2', name: 'Manage scrub and open habitat mosaics', unit: 'ha', rate: 350, rateText: '£350 per hectare each year' },
@@ -270,7 +272,12 @@ function getSavedQuantities (req, parcelId) {
   var saved = findSavedParcel(req, parcelId)
   var quantities = {}
   ;(saved && saved.actions ? saved.actions : []).forEach(function (action) {
-    quantities[String(action.code).toUpperCase()] = String(action.quantity)
+    var code = String(action.code).toUpperCase()
+    var catalogue = actionsByCode[code]
+    // Hectares go back into the box with 4 decimal places, or the format check rejects them
+    quantities[code] = catalogue && catalogue.unit === 'ha' && Number.isFinite(Number(action.quantity))
+      ? Number(action.quantity).toFixed(4)
+      : String(action.quantity)
   })
   return quantities
 }
@@ -344,22 +351,61 @@ function parseQuantity (raw, action) {
  * maxByCode comes from the AAC calculation in the browser; when it is
  * missing (no JavaScript) only the format of each figure is checked.
  */
+/**
+ * Codes ticked on the parcel page. Supplements only count while CLIG3 is ticked,
+ * because they sit inside the CLIG3 reveal.
+ */
+function getSelectedCodesFromBody (body) {
+  var raw = body.v4bSelected || []
+  var codes = (Array.isArray(raw) ? raw : [raw])
+    .map(function (code) { return String(code || '').toUpperCase() })
+    .filter(function (code) { return Boolean(actionsByCode[code]) })
+  var hasClig3 = codes.indexOf('CLIG3') !== -1
+  return codes.filter(function (code) {
+    return hasClig3 || !actionsByCode[code].supplementOf
+  })
+}
+
 function validateParcelQuantities (req, parcelId, body) {
   var errors = []
   var actions = []
   var values = {}
+  var selectedCodes = getSelectedCodesFromBody(body)
 
   getActionsForParcel(req, parcelId).forEach(function (action) {
     var fieldName = 'v4bQuantity-' + action.code
-    var raw = body[fieldName]
-    values[action.code] = raw == null ? '' : String(raw)
+    // A full-area supplement (GRH10) always takes the quantity entered for its base action
+    var raw = action.fullBaseArea ? body['v4bQuantity-' + action.supplementOf] : body[fieldName]
+    var selected = selectedCodes.indexOf(action.code) !== -1
+    // An unticked action keeps no quantity, so it gives its land back
+    values[action.code] = selected && raw != null ? String(raw) : ''
 
-    if (body['v4bUnavailable-' + action.code] === 'true') {
+    if (!selected || body['v4bUnavailable-' + action.code] === 'true') {
       return
     }
 
     var parsed = parseQuantity(raw, action)
+    if (action.fullBaseArea && (parsed.empty || parsed.error)) {
+      // The base action's own error covers a bad figure; an empty one needs saying here
+      if (parsed.empty) {
+        errors.push({
+          code: action.code,
+          href: '#v4bSelected-' + action.code,
+          text: 'Enter a quantity for ' + action.supplementOf + ' to add ' + action.code
+        })
+      }
+      return
+    }
+    if (parsed.empty && action.wholeRemainingArea) {
+      errors.push({
+        code: action.code,
+        href: '#v4bSelected-' + action.code,
+        text: 'There is no eligible land left for ' + action.code + ' on this land parcel. Deselect it, or reduce your other actions'
+      })
+      return
+    }
     if (parsed.empty) {
+      errors.push({ code: action.code, text: 'Enter a quantity for ' + action.code + ', or deselect it' })
       return
     }
     if (parsed.error) {
@@ -367,7 +413,7 @@ function validateParcelQuantities (req, parcelId, body) {
       return
     }
 
-    var maxRaw = body['v4bMax-' + action.code]
+    var maxRaw = action.fullBaseArea ? null : body['v4bMax-' + action.code]
     var max = maxRaw === '' || maxRaw == null ? null : Number(maxRaw)
     if (max != null && Number.isFinite(max) && parsed.value > max + 0.00005) {
       errors.push({
@@ -402,7 +448,7 @@ function validateParcelQuantities (req, parcelId, body) {
     }
   })
 
-  return { errors: errors, actions: actions, values: values }
+  return { errors: errors, actions: actions, values: values, selectedCodes: selectedCodes }
 }
 
 function saveParcelActions (req, parcelId, actions) {
@@ -456,7 +502,55 @@ function getLimitedAreaConfig (req, farmTotalHa, excludeParcelId) {
   }
 }
 
+/**
+ * Where each action is already used in the application:
+ * { CLIG3: [{ parcelId, parcelReference }], ... }
+ */
+function getActionUsage (req) {
+  var usage = {}
+  landActions.getApplicationParcels(req).forEach(function (parcel) {
+    ;(parcel.actions || []).forEach(function (action) {
+      var code = String(action.code || '').toUpperCase()
+      if (!actionsByCode[code]) {
+        return
+      }
+      usage[code] = usage[code] || []
+      usage[code].push({
+        parcelId: parcel.parcelId,
+        parcelReference: landActions.getParcelDisplayReference(parcel)
+      })
+    })
+  })
+  Object.keys(usage).forEach(function (code) {
+    usage[code].sort(function (a, b) {
+      return String(a.parcelReference).localeCompare(String(b.parcelReference))
+    })
+  })
+  return usage
+}
+
+// Take these actions off every parcel in the application. A parcel left with nothing is removed.
+function removeActionsFromApplication (req, codes) {
+  var removing = codes.map(function (code) { return String(code).toUpperCase() })
+  landActions.getApplicationParcels(req).slice().forEach(function (parcel) {
+    var remaining = (parcel.actions || []).filter(function (action) {
+      return removing.indexOf(String(action.code || '').toUpperCase()) === -1
+    })
+    if (remaining.length === (parcel.actions || []).length) {
+      return
+    }
+    if (!remaining.length) {
+      landActions.removeParcelFromBasket(req, parcel.parcelId)
+    } else {
+      landActions.upsertApplicationParcel(req, Object.assign({}, parcel, { actions: remaining }))
+    }
+  })
+  landActions.syncParcelSelectionsData(req)
+}
+
 module.exports = {
+  getActionUsage: getActionUsage,
+  removeActionsFromApplication: removeActionsFromApplication,
   getActionCatalog: getActionCatalog,
   getAction: getAction,
   getInterestedCodes: getInterestedCodes,

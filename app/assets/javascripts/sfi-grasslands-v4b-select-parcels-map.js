@@ -20,6 +20,15 @@
   // Home farm — outlying parcels are reached from the list
   var FARM_CENTER = { lng: -0.7448892, lat: 51.9497679 }
   var FARM_ZOOM = 13
+  // Zoom rules match v4a (sfi-grasslands-v4a/select-land.html):
+  // the all-parcels view never goes closer than the farm overview,
+  var ALL_FARMS_MAP_ZOOM = 13.9865053
+  // a selected parcel is shown no closer than 15, with room round it,
+  var PARCEL_VIEW_MAX_ZOOM = 15
+  var PARCEL_VIEW_PADDING_PX = 80
+  // and below 13 parcels sit in clusters, so selecting one zooms in to it
+  var PARCEL_VIEW_MIN_ZOOM = 13
+  var ZOOM_TO_PARCEL_KEY = 'v4bZoomToParcel'
   var COLOURS = {
     availableFill: '#F1DEB8',
     availableBorder: '#8A5A44',
@@ -76,8 +85,13 @@
     return [[Math.min.apply(null, lngs), Math.min.apply(null, lats)], [Math.max.apply(null, lngs), Math.max.apply(null, lats)]]
   }
 
+  // No #selected-parcel: the browser would jump. Remember where the map was, and
+  // sfi-grasslands-v4b-select-parcels-layout.js scrolls smoothly to the parcel's actions.
   function openParcel (parcelId) {
-    window.location.href = PAGE_URL + '?parcel=' + encodeURIComponent(parcelId) + '#selected-parcel'
+    try {
+      window.sessionStorage.setItem('v4bScrollToParcel', String(window.scrollY || 0))
+    } catch (error) {}
+    window.location.href = PAGE_URL + '?parcel=' + encodeURIComponent(parcelId)
   }
 
   function addParcelLayers (map) {
@@ -354,7 +368,7 @@
   function establishDefaultView (map) {
     var bounds = allParcelBounds()
     if (bounds && typeof map.cameraForBounds === 'function') {
-      var camera = map.cameraForBounds(bounds, { padding: ALL_PADDING, maxZoom: 14 })
+      var camera = map.cameraForBounds(bounds, { padding: ALL_PADDING, maxZoom: ALL_FARMS_MAP_ZOOM })
       if (camera && camera.center && Number.isFinite(camera.zoom)) {
         var center = Array.isArray(camera.center)
           ? { lng: camera.center[0], lat: camera.center[1] }
@@ -427,9 +441,43 @@
 
   interactiveMap.on('search:match', function (event) {
     if (event && event.type === 'parcel' && event.parcelId) {
+      // As in v4a, a parcel found by search is always zoomed to
+      try {
+        window.sessionStorage.setItem(ZOOM_TO_PARCEL_KEY, '1')
+      } catch (error) {}
       openParcel(event.parcelId)
     }
   })
+
+  function takeZoomToParcelFlag () {
+    try {
+      var flag = window.sessionStorage.getItem(ZOOM_TO_PARCEL_KEY) === '1'
+      window.sessionStorage.removeItem(ZOOM_TO_PARCEL_KEY)
+      return flag
+    } catch (error) {
+      return false
+    }
+  }
+
+  // The page reloads for each parcel, so start from where the map was left and then move,
+  // as v4a does without a reload:
+  // - zoom to the parcel on the first selection, after a search, or when zoomed out below 13
+  // - otherwise pan to it and keep the zoom, so moving between parcels feels steady
+  function showSelectedParcel (map, saved) {
+    var bounds = getBounds(selected.coords)
+    var center = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2]
+    var forceZoom = takeZoomToParcelFlag()
+    if (!saved) {
+      map.fitBounds(bounds, { padding: PARCEL_VIEW_PADDING_PX, maxZoom: PARCEL_VIEW_MAX_ZOOM, duration: 0 })
+      return
+    }
+    map.jumpTo({ center: [saved.lng, saved.lat], zoom: saved.zoom })
+    if (forceZoom || saved.zoom < PARCEL_VIEW_MIN_ZOOM) {
+      map.fitBounds(bounds, { padding: PARCEL_VIEW_PADDING_PX, maxZoom: PARCEL_VIEW_MAX_ZOOM })
+    } else {
+      map.easeTo({ center: center })
+    }
+  }
 
   interactiveMap.on('map:ready', function (event) {
     var map = event && event.map
@@ -448,14 +496,16 @@
     }
 
     establishDefaultView(map)
+    var saved = readSavedView()
     if (selected && selected.coords && selected.coords.length) {
-      map.fitBounds(getBounds(selected.coords), { padding: 80, maxZoom: 16, duration: 0 })
+      showSelectedParcel(map, saved)
     } else {
-      var saved = readSavedView()
-      if (saved) {
-        map.jumpTo({ center: [saved.lng, saved.lat], zoom: saved.zoom })
-      } else if (defaultView) {
-        map.jumpTo({ center: [defaultView.lng, defaultView.lat], zoom: defaultView.zoom })
+      // As in v4a: once land has been added, come back to where the user was working.
+      // Before that, show every parcel.
+      var hasAddedLand = parcels.some(function (parcel) { return parcel.added })
+      var start = (hasAddedLand && saved) || defaultView
+      if (start) {
+        map.jumpTo({ center: [start.lng, start.lat], zoom: start.zoom })
       }
     }
 

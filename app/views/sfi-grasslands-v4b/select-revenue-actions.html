@@ -32,10 +32,12 @@
       {% set journeySection = "Select land and actions" %}
       {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">Select actions and capital items</h1>
+      <p class="govuk-body">Each action lasts for 3 years.</p>
       <p class="govuk-body">Select all that apply. You will choose which land parcels to use them on next.</p>
 
-      {% macro actionLabel(action) -%}
+      {% macro actionLabel(action, used) -%}
         {{ action.code }}: {{ action.name }}<span class="app-v4b-action-hint">{{ action.rateShortText }}</span>
+        {%- if used and used.length %}<span class="app-v4b-action-hint app-v4b-action-hint--used">Added to {{ used.length }} land parcel{% if used.length != 1 %}s{% endif %}</span>{% endif %}
       {%- endmacro %}
       {% macro actionGuidance(action) -%}
         <a class="govuk-link app-v4b-guidance-link" href="{{ action.guidanceUrl }}" target="_blank" rel="noopener noreferrer">Read guidance on {{ action.code }} (opens in new tab)</a>
@@ -45,7 +47,7 @@
       {% for supplement in supplements %}
         {% set supplementItems = (supplementItems.push({
           value: supplement.code,
-          html: actionLabel(supplement),
+          html: actionLabel(supplement, usageByCode[supplement.code]),
           hint: { html: actionGuidance(supplement) },
           checked: supplement.code in selectedCodes
         }), supplementItems) %}
@@ -58,12 +60,13 @@
           formGroup: { classes: "govuk-!-margin-bottom-0 app-v4b-clig3-supplements" },
           fieldset: {
             legend: {
-              text: "Supplements",
+              text: "Add a supplement (optional)",
               classes: "govuk-fieldset__legend--s"
             }
           },
           hint: {
-            text: "These are supplements to CLIG3. They are paid on top of CLIG3, on the same land."
+            classes: "govuk-!-font-size-16",
+            text: "Paid on top of CLIG3. You can use one supplement per land parcel."
           },
           items: supplementItems
         }) }}
@@ -73,7 +76,7 @@
       {% for action in actions %}
         {% set actionItems = (actionItems.push({
           value: action.code,
-          html: actionLabel(action),
+          html: actionLabel(action, usageByCode[action.code]),
           hint: { html: actionGuidance(action) },
           checked: action.code in selectedCodes,
           conditional: { html: clig3SupplementsHtml } if action.code == "CLIG3"
@@ -93,12 +96,6 @@
         errorMessage: { text: errors.actions } if errors and errors.actions else undefined,
         items: actionItems
       }) }}
-
-      {% if hasSavedParcels %}
-        {{ govukInsetText({
-          text: "If you deselect an action you have already added to a land parcel, it stays on that parcel. You can remove it from the parcel later."
-        }) }}
-      {% endif %}
 
       {{ govukButton({
         text: "Continue"

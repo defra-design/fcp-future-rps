@@ -11,6 +11,16 @@
   }
 
   var SUPPLEMENT_BASE = 'CLIG3'
+
+  // How CLIG3 (which takes all the remaining land) treats other land actions:
+  //   true  - CLIG3 gives way: other land actions stay available, and CLIG3 gets smaller
+  //           when one is added (idea 6)
+  //   false - as in v4a: other land actions go to 0 and are unavailable until CLIG3 is
+  //           deselected (idea 5 explains this in the CLIG3 panel)
+  var CLIG3_GIVES_WAY = false
+  var WHOLE_AREA_NOTE = CLIG3_GIVES_WAY
+    ? 'It gets smaller if you add other land actions to this land parcel.'
+    : 'Other land actions on this land parcel are now unavailable. To add one, deselect CLIG3 first.'
   // Same pause as v3 before AAC recalculates available land
   var DEBOUNCE_MS = 1600
   var metaByCode = {}
@@ -43,6 +53,27 @@
     return document.getElementById('v4bQuantity-' + code)
   }
 
+  function getCheckbox (code) {
+    return document.getElementById('v4bSelected-' + code)
+  }
+
+  function getConditional (code) {
+    return document.getElementById('v4b-conditional-' + code)
+  }
+
+  // Ticked, and for a supplement its base action is ticked too
+  function isTicked (code) {
+    var checkbox = getCheckbox(code)
+    if (!checkbox || !checkbox.checked) {
+      return false
+    }
+    var meta = metaByCode[code]
+    if (meta && meta.supplementOf && metaByCode[meta.supplementOf]) {
+      return isTicked(meta.supplementOf)
+    }
+    return true
+  }
+
   function parseQuantity (value) {
     var number = Number(String(value || '').replace(/,/g, '').replace(/\s/g, '').trim())
     return Number.isFinite(number) && number > 0 ? number : 0
@@ -67,11 +98,19 @@
     return Math.round(amount * 100) / 100
   }
 
-  function readSelections () {
+  // includeWholeArea false leaves out CLIG3 (and its supplements), so other actions
+  // are worked out as if CLIG3 were not there: CLIG3 only takes what they leave
+  function readSelections (includeWholeArea) {
     var selections = {}
     codes.forEach(function (code) {
       var input = getInput(code)
-      if (!input || isExcludedFromPool(code)) {
+      var meta = metaByCode[code]
+      // Ticking alone takes no land. Only a ticked action with a quantity counts.
+      if (!input || !isTicked(code) || isExcludedFromPool(code)) {
+        return
+      }
+      if (includeWholeArea === false && meta &&
+          (meta.wholeRemainingArea || (meta.supplementOf && metaByCode[meta.supplementOf] && metaByCode[meta.supplementOf].wholeRemainingArea))) {
         return
       }
       var quantity = parseQuantity(input.value)
@@ -275,7 +314,8 @@
     var unavailableEl = block.querySelector('[data-v4b-unavailable]')
 
     var needsBase = meta.supplementOf && !metaByCode[meta.supplementOf]
-    var unavailable = needsBase || (result.status === 'unavailable' && result.selectedQuantity <= 0)
+    // Ponds are never limited by the AAC, so other actions cannot use them up
+    var unavailable = needsBase || (meta.unit !== 'pond' && result.status === 'unavailable' && result.selectedQuantity <= 0)
     // Only explain when something limits the action; the available amount covers the rest
     var reason = ''
     if (needsBase) {
@@ -284,14 +324,28 @@
       reason = result.summaryReason
     } else if (unavailable) {
       reason = result.summaryReason
-    } else if (result.allocationNote && result.allocationNote.label) {
-      reason = result.allocationNote.label + '.'
     }
 
-    if (unavailable) {
+    // Ponds are counted by the farmer, not by the AAC, so there is no available amount to show (as in v4a)
+    availableEl.hidden = meta.unit === 'pond'
+    if (meta.unit === 'pond') {
+      availableEl.textContent = ''
+    } else if (unavailable && !needsBase && Number.isFinite(result.available)) {
+      // Land used up by other actions (CLIG3 takes all that is left): show 0, as in v4a
+      availableEl.textContent = formatAmount(Math.max(0, result.available), result.unit) + ' available'
+    } else if (unavailable) {
       availableEl.textContent = 'Not available on this parcel'
     } else if (!Number.isFinite(result.available)) {
       availableEl.textContent = 'Enter the number of eligible ponds'
+    } else if (meta.fullBaseArea) {
+      availableEl.textContent = 'Covers all the ' + meta.supplementOf + ' area on this land parcel'
+    } else if (meta.supplementOf && Number.isFinite(wholeAreaPool[meta.supplementOf])) {
+      // GRH7 and GRH8 sit on the CLIG3 land: what is left after the quantity in this box
+      var ownQuantity = selections[code] || 0
+      availableEl.textContent = formatAmount(
+        Math.max(0, Math.round((wholeAreaPool[meta.supplementOf] - ownQuantity) * 10000) / 10000),
+        result.unit
+      ) + ' available'
     } else if (meta.supplementOf && resultsByCode[meta.supplementOf]) {
       // Same land left as the base action. The supplement sits on that land.
       var baseRemaining = resultsByCode[meta.supplementOf].available
@@ -306,16 +360,19 @@
     reasonEl.textContent = reason
     reasonEl.hidden = !reason
 
-    var exclusions = (result.exclusions || []).filter(function (exclusion) {
-      return Number(exclusion.amount) > 0 && exclusion.featureKey !== 'existingAgreement'
-    })
+    // v4b does not list land exclusions (HEFER, SSSI, land cover) under each action
+    var exclusions = []
     exclusionsEl.innerHTML = exclusions.map(function (exclusion) {
       return '<li>' + escapeHtml(describeExclusion(exclusion)) + '</li>'
     }).join('')
     exclusionsEl.hidden = exclusions.length === 0
 
     block.classList.toggle('app-v4b-action--unavailable', unavailable)
-    // Keep a filled field editable so a conflict or unavailable action can be cleared
+    // Keep a ticked or filled action editable so a conflict can be cleared
+    var checkbox = getCheckbox(code)
+    if (checkbox && document.activeElement !== checkbox) {
+      checkbox.disabled = unavailable && !checkbox.checked
+    }
     if (document.activeElement !== input) {
       input.disabled = unavailable && !input.value.trim()
     }
@@ -354,16 +411,59 @@
   function hideNotAvailable (notAvailable) {
     codes.forEach(function (code) {
       var block = getBlock(code)
-      var input = getInput(code)
+      var checkbox = getCheckbox(code)
       if (block) {
-        block.hidden = Boolean(notAvailable[code]) && !(input && input.value.trim())
+        block.hidden = Boolean(notAvailable[code]) && !(checkbox && checkbox.checked)
       }
+    })
+    // Hide a group with nothing left in it, and drop the line above its first action
+    Array.prototype.forEach.call(document.querySelectorAll('[data-v4b-group]'), function (group) {
+      var blocks = Array.prototype.filter.call(group.children, function (child) {
+        return child.hasAttribute('data-v4b-action')
+      })
+      var firstVisible = null
+      blocks.forEach(function (block) {
+        block.classList.remove('app-v4b-action--first-visible')
+        if (!block.hidden && !firstVisible) {
+          firstVisible = block
+        }
+      })
+      if (firstVisible) {
+        firstVisible.classList.add('app-v4b-action--first-visible')
+      }
+      group.hidden = !firstVisible
     })
   }
 
   function clearUpdatingMessage () {
     Array.prototype.forEach.call(document.querySelectorAll('[data-v4b-updating]'), function (el) {
       el.remove()
+    })
+    setBusy(false)
+  }
+
+  // As in v4a: while the AAC is updating, lock the other actions and the buttons
+  function setBusy (isBusy, editedCode) {
+    var container = document.getElementById('v4b-actions-checkboxes')
+    if (container) {
+      container.setAttribute('aria-busy', isBusy ? 'true' : 'false')
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('button[name="v4bIntent"]'), function (button) {
+      button.disabled = isBusy
+    })
+    codes.forEach(function (code) {
+      [getCheckbox(code), getInput(code)].forEach(function (el) {
+        if (!el) {
+          return
+        }
+        if (isBusy && code !== editedCode && !el.disabled) {
+          el.disabled = true
+          el.setAttribute('data-v4b-busy', '')
+        } else if (!isBusy && el.hasAttribute('data-v4b-busy')) {
+          el.disabled = false
+          el.removeAttribute('data-v4b-busy')
+        }
+      })
     })
   }
 
@@ -382,20 +482,110 @@
       '<span class="actions-compatibility-status__spinner" aria-hidden="true"></span>' +
       '<p class="govuk-body-s govuk-!-margin-bottom-0">Updating available land for this action…</p>'
     messages.insertBefore(updating, messages.firstChild)
+    setBusy(true, code)
+  }
+
+  // GRH10 has no box of its own: it always covers the quantity entered for CLIG3
+  function syncFullAreaSupplements () {
+    codes.forEach(function (code) {
+      var meta = metaByCode[code]
+      if (!meta || !meta.fullBaseArea) {
+        return
+      }
+      var input = getInput(code)
+      var baseInput = getInput(meta.supplementOf)
+      var textEl = document.querySelector('[data-v4b-follow-amount="' + code + '"]')
+      var baseRaw = baseInput ? normaliseQuantity(baseInput.value) : ''
+      var baseValid = baseRaw &&
+        isTicked(meta.supplementOf) &&
+        !isExcludedFromPool(meta.supplementOf) &&
+        !getFormatError(meta.supplementOf, baseRaw)
+      if (input) {
+        input.value = baseValid && isTicked(code) ? baseRaw : ''
+      }
+      if (textEl) {
+        textEl.innerHTML = baseValid
+          ? escapeHtml(Number(baseRaw).toFixed(4)) + ' hectares'
+          : 'Select ' + escapeHtml(meta.supplementOf) + ' first'
+      }
+    })
+  }
+
+  var wholeAreaPool = {}
+
+  function isWholeAreaGroup (code) {
+    var meta = metaByCode[code]
+    if (!meta) {
+      return false
+    }
+    if (meta.wholeRemainingArea) {
+      return true
+    }
+    return Boolean(meta.supplementOf && metaByCode[meta.supplementOf] && metaByCode[meta.supplementOf].wholeRemainingArea)
+  }
+
+  // CLIG3 has no box: it takes all the eligible land the other actions leave when it is ticked
+  function syncWholeAreaActions (resultsWithoutWholeArea) {
+    wholeAreaPool = {}
+    resultsWithoutWholeArea.forEach(function (result) {
+      var meta = metaByCode[result.code]
+      if (!meta || !meta.wholeRemainingArea) {
+        return
+      }
+      var pool = Number(result.maxAvailable)
+      if (!Number.isFinite(pool)) {
+        pool = Number(result.available)
+      }
+      pool = Number.isFinite(pool) ? Math.max(0, Math.round(pool * 10000) / 10000) : 0
+      wholeAreaPool[result.code] = pool
+
+      var input = getInput(result.code)
+      var textEl = document.querySelector('[data-v4b-whole-amount="' + result.code + '"]')
+      var ticked = isTicked(result.code)
+      if (input) {
+        input.value = ticked && pool > 0 ? pool.toFixed(4) : ''
+      }
+      if (textEl) {
+        textEl.innerHTML = pool > 0
+          ? pool.toFixed(4) + ' hectares'
+          : 'There is no eligible land left for ' + escapeHtml(result.code) + ' on this land parcel'
+      }
+    })
   }
 
   function update () {
     clearUpdatingMessage()
     var notAvailable = findNotAvailableOnParcel()
-    var selections = readSelections()
+
+    // 1. Everything except CLIG3 and its supplements
+    var selectionsWithout = readSelections(false)
+    aac.setSelections(selectionsWithout)
+    var withoutWholeArea = aac.recalculate().actions
+    syncWholeAreaActions(withoutWholeArea)
+    syncFullAreaSupplements()
+
+    // 2. With CLIG3 filled in, for CLIG3 and its supplements
+    var selections = readSelections(true)
     aac.setSelections(selections)
-    var calculation = aac.recalculate()
+    var withWholeArea = aac.recalculate().actions
+
+    // CLIG3 and its supplements always come from the run that includes CLIG3.
+    // Other actions come from the run without it when CLIG3 gives way (they ignore it),
+    // or from the run with it as in v4a (they show 0 and become unavailable).
     var resultsByCode = {}
-    calculation.actions.forEach(function (result) {
+    ;(CLIG3_GIVES_WAY ? withoutWholeArea : withWholeArea).forEach(function (result) {
       resultsByCode[result.code] = result
     })
-    calculation.actions.forEach(function (result) {
-      renderAction(result, selections, resultsByCode)
+    withWholeArea.forEach(function (result) {
+      if (isWholeAreaGroup(result.code)) {
+        resultsByCode[result.code] = result
+      }
+    })
+    Array.prototype.forEach.call(document.querySelectorAll('[data-v4b-whole-note]'), function (el) {
+      el.textContent = WHOLE_AREA_NOTE
+    })
+    Object.keys(resultsByCode).forEach(function (code) {
+      renderAction(resultsByCode[code], selections, resultsByCode)
     })
     hideNotAvailable(notAvailable)
   }
@@ -413,7 +603,7 @@
     if (!(quantity > 0)) {
       return false
     }
-    var selections = readSelections()
+    var selections = readSelections(CLIG3_GIVES_WAY ? isWholeAreaGroup(code) : true)
     aac.setSelections(selections)
     var result = null
     aac.recalculate().actions.forEach(function (action) {
@@ -445,6 +635,11 @@
       return
     }
     if (excludeIfOverLimit(code)) {
+      update()
+      return
+    }
+    // Ponds do not use the AAC, so there is nothing to wait for
+    if (metaByCode[code] && metaByCode[code].unit === 'pond') {
       update()
       return
     }
@@ -492,6 +687,62 @@
     landCover: config.landCover
   }, codes, { resetSelections: true })
 
+  function setRevealed (code, revealed) {
+    var checkbox = getCheckbox(code)
+    var conditional = getConditional(code)
+    if (checkbox) {
+      checkbox.checked = revealed
+      checkbox.setAttribute('aria-expanded', revealed ? 'true' : 'false')
+    }
+    if (conditional) {
+      conditional.classList.toggle('govuk-checkboxes__conditional--hidden', !revealed)
+    }
+  }
+
+  // Unticking clears the quantity, so its land goes back to the other actions
+  function clearAction (code) {
+    var input = getInput(code)
+    if (input) {
+      input.value = ''
+    }
+    excludedFromPool[code] = false
+    setFieldError(code, null)
+  }
+
+  function onTickChange (code) {
+    var checkbox = getCheckbox(code)
+    if (!checkbox) {
+      return
+    }
+    if (checkbox.checked) {
+      var meta = metaByCode[code]
+      // CLIG3 and GRH10 fill in straight away, with no "Updating available land" pause
+      if (meta && (meta.wholeRemainingArea || meta.fullBaseArea)) {
+        update()
+      }
+      return
+    }
+    window.clearTimeout(debounceTimer)
+    clearUpdatingMessage()
+    clearAction(code)
+    // Supplements sit inside CLIG3, so they go when CLIG3 is unticked
+    if (code === SUPPLEMENT_BASE) {
+      codes.forEach(function (other) {
+        if (metaByCode[other].supplementOf === SUPPLEMENT_BASE) {
+          setRevealed(other, false)
+          clearAction(other)
+        }
+      })
+    }
+    update()
+  }
+
+  document.addEventListener('change', function (event) {
+    if (event.target.matches('[data-v4b-select]')) {
+      onTickChange(event.target.getAttribute('data-v4b-select'))
+    }
+  })
+
   document.addEventListener('input', function (event) {
     if (event.target.matches('[data-v4b-quantity]')) {
       scheduleUpdate(event.target.getAttribute('data-v4b-quantity'))
@@ -511,7 +762,14 @@
       return
     }
     var target = document.querySelector(hash)
-    var focusTarget = target && target.querySelector('input:not([type="hidden"]):not([disabled])')
+    var code = target && target.getAttribute('data-v4b-action')
+    // From a Change link, go to the quantity if the action is ticked, otherwise its checkbox
+    var focusTarget = code
+      ? (isTicked(code) ? getInput(code) : getCheckbox(code))
+      : null
+    if (focusTarget && focusTarget.disabled) {
+      focusTarget = null
+    }
     if (focusTarget && hash !== '#selected-parcel') {
       focusTarget.focus()
     } else if (target) {

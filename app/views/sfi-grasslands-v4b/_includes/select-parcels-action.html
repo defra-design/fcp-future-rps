@@ -1,0 +1,92 @@
+{#- One action on the select land parcels page: a checkbox that reveals its quantity.
+    Expects `action` from the loop. CLIG3 also holds its supplements. -#}
+{% set fieldId = "v4bQuantity-" + action.code %}
+{% set checkboxId = "v4bSelected-" + action.code %}
+{% set isChecked = action.code in selectedCodes %}
+<div class="app-v4b-action{% if action.supplementOf %} app-v4b-action--supplement{% endif %}" id="v4b-action-{{ action.code }}" data-v4b-action="{{ action.code }}">
+  <div class="govuk-checkboxes__item">
+    <input class="govuk-checkboxes__input" id="{{ checkboxId }}" name="v4bSelected" type="checkbox" value="{{ action.code }}" aria-describedby="{{ fieldId }}-hints" data-aria-controls="v4b-conditional-{{ action.code }}" data-v4b-select="{{ action.code }}"{% if isChecked %} checked{% endif %}>
+    <label class="govuk-label govuk-checkboxes__label" for="{{ checkboxId }}">{{ action.code }}: {{ action.name }}</label>
+    <div class="govuk-hint govuk-checkboxes__hint app-v4b-action__hints" id="{{ fieldId }}-hints">
+      {% if action.consentHint %}
+        <span class="app-v4b-action__consent">{{ action.consentHint }}</span>
+      {% endif %}
+      <span class="app-v4b-action__hint">{{ action.rateShortText }}</span>
+      <span class="app-v4b-action__hint" data-v4b-available{% if action.unit == "pond" %} hidden{% endif %}>{% if action.unit != "pond" %}Checking what is available{% endif %}</span>
+    </div>
+  </div>
+
+  <div class="govuk-checkboxes__conditional{% if not isChecked %} govuk-checkboxes__conditional--hidden{% endif %}" id="v4b-conditional-{{ action.code }}">
+    <div class="app-v4b-action__messages" id="{{ fieldId }}-messages">
+      <p class="govuk-body-s govuk-!-margin-bottom-2" data-v4b-reason hidden></p>
+      <ul class="govuk-list govuk-list--bullet govuk-body-s" data-v4b-exclusions hidden></ul>
+      {% if action.supplementOf and not action.fullBaseArea %}
+        <p class="govuk-body-s govuk-!-margin-bottom-2">This is a supplement to {{ action.supplementOf }}. You can add it to some or all of the {{ action.supplementOf }} area.</p>
+      {% endif %}
+    </div>
+
+    {% if action.wholeRemainingArea %}
+      {# CLIG3 has no box: it always takes all the eligible land the other actions leave #}
+      <div class="govuk-form-group govuk-!-margin-bottom-0{% if errorsByCode[action.code] %} govuk-form-group--error{% endif %}">
+        <p class="govuk-label govuk-!-margin-bottom-1">Quantity<span class="govuk-visually-hidden"> for {{ action.code }}</span></p>
+        {% if errorsByCode[action.code] %}
+          <p class="govuk-error-message" id="{{ fieldId }}-error"><span class="govuk-visually-hidden">Error:</span> {{ errorsByCode[action.code] }}</p>
+        {% endif %}
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" data-v4b-whole-amount="{{ action.code }}">
+          {% if quantities[action.code] %}{{ quantities[action.code] }} hectares{% else %}Working out the remaining land{% endif %}
+        </p>
+        <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0">This action uses the total remaining area. <span data-v4b-whole-note></span></p>
+        <input type="hidden" id="{{ fieldId }}" name="{{ fieldId }}" value="{{ quantities[action.code] }}" data-v4b-quantity="{{ action.code }}">
+      </div>
+    {% elif action.fullBaseArea %}
+      {# GRH10 has no box: it always covers the whole quantity entered for its base action #}
+      <div class="govuk-form-group govuk-!-margin-bottom-0{% if errorsByCode[action.code] %} govuk-form-group--error{% endif %}">
+        <p class="govuk-label govuk-!-margin-bottom-1" id="{{ fieldId }}-label">Quantity<span class="govuk-visually-hidden"> for {{ action.code }}</span></p>
+        {% if errorsByCode[action.code] %}
+          <p class="govuk-error-message" id="{{ fieldId }}-error"><span class="govuk-visually-hidden">Error:</span> {{ errorsByCode[action.code] }}</p>
+        {% endif %}
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" data-v4b-follow-amount="{{ action.code }}">
+          {% if quantities[action.supplementOf] %}{{ quantities[action.supplementOf] }} hectares{% else %}Select {{ action.supplementOf }} first{% endif %}
+        </p>
+        <p class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0">This supplement uses the same area as {{ action.supplementOf }}.</p>
+        <input type="hidden" id="{{ fieldId }}" name="{{ fieldId }}" value="{{ quantities[action.supplementOf] }}" data-v4b-quantity="{{ action.code }}">
+      </div>
+    {% else %}
+      {{ govukInput({
+        id: fieldId,
+        name: fieldId,
+        label: {
+          html: 'Quantity<span class="govuk-visually-hidden"> for ' + action.code + '</span>',
+          classes: "app-v4b-action__quantity-label"
+        },
+        suffix: { text: action.unitLabel.suffix },
+        inputmode: "decimal" if action.unit == "ha" else "numeric",
+        spellcheck: false,
+        classes: "govuk-input--width-5",
+        formGroup: { classes: "govuk-!-margin-bottom-0" },
+        value: quantities[action.code],
+        errorMessage: { text: errorsByCode[action.code] } if errorsByCode[action.code] else undefined,
+        describedBy: fieldId + "-hints " + fieldId + "-messages",
+        attributes: {
+          "data-v4b-quantity": action.code
+        }
+      }) }}
+    {% endif %}
+    <input type="hidden" name="v4bMax-{{ action.code }}" value="" data-v4b-max="{{ action.code }}">
+    <input type="hidden" name="v4bUnavailable-{{ action.code }}" value="" data-v4b-unavailable="{{ action.code }}">
+
+    {% if action.code == "CLIG3" and parcelSupplementActions.length %}
+      <div class="govuk-form-group govuk-!-margin-bottom-0 app-v4b-supplements">
+        <fieldset class="govuk-fieldset" aria-describedby="v4b-supplements-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Add a supplement (optional)</legend>
+          <div id="v4b-supplements-hint" class="govuk-hint govuk-!-font-size-16">Paid on top of CLIG3. You can use one supplement per land parcel.</div>
+          <div class="govuk-checkboxes">
+            {% for action in parcelSupplementActions %}
+              {% include "sfi-grasslands-v4b/_includes/select-parcels-action.html" %}
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+    {% endif %}
+  </div>
+</div>

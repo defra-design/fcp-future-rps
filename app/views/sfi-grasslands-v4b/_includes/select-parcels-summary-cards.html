@@ -1,0 +1,58 @@
+{#- Selected actions and Added land parcels.
+    Shown beside the map on desktop, and below the parcel's actions on mobile (mobileLayout = true),
+    where Selected actions is a closed details so it does not push the task down. -#}
+{% if mobileLayout %}
+  {% set selectedActionsHtml %}
+    <ul class="govuk-list govuk-body-s app-v4b-interested__list">
+      {% for action in interestedActions %}
+        <li><strong>{{ action.code }}</strong>: {{ action.name }}</li>
+      {% endfor %}
+    </ul>
+    <p class="govuk-body-s govuk-!-margin-bottom-0">
+      <a class="govuk-link" href="/sfi-grasslands-v4b/select-revenue-actions">Change<span class="govuk-visually-hidden"> selected actions</span></a>
+    </p>
+  {% endset %}
+  {{ govukDetails({
+    summaryText: "Selected actions (" + interestedActions.length + ")",
+    html: selectedActionsHtml,
+    classes: "govuk-!-margin-bottom-6"
+  }) }}
+{% else %}
+      <div class="govuk-summary-card app-v4b-interested">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Selected actions</h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="/sfi-grasslands-v4b/select-revenue-actions">Change<span class="govuk-visually-hidden"> selected actions</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <ul class="govuk-list govuk-body-s app-v4b-interested__list">
+            {% for action in interestedActions %}
+              <li><strong>{{ action.code }}</strong>: {{ action.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+{% endif %}
+      {% if savedParcelCount %}
+        {# Short summary only. Parcels are checked and changed on the review page. #}
+        <div class="govuk-summary-card app-v4b-interested app-v4b-saved-summary">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title" id="{{ 'parcels-list-mobile' if mobileLayout else 'parcels-list' }}" tabindex="-1">Added land parcels</h2>
+          </div>
+          <div class="govuk-summary-card__content">
+            <ul class="govuk-list govuk-body-s app-v4b-interested__list">
+              {% for parcel in parcels %}
+                {% if parcel.savedCount %}
+                  <li>
+                    <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?parcel={{ parcel.parcelId }}#selected-parcel">{{ parcel.parcelReference }}<span class="govuk-visually-hidden"> – change actions on this land parcel</span></a>
+                    – {{ parcel.savedCount }} action{% if parcel.savedCount != 1 %}s{% endif %}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}

@@ -10286,6 +10286,7 @@ function renderSfiGrasslandsV4bSelectRevenueActions (req, res, options) {
     actions: catalog.filter(function (action) { return !action.supplementOf }),
     supplements: catalog.filter(function (action) { return action.supplementOf === 'CLIG3' }),
     selectedCodes: selectedCodes,
+    usageByCode: sfiGrasslandsV4bRevenueActions.getActionUsage(req),
     hasSavedParcels: sfiGrasslandsV4bLandActions.hasSavedLandAndActions(req),
     errors: opts.errors || null
   })
@@ -10314,7 +10315,71 @@ router.post('/sfi-grasslands-v4b/select-revenue-actions', function (req, res) {
     })
   }
 
-  sfiGrasslandsV4bRevenueActions.setInterestedCodes(req, codes.concat(supplements))
+  var newCodes = codes.concat(supplements)
+  // Unticked actions that are already on land parcels: confirm before removing them
+  var usage = sfiGrasslandsV4bRevenueActions.getActionUsage(req)
+  var removing = Object.keys(usage).filter(function (code) {
+    return newCodes.indexOf(code) === -1
+  })
+  if (removing.length) {
+    var sessionData = getSfiGrasslandsV4bSessionData(req)
+    sessionData.v4bPendingInterested = newCodes
+    sessionData.v4bPendingRemove = removing
+    return res.redirect('/sfi-grasslands-v4b/confirm-remove-actions')
+  }
+
+  sfiGrasslandsV4bRevenueActions.setInterestedCodes(req, newCodes)
+  sfiGrasslandsV4bTasks.markCompleted(req, sfiGrasslandsV4bTasks.TASK_IDS.selectActions)
+  res.redirect('/sfi-grasslands-v4b/select-parcels')
+})
+
+function renderSfiGrasslandsV4bConfirmRemoveActions (req, res, error) {
+  var sessionData = getSfiGrasslandsV4bSessionData(req)
+  var usage = sfiGrasslandsV4bRevenueActions.getActionUsage(req)
+  var removing = (sessionData.v4bPendingRemove || []).filter(function (code) { return usage[code] })
+  if (!removing.length) {
+    return res.redirect('/sfi-grasslands-v4b/select-revenue-actions')
+  }
+  res.status(error ? 400 : 200).render('sfi-grasslands-v4b/confirm-remove-actions', {
+    data: sessionData,
+    removingActions: removing.map(function (code) {
+      var action = sfiGrasslandsV4bRevenueActions.getAction(code)
+      return {
+        code: code,
+        name: action ? action.name : code,
+        parcels: usage[code].map(function (parcel) { return parcel.parcelReference })
+      }
+    }),
+    error: error || null
+  })
+}
+
+router.get('/sfi-grasslands-v4b/confirm-remove-actions', function (req, res) {
+  renderSfiGrasslandsV4bConfirmRemoveActions(req, res)
+})
+
+router.post('/sfi-grasslands-v4b/confirm-remove-actions', function (req, res) {
+  var sessionData = getSfiGrasslandsV4bSessionData(req)
+  var answer = req.body.v4bConfirmRemove
+  if (answer !== 'yes' && answer !== 'no') {
+    return renderSfiGrasslandsV4bConfirmRemoveActions(req, res, 'Select yes if you want to remove these actions from your application')
+  }
+  var pending = sessionData.v4bPendingInterested || []
+  var removing = sessionData.v4bPendingRemove || []
+  delete sessionData.v4bPendingInterested
+  delete sessionData.v4bPendingRemove
+
+  if (answer === 'no') {
+    // Keep them: tick the actions again and go back to the list
+    sfiGrasslandsV4bRevenueActions.setInterestedCodes(req, pending.concat(removing))
+    return res.redirect('/sfi-grasslands-v4b/select-revenue-actions')
+  }
+
+  sfiGrasslandsV4bRevenueActions.removeActionsFromApplication(req, removing)
+  sfiGrasslandsV4bRevenueActions.setFlash(req, {
+    heading: removing.join(', ') + (removing.length === 1 ? ' has' : ' have') + ' been removed from your application'
+  })
+  sfiGrasslandsV4bRevenueActions.setInterestedCodes(req, pending)
   sfiGrasslandsV4bTasks.markCompleted(req, sfiGrasslandsV4bTasks.TASK_IDS.selectActions)
   res.redirect('/sfi-grasslands-v4b/select-parcels')
 })
@@ -10346,9 +10411,34 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
     : []
   var farmSummary = sfiGrasslandsV4bLandDetails.getFarmSummary()
   var quantities = opts.values || savedQuantities
+  // Ticked actions: what was posted, otherwise what is already saved on this parcel
+  var selectedCodes = opts.selectedCodes || Object.keys(savedQuantities).filter(function (code) {
+    return savedQuantities[code]
+  })
+  var hasClig3 = parcelActions.some(function (action) { return action.code === 'CLIG3' })
+  var parcelMainActions = parcelActions.filter(function (action) {
+    return !(action.supplementOf && hasClig3)
+  })
+  var parcelSupplementActions = parcelActions.filter(function (action) {
+    return action.supplementOf && hasClig3
+  })
+  // Same groups as the v4a actions list. The "updates automatically" line is in the details above.
+  var parcelActionGroups = [
+    { unit: 'ha', heading: 'Land' },
+    { unit: 'm', heading: 'Boundary' },
+    { unit: 'pond', heading: 'Ponds' },
+    { unit: 'm²', heading: 'Buildings' }
+  ].map(function (group) {
+    return Object.assign({}, group, {
+      actions: parcelMainActions.filter(function (action) { return action.unit === group.unit })
+    })
+  }).filter(function (group) { return group.actions.length })
   var errorsByCode = {}
+  var selectionError = null
   ;(opts.errors || []).forEach(function (error) {
-    if (error.code && !errorsByCode[error.code]) {
+    if (error.field === 'selection') {
+      selectionError = error.text
+    } else if (error.code && !errorsByCode[error.code]) {
       errorsByCode[error.code] = error.text
     }
   })
@@ -10380,17 +10470,25 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
           availableArea: selectedParcel.availableArea,
           landCover: selectedParcel.landCover,
           actions: parcelActions.map(function (action) {
-            return { code: action.code, unit: action.unit, rate: action.rate, supplementOf: action.supplementOf || null }
+            return { code: action.code, unit: action.unit, rate: action.rate, supplementOf: action.supplementOf || null, fullBaseArea: Boolean(action.fullBaseArea), wholeRemainingArea: Boolean(action.wholeRemainingArea) }
           }),
           incompatibleByCode: sfiGrasslandsV4bRevenueActions.getIncompatibleByCode(req),
           previousAgreementIncompatibleByCode: SFI_GRASSLANDS_V4B_PREVIOUS_AGREEMENT_MATRIX.incompatibleByCode
         }
       : null,
     quantities: quantities,
+    selectedCodes: selectedCodes,
+    parcelMainActions: parcelMainActions,
+    parcelActionGroups: parcelActionGroups,
+    parcelSupplementActions: parcelSupplementActions,
     errors: opts.errors || [],
     errorsByCode: errorsByCode,
+    selectionError: selectionError,
     flashMessage: sfiGrasslandsV4bRevenueActions.takeFlash(req),
     savedParcelCount: parcels.filter(function (parcel) { return parcel.savedCount > 0 }).length,
+    savedYearlyTotalFormatted: sfiGrasslandsV4bLandActions.summariseBasket(
+      sfiGrasslandsV4bLandActions.buildBasketParcels(req)
+    ).totalYearlyPaymentFormatted,
     farmSummary: farmSummary,
     limitedAreaConfig: sfiGrasslandsV4bRevenueActions.getLimitedAreaConfig(
       req,
@@ -10421,23 +10519,38 @@ router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
       return renderSfiGrasslandsV4bSelectParcels(req, res, {
         parcelId: parcelId,
         values: result.values,
+        selectedCodes: result.selectedCodes,
         errors: result.errors
       })
     }
 
-    if (!result.actions.length && !hadSaved && intent === 'save') {
+    if (!result.selectedCodes.length && !hadSaved && intent === 'save') {
+      // Link to the first checkbox on the page: Land, then Boundary, Ponds, Buildings
+      var unitOrder = ['ha', 'm', 'pond', 'm²']
+      var firstCode = sfiGrasslandsV4bRevenueActions.getActionsForParcel(req, parcelId)
+        .filter(function (action) { return !action.supplementOf })
+        .sort(function (a, b) { return unitOrder.indexOf(a.unit) - unitOrder.indexOf(b.unit) })
+        .map(function (action) { return action.code })[0]
       return renderSfiGrasslandsV4bSelectParcels(req, res, {
         parcelId: parcelId,
         values: result.values,
+        selectedCodes: [],
         errors: [{
-          code: sfiGrasslandsV4bRevenueActions.getInterestedCodes(req)[0],
-          text: 'Enter a quantity for at least one action to add it to land parcel ' + parcel.parcelReference
+          field: 'selection',
+          href: '#v4bSelected-' + firstCode,
+          text: 'Select at least one action for this land parcel'
         }]
       })
     }
 
     if (result.actions.length || hadSaved) {
       sfiGrasslandsV4bRevenueActions.saveParcelActions(req, parcelId, result.actions)
+      sfiGrasslandsV4bRevenueActions.setFlash(req, result.actions.length
+        ? {
+            heading: 'Actions saved to land parcel ' + parcel.parcelReference,
+            text: 'Select another land parcel on the map to add more actions, or select Continue.'
+          }
+        : { heading: 'Land parcel ' + parcel.parcelReference + ' has been removed from your application' })
     }
   }
 
@@ -10451,7 +10564,8 @@ router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
     return res.redirect('/sfi-grasslands-v4b/confirm-land-and-actions')
   }
 
-  res.redirect('/sfi-grasslands-v4b/select-parcels#parcels-list')
+  // Back to the top, where the success banner is
+  res.redirect('/sfi-grasslands-v4b/select-parcels')
 })
 
 router.get('/sfi-grasslands-v4b/cancel-land-actions-draft', function (req, res) {
@@ -10735,7 +10849,11 @@ router.post('/sfi-grasslands-v4b/clig3-supplements', function (req, res) {
 })
 
 router.get('/sfi-grasslands-v4b/confirm-land-and-actions', function (req, res) {
-  var basketParcels = sfiGrasslandsV4bLandActions.buildBasketParcels(req).map(function (parcel) {
+  // Same order as the land summary on the select land page
+  var basketParcels = sfiGrasslandsV4bLandActions.buildBasketParcels(req).slice().sort(function (a, b) {
+    return String(sfiGrasslandsV4bLandActions.getParcelDisplayReference(a))
+      .localeCompare(String(sfiGrasslandsV4bLandActions.getParcelDisplayReference(b)))
+  }).map(function (parcel) {
     return Object.assign({}, parcel, {
       actions: sfiGrasslandsV4bLandActions.groupParcelActionsForDisplay(
         (parcel.actions || []).map(function (action) {
@@ -10872,12 +10990,16 @@ router.post('/sfi-grasslands-v4b/remove-parcel-actions/:parcelId', function (req
     if (sfiGrasslandsV4bRemoveReturn(req) !== 'select-parcels') {
       req.session.data = req.session.data || {}
       req.session.data.confirmLandFlash = removedMessage
+    } else {
+      sfiGrasslandsV4bRevenueActions.setFlash(req, {
+        heading: 'Land parcel ' + parcelLabel + ' has been removed from your application'
+      })
     }
   }
 
   var returnToSelectParcels = sfiGrasslandsV4bRemoveReturn(req) === 'select-parcels'
   res.redirect(returnToSelectParcels
-    ? '/sfi-grasslands-v4b/select-parcels' + (sfiGrasslandsV4bLandActions.hasSavedLandAndActions(req) ? '#parcels-list' : '')
+    ? '/sfi-grasslands-v4b/select-parcels'
     : '/sfi-grasslands-v4b/confirm-land-and-actions')
 })
 

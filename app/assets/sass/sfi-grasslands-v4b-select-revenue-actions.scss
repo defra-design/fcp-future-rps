@@ -58,3 +58,8 @@
 .app-v4b-clig3-supplements .govuk-checkboxes__hint {
   padding-left: 59px !important;
 }
+
+// "Added to 2 land parcels": black, so it reads as a fact about this action, not a rate
+.app-v4b-action-hint--used {
+  color: #0b0c0c;
+}

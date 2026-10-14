@@ -1,0 +1,79 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4b/task-list" %}
+{% extends "layouts/sfi-grasslands-v4b-header.html" %}
+
+{#- Shown when someone unticks actions on Select actions that are already on land parcels -#}
+
+{% if removingActions.length == 1 %}
+  {% set question = "Remove " + removingActions[0].code + " from your application?" %}
+{% else %}
+  {% set question = "Remove these actions from your application?" %}
+{% endif %}
+
+{% block pageTitle %}
+  {% if error %}Error: {% endif %}{{ question }}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v4b/_includes/account-bar.html" %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v4b/select-revenue-actions"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if error %}
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: [{ text: error, href: "#v4bConfirmRemove" }]
+      }) }}
+    {% endif %}
+
+    <form method="post" action="/sfi-grasslands-v4b/confirm-remove-actions" novalidate>
+      {% set journeySection = "Select land and actions" %}
+      {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">{{ question }}</h1>
+
+      <p class="govuk-body">You deselected {{ "this action" if removingActions.length == 1 else "these actions" }}, but {{ "it is" if removingActions.length == 1 else "they are" }} already on land parcels in your application.</p>
+
+      <dl class="govuk-summary-list">
+        {% for action in removingActions %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">{{ action.code }}: {{ action.name }}</dt>
+            <dd class="govuk-summary-list__value">
+              {% for parcel in action.parcels %}{{ parcel }}{% if not loop.last %}<br>{% endif %}{% endfor %}
+            </dd>
+          </div>
+        {% endfor %}
+      </dl>
+
+      <p class="govuk-body">Removing {{ "it" if removingActions.length == 1 else "them" }} will take {{ "it" if removingActions.length == 1 else "them" }} off these land parcels. A land parcel with no actions left will be removed from your application.</p>
+
+      {{ govukRadios({
+        idPrefix: "v4bConfirmRemove",
+        name: "v4bConfirmRemove",
+        classes: "govuk-radios--inline",
+        fieldset: {
+          legend: {
+            text: question,
+            classes: "govuk-visually-hidden"
+          }
+        },
+        errorMessage: { text: error } if error else undefined,
+        items: [
+          { value: "yes", text: "Yes, remove " + ("it" if removingActions.length == 1 else "them") },
+          { value: "no", text: "No, keep " + ("it" if removingActions.length == 1 else "them") }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}

@@ -203,13 +203,12 @@ $app-v4b-light-grey: #f3f2f1;
 }
 
 .app-v4b-actions {
-  border-top: 1px solid $app-v4b-border;
   max-width: 640px;
 }
 
+// Spacing and light separators match the v4a actions list
 .app-v4b-action {
-  border-bottom: 1px solid $app-v4b-border;
-  padding: 20px 0 25px;
+  padding-top: 10px;
 
   &:focus-within {
     scroll-margin-top: 20px;
@@ -246,13 +245,14 @@ $app-v4b-light-grey: #f3f2f1;
   margin-top: 5px;
 }
 
+// Consent, rate and available lines at 16px
 .app-v4b-action__consent,
 .app-v4b-action__hint {
   display: block;
   font-family: "GDS Transport", arial, sans-serif;
   font-size: 1rem;
   line-height: 1.25;
-  margin-top: 2px;
+  margin-top: 0;
 }
 
 .app-v4b-action__consent {
@@ -265,4 +265,248 @@ $app-v4b-light-grey: #f3f2f1;
 
 .app-v4b-action__messages:empty {
   display: none;
+}
+
+
+// Group headings (Land, Boundary…) as in v4a
+.app-v4b-action-group {
+  margin-top: 24px;
+  padding-top: 8px;
+
+  &:first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.app-v4b-action-group__heading {
+  margin-bottom: 8px;
+}
+
+.app-v4b-action-group__lead-in {
+  margin-bottom: 15px;
+}
+
+// A light line between actions, but not under a heading or lead-in
+.app-v4b-action + .app-v4b-action {
+  border-top: 1px solid #f3f2f1;
+  margin-top: 8px;
+}
+
+.app-v4b-action[hidden] {
+  display: none;
+}
+
+.app-v4b-action--first-visible {
+  border-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.app-v4b-actions .govuk-checkboxes__item {
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.app-v4b-actions .govuk-checkboxes__label {
+  font-weight: 400;
+  line-height: 1.25;
+  // Line the action name up with the top of the checkbox, and pull the
+  // consent, rate and available lines up under it
+  align-self: flex-start;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+// Grid, not a wrapper: the label must stay straight after the input, because
+// GOV.UK draws the tick and focus ring with "input:checked + label".
+// Column 1 is the 44px checkbox; the name and the lines under it share column 2.
+.app-v4b-actions .govuk-checkboxes__item {
+  align-items: start;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  // Name row is only as tall as the name; any spare height goes below the hint lines
+  grid-template-rows: auto 1fr;
+}
+
+.app-v4b-actions .govuk-checkboxes__input {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.app-v4b-actions .govuk-checkboxes__item > .govuk-checkboxes__label {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: none;
+  padding-top: 2px;
+}
+
+.app-v4b-action .govuk-checkboxes__hint.app-v4b-action__hints {
+  grid-column: 2;
+  grid-row: 2;
+  margin-bottom: 0;
+  margin-top: 2px;
+  padding-left: 15px !important;
+}
+
+.app-v4b-action .govuk-checkboxes__conditional {
+  margin-bottom: 0;
+  margin-top: 0;
+  padding-top: 8px;
+
+  .govuk-label {
+    margin-bottom: 4px;
+  }
+}
+
+// Hide closed panels even before GOV.UK JS has run
+.app-v4b-action .govuk-checkboxes__conditional--hidden {
+  display: none;
+}
+
+// application.scss removes the left padding from hints inside a reveal,
+// which would pull the supplement hints back under their checkboxes
+.app-v4b-supplements .govuk-checkboxes__hint {
+  padding-left: 59px !important;
+}
+
+// Supplements use the same separators and spacing as the base actions
+
+.app-v4b-action--unavailable .govuk-checkboxes__label {
+  color: #505a5f;
+}
+
+
+// Farm figures above the map: two labelled values in one row
+.app-v4b-farm-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 40px;
+  margin-top: 0;
+
+  dt {
+    display: inline;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+
+  dd {
+    display: inline;
+    margin: 0;
+  }
+}
+
+// CLIG3 panel: even steps between quantity, supplements heading and supplements
+.app-v4b-supplements {
+  margin-top: 30px;
+
+  .govuk-fieldset__legend {
+    margin-bottom: 5px;
+  }
+
+  .govuk-fieldset > .govuk-hint {
+    margin-bottom: 10px;
+  }
+}
+
+// Checkbox names inside the CLIG3 panel (the supplements) must not pick up the
+// 4px gap meant for the panel's own "Quantity" label
+.app-v4b-actions .govuk-checkboxes__item > .govuk-label.govuk-checkboxes__label {
+  margin-bottom: 0;
+}
+
+// GOV.UK summary cards have no bottom padding on mobile (they expect a summary list).
+// These cards hold plain lists, so add it back or the last item touches the border.
+.app-v4b-interested .govuk-summary-card__content {
+  padding-bottom: 15px;
+}
+
+// Mobile layout: the summary cards move below the parcel's actions
+.app-v4b-mobile-only {
+  @media (min-width: 40.0625em) {
+    display: none;
+  }
+}
+
+.app-v4b-desktop-only {
+  @media (max-width: 40.0525em) {
+    display: none;
+  }
+}
+
+// Mobile: hide the map's arrow pad. People pan by dragging on a phone, and the
+// pad covers about a third of a small map. Zoom buttons and search stay.
+@media (max-width: 40.0525em) {
+  #v4b-parcel-map {
+    .im-c-button-wrapper--pan-up,
+    .im-c-button-wrapper--pan-down,
+    .im-c-button-wrapper--pan-left,
+    .im-c-button-wrapper--pan-right,
+    .im-c-button-wrapper--nudge-step-toggle {
+      display: none;
+    }
+  }
+}
+
+// Parcel summary: rows without a link use the space GOV.UK keeps for links, so
+// "Requirements" does not wrap. GOV.UK lays the list out as a table, where columns
+// are shared by every row; flex rows let each row size itself.
+@media (min-width: 40.0625em) {
+  .app-v4b-parcel-summary {
+    display: block;
+
+    .govuk-summary-list__row {
+      display: flex;
+    }
+
+    .govuk-summary-list__row--no-actions::after {
+      display: none;
+    }
+
+    // The labels are short, so give the values more room
+    .govuk-summary-list__key {
+      flex: 0 0 25%;
+    }
+
+    .govuk-summary-list__value {
+      flex: 1 1 auto;
+    }
+
+    .govuk-summary-list__actions {
+      flex: 0 0 auto;
+      width: auto;
+    }
+  }
+}
+
+// Parcel summary (land parcel, land cover, total area, requirements) at 16px
+.app-v4b-parcel-summary,
+.app-v4b-parcel-summary .govuk-summary-list__key,
+.app-v4b-parcel-summary .govuk-summary-list__value,
+.app-v4b-parcel-summary .govuk-summary-list__actions,
+.app-v4b-parcel-summary .govuk-body,
+.app-v4b-parcel-summary .govuk-list {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+// "Change" on the Selected actions card at 16px
+.app-v4b-interested .govuk-summary-card__action,
+.app-v4b-interested .govuk-summary-card__action .govuk-link {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+// Card round the parcel details, with room before the actions question
+.app-v4b-parcel-card {
+  margin-bottom: 30px;
+
+  .govuk-summary-card__title,
+  .govuk-summary-card__action {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
 }
