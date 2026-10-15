@@ -47,7 +47,7 @@
               {% for parcel in parcels %}
                 {% if parcel.savedCount %}
                   <li>
-                    <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?parcel={{ parcel.parcelId }}#selected-parcel">{{ parcel.parcelReference }}<span class="govuk-visually-hidden"> – change actions on this land parcel</span></a>
+                    <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?parcel={{ parcel.parcelId }}{% if listView %}&view=list{% endif %}#selected-parcel">{{ parcel.parcelReference }}<span class="govuk-visually-hidden"> – change actions on this land parcel</span></a>
                     – {{ parcel.savedCount }} action{% if parcel.savedCount != 1 %}s{% endif %}
                   </li>
                 {% endif %}

@@ -430,7 +430,7 @@ function getTaskListPageData (req) {
         status: states.selectActions.status
       }),
       buildTaskItem({
-        title: 'Select land parcels',
+        title: 'Select land for your actions',
         href: states.selectLand.href,
         status: states.selectLand.status
       })

@@ -90,6 +90,10 @@
   }
 
   window.SfiGrasslandsV4bLimitedArea = {
+    // v4b select land swaps parcels without a reload, so the config is read again
+    refreshConfig: function () {
+      config = readConfig()
+    },
     codes: LIMITED_AREA_CODES.slice(),
     isEnabled: isEnabled,
     isLimitedCode: isLimitedCode,

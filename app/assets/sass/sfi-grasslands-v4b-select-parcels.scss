@@ -192,10 +192,6 @@ $app-v4b-light-grey: #f3f2f1;
 
 .app-v4b-parcel-summary {
   max-width: 640px;
-
-  .govuk-summary-list__row:last-child {
-    border-bottom: 0;
-  }
 }
 
 .app-v4b-panel__buttons {
@@ -509,4 +505,85 @@ $app-v4b-light-grey: #f3f2f1;
     font-size: 1rem;
     line-height: 1.25;
   }
+}
+
+// "How we work out the quantity available" link at 16px
+.app-v4b-quantity-details .govuk-details__summary-text {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+// One straight line under every row, including the last: draw it on the row,
+// not on each cell (cells of different heights gave a stepped line)
+.app-v4b-parcel-summary .govuk-summary-list__row {
+  border-bottom: 1px solid #b1b4b6;
+
+  .govuk-summary-list__key,
+  .govuk-summary-list__value,
+  .govuk-summary-list__actions {
+    border-bottom: 0;
+  }
+}
+
+// Map or list view of the land parcels
+.app-v4b-hidden {
+  display: none !important;
+}
+
+.app-v4b-view-switch {
+  margin-bottom: 15px;
+}
+
+
+.app-v4b-parcel-list {
+  margin-bottom: 30px;
+}
+
+.app-v4b-parcel-list__tag {
+  margin-left: 5px;
+}
+
+// List view: the map key message does not apply, and the list has its own Continue
+.app-v4b-is-list .app-v4b-map-only,
+.app-v4b-is-list .app-v4b-continue {
+  display: none !important;
+}
+
+// List view with a parcel open: that parcel is its own step
+.app-v4b-is-list-step #v4b-parcel-list,
+.app-v4b-is-list-step .app-v4b-view-switch {
+  display: none !important;
+}
+
+// Hover popup on the map: same layout as v4a (sfi-grasslands-v4a/select-land.html)
+.app-v4b-map-popup {
+  pointer-events: none;
+}
+
+.app-v4b-map-popup .maplibregl-popup-content {
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+  margin: 0;
+  max-width: 168px;
+  min-width: 120px;
+  padding: 8px;
+}
+
+.app-v4b-map-popup .maplibregl-popup-content p {
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.app-v4b-map-popup__title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  margin-top: 0;
+}
+
+// Parcel details revealed under a selected radio in the list view
+.govuk-summary-list.app-v4b-parcel-list__summary {
+  font-size: 1rem;
+  line-height: 1.25;
 }

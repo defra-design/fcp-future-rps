@@ -10453,6 +10453,11 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
       return {
         parcelId: parcel.parcelId,
         parcelReference: parcel.parcelReference,
+        // Shown when hovering over the parcel, as in v4a
+        landCoverSummary: parcel.landCoverSummary,
+        totalAreaShort: parcel.totalAreaShort,
+        // Added up for each OS map sheet when the map is zoomed out
+        totalArea: Number(parcel.totalArea) || 0,
         coords: parcel.coords,
         added: parcel.savedCount > 0,
         unavailable: !sfiGrasslandsV4bRevenueActions.parcelHasEligibleAction(
@@ -10462,6 +10467,29 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
         selected: Boolean(selectedParcel && selectedParcel.parcelId === parcel.parcelId)
       }
     }),
+    // List view of the same parcels, for people who do not want to (or cannot) use the map
+    // Only parcels with at least one available action are listed (the hint says so)
+    listParcels: parcels.map(function (parcel) {
+      var parcelSaved = sfiGrasslandsV4bRevenueActions.getSavedQuantities(req, parcel.parcelId)
+      // Same actions as the parcel's actions page shows
+      var availableActionCount = sfiGrasslandsV4bRevenueActions.getActionsForParcel(req, parcel.parcelId)
+        .filter(function (action) {
+          return parcelSaved[action.code] || sfiGrasslandsV4bRevenueActions.parcelHasEligibleAction(
+            parcel.landCover,
+            [action.code]
+          )
+        }).length
+      return {
+        parcelId: parcel.parcelId,
+        parcelReference: parcel.parcelReference,
+        landCoverSummary: parcel.landCoverSummary,
+        totalAreaShort: parcel.totalAreaShort,
+        availableActionCount: availableActionCount,
+        status: parcel.savedCount > 0 ? 'added' : (availableActionCount ? 'available' : 'unavailable')
+      }
+    }).filter(function (parcel) { return parcel.status !== 'unavailable' }),
+    // The view comes from the link (GET) or a hidden field (POST, when the page shows errors)
+    listView: req.query.view === 'list' || (req.body || {}).v4bView === 'list',
     parcelClientConfig: selectedParcel
       ? {
           parcelId: selectedParcel.parcelId,
@@ -10480,6 +10508,8 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
     selectedCodes: selectedCodes,
     parcelMainActions: parcelMainActions,
     parcelActionGroups: parcelActionGroups,
+    // The "How we work out the quantity available" details: any group with an available quantity (not ponds)
+    showQuantityDetails: parcelActionGroups.some(function (group) { return group.unit !== 'pond' }),
     parcelSupplementActions: parcelSupplementActions,
     errors: opts.errors || [],
     errorsByCode: errorsByCode,
@@ -10503,12 +10533,29 @@ router.get('/sfi-grasslands-v4b/select-parcels', function (req, res) {
     return res.redirect('/sfi-grasslands-v4b/select-revenue-actions')
   }
   sfiGrasslandsV4bTasks.markInProgress(req, sfiGrasslandsV4bTasks.TASK_IDS.selectLand)
+  if (req.query.view === 'list') {
+    getSfiGrasslandsV4bSessionData(req).v4bParcelView = 'list'
+  }
   renderSfiGrasslandsV4bSelectParcels(req, res)
 })
 
 router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
-  var intent = req.body.v4bIntent === 'continue' ? 'continue' : 'save'
   var parcelId = req.body.v4bParcelId || null
+  var listView = req.body.v4bView === 'list'
+  getSfiGrasslandsV4bSessionData(req).v4bParcelView = listView ? 'list' : 'map'
+
+  // List view, step 1: a land parcel picked from the radios goes to its actions (like v4a)
+  if (req.body.v4bIntent === 'choose' && !parcelId) {
+    var chosenId = req.body.v4bListParcel
+    if (!chosenId || !sfiGrasslandsV4bRevenueActions.buildParcel(req, chosenId)) {
+      return renderSfiGrasslandsV4bSelectParcels(req, res, {
+        errors: [{ field: 'listParcel', href: '#v4bListParcel', text: 'Select a land parcel' }]
+      })
+    }
+    return res.redirect('/sfi-grasslands-v4b/select-parcels?parcel=' + encodeURIComponent(chosenId) + '&view=list')
+  }
+
+  var intent = req.body.v4bIntent === 'continue' ? 'continue' : 'save'
   var parcel = parcelId ? sfiGrasslandsV4bRevenueActions.buildParcel(req, parcelId) : null
 
   if (parcel) {
@@ -10545,10 +10592,23 @@ router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
 
     if (result.actions.length || hadSaved) {
       sfiGrasslandsV4bRevenueActions.saveParcelActions(req, parcelId, result.actions)
+    }
+
+    // List view, step 2: after saving, review all land and actions (like v4a)
+    if (listView && intent === 'save') {
+      if (result.actions.length || hadSaved) {
+        getSfiGrasslandsV4bSessionData(req).confirmLandFlash = result.actions.length
+          ? 'Actions saved to land parcel ' + parcel.parcelReference
+          : 'Land parcel ' + parcel.parcelReference + ' has been removed from your application'
+      }
+      return res.redirect('/sfi-grasslands-v4b/confirm-land-and-actions')
+    }
+
+    if (result.actions.length || hadSaved) {
       sfiGrasslandsV4bRevenueActions.setFlash(req, result.actions.length
         ? {
             heading: 'Actions saved to land parcel ' + parcel.parcelReference,
-            text: 'Select another land parcel on the map to add more actions, or select Continue.'
+            text: 'Select another land parcel to add more actions, or select Continue.'
           }
         : { heading: 'Land parcel ' + parcel.parcelReference + ' has been removed from your application' })
     }
@@ -10558,14 +10618,14 @@ router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
     if (!sfiGrasslandsV4bLandActions.hasSavedLandAndActions(req)) {
       return renderSfiGrasslandsV4bSelectParcels(req, res, {
         parcelId: parcelId,
-        errors: [{ code: null, href: '#v4b-parcel-map', text: 'Add actions to at least one land parcel before you continue' }]
+        errors: [{ code: null, href: req.body.v4bView === 'list' ? '#v4b-parcel-list' : '#v4b-parcel-map', text: 'Add actions to at least one land parcel before you continue' }]
       })
     }
     return res.redirect('/sfi-grasslands-v4b/confirm-land-and-actions')
   }
 
-  // Back to the top, where the success banner is
-  res.redirect('/sfi-grasslands-v4b/select-parcels')
+  // Back to the top, where the success banner is. List users go back to the list.
+  res.redirect('/sfi-grasslands-v4b/select-parcels' + (req.body.v4bView === 'list' ? '?view=list' : ''))
 })
 
 router.get('/sfi-grasslands-v4b/cancel-land-actions-draft', function (req, res) {
@@ -10915,7 +10975,8 @@ router.post('/sfi-grasslands-v4b/confirm-land-and-actions', function (req, res) 
     if (req.body.from === 'check-your-answers') {
       sessionData.returnToCheckYourAnswers = true
     }
-    return res.redirect('/sfi-grasslands-v4b/select-parcels')
+    // Back to the view they were using: the list or the map
+    return res.redirect('/sfi-grasslands-v4b/select-parcels' + (sessionData.v4bParcelView === 'list' ? '?view=list' : ''))
   }
 
   var goingToCya = action === 'returnToCya' ||
@@ -10940,7 +11001,9 @@ router.get('/sfi-grasslands-v4b/confirm-land-and-actions/change/:parcelId', func
   }
 
   var changeAction = req.query.actionCode ? '#v4b-action-' + String(req.query.actionCode).toUpperCase() : '#selected-parcel'
-  res.redirect('/sfi-grasslands-v4b/select-parcels?parcel=' + encodeURIComponent(parcelId) + changeAction)
+  // List view users change a parcel on its own step
+  var viewQuery = sessionData.v4bParcelView === 'list' ? '&view=list' : ''
+  res.redirect('/sfi-grasslands-v4b/select-parcels?parcel=' + encodeURIComponent(parcelId) + viewQuery + changeAction)
 })
 
 function sfiGrasslandsV4bRemoveReturn (req) {

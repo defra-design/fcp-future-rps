@@ -2,8 +2,11 @@
 {% set serviceUrl = "/sfi-grasslands-v4b/task-list" %}
 {% extends "layouts/sfi-grasslands-v4b-header.html" %}
 
+{# In the list view a parcel's actions are a step of their own #}
+{% set listStep = listView and selectedParcel %}
+
 {% block pageTitle %}
-  {% if errors.length %}Error: {% endif %}Select land for your actions
+  {% if errors.length %}Error: {% endif %}{% if listStep %}Select actions for land parcel {{ selectedParcel.parcelReference }}{% else %}Select land for your actions{% endif %}
 {% endblock %}
 
 {% block beforeContent %}
@@ -14,9 +17,11 @@
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/css/index.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v4b-select-parcels.css">
+  {# In the list view a parcel is its own step, so Back returns to the list #}
   {{ govukBackLink({
     text: "Back",
-    href: "/sfi-grasslands-v4b/select-revenue-actions"
+    href: "/sfi-grasslands-v4b/select-parcels?view=list" if listStep else "/sfi-grasslands-v4b/select-revenue-actions",
+    attributes: { "data-v4b-back-link": "/sfi-grasslands-v4b/select-revenue-actions" }
   }) }}
 {% endblock %}
 
@@ -45,8 +50,13 @@
 
     {% set journeySection = "Select land and actions" %}
     {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
+    {% if listStep %}
+    <h1 class="govuk-heading-l">Select actions for land parcel {{ selectedParcel.parcelReference }}</h1>
+    {% else %}
     <h1 class="govuk-heading-l">Select land for your actions</h1>
-    <dl class="govuk-body app-v4b-farm-stats" aria-label="{{ farmSummary.farmName }}">
+    {% endif %}
+    {# The farm figures help choose land, so they are not shown once a parcel is chosen in the list view #}
+    <dl class="govuk-body app-v4b-farm-stats{% if listStep %} app-v4b-hidden{% endif %}" aria-label="{{ farmSummary.farmName }}">
       <div class="app-v4b-farm-stats__item">
         <dt>Land parcels</dt>
         <dd>{{ farmSummary.parcelCount }}</dd>
@@ -61,10 +71,79 @@
   </div>
 </div>
 
-<form method="post" action="/sfi-grasslands-v4b/select-parcels" novalidate>
+<form method="post" action="/sfi-grasslands-v4b/select-parcels" novalidate id="v4b-select-parcels-form" class="{% if listView %}app-v4b-is-list{% endif %}{% if listView and selectedParcel %} app-v4b-is-list-step{% endif %}">
+  <input type="hidden" name="v4bView" value="{{ 'list' if listView else 'map' }}" data-v4b-view-field>
+  {# Above both columns, so the map and the Selected actions card start on the same line #}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {# Map or list: the list is the accessible way to choose land without the map #}
+      <p class="govuk-body app-v4b-view-switch">
+        <a class="govuk-link{% if listView %} app-v4b-hidden{% endif %}" href="/sfi-grasslands-v4b/select-parcels?view=list" data-v4b-view="list">View parcels as a list</a>
+        <a class="govuk-link{% if not listView %} app-v4b-hidden{% endif %}" href="/sfi-grasslands-v4b/select-parcels" data-v4b-view="map">View parcels on a map</a>
+      </p>
+    </div>
+  </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <div class="app-v4b-map">
+
+      {# List view, like v4a: pick one land parcel, add its actions on the next page,
+         then review all land and actions #}
+      <div class="app-v4b-parcel-list{% if not listView %} app-v4b-hidden{% endif %}" id="v4b-parcel-list">
+        {% set listParcelError = false %}
+        {% for error in errors %}
+          {% if error.field == "listParcel" %}{% set listParcelError = error.text %}{% endif %}
+        {% endfor %}
+        {% set listItems = [] %}
+        {% for parcel in listParcels %}
+          {% set statusHtml %}
+            Total area: {{ parcel.totalAreaShort }}
+            {% if parcel.status == "added" %}
+              <strong class="govuk-tag govuk-tag--green app-v4b-parcel-list__tag">Actions added</strong>
+            {% endif %}
+          {% endset %}
+          {# Selecting a parcel shows its details, as in v4a #}
+          {% set detailsHtml %}
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0 app-v4b-parcel-list__summary">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Land covers</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.landCoverSummary }}</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Total area</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.totalAreaShort }}</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Available actions</dt>
+                <dd class="govuk-summary-list__value">{{ parcel.availableActionCount }}</dd>
+              </div>
+            </dl>
+          {% endset %}
+          {% set listItems = (listItems.push({
+            value: parcel.parcelId,
+            text: parcel.parcelReference,
+            hint: { html: statusHtml },
+            conditional: { html: detailsHtml }
+          }), listItems) %}
+        {% endfor %}
+        {{ govukRadios({
+          idPrefix: "v4bListParcel",
+          name: "v4bListParcel",
+          fieldset: {
+            legend: { text: "Select a land parcel", classes: "govuk-fieldset__legend--m" }
+          },
+          hint: { text: "Only land parcels with available actions are shown. You will add actions to the land parcel on the next page." },
+          errorMessage: { text: listParcelError } if listParcelError else undefined,
+          items: listItems
+        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({ text: "Continue", name: "v4bIntent", value: "choose" }) }}
+          {% if savedParcelCount %}
+            <a class="govuk-link" href="/sfi-grasslands-v4b/confirm-land-and-actions">Review your land and actions</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="app-v4b-map{% if listView %} app-v4b-hidden{% endif %}">
         <p id="v4b-map-keyboard-hint" class="govuk-visually-hidden">
           Use the arrow keys to move between land parcels. Press Enter or Space to select a parcel.
         </p>
@@ -90,75 +169,79 @@
       {# Actions sit in the map column, so they start straight under the map
          rather than after the taller right-hand column #}
 
+      {# Swapped in place when another parcel is picked on the map (no page reload) #}
+      <div id="v4b-parcel-area">
       {% if selectedParcel %}
         <div class="app-v4b-panel" id="selected-parcel" tabindex="-1" data-v4b-selected-reference="{{ selectedParcel.parcelReference }}">
           <input type="hidden" name="v4bParcelId" value="{{ selectedParcel.parcelId }}">
 
-          {# Parcel details in a card, so they read as one block with a title #}
-          <div class="govuk-summary-card app-v4b-parcel-card">
-            <div class="govuk-summary-card__title-wrapper">
-              <h2 class="govuk-summary-card__title">Land parcel {{ selectedParcel.parcelReference }}</h2>
-              {# No link to pick another parcel: the map is just above. Once saved, the parcel can be removed. #}
-              {% if selectedParcel.savedCount %}
-                <ul class="govuk-summary-card__actions">
-                  <li class="govuk-summary-card__action">
-                    <a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a>
-                  </li>
-                </ul>
-              {% endif %}
-            </div>
-            <div class="govuk-summary-card__content">
-              <dl class="govuk-summary-list app-v4b-parcel-summary">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Land cover</dt>
-                  <dd class="govuk-summary-list__value">{{ selectedParcel.landCoverSummary }}</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Total area</dt>
-                  <dd class="govuk-summary-list__value">{{ selectedParcel.totalAreaShort }}</dd>
-                </div>
-            {# Same wording as v4a: shown only for land needing SSSI consent or a HEFER #}
-            {% if selectedParcel.sssi or selectedParcel.hefer %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Requirements</dt>
-                <dd class="govuk-summary-list__value">
-                  <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
-                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                    {% if selectedParcel.sssi %}<li>site of special scientific interest (SSSI) consent</li>{% endif %}
-                    {% if selectedParcel.hefer %}<li>a Historic Environment Farm Environment Record (HEFER)</li>{% endif %}
-                  </ul>
-                </dd>
-              </div>
-            {% endif %}
-              </dl>
-            </div>
-          </div>
+          {% if not parcelActions.length %}
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Land parcel {{ selectedParcel.parcelReference }}</h2>
+          {% endif %}
           {% if parcelActions.length %}
           <div class="govuk-form-group{% if selectionError %} govuk-form-group--error{% endif %}">
             <fieldset class="govuk-fieldset" aria-describedby="v4b-actions-hint{% if selectionError %} v4b-actions-error{% endif %}">
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              {# In the list view the page heading already says this #}
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m{% if listStep %} govuk-visually-hidden{% endif %}">
                 <h2 class="govuk-fieldset__heading">Select actions for this land parcel</h2>
               </legend>
               <div id="v4b-actions-hint" class="govuk-hint">Select all that apply.</div>
               {% if selectionError %}
                 <p id="v4b-actions-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ selectionError }}</p>
               {% endif %}
+          <dl class="govuk-summary-list{% if parcelActions.length %} govuk-!-margin-bottom-6{% else %} govuk-!-margin-bottom-4{% endif %} app-v4b-parcel-summary">
+            {# No link to pick another parcel: the map is just above. Once saved, the parcel can be removed. #}
+            <div class="govuk-summary-list__row{% if not selectedParcel.savedCount %} govuk-summary-list__row--no-actions{% endif %}">
+              <dt class="govuk-summary-list__key">Land parcel</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.parcelReference }}</dd>
+              {% if selectedParcel.savedCount %}
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a>
+                </dd>
+              {% endif %}
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Land cover</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.landCoverSummary }}</dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Total area</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.totalAreaShort }}</dd>
+            </div>
+            {# Same wording as v4a: shown only for land needing SSSI consent or a HEFER #}
+            {% if selectedParcel.sssi or selectedParcel.hefer %}
+              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key">Requirements</dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                    {% if selectedParcel.sssi %}<li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">site of special scientific interest (SSSI) consent<span class="govuk-visually-hidden"> (opens in new tab)</span></a></li>{% endif %}
+                    {% if selectedParcel.hefer %}<li>a <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">Historic Environment Farm Environment Record (HEFER)<span class="govuk-visually-hidden"> (opens in new tab)</span></a></li>{% endif %}
+                  </ul>
+                </dd>
+              </div>
+            {% endif %}
+          </dl>
           {% endif %}
           {% if parcelActions.length %}
-              {{ govukDetails({
-                summaryText: "How we work out the quantity available",
-                html: '<p class="govuk-body-s">The quantity available for each action depends on:</p>
-                  <ul class="govuk-list govuk-list--bullet govuk-body-s">
-                    <li>the land cover on this parcel</li>
-                    <li>other actions you’ve already selected</li>
-                    <li>site of special scientific interest (SSSI) eligibility</li>
-                    <li>historic or archaeological features eligibility</li>
-                    <li>land already in existing agreements</li>
-                  </ul>
-                  <p class="govuk-body-s govuk-!-margin-bottom-0">It updates automatically as you make your selections.</p>',
-                classes: "govuk-!-margin-bottom-6"
-              }) }}
               <div class="govuk-checkboxes app-v4b-actions" data-module="govuk-checkboxes" id="v4b-actions-checkboxes">
+                {# Above the first group of actions. Shown for any land, boundary or building
+                   actions, as they all have an available quantity (ponds do not) #}
+                {% if showQuantityDetails %}
+                {{ govukDetails({
+                  summaryText: "How we work out the quantity available for each action",
+                  html: '<p class="govuk-body-s">The quantity available for each action depends on:</p>
+                    <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                      <li>the land cover on this parcel</li>
+                      <li>other actions you’ve already selected</li>
+                      <li>site of special scientific interest (SSSI) eligibility</li>
+                      <li>historic or archaeological features eligibility</li>
+                      <li>land already in existing agreements</li>
+                    </ul>
+                    <p class="govuk-body-s govuk-!-margin-bottom-0">It updates automatically as you make your selections.</p>',
+                  classes: "govuk-!-margin-bottom-4 app-v4b-quantity-details"
+                }) }}
+                {% endif %}
                 {% for group in parcelActionGroups %}
                   <div class="app-v4b-action-group" data-v4b-group>
                     <h3 class="govuk-heading-s app-v4b-action-group__heading">{{ group.heading }}</h3>
@@ -170,14 +253,53 @@
               </div>
             </fieldset>
           </div>
+          {% if listStep %}
+            <p class="govuk-body">You can check your land and actions, and add more land parcels, on the next page.</p>
+          {% endif %}
           <div class="govuk-button-group app-v4b-panel__buttons">
             {{ govukButton({
-              text: "Save actions to this land parcel",
+              text: "Continue" if listStep else "Save actions to this land parcel",
               name: "v4bIntent",
               value: "save"
             }) }}
+            {% if listStep %}
+              <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?view=list">Choose a different land parcel</a>
+            {% endif %}
           </div>
           {% else %}
+          <dl class="govuk-summary-list{% if parcelActions.length %} govuk-!-margin-bottom-6{% else %} govuk-!-margin-bottom-4{% endif %} app-v4b-parcel-summary">
+            {# No link to pick another parcel: the map is just above. Once saved, the parcel can be removed. #}
+            <div class="govuk-summary-list__row{% if not selectedParcel.savedCount %} govuk-summary-list__row--no-actions{% endif %}">
+              <dt class="govuk-summary-list__key">Land parcel</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.parcelReference }}</dd>
+              {% if selectedParcel.savedCount %}
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a>
+                </dd>
+              {% endif %}
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Land cover</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.landCoverSummary }}</dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Total area</dt>
+              <dd class="govuk-summary-list__value">{{ selectedParcel.totalAreaShort }}</dd>
+            </div>
+            {# Same wording as v4a: shown only for land needing SSSI consent or a HEFER #}
+            {% if selectedParcel.sssi or selectedParcel.hefer %}
+              <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key">Requirements</dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body govuk-!-margin-bottom-1">Some actions require:</p>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                    {% if selectedParcel.sssi %}<li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">site of special scientific interest (SSSI) consent<span class="govuk-visually-hidden"> (opens in new tab)</span></a></li>{% endif %}
+                    {% if selectedParcel.hefer %}<li>a <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">Historic Environment Farm Environment Record (HEFER)<span class="govuk-visually-hidden"> (opens in new tab)</span></a></li>{% endif %}
+                  </ul>
+                </dd>
+              </div>
+            {% endif %}
+          </dl>
             {{ govukInsetText({
               html: '<p class="govuk-body">You cannot add any actions for this land parcel. This could be because:</p>
               <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
@@ -192,9 +314,11 @@
         {# One message for before and after land is added #}
         {{ govukInsetText({
           html: '<p class="govuk-body">Select a land parcel to add actions. Land parcels with actions added are shown in green.</p>
-            <p class="govuk-body govuk-!-margin-bottom-0">When you have finished, select Continue.</p>'
+            <p class="govuk-body govuk-!-margin-bottom-0">When you have finished, select Continue.</p>',
+          classes: "app-v4b-map-only"
         }) }}
       {% endif %}
+      </div>
 
     </div>
 
@@ -241,16 +365,15 @@
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-map.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-layout.js"></script>
 
-  {% if parcelClientConfig %}
+  {# Always loaded, so a parcel can be swapped in without a page reload #}
     <script src="/public/javascripts/sfi-scheme-2026.js"></script>
     <script src="/public/javascripts/sfi-grasslands-v4b-mvp-actions.js"></script>
     <script src="/public/javascripts/sfi-grasslands-v4b-parcel-reference.js"></script>
     <script src="/public/javascripts/sfi-grasslands-v4b-outlying-parcels.js"></script>
     <script src="/public/javascripts/sfi-grasslands-v4b-existing-agreements.js"></script>
-    <script id="limited-area-json" type="application/json">{{ limitedAreaConfig | dump | safe }}</script>
+    <script id="limited-area-json" type="application/json">{{ (limitedAreaConfig or {}) | dump | safe }}</script>
     <script src="/public/javascripts/sfi-grasslands-v4b-limited-area.js"></script>
     <script src="/public/javascripts/sfi-grasslands-v4b-aac.js"></script>
-    <script id="v4b-parcel-json" type="application/json">{{ parcelClientConfig | dump | safe }}</script>
-    <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels.js"></script>
-  {% endif %}
+    <script id="v4b-parcel-json" type="application/json">{{ (parcelClientConfig or null) | dump | safe }}</script>
+    <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels.js" data-v4b-parcel-script></script>
 {% endblock %}

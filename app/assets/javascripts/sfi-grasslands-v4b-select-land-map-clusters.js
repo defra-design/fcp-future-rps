@@ -43,6 +43,45 @@
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // OS map sheet: the letters and first number of the parcel reference, as in the
+  // earlier prototypes ("SO3757 3209" is on sheet SO3).
+  // ---------------------------------------------------------------------------
+  function getSheetReference (parcel) {
+    var match = String(parcel && parcel.parcelReference || '').replace(/\s+/g, '').toUpperCase().match(/^([A-Z]{2})(\d)/)
+    return match ? match[1] + match[2] : null
+  }
+
+  function formatHectares (value) {
+    return Number(value || 0).toLocaleString('en-GB', { minimumFractionDigits: 4, maximumFractionDigits: 4 }) + ' ha'
+  }
+
+  // Summary of the parcels in a cluster, in the same style as the parcel popup.
+  // The OS sheet reference is only shown when every parcel in it is on the same sheet.
+  function summaryPopupHtml (parcelIds, parcelData) {
+    var sheets = {}
+    var available = 0
+    var area = 0
+    parcelIds.forEach(function (parcelId) {
+      var parcel = parcelData[parcelId]
+      if (!parcel) {
+        return
+      }
+      sheets[getSheetReference(parcel) || '?'] = true
+      if (!parcel.unavailable) {
+        available += 1
+        area += Number(parcel.totalArea) || 0
+      }
+    })
+    var sheetKeys = Object.keys(sheets)
+    var title = sheetKeys.length === 1 && sheetKeys[0] !== '?'
+      ? 'OS sheet reference ' + sheetKeys[0]
+      : parcelIds.length + (parcelIds.length === 1 ? ' land parcel' : ' land parcels')
+    return '<h3 class="app-v4b-map-popup__title">' + title + '</h3>' +
+      '<p>Available land parcels: ' + available + '</p>' +
+      '<p>Total area: ' + formatHectares(area) + '</p>'
+  }
+
   function getBounds (parcelIds, parcelData) {
     var minLng = Infinity
     var minLat = Infinity
@@ -64,6 +103,22 @@
       return null
     }
     return [[minLng, minLat], [maxLng, maxLat]]
+  }
+
+  // select-parcels: a cluster that holds land in more than one place splits into
+  // those places first, instead of zooming out far enough to show them all at once
+  function zoomToClusterOrSplit (map, parcelData, clusterFeature) {
+    var source = map.getSource(POINT_SOURCE_ID)
+    var clusterId = clusterFeature.properties.cluster_id
+    Promise.resolve(source.getClusterExpansionZoom(clusterId)).then(function (expansionZoom) {
+      if (Number.isFinite(expansionZoom) && expansionZoom <= CLUSTER_MAX_ZOOM) {
+        map.easeTo({ center: clusterFeature.geometry.coordinates, zoom: expansionZoom })
+        return
+      }
+      zoomToCluster(map, parcelData, clusterFeature)
+    }).catch(function () {
+      zoomToCluster(map, parcelData, clusterFeature)
+    })
   }
 
   function zoomToCluster (map, parcelData, clusterFeature) {
@@ -101,12 +156,14 @@
       return
     }
 
+
     map.addSource(POINT_SOURCE_ID, {
       type: 'geojson',
       data: buildPointCollection(parcelData),
       cluster: true,
       clusterMaxZoom: CLUSTER_MAX_ZOOM,
-      clusterRadius: CLUSTER_RADIUS_PX
+      // Larger on select-parcels, so circles never overlap (a "2" sat on top of a "23")
+      clusterRadius: opts.clusterRadius || CLUSTER_RADIUS_PX
     })
 
     // A parcel on its own isn't grouped into a cluster, so it has no point_count. It still
@@ -149,7 +206,9 @@
       if (!feature) {
         return
       }
-      if (feature.properties.cluster) {
+      if (feature.properties.cluster && opts.splitClusters) {
+        zoomToClusterOrSplit(map, parcelData, feature)
+      } else if (feature.properties.cluster) {
         zoomToCluster(map, parcelData, feature)
       } else {
         zoomToParcel(map, parcelData, feature)
@@ -163,6 +222,83 @@
     map.on('mouseleave', CLUSTER_LAYER_ID, function () {
       map.getCanvas().style.cursor = ''
     })
+
+    if (opts.hoverSummary) {
+      attachHoverSummary(map, parcelData)
+    }
+  }
+
+  // select-parcels only: hovering a cluster shows what is in it
+  function attachHoverSummary (map, parcelData) {
+    var popup = null
+    var hoveredKey = null
+    var requestId = 0
+
+    function closePopup () {
+      requestId++
+      hoveredKey = null
+      if (popup) {
+        popup.remove()
+        popup = null
+      }
+    }
+
+    function openPopup (feature, parcelIds) {
+      if (!window.maplibregl || !window.maplibregl.Popup) {
+        return
+      }
+      if (popup) {
+        popup.remove()
+      }
+      var coords = feature.geometry.coordinates
+      popup = new window.maplibregl.Popup({
+        anchor: map.project(coords).y < 140 ? 'top' : 'bottom',
+        offset: 30,
+        closeButton: false,
+        closeOnClick: false,
+        maxWidth: '216px',
+        className: 'app-v4b-map-popup'
+      })
+        .setLngLat(coords)
+        .setHTML(summaryPopupHtml(parcelIds, parcelData))
+        .addTo(map)
+      var element = popup.getElement()
+      if (element) {
+        element.setAttribute('aria-hidden', 'true')
+      }
+    }
+
+    map.on('mousemove', CLUSTER_LAYER_ID, function (event) {
+      var feature = event.features && event.features[0]
+      if (!feature) {
+        return
+      }
+      var key = feature.properties.cluster
+        ? 'cluster-' + feature.properties.cluster_id
+        : 'parcel-' + feature.properties.parcelId
+      if (key === hoveredKey) {
+        return
+      }
+      closePopup()
+      hoveredKey = key
+      if (!feature.properties.cluster) {
+        openPopup(feature, [feature.properties.parcelId])
+        return
+      }
+      var thisRequest = requestId
+      Promise.resolve(map.getSource(POINT_SOURCE_ID).getClusterLeaves(feature.properties.cluster_id, Infinity, 0))
+        .then(function (leaves) {
+          if (thisRequest !== requestId) {
+            return
+          }
+          openPopup(feature, (leaves || []).map(function (leaf) { return leaf.properties.parcelId }))
+        })
+        .catch(function () {})
+    })
+
+    map.on('mouseleave', CLUSTER_LAYER_ID, closePopup)
+    map.on('click', CLUSTER_LAYER_ID, closePopup)
+    map.on('movestart', closePopup)
   }
 
   // Lets the page skip parcel hover and click when the pointer is over a cluster

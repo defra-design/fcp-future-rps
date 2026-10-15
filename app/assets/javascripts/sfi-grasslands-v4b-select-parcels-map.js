@@ -85,9 +85,114 @@
     return [[Math.min.apply(null, lngs), Math.min.apply(null, lats)], [Math.max.apply(null, lngs), Math.max.apply(null, lats)]]
   }
 
-  // No #selected-parcel: the browser would jump. Remember where the map was, and
-  // sfi-grasslands-v4b-select-parcels-layout.js scrolls smoothly to the parcel's actions.
-  function openParcel (parcelId) {
+  // ---------------------------------------------------------------------------
+  // Hover popup, as in v4a: land parcel reference, land cover and total area
+  // ---------------------------------------------------------------------------
+  var hoverPopup = null
+
+  function escapeHtml (value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+    })
+  }
+
+  // Same content and layout as v4a, without the available actions count
+  function popupHtml (parcel) {
+    return '<h3 class="app-v4b-map-popup__title">' + escapeHtml(parcel.parcelReference) + '</h3>' +
+      '<p>Land covers: ' + escapeHtml(parcel.landCoverSummary || '-') + '</p>' +
+      '<p>Total area: ' + escapeHtml(parcel.totalAreaShort || '-') + '</p>'
+  }
+
+  // Keep the popup inside the map near its edges (same idea as v4a)
+  function popupAnchor (map, lngLat) {
+    var point = map.project(lngLat)
+    var box = map.getContainer()
+    var width = box.clientWidth
+    var height = box.clientHeight
+    // Show the popup below the parcel when there is no room above it
+    var vertical = point.y < 140 || point.y > height ? 'top' : 'bottom'
+    var horizontal = point.x < 110 ? '-left' : (point.x > width - 110 ? '-right' : '')
+    return vertical + horizontal
+  }
+
+  function showHoverPopup (map, parcelId) {
+    var parcel = parcelId && parcelData[parcelId]
+    if (!parcel || !parcel.coords || !window.maplibregl || !window.maplibregl.Popup) {
+      if (hoverPopup) {
+        hoverPopup.remove()
+        hoverPopup = null
+      }
+      return
+    }
+    var bounds = getBounds(parcel.coords)
+    var centre = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2]
+    if (hoverPopup) {
+      hoverPopup.remove()
+    }
+    hoverPopup = new window.maplibregl.Popup({
+      anchor: popupAnchor(map, centre),
+      offset: 12,
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: '216px',
+      className: 'app-v4b-map-popup'
+    })
+      .setLngLat(centre)
+      .setHTML(popupHtml(parcel))
+      .addTo(map)
+    // The popup is for mouse users only; the keyboard status message says the same
+    var element = hoverPopup.getElement()
+    if (element) {
+      element.setAttribute('aria-hidden', 'true')
+    }
+  }
+
+  // Highlight a parcel and move the map to it, following the v4a zoom rules:
+  // zoom when asked (search) or when zoomed out below 13, otherwise pan and keep the zoom
+  function highlightParcel (parcelId, options) {
+    var opts = options || {}
+    parcels.forEach(function (parcel) {
+      parcel.selected = parcel.parcelId === parcelId
+    })
+    selected = parcelData[parcelId] || null
+    var map = rawMap
+    if (!map) {
+      return
+    }
+    var source = map.getSource('v4b-parcels')
+    if (source) {
+      source.setData(toFeatureCollection())
+    }
+    if (selected && selected.coords && selected.coords.length) {
+      var bounds = getBounds(selected.coords)
+      if (opts.zoom || map.getZoom() < PARCEL_VIEW_MIN_ZOOM) {
+        map.fitBounds(bounds, { padding: PARCEL_VIEW_PADDING_PX, maxZoom: PARCEL_VIEW_MAX_ZOOM })
+      } else {
+        map.easeTo({ center: [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2] })
+      }
+    }
+  }
+
+  window.SfiGrasslandsV4bSelectParcelsMap = { highlight: highlightParcel }
+
+  // Swap the parcel's actions in under the map, without reloading the page.
+  // If that is not possible, fall back to loading the page for that parcel.
+  function openParcel (parcelId, options) {
+    if (selected && selected.parcelId === parcelId) {
+      return
+    }
+    var swap = window.SfiGrasslandsV4bParcelSwap
+    if (swap && typeof swap.load === 'function') {
+      // The search flag is only for a page reload; no reload happens here
+      try {
+        window.sessionStorage.removeItem(ZOOM_TO_PARCEL_KEY)
+      } catch (error) {}
+      highlightParcel(parcelId, options)
+      swap.load(parcelId).catch(function () {
+        window.location.href = PAGE_URL + '?parcel=' + encodeURIComponent(parcelId)
+      })
+      return
+    }
     try {
       window.sessionStorage.setItem('v4bScrollToParcel', String(window.scrollY || 0))
     } catch (error) {}
@@ -99,6 +204,8 @@
 
     map.addLayer({
       id: 'v4b-parcels-fill',
+      // Hidden while the cluster circles show (zoom 11 and below), so land is only shown once
+      minzoom: 12,
       type: 'fill',
       source: 'v4b-parcels',
       paint: {
@@ -113,6 +220,8 @@
 
     map.addLayer({
       id: 'v4b-parcels-line',
+      // Hidden while the cluster circles show (zoom 11 and below), so land is only shown once
+      minzoom: 12,
       type: 'line',
       source: 'v4b-parcels',
       paint: {
@@ -161,9 +270,16 @@
         map.setFeatureState({ source: 'v4b-parcels', id: hoveredId }, { hover: true })
       }
       map.getCanvas().style.cursor = hoveredId ? 'pointer' : ''
+      showHoverPopup(map, hoveredId)
     }
 
     map.on('mousemove', 'v4b-parcels-fill', function (event) {
+      // Over an OS map sheet group: that group has its own popup
+      if (window.SfiGrasslandsV4bSelectLandMapClusters &&
+          window.SfiGrasslandsV4bSelectLandMapClusters.isClusterAt(map, event.point)) {
+        setHover(null)
+        return
+      }
       var feature = event.features && event.features[0]
       setHover(feature ? feature.properties.parcelId : null)
     })
@@ -184,7 +300,13 @@
     if (window.SfiGrasslandsV4bSelectLandMapClusters) {
       window.SfiGrasslandsV4bSelectLandMapClusters.attach(map, {
         parcelData: parcelData,
-        labelLayerId: 'v4b-parcels-label'
+        labelLayerId: 'v4b-parcels-label',
+        // Hovering a cluster shows what is in it
+        hoverSummary: true,
+        // A cluster of land in two places splits into them before zooming to fit
+        splitClusters: true,
+        // Wide enough that land close together stays in one circle
+        clusterRadius: 80
       })
     }
 
@@ -228,6 +350,14 @@
       map.easeTo({
         center: [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2]
       })
+      // Show the same popup as on hover once the map has moved
+      map.once('moveend', function () {
+        if (keyboardParcelId === parcelId) {
+          showHoverPopup(map, parcelId)
+        }
+      })
+    } else {
+      showHoverPopup(map, parcelId)
     }
     announceParcel(parcelId)
   }
@@ -269,6 +399,7 @@
         map.setFeatureState({ source: 'v4b-parcels', id: keyboardParcelId }, { keyboard: false })
       }
       keyboardParcelId = null
+      showHoverPopup(map, null)
     })
 
     field.addEventListener('keydown', function (event) {
@@ -445,7 +576,7 @@
       try {
         window.sessionStorage.setItem(ZOOM_TO_PARCEL_KEY, '1')
       } catch (error) {}
-      openParcel(event.parcelId)
+      openParcel(event.parcelId, { zoom: true })
     }
   })
 

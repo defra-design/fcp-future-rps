@@ -4,6 +4,12 @@
 (function () {
   'use strict'
 
+  // Run again each time a parcel is swapped in: remove the last run's listeners and timers first
+  if (typeof window.__v4bSelectParcelsTeardown === 'function') {
+    window.__v4bSelectParcelsTeardown()
+    window.__v4bSelectParcelsTeardown = null
+  }
+
   var aac = window.SfiGrasslandsV4bAac
   var config = readJson('v4b-parcel-json')
   if (!aac || !config || !config.parcelId) {
@@ -330,6 +336,9 @@
     availableEl.hidden = meta.unit === 'pond'
     if (meta.unit === 'pond') {
       availableEl.textContent = ''
+    } else if (meta.wholeRemainingArea && Number.isFinite(wholeAreaPool[code])) {
+      // CLIG3 takes all the land left, so show that amount rather than 0 once it is ticked
+      availableEl.textContent = formatAmount(wholeAreaPool[code], result.unit) + ' available'
     } else if (unavailable && !needsBase && Number.isFinite(result.available)) {
       // Land used up by other actions (CLIG3 takes all that is left): show 0, as in v4a
       availableEl.textContent = formatAmount(Math.max(0, result.available), result.unit) + ' available'
@@ -737,24 +746,30 @@
     update()
   }
 
-  document.addEventListener('change', function (event) {
+  function onDocumentChange (event) {
     if (event.target.matches('[data-v4b-select]')) {
       onTickChange(event.target.getAttribute('data-v4b-select'))
     }
-  })
-
-  document.addEventListener('input', function (event) {
-    if (event.target.matches('[data-v4b-quantity]')) {
-      scheduleUpdate(event.target.getAttribute('data-v4b-quantity'))
-    }
-  })
-
-  // Prototype toggles (existing agreements, deductions) change the numbers
-  document.addEventListener('change', function (event) {
+    // Prototype toggles (existing agreements, deductions) change the numbers
     if (event.target.closest('#prototype-toggles')) {
       update()
     }
-  })
+  }
+
+  function onDocumentInput (event) {
+    if (event.target.matches('[data-v4b-quantity]')) {
+      scheduleUpdate(event.target.getAttribute('data-v4b-quantity'))
+    }
+  }
+
+  document.addEventListener('change', onDocumentChange)
+  document.addEventListener('input', onDocumentInput)
+
+  window.__v4bSelectParcelsTeardown = function () {
+    document.removeEventListener('change', onDocumentChange)
+    document.removeEventListener('input', onDocumentInput)
+    window.clearTimeout(debounceTimer)
+  }
 
   function focusFromHash () {
     var hash = window.location.hash
