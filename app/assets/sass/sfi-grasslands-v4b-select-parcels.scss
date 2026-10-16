@@ -502,6 +502,14 @@ $app-v4b-light-grey: #f3f2f1;
       flex: 0 0 auto;
       width: auto;
     }
+
+    // GOV.UK's phone-layout gaps under the label (5px) and the link (15px) still apply in
+    // flex rows, which made the row with "Change" taller and its text look out of line
+    .govuk-summary-list__key,
+    .govuk-summary-list__value,
+    .govuk-summary-list__actions {
+      margin-bottom: 0;
+    }
   }
 }
 

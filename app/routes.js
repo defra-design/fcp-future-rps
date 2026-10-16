@@ -10470,7 +10470,9 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
       }
     }),
     // List view of the same parcels, for people who do not want to (or cannot) use the map
-    // Only parcels with at least one available action are listed (the hint says so)
+    // Only parcels with at least one available action are listed (the hint says so).
+    // The parcel last chosen from the list stays selected when the user comes back to it
+    // (Back or Change), until its actions are saved.
     listParcels: parcels.map(function (parcel) {
       var parcelSaved = sfiGrasslandsV4bRevenueActions.getSavedQuantities(req, parcel.parcelId)
       // Same actions as the parcel's actions page shows
@@ -10487,7 +10489,8 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
         landCoverSummary: parcel.landCoverSummary,
         totalAreaShort: parcel.totalAreaShort,
         availableActionCount: availableActionCount,
-        status: parcel.savedCount > 0 ? 'added' : (availableActionCount ? 'available' : 'unavailable')
+        status: parcel.savedCount > 0 ? 'added' : (availableActionCount ? 'available' : 'unavailable'),
+        chosen: (req.body && req.body.v4bListParcel ? req.body.v4bListParcel : getSfiGrasslandsV4bSessionData(req).v4bListLastParcel) === parcel.parcelId
       }
     }).filter(function (parcel) { return parcel.status !== 'unavailable' }),
     // The view comes from the link (GET) or a hidden field (POST, when the page shows errors)
@@ -10539,6 +10542,11 @@ router.get('/sfi-grasslands-v4b/select-parcels', function (req, res) {
   sfiGrasslandsV4bTasks.markInProgress(req, sfiGrasslandsV4bTasks.TASK_IDS.selectLand)
   if (req.query.view === 'list') {
     getSfiGrasslandsV4bSessionData(req).v4bParcelView = 'list'
+    // Opening a parcel's step (for example from Change on the review page) makes it the one
+    // selected when going back to the list
+    if (req.query.parcel) {
+      getSfiGrasslandsV4bSessionData(req).v4bListLastParcel = req.query.parcel
+    }
   }
   renderSfiGrasslandsV4bSelectParcels(req, res)
 })
@@ -10556,6 +10564,7 @@ router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
         errors: [{ field: 'listParcel', href: '#v4bListParcel', text: 'Select a land parcel' }]
       })
     }
+    getSfiGrasslandsV4bSessionData(req).v4bListLastParcel = chosenId
     return res.redirect('/sfi-grasslands-v4b/select-parcels?parcel=' + encodeURIComponent(chosenId) + '&view=list')
   }
 
@@ -10600,6 +10609,8 @@ router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
 
     // List view, step 2: after saving, review all land and actions (like v4a)
     if (listView && intent === 'save') {
+      // Saved, so "Add another land parcel" starts with nothing selected
+      delete getSfiGrasslandsV4bSessionData(req).v4bListLastParcel
       if (result.actions.length || hadSaved) {
         getSfiGrasslandsV4bSessionData(req).confirmLandFlash = result.actions.length
           ? 'Actions saved to land parcel ' + parcel.parcelReference
