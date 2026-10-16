@@ -686,6 +686,9 @@
             >
               <div id="map"></div>
             </div>
+            {# How to zoom, joined to the bottom of the map. Wording for the device is set by
+               sfi-grasslands-dev-ready-map-zoom-gestures.js #}
+            <p class="app-map-zoom-hint" id="map-zoom-hint">Hold the Ctrl key and scroll to zoom</p>
           </div>
         </div>
 
@@ -1208,6 +1211,7 @@
   <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/umd/index.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-parcel-search.js"></script>
   <script src="/public/javascripts/sfi-grasslands-dev-ready-map-reset-button.js"></script>
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-map-zoom-gestures.js"></script>
 
   <!-- MapLibre JS -->
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
@@ -1503,9 +1507,11 @@
 
       rawMap = event.map;
 
-      // Let the page scroll normally when the wheel is used over the map.
-      // Keep pinch-to-zoom, drag pan, and +/- controls.
-      if (rawMap.scrollZoom && typeof rawMap.scrollZoom.disable === 'function') {
+      // A plain scroll moves the page; ⌘ command / Ctrl + scroll zooms the map, and on touch
+      // screens two fingers move it (as on v4b). Pop-up once per visit, hint under the map.
+      if (window.SfiGrasslandsDevReadyMapZoomGestures) {
+        window.SfiGrasslandsDevReadyMapZoomGestures.setUp(rawMap);
+      } else if (rawMap.scrollZoom && typeof rawMap.scrollZoom.disable === 'function') {
         rawMap.scrollZoom.disable();
       }
 

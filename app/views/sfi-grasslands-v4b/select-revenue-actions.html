@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v4b-header.html" %}
 
 {% block pageTitle %}
-  {% if errors %}Error: {% endif %}Select actions and capital items
+  {% if errors %}Error: {% endif %}Select actions
 {% endblock %}
 
 {% block beforeContent %}
@@ -29,9 +29,9 @@
     {% endif %}
 
     <form method="post" action="/sfi-grasslands-v4b/select-revenue-actions" novalidate>
-      {% set journeySection = "Select land and actions" %}
+      {% set journeySection = "Select actions and land" %}
       {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
-      <h1 class="govuk-heading-l">Select actions and capital items</h1>
+      <h1 class="govuk-heading-l">Select actions</h1>
       <p class="govuk-body">Each action lasts for 3 years.</p>
       <p class="govuk-body">Select all that apply. You will choose which land parcels to use them on next.</p>
 
@@ -88,7 +88,7 @@
         classes: "app-v4b-revenue-actions",
         fieldset: {
           legend: {
-            text: "Select actions and capital items",
+            text: "Select actions",
             classes: "govuk-visually-hidden"
           }
         },

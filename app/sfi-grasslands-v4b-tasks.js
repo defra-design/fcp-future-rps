@@ -425,12 +425,12 @@ function getTaskListPageData (req) {
     ],
     section2Items: [
       buildTaskItem({
-        title: 'Select actions and capital items',
+        title: 'Select actions',
         href: states.selectActions.href,
         status: states.selectActions.status
       }),
       buildTaskItem({
-        title: 'Select land for your actions',
+        title: 'Select land parcels for your actions',
         href: states.selectLand.href,
         status: states.selectLand.status
       })

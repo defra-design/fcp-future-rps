@@ -6,7 +6,7 @@
 {% set listStep = listView and selectedParcel %}
 
 {% block pageTitle %}
-  {% if errors.length %}Error: {% endif %}{% if listStep %}Select actions for land parcel {{ selectedParcel.parcelReference }}{% else %}Select land for your actions{% endif %}
+  {% if errors.length %}Error: {% endif %}{% if listStep %}Select actions for this land parcel{% else %}Select land parcels for your actions{% endif %}
 {% endblock %}
 
 {% block beforeContent %}
@@ -48,12 +48,12 @@
       {{ govukErrorSummary({ titleText: "There is a problem", errorList: errorList }) }}
     {% endif %}
 
-    {% set journeySection = "Select land and actions" %}
+    {% set journeySection = "Select actions and land" %}
     {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
     {% if listStep %}
-    <h1 class="govuk-heading-l">Select actions for land parcel {{ selectedParcel.parcelReference }}</h1>
+    <h1 class="govuk-heading-l">Select actions for this land parcel</h1>
     {% else %}
-    <h1 class="govuk-heading-l">Select land for your actions</h1>
+    <h1 class="govuk-heading-l">Select land parcels for your actions</h1>
     {% endif %}
     {# The farm figures help choose land, so they are not shown once a parcel is chosen in the list view #}
     <dl class="govuk-body app-v4b-farm-stats{% if listStep %} app-v4b-hidden{% endif %}" aria-label="{{ farmSummary.farmName }}">
@@ -158,6 +158,8 @@
         >
           <div id="v4b-parcel-map" class="app-v4b-map__canvas" tabindex="-1"></div>
         </div>
+        {# How to zoom, just under the map. The script swaps in the wording for the device (Mac, Windows or touch). #}
+        <p class="app-v4b-map__zoom-hint" id="v4b-map-zoom-hint">Hold the Ctrl key and scroll to zoom</p>
         <ul class="govuk-list govuk-body-s app-v4b-map__key" aria-label="Map key">
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--available"></span>Available</li>
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--selected"></span>Selected</li>
@@ -190,11 +192,24 @@
                 <p id="v4b-actions-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ selectionError }}</p>
               {% endif %}
           <dl class="govuk-summary-list{% if parcelActions.length %} govuk-!-margin-bottom-6{% else %} govuk-!-margin-bottom-4{% endif %} app-v4b-parcel-summary">
-            {# No link to pick another parcel: the map is just above. Once saved, the parcel can be removed. #}
-            <div class="govuk-summary-list__row{% if not selectedParcel.savedCount %} govuk-summary-list__row--no-actions{% endif %}">
+            {# Map view: no link to pick another parcel, as the map is just above.
+               List view: "Change" goes back to the list to pick another parcel.
+               Once saved, the parcel can also be removed. #}
+            <div class="govuk-summary-list__row{% if not selectedParcel.savedCount and not listStep %} govuk-summary-list__row--no-actions{% endif %}">
               <dt class="govuk-summary-list__key">Land parcel</dt>
               <dd class="govuk-summary-list__value">{{ selectedParcel.parcelReference }}</dd>
-              {% if selectedParcel.savedCount %}
+              {% if listStep and selectedParcel.savedCount %}
+                <dd class="govuk-summary-list__actions">
+                  <ul class="govuk-summary-list__actions-list">
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?view=list">Change<span class="govuk-visually-hidden"> land parcel</span></a></li>
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a></li>
+                  </ul>
+                </dd>
+              {% elif listStep %}
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?view=list">Change<span class="govuk-visually-hidden"> land parcel</span></a>
+                </dd>
+              {% elif selectedParcel.savedCount %}
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a>
                 </dd>
@@ -253,9 +268,6 @@
               </div>
             </fieldset>
           </div>
-          {% if listStep %}
-            <p class="govuk-body">You can check your land and actions, and add more land parcels, on the next page.</p>
-          {% endif %}
           <div class="govuk-button-group app-v4b-panel__buttons">
             {# Map view: Continue at the bottom is the main (green) button, so saving a parcel is secondary.
                List view: this is the only button on the step, so it stays green. #}
@@ -265,9 +277,6 @@
               value: "save",
               classes: "" if listStep else "govuk-button--secondary"
             }) }}
-            {% if listStep %}
-              <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?view=list">Choose a different land parcel</a>
-            {% endif %}
           </div>
           {% if listStep %}
           {# As in v4a: Cancel under the button once land has been added #}
@@ -281,11 +290,24 @@
           {% endif %}
           {% else %}
           <dl class="govuk-summary-list{% if parcelActions.length %} govuk-!-margin-bottom-6{% else %} govuk-!-margin-bottom-4{% endif %} app-v4b-parcel-summary">
-            {# No link to pick another parcel: the map is just above. Once saved, the parcel can be removed. #}
-            <div class="govuk-summary-list__row{% if not selectedParcel.savedCount %} govuk-summary-list__row--no-actions{% endif %}">
+            {# Map view: no link to pick another parcel, as the map is just above.
+               List view: "Change" goes back to the list to pick another parcel.
+               Once saved, the parcel can also be removed. #}
+            <div class="govuk-summary-list__row{% if not selectedParcel.savedCount and not listStep %} govuk-summary-list__row--no-actions{% endif %}">
               <dt class="govuk-summary-list__key">Land parcel</dt>
               <dd class="govuk-summary-list__value">{{ selectedParcel.parcelReference }}</dd>
-              {% if selectedParcel.savedCount %}
+              {% if listStep and selectedParcel.savedCount %}
+                <dd class="govuk-summary-list__actions">
+                  <ul class="govuk-summary-list__actions-list">
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?view=list">Change<span class="govuk-visually-hidden"> land parcel</span></a></li>
+                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a></li>
+                  </ul>
+                </dd>
+              {% elif listStep %}
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?view=list">Change<span class="govuk-visually-hidden"> land parcel</span></a>
+                </dd>
+              {% elif selectedParcel.savedCount %}
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="/sfi-grasslands-v4b/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a>
                 </dd>

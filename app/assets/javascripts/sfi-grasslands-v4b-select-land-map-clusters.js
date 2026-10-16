@@ -36,7 +36,8 @@
       }).map(function (parcelId) {
         return {
           type: 'Feature',
-          properties: { parcelId: parcelId },
+          // OS map sheet, so a cluster can show it when all its parcels share one
+          properties: { parcelId: parcelId, sheet: getSheetReference(parcelData[parcelId]) || '' },
           geometry: { type: 'Point', coordinates: getCentroid(parcelData[parcelId].coords) }
         }
       })
@@ -163,8 +164,20 @@
       cluster: true,
       clusterMaxZoom: CLUSTER_MAX_ZOOM,
       // Larger on select-parcels, so circles never overlap (a "2" sat on top of a "23")
-      clusterRadius: opts.clusterRadius || CLUSTER_RADIUS_PX
+      clusterRadius: opts.clusterRadius || CLUSTER_RADIUS_PX,
+      // The cluster's OS map sheet: the shared one, or '' when its parcels are on more than one
+      clusterProperties: {
+        sheet: [
+          ['case', ['==', ['accumulated'], ['get', 'sheet']], ['accumulated'], ''],
+          ['get', 'sheet']
+        ]
+      }
     })
+
+    // select-parcels (showSheet): the sheet reference in small text under the circle,
+    // only when every parcel in the circle is on that sheet
+    var hasSheet = ['all', Boolean(opts.showSheet), ['!=', ['coalesce', ['get', 'sheet'], ''], '']]
+    var countText = ['coalesce', ['get', 'point_count_abbreviated'], '1']
 
     // A parcel on its own isn't grouped into a cluster, so it has no point_count. It still
     // gets a "1" bubble while clusters show, or it would be too small to see.
@@ -187,7 +200,7 @@
       source: POINT_SOURCE_ID,
       maxzoom: CLUSTER_MAX_ZOOM + 1,
       layout: {
-        'text-field': ['coalesce', ['get', 'point_count_abbreviated'], '1'],
+        'text-field': countText,
         'text-font': ['Noto Sans Bold'],
         'text-size': 14,
         'text-allow-overlap': true
@@ -196,6 +209,31 @@
         'text-color': '#ffffff'
       }
     })
+
+    if (opts.showSheet) {
+      map.addLayer({
+        id: CLUSTER_COUNT_LAYER_ID + '-sheet',
+        type: 'symbol',
+        source: POINT_SOURCE_ID,
+        maxzoom: CLUSTER_MAX_ZOOM + 1,
+        filter: hasSheet,
+        layout: {
+          'text-field': ['get', 'sheet'],
+          'text-font': ['Noto Sans Bold'],
+          'text-size': 12,
+          'text-anchor': 'top',
+          // Just below the circle, whatever its size
+          'text-offset': ['step', ['coalesce', ['get', 'point_count'], 1],
+            ['literal', [0, 1.75]], 5, ['literal', [0, 2.1]], 20, ['literal', [0, 2.6]]],
+          'text-allow-overlap': true
+        },
+        paint: {
+          'text-color': '#0b0c0c',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 2
+        }
+      })
+    }
 
     if (opts.labelLayerId && map.getLayer(opts.labelLayerId)) {
       map.setLayerZoomRange(opts.labelLayerId, LABEL_MIN_ZOOM, 24)

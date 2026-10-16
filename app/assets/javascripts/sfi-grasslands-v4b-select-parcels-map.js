@@ -23,6 +23,8 @@
   // Zoom rules match v4a (sfi-grasslands-v4a/select-land.html):
   // the all-parcels view never goes closer than the farm overview,
   var ALL_FARMS_MAP_ZOOM = 13.9865053
+  // The starting (and "View all land parcels") view is never further out than this
+  var START_MIN_ZOOM = 11.2
   // a selected parcel is shown no closer than 15, with room round it,
   var PARCEL_VIEW_MAX_ZOOM = 15
   var PARCEL_VIEW_PADDING_PX = 80
@@ -315,7 +317,9 @@
         // A cluster of land in two places splits into them before zooming to fit
         splitClusters: true,
         // Wide enough that land close together stays in one circle
-        clusterRadius: 80
+        clusterRadius: 80,
+        // OS map sheet (for example SO3) under the circle, when the whole circle is on one sheet
+        showSheet: true
       })
     }
 
@@ -513,7 +517,13 @@
         var center = Array.isArray(camera.center)
           ? { lng: camera.center[0], lat: camera.center[1] }
           : camera.center
-        defaultView = { lat: center.lat, lng: center.lng, zoom: camera.zoom }
+        // Fitting every parcel can zoom out so far that all the land becomes one cluster
+        // ("34"). Start no further out than the level where each area of land has its own
+        // circle (25, 5, 3 and 1 on this farm), centred on all the land.
+        // On a narrow (phone) map that level would push most of the land off screen,
+        // so there the view still fits everything.
+        var wideMap = map.getContainer().clientWidth >= 500
+        defaultView = { lat: center.lat, lng: center.lng, zoom: wideMap ? Math.max(camera.zoom, START_MIN_ZOOM) : camera.zoom }
         return
       }
     }
@@ -599,6 +609,83 @@
     }
   })
 
+  // ---------------------------------------------------------------------------
+  // Zooming with the scroll wheel or trackpad without trapping the page (MapLibre's
+  // "cooperative gestures"): a plain scroll moves the page, Cmd (Mac) or Ctrl + scroll
+  // zooms the map, and on touch screens two fingers move the map. MapLibre's pop-up
+  // explaining this shows once per visit; the hint under the map is always there.
+  // ---------------------------------------------------------------------------
+  var GESTURE_HINT_KEY = 'v4bMapGestureHintSeen'
+
+  function getDevice () {
+    var touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches
+    if (touch) {
+      return 'touch'
+    }
+    var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent || ''
+    return /mac/i.test(platform) ? 'mac' : 'other'
+  }
+
+  function gestureHintSeen () {
+    try {
+      return window.sessionStorage.getItem(GESTURE_HINT_KEY) === '1'
+    } catch (error) {
+      return false
+    }
+  }
+
+  // The hint on the map, in words for this device. Set straight away, before the map loads.
+  function setZoomHintText () {
+    var device = getDevice()
+    var hint = document.getElementById('v4b-map-zoom-hint')
+    if (hint) {
+      hint.textContent = device === 'touch'
+        ? 'Use two fingers to move or zoom'
+        : (device === 'mac' ? 'Hold the ⌘ command key and scroll to zoom' : 'Hold the Ctrl key and scroll to zoom')
+    }
+  }
+  setZoomHintText()
+
+  function setUpZoomGestures (map) {
+    if (!map.cooperativeGestures || !map.scrollZoom) {
+      if (map.scrollZoom) {
+        map.scrollZoom.disable()
+      }
+      return
+    }
+    // Our wording for the pop-up (it is set when cooperative gestures are switched on)
+    var strings = {
+      'CooperativeGesturesHandler.WindowsHelpText': 'Hold the Ctrl key and scroll to zoom the map',
+      'CooperativeGesturesHandler.MacHelpText': 'Hold the ⌘ command key and scroll to zoom the map',
+      'CooperativeGesturesHandler.MobileHelpText': 'Use two fingers to move the map'
+    }
+    if (typeof map.setLocale === 'function') {
+      map.setLocale(strings)
+    } else {
+      map._locale = Object.assign({}, map._locale || {}, strings)
+    }
+    map.scrollZoom.enable()
+    map.cooperativeGestures.enable()
+
+    var container = map.getContainer()
+    if (gestureHintSeen()) {
+      container.classList.add('app-v4b-gesture-hint-seen')
+      return
+    }
+    map.on('cooperativegestureprevented', function () {
+      if (container.classList.contains('app-v4b-gesture-hint-seen')) {
+        return
+      }
+      try {
+        window.sessionStorage.setItem(GESTURE_HINT_KEY, '1')
+      } catch (error) {}
+      // Let this first one show and fade, then hide it for the rest of the visit
+      window.setTimeout(function () {
+        container.classList.add('app-v4b-gesture-hint-seen')
+      }, 1600)
+    })
+  }
+
   function takeZoomToParcelFlag () {
     try {
       var flag = window.sessionStorage.getItem(ZOOM_TO_PARCEL_KEY) === '1'
@@ -647,11 +734,8 @@
       return fitBounds.call(map, bounds, options)
     }
 
-    // Let the page scroll when the wheel passes over the map; +/- and drag still work.
     // Arrow keys move between parcels instead of panning.
-    if (map.scrollZoom) {
-      map.scrollZoom.disable()
-    }
+    setUpZoomGestures(map)
     if (map.keyboard) {
       map.keyboard.disable()
     }

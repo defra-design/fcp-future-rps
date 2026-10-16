@@ -226,3 +226,31 @@ html[data-parcel-view="list"] #parcel-map-key {
   background-color: #E5E6E7;
   border-color: #505A5F;
 }
+
+// How to zoom: a white panel joined to the bottom of the map with the same grey border,
+// so it reads as part of the map (as on v4b select-parcels)
+.app-map-zoom-hint {
+  background: #ffffff;
+  border: 2px solid #b1b4b6;
+  border-top: 0;
+  // Same width as the map, which is 100% plus its border
+  box-sizing: content-box;
+  color: #0b0c0c;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 0;
+  padding: 8px 15px;
+  width: calc(100% - 30px);
+}
+
+// MapLibre's "hold ⌘ / Ctrl" pop-up is never shown: the hint under the map is enough
+#map .maplibregl-cooperative-gesture-screen {
+  display: none !important;
+}
+
+// The map component draws its own light grey (#cecece) border inside the page's border,
+// which made a double line. Keep only the page's border.
+#map-im-app {
+  border: 0;
+}

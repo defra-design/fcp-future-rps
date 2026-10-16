@@ -47,7 +47,7 @@
         </div>
       {% endif %}
 
-      {% set journeySection = "Select land and actions" %}
+      {% set journeySection = "Select actions and land" %}
       {% include "sfi-grasslands-v4b/_includes/journey-caption.html" %}
 
       {% if summary.isEmpty %}
@@ -62,7 +62,7 @@
         {# Selected actions are kept when land is removed, so the next step is choosing land.
            Goes to the map or list view the user was using. #}
         {{ govukButton({
-          text: "Select land for your actions",
+          text: "Select land parcels for your actions",
           href: "/sfi-grasslands-v4b/select-parcels" + ("?view=list" if data and data.v4bParcelView == "list" else "")
         }) }}
       {% else %}
