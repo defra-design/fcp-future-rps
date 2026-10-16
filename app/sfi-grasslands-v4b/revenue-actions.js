@@ -5,12 +5,12 @@
  * store as the basket (sfi-grasslands-v4b-land-actions).
  */
 
-var landActions = require('./sfi-grasslands-v4b-land-actions')
-var consent = require('./sfi-grasslands-v4b-consent')
-var parcelReference = require('./sfi-grasslands-v4b-parcel-reference')
-var compatibilityMatrix = require('./compatibility-matrix')
-var outlyingParcels = require('./assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
-var parcelsById = outlyingParcels.addTo(Object.assign({}, require('./data/sfi-grasslands-v4b-land-details-parcels.json')))
+var landActions = require('./land-actions')
+var consent = require('./consent')
+var parcelReference = require('./parcel-reference')
+var compatibilityMatrix = require('../compatibility-matrix')
+var outlyingParcels = require('../assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
+var parcelsById = outlyingParcels.addTo(Object.assign({}, require('../data/sfi-grasslands-v4b-land-details-parcels.json')))
 
 var INTERESTED_ACTIONS_KEY = 'sfiV4bInterestedActions'
 var FLASH_KEY = 'sfiV4bSelectParcelsFlash'

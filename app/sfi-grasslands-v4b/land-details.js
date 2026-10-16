@@ -3,10 +3,10 @@
  * Reuses Agile Farm (buckinghamshire) parcel coords/areas from select-land data.
  */
 
-var parcelReference = require('./sfi-grasslands-v4b-parcel-reference')
-var consent = require('./sfi-grasslands-v4b-consent')
-var outlyingParcels = require('./assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
-var parcelsById = outlyingParcels.addTo(Object.assign({}, require('./data/sfi-grasslands-v4b-land-details-parcels.json')))
+var parcelReference = require('./parcel-reference')
+var consent = require('./consent')
+var outlyingParcels = require('../assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
+var parcelsById = outlyingParcels.addTo(Object.assign({}, require('../data/sfi-grasslands-v4b-land-details-parcels.json')))
 
 var FARM_NAME = 'Agile Farm'
 var LAND_DETAILS_BASE = '/sfi-grasslands-v4b/land-details'

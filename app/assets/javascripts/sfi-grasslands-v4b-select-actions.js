@@ -1038,8 +1038,8 @@ var parcelData = {
     numActions: 0,
     location: 'buckinghamshire',
     coords: [
-      [51.9477, -0.7552],
-      [51.9485, -0.7548],
+      [51.9478, -0.7551], // matches SO3757 3189's east edge, so they no longer overlap
+      [51.9485, -0.7547],
       [51.9488, -0.7525],
       [51.9481, -0.7522],
       [51.9473, -0.7526],
@@ -1210,6 +1210,7 @@ var parcelData = {
     location: 'buckinghamshire',
     coords: [
       [51.9544, -0.7493],
+      [51.9551, -0.7491], // follows SO3757 3199's east edge, so they no longer overlap
       [51.9556, -0.7494],
       [51.9558, -0.7475],
       [51.9550, -0.7472],
@@ -1610,15 +1611,23 @@ var LINEAR_ACTION_CODES = {
   WBD2: true
 };
 
-// Fixed AAC starting maxima — same 2,000 m physical perimeter on both demo parcels.
-// Difference is how many sides the applicant controls (not different action rules):
-// church-field (SO3757 3190) — one side → single-sided actions use perimeter once
-// far-meadow (SO3757 3193) — both sides → single-sided actions use perimeter × 2
+// Boundary length rule (agreed 16 October 2026): we cannot know whether the applicant
+// controls both sides of a boundary (it can vary along the perimeter), so they
+// self-declare. Single-sided actions (paid per side) are always available on the
+// perimeter × 2; both-sided actions (BND1 walls, WBD2 ditches) on the perimeter × 1.
+var SINGLE_SIDED_LINEAR = { BND2: true, CHRW1: true, CHRW2: true, CHRW3: true };
+
+function linearSideFactor(actionCode) {
+  return SINGLE_SIDED_LINEAR[String(actionCode || '').toUpperCase()] ? 2 : 1;
+}
+
+// Fixed AAC starting maxima on the two demo parcels: 2,000 m perimeter, so
+// single-sided actions 4,000 m and both-sided actions 2,000 m on both.
 var BOUNDARY_LENGTH_STARTING_MAXIMA = {
   'church-field': {
     BND1: 2000,
-    BND2: 2000,
-    CHRW2: 2000,
+    BND2: 4000,
+    CHRW2: 4000,
     WBD2: 2000
   },
   'far-meadow': {
@@ -1666,7 +1675,8 @@ function getLinearLengthDeductionMultiplier(targetCode, reducerCode, parcelId) {
   var targetMax = getBoundaryLengthStartingMax(id, targetCode);
   var reducerMax = getBoundaryLengthStartingMax(id, reducerCode);
   if (!targetMax || !reducerMax) {
-    return 1;
+    // No fixed maxima: the starting lengths differ only by sidedness
+    return linearSideFactor(targetCode) / linearSideFactor(reducerCode);
   }
   return targetMax / reducerMax;
 }
@@ -2051,9 +2061,10 @@ function getLinearAvailableMetres(parcel, actionCode) {
     return 0;
   }
 
-  // Estimate boundary length from area using a square-equivalent perimeter.
+  // Estimate boundary length from area using a square-equivalent perimeter,
+  // doubled for single-sided actions.
   var areaSqM = areaHa * 10000;
-  return Math.max(50, Math.round(4 * Math.sqrt(areaSqM)));
+  return Math.max(50, Math.round(4 * Math.sqrt(areaSqM))) * linearSideFactor(actionCode);
 }
 
 function getBuildingSquareMetresAvailable(parcel) {
@@ -6454,7 +6465,7 @@ $(document).ready(function(){
       // CLIG3 and CSAM3 share remaining grassland area (not hard-incompatible).
       // Boundary: BND1 shares length with BND2/CHRW2/WBD2 via AAC reductions — not hard-blocked.
       // BND2, CHRW2 and WBD2 are compatible with each other (no mutual reductions).
-      // Single-sided ×2 only when applicant controls both sides (SO3757 3193).
+      // Single-sided actions always use the perimeter × 2 (applicants self-declare which sides they control).
       incompatibleByCode: {
         GRH7: ['GRH8', 'GRH10'],
         GRH8: ['GRH7', 'GRH10'],

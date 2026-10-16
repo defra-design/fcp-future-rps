@@ -5,9 +5,9 @@
  * Uses the same Agile Farm parcels as the grasslands journey.
  */
 
-var parcelReference = require('./sfi-grasslands-v4b-parcel-reference')
-var outlyingParcels = require('./assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
-var parcelsById = outlyingParcels.addTo(Object.assign({}, require('./data/sfi-grasslands-v4b-land-details-parcels.json')))
+var parcelReference = require('./parcel-reference')
+var outlyingParcels = require('../assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
+var parcelsById = outlyingParcels.addTo(Object.assign({}, require('../data/sfi-grasslands-v4b-land-details-parcels.json')))
 
 var BASE_PATH = '/sfi-grasslands-v4b/rural-payments'
 var BUSINESS_NAME = 'AGILE FARM LTD'

@@ -2,7 +2,7 @@
  * Session helpers for the grasslands-v2 multi-step land and actions journey.
  */
 
-var parcelReference = require('./sfi-grasslands-v4b-parcel-reference')
+var parcelReference = require('./parcel-reference')
 
 function getSessionData (req) {
   req.session.data = req.session.data || {}
@@ -323,7 +323,7 @@ function getCatalogActionName (code) {
   if (!actionNamesByCode) {
     actionNamesByCode = {}
     try {
-      require('./data/sfi24-codes-names.json').forEach(function (row) {
+      require('../data/sfi24-codes-names.json').forEach(function (row) {
         if (row && row.code) {
           actionNamesByCode[String(row.code).toUpperCase()] = row.name
         }

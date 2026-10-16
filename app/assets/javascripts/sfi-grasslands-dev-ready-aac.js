@@ -524,15 +524,23 @@
     return Math.max(50, Math.round(4 * Math.sqrt(ha * 10000)))
   }
 
-  // Fixed AAC starting maxima — same 2,000 m physical perimeter on both demo parcels.
-  // Difference is how many sides the applicant controls (not different action rules):
-  // church-field (SO3757 3190) — one side → single-sided actions use perimeter once
-  // far-meadow (SO3757 3193) — both sides → single-sided actions use perimeter × 2
+  // Boundary length rule (agreed 16 October 2026): we cannot know whether the applicant
+  // controls both sides of a boundary (it can vary along the perimeter), so they
+  // self-declare. Single-sided actions (paid per side) are always available on the
+  // perimeter × 2; both-sided actions (BND1 walls, WBD2 ditches) on the perimeter × 1.
+  var SINGLE_SIDED_LINEAR = { BND2: true, CHRW1: true, CHRW2: true, CHRW3: true }
+
+  function linearSideFactor (code) {
+    return SINGLE_SIDED_LINEAR[String(code || '').toUpperCase()] ? 2 : 1
+  }
+
+  // Fixed AAC starting maxima on the two demo parcels: 2,000 m perimeter, so
+  // single-sided actions 4,000 m and both-sided actions 2,000 m on both.
   var BOUNDARY_LENGTH_STARTING_MAXIMA = {
     'church-field': {
       BND1: 2000,
-      BND2: 2000,
-      CHRW2: 2000,
+      BND2: 4000,
+      CHRW2: 4000,
       WBD2: 2000
     },
     'far-meadow': {
@@ -774,9 +782,10 @@
             baseEligible = getProtectedLandBaseOverride(code, 'm')
           }
           if (baseEligible == null) {
+            // Perimeter estimate, doubled for single-sided actions
             baseEligible = metresFromAvailableHa(
               profile.availableHa != null ? profile.availableHa : profile.totalHa
-            )
+            ) * linearSideFactor(code)
           }
           baseBeforeProtectedLand = baseEligible
           if (code === 'WBD2') {
@@ -943,12 +952,13 @@
   // Deductions are proportional: using a share of one action's starting length removes
   // the same share from the other. On far-meadow (both sides, BND1 2,000 / CHRW2 4,000)
   // 1,000 m CHRW2 takes 500 m off BND1, and 1,000 m BND1 takes 2,000 m off CHRW2.
-  // Where starting lengths match (one side controlled, or no fixed maxima) this is 1:1.
+  // Both-sided to both-sided (or single to single) is 1:1; single-sided lengths are double.
   function getLinearLengthDeductionMultiplier (targetCode, reducerCode) {
     var targetMax = getBoundaryLengthStartingMax(targetCode)
     var reducerMax = getBoundaryLengthStartingMax(reducerCode)
     if (!targetMax || !reducerMax) {
-      return 1
+      // No fixed maxima: the starting lengths differ only by sidedness
+      return linearSideFactor(targetCode) / linearSideFactor(reducerCode)
     }
     return targetMax / reducerMax
   }
