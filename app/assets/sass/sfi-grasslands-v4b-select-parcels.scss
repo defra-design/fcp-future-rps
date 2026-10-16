@@ -489,11 +489,26 @@ $app-v4b-light-grey: #f3f2f1;
   line-height: 1.25;
 }
 
-// "Change" on the Selected actions card at 16px
+// "Add or remove" on the Selected actions and items card at 16px. The link never breaks over
+// two lines: if it does not fit beside the title, it moves under it.
 .app-v4b-interested .govuk-summary-card__action,
 .app-v4b-interested .govuk-summary-card__action .govuk-link {
   font-size: 1rem;
   line-height: 1.25;
+  white-space: nowrap;
+}
+
+.app-v4b-interested .govuk-summary-card__title-wrapper {
+  align-items: baseline;
+  column-gap: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  row-gap: 5px;
+}
+
+.app-v4b-interested .govuk-summary-card__actions {
+  margin: 0;
 }
 
 // Card round the parcel details, with room before the actions question

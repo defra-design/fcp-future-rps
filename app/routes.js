@@ -10288,6 +10288,8 @@ function renderSfiGrasslandsV4bSelectRevenueActions (req, res, options) {
     selectedCodes: selectedCodes,
     usageByCode: sfiGrasslandsV4bRevenueActions.getActionUsage(req),
     hasSavedParcels: sfiGrasslandsV4bLandActions.hasSavedLandAndActions(req),
+    // Cancel only shows when the user came here from "Review land parcels and actions"
+    fromReview: Boolean(getSfiGrasslandsV4bSessionData(req).v4bFromReview),
     errors: opts.errors || null
   })
 }
@@ -10498,7 +10500,7 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
           availableArea: selectedParcel.availableArea,
           landCover: selectedParcel.landCover,
           actions: parcelActions.map(function (action) {
-            return { code: action.code, unit: action.unit, rate: action.rate, supplementOf: action.supplementOf || null, fullBaseArea: Boolean(action.fullBaseArea), wholeRemainingArea: Boolean(action.wholeRemainingArea) }
+            return { code: action.code, unit: action.unit, rate: action.rate, minQuantity: action.minQuantity || null, supplementOf: action.supplementOf || null, fullBaseArea: Boolean(action.fullBaseArea), wholeRemainingArea: Boolean(action.wholeRemainingArea) }
           }),
           incompatibleByCode: sfiGrasslandsV4bRevenueActions.getIncompatibleByCode(req),
           previousAgreementIncompatibleByCode: SFI_GRASSLANDS_V4B_PREVIOUS_AGREEMENT_MATRIX.incompatibleByCode
@@ -10516,6 +10518,8 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
     selectionError: selectionError,
     flashMessage: sfiGrasslandsV4bRevenueActions.takeFlash(req),
     savedParcelCount: parcels.filter(function (parcel) { return parcel.savedCount > 0 }).length,
+    // Cancel only shows when the user came here from "Review land parcels and actions"
+    fromReview: Boolean(getSfiGrasslandsV4bSessionData(req).v4bFromReview),
     savedYearlyTotalFormatted: sfiGrasslandsV4bLandActions.summariseBasket(
       sfiGrasslandsV4bLandActions.buildBasketParcels(req)
     ).totalYearlyPaymentFormatted,
@@ -10608,7 +10612,7 @@ router.post('/sfi-grasslands-v4b/select-parcels', function (req, res) {
       sfiGrasslandsV4bRevenueActions.setFlash(req, result.actions.length
         ? {
             heading: 'Actions saved to land parcel ' + parcel.parcelReference,
-            text: 'Select another land parcel to add more actions, or select Continue.'
+            text: 'Select another land parcel, or select Continue.'
           }
         : { heading: 'Land parcel ' + parcel.parcelReference + ' has been removed from your application' })
     }
@@ -10633,7 +10637,8 @@ router.get('/sfi-grasslands-v4b/cancel-land-actions-draft', function (req, res) 
   if (restored) {
     return res.redirect('/sfi-grasslands-v4b/confirm-land-and-actions')
   }
-  res.redirect('/sfi-grasslands-v4b/select-land')
+  // No land added yet: back to choosing land, in the view the user was using
+  res.redirect('/sfi-grasslands-v4b/select-parcels' + (getSfiGrasslandsV4bSessionData(req).v4bParcelView === 'list' ? '?view=list' : ''))
 })
 
 router.post('/sfi-grasslands-v4b/select-land', function (req, res) {
@@ -10933,6 +10938,8 @@ router.get('/sfi-grasslands-v4b/confirm-land-and-actions', function (req, res) {
   }
 
   delete sessionData.confirmLandFlash
+  // Back on the review page: Cancel only shows again after leaving it to change or add land
+  delete sessionData.v4bFromReview
 
   if (!basketSummary.isEmpty) {
     sfiGrasslandsV4bTasks.markInProgress(req, sfiGrasslandsV4bTasks.TASK_IDS.selectLand)
@@ -10975,6 +10982,8 @@ router.post('/sfi-grasslands-v4b/confirm-land-and-actions', function (req, res) 
     if (req.body.from === 'check-your-answers') {
       sessionData.returnToCheckYourAnswers = true
     }
+    // Came from the review page, so Cancel can take them back to it
+    sessionData.v4bFromReview = true
     // Back to the view they were using: the list or the map
     return res.redirect('/sfi-grasslands-v4b/select-parcels' + (sessionData.v4bParcelView === 'list' ? '?view=list' : ''))
   }
@@ -10995,6 +11004,8 @@ router.post('/sfi-grasslands-v4b/confirm-land-and-actions', function (req, res) 
 router.get('/sfi-grasslands-v4b/confirm-land-and-actions/change/:parcelId', function (req, res) {
   var parcelId = req.params.parcelId
   var sessionData = getSfiGrasslandsV4bSessionData(req)
+  // Came from the review page, so Cancel can take them back to it
+  sessionData.v4bFromReview = true
 
   if (req.query.from === 'check-your-answers') {
     sessionData.returnToCheckYourAnswers = true

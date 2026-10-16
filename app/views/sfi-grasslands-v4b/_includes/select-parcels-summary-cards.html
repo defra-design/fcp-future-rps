@@ -9,21 +9,21 @@
       {% endfor %}
     </ul>
     <p class="govuk-body-s govuk-!-margin-bottom-0">
-      <a class="govuk-link" href="/sfi-grasslands-v4b/select-revenue-actions">Change<span class="govuk-visually-hidden"> selected actions</span></a>
+      <a class="govuk-link" href="/sfi-grasslands-v4b/select-revenue-actions">Add or remove<span class="govuk-visually-hidden"> selected actions and items</span></a>
     </p>
   {% endset %}
   {{ govukDetails({
-    summaryText: "Selected actions (" + interestedActions.length + ")",
+    summaryText: "Selected actions and items (" + interestedActions.length + ")",
     html: selectedActionsHtml,
     classes: "govuk-!-margin-bottom-6"
   }) }}
 {% else %}
       <div class="govuk-summary-card app-v4b-interested">
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Selected actions</h2>
+          <h2 class="govuk-summary-card__title">Selected actions and items</h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
-              <a class="govuk-link" href="/sfi-grasslands-v4b/select-revenue-actions">Change<span class="govuk-visually-hidden"> selected actions</span></a>
+              <a class="govuk-link" href="/sfi-grasslands-v4b/select-revenue-actions">Add or remove<span class="govuk-visually-hidden"> selected actions and items</span></a>
             </li>
           </ul>
         </div>

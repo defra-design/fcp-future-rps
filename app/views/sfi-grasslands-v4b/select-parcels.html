@@ -257,15 +257,28 @@
             <p class="govuk-body">You can check your land and actions, and add more land parcels, on the next page.</p>
           {% endif %}
           <div class="govuk-button-group app-v4b-panel__buttons">
+            {# Map view: Continue at the bottom is the main (green) button, so saving a parcel is secondary.
+               List view: this is the only button on the step, so it stays green. #}
             {{ govukButton({
-              text: "Continue" if listStep else "Save actions to this land parcel",
+              text: "Continue" if listStep else "Save and add another land parcel",
               name: "v4bIntent",
-              value: "save"
+              value: "save",
+              classes: "" if listStep else "govuk-button--secondary"
             }) }}
             {% if listStep %}
               <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels?view=list">Choose a different land parcel</a>
             {% endif %}
           </div>
+          {% if listStep %}
+          {# As in v4a: Cancel under the button once land has been added #}
+            {% if fromReview and savedParcelCount %}
+            <p class="govuk-body">
+              <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v4b/cancel-land-actions-draft">
+                Cancel<span class="govuk-visually-hidden"> and return to review land parcels and actions</span>
+              </a>
+            </p>
+            {% endif %}
+          {% endif %}
           {% else %}
           <dl class="govuk-summary-list{% if parcelActions.length %} govuk-!-margin-bottom-6{% else %} govuk-!-margin-bottom-4{% endif %} app-v4b-parcel-summary">
             {# No link to pick another parcel: the map is just above. Once saved, the parcel can be removed. #}
@@ -311,10 +324,15 @@
           {% endif %}
         </div>
       {% else %}
-        {# One message for before and after land is added #}
+        {# Before any land is added there is no button yet, so the message is just the first step #}
+        {% if savedParcelCount %}
+          {% set insetHtml = '<p class="govuk-body">Select a land parcel to add actions. Land parcels with actions added are shown in green.</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">When you have finished, select Continue.</p>' %}
+        {% else %}
+          {% set insetHtml = '<p class="govuk-body govuk-!-margin-bottom-0">Select a land parcel to add actions.</p>' %}
+        {% endif %}
         {{ govukInsetText({
-          html: '<p class="govuk-body">Select a land parcel to add actions. Land parcels with actions added are shown in green.</p>
-            <p class="govuk-body govuk-!-margin-bottom-0">When you have finished, select Continue.</p>',
+          html: insetHtml,
           classes: "app-v4b-map-only"
         }) }}
       {% endif %}
@@ -340,13 +358,27 @@
   </div>
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds app-v4b-continue">
+    <div class="govuk-grid-column-two-thirds app-v4b-continue" data-v4b-saved-count="{{ savedParcelCount or 0 }}">
+      {# With a parcel open: "Save and continue" (pairs with "Save and add another land parcel",
+         both save it). With no parcel open: "Continue", as there is nothing to save, and only
+         once land has been added, as before that it could not go anywhere.
+         The layout script updates this when a parcel is swapped in without a reload. #}
       {{ govukButton({
-        text: "Continue",
+        text: "Save and continue" if selectedParcel else "Continue",
         name: "v4bIntent",
         value: "continue",
-        classes: "govuk-button--secondary" if selectedParcel else ""
+        classes: "" if (selectedParcel or savedParcelCount) else "app-v4b-hidden",
+        attributes: { "data-v4b-continue": "" }
       }) }}
+      {# As in v4a: once land has been added, Cancel leaves this page without saving the open
+         land parcel and goes back to "Review land parcels and actions" #}
+      {% if fromReview and savedParcelCount %}
+        <p class="govuk-body">
+          <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v4b/cancel-land-actions-draft">
+            Cancel<span class="govuk-visually-hidden"> and return to review land parcels and actions</span>
+          </a>
+        </p>
+      {% endif %}
     </div>
   </div>
 </form>

@@ -166,7 +166,8 @@
     if (selected && selected.coords && selected.coords.length) {
       var bounds = getBounds(selected.coords)
       if (opts.zoom || map.getZoom() < PARCEL_VIEW_MIN_ZOOM) {
-        map.fitBounds(bounds, { padding: PARCEL_VIEW_PADDING_PX, maxZoom: PARCEL_VIEW_MAX_ZOOM })
+        // A smooth flight to the parcel (a search can cross the whole farm)
+        map.fitBounds(bounds, { padding: PARCEL_VIEW_PADDING_PX, maxZoom: PARCEL_VIEW_MAX_ZOOM, duration: 1200 })
       } else {
         map.easeTo({ center: [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2] })
       }
@@ -208,6 +209,11 @@
       minzoom: 12,
       type: 'fill',
       source: 'v4b-parcels',
+      // Draw the selected parcel on top, so a neighbouring shape that overlaps it
+      // cannot cover its yellow
+      layout: {
+        'fill-sort-key': ['case', ['==', ['get', 'status'], 'selected'], 1, 0]
+      },
       paint: {
         'fill-color': ['match', ['get', 'status'],
           'selected', COLOURS.selectedFill,
@@ -224,6 +230,9 @@
       minzoom: 12,
       type: 'line',
       source: 'v4b-parcels',
+      layout: {
+        'line-sort-key': ['case', ['==', ['get', 'status'], 'selected'], 1, 0]
+      },
       paint: {
         'line-color': ['case',
           ['==', ['get', 'status'], 'selected'], COLOURS.darkBorder,
@@ -576,7 +585,17 @@
       try {
         window.sessionStorage.setItem(ZOOM_TO_PARCEL_KEY, '1')
       } catch (error) {}
-      openParcel(event.parcelId, { zoom: true })
+      var parcelId = event.parcelId
+      // Closing the search changes the map padding straight after this event, which stops
+      // any movement already started. Wait for that, then fly to the parcel and select it.
+      window.setTimeout(function () {
+        if (selected && selected.parcelId === parcelId) {
+          // Already open: just fly back to it
+          highlightParcel(parcelId, { zoom: true })
+          return
+        }
+        openParcel(parcelId, { zoom: true })
+      }, 150)
     }
   })
 
@@ -616,6 +635,17 @@
       return
     }
     rawMap = map
+
+    // The search plugin jumps straight to a result with no animation. Skip that jump:
+    // search:match then opens the parcel, and highlightParcel moves the map there smoothly.
+    var fitBounds = map.fitBounds
+    map.fitBounds = function (bounds, options) {
+      if (window.sfiGrasslandsV4bParcelSearch && window.sfiGrasslandsV4bParcelSearch.isResultBounds &&
+          window.sfiGrasslandsV4bParcelSearch.isResultBounds(bounds)) {
+        return map
+      }
+      return fitBounds.call(map, bounds, options)
+    }
 
     // Let the page scroll when the wheel passes over the map; +/- and drag still work.
     // Arrow keys move between parcels instead of panning.

@@ -37,7 +37,6 @@
 
       {% macro actionLabel(action, used) -%}
         {{ action.code }}: {{ action.name }}<span class="app-v4b-action-hint">{{ action.rateShortText }}</span>
-        {%- if used and used.length %}<span class="app-v4b-action-hint app-v4b-action-hint--used">Added to {{ used.length }} land parcel{% if used.length != 1 %}s{% endif %}</span>{% endif %}
       {%- endmacro %}
       {% macro actionGuidance(action) -%}
         <a class="govuk-link app-v4b-guidance-link" href="{{ action.guidanceUrl }}" target="_blank" rel="noopener noreferrer">Read guidance on {{ action.code }} (opens in new tab)</a>
@@ -100,6 +99,12 @@
       {{ govukButton({
         text: "Continue"
       }) }}
+      {# As on select land: once land has been added, leave without saving these changes #}
+      {% if fromReview and hasSavedParcels %}
+        <p class="govuk-body">
+          <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v4b/cancel-land-actions-draft">Cancel<span class="govuk-visually-hidden"> and return to review land parcels and actions</span></a>
+        </p>
+      {% endif %}
     </form>
 
   </div>

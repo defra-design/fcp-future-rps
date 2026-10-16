@@ -17,7 +17,8 @@ var FLASH_KEY = 'sfiV4bSelectParcelsFlash'
 
 // rate is per unit, except 'm' where the published rate is per 100 metres
 var ACTIONS = [
-  { code: 'BND1', name: 'Maintain dry stone walls', unit: 'm', rate: 27, rateText: '£27 per 100 metres (both sides) each year' },
+  // minQuantity: the smallest amount that can be entered (from the validation designs)
+  { code: 'BND1', name: 'Maintain dry stone walls', unit: 'm', rate: 27, rateText: '£27 per 100 metres (both sides) each year', minQuantity: 20 },
   { code: 'BND2', name: 'Maintain earth banks or stone-faced hedgebanks', unit: 'm', rate: 11, rateText: '£11 per 100 metres (one side) each year' },
   { code: 'CHRW2', name: 'Manage hedgerows', unit: 'm', rate: 13, rateText: '£13 per 100 metres (one side) each year' },
   { code: 'CIGL1', name: 'Take grassland field corners or blocks out of management', unit: 'ha', rate: 333, rateText: '£333 per hectare each year' },
@@ -318,10 +319,12 @@ function overLimitMessage (unit) {
   if (unit === 'm²') {
     return 'Enter a number that is not higher than the available square metres'
   }
-  if (unit === 'pond') {
-    return 'Enter a number that is not higher than the available ponds'
-  }
   return 'Enter a number that is not higher than the available hectares'
+}
+
+// For example "Enter 20 metres or more"
+function minimumMessage (action) {
+  return 'Enter ' + formatAmount(action.minQuantity, action.unit) + ' or more'
 }
 
 function parseQuantity (raw, action) {
@@ -342,6 +345,9 @@ function parseQuantity (raw, action) {
     }
   } else if (!Number.isInteger(value)) {
     return { error: formatErrorMessage(action.unit) }
+  }
+  if (action.minQuantity && value < action.minQuantity) {
+    return { error: minimumMessage(action) }
   }
   return { value: value }
 }
@@ -404,8 +410,9 @@ function validateParcelQuantities (req, parcelId, body) {
       })
       return
     }
+    // Ticked with nothing entered: same message as a wrong figure (validation designs)
     if (parsed.empty) {
-      errors.push({ code: action.code, text: 'Enter a quantity for ' + action.code + ', or deselect it' })
+      errors.push({ code: action.code, text: formatErrorMessage(action.unit) })
       return
     }
     if (parsed.error) {
@@ -413,7 +420,8 @@ function validateParcelQuantities (req, parcelId, body) {
       return
     }
 
-    var maxRaw = action.fullBaseArea ? null : body['v4bMax-' + action.code]
+    // Ponds have no available amount, so there is no upper limit to check
+    var maxRaw = action.fullBaseArea || action.unit === 'pond' ? null : body['v4bMax-' + action.code]
     var max = maxRaw === '' || maxRaw == null ? null : Number(maxRaw)
     if (max != null && Number.isFinite(max) && parsed.value > max + 0.00005) {
       errors.push({

@@ -40,6 +40,18 @@
       escapeHtml(reference.slice(end));
   }
 
+  // The bounds handed to the plugin for the latest results. A page can use this to stop the
+  // plugin's own instant jump and move the map smoothly itself (select-parcels does).
+  var resultBoundsKeys = {};
+
+  function boundsKey(bounds) {
+    return Array.isArray(bounds) ? bounds.map(function(value) { return Number(value).toFixed(7); }).join(',') : '';
+  }
+
+  function isResultBounds(bounds) {
+    return Boolean(resultBoundsKeys[boundsKey(bounds)]);
+  }
+
   function findParcels(query, parcels, formatReference) {
     var needle = compact(query);
 
@@ -81,6 +93,9 @@
         // The plugin always fetches its results, so the matches are passed in as a data: URL.
         buildRequest: function(query) {
           var results = findParcels(query, options.getParcels() || {}, options.formatReference);
+          results.forEach(function(result) {
+            resultBoundsKeys[boundsKey(result.bounds)] = true;
+          });
           return {
             url: 'data:application/json,' + encodeURIComponent(JSON.stringify(results)),
             options: { method: 'GET' }
@@ -102,5 +117,5 @@
     }
   }, true);
 
-  root.sfiGrasslandsV4bParcelSearch = { createPlugin: createPlugin };
+  root.sfiGrasslandsV4bParcelSearch = { createPlugin: createPlugin, isResultBounds: isResultBounds };
 })(window);

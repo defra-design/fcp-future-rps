@@ -149,6 +149,20 @@
     }
   })
 
+  // "Save and continue" with a parcel open, "Continue" without one, and no button at all
+  // before any land has been added (see select-parcels.html)
+  function syncContinueButton () {
+    var button = document.querySelector('[data-v4b-continue]')
+    var wrapper = document.querySelector('[data-v4b-saved-count]')
+    if (!button) {
+      return
+    }
+    var hasParcel = Boolean(document.getElementById('selected-parcel'))
+    var savedCount = wrapper ? Number(wrapper.getAttribute('data-v4b-saved-count')) || 0 : 0
+    button.textContent = hasParcel ? 'Save and continue' : 'Continue'
+    button.classList.toggle('app-v4b-hidden', !hasParcel && !savedCount)
+  }
+
   function copyJson (fromDoc, id) {
     var from = fromDoc.getElementById(id)
     var to = document.getElementById(id)
@@ -235,11 +249,7 @@
         }
         runParcelScript()
         applyState()
-        // Only one green button: once a parcel is showing, its Save button is the main one
-        var continueButton = document.querySelector('button[name="v4bIntent"][value="continue"]')
-        if (continueButton) {
-          continueButton.classList.toggle('govuk-button--secondary', !!document.getElementById('selected-parcel'))
-        }
+        syncContinueButton()
         var panel = document.getElementById('selected-parcel')
         announce(panel && panel.getAttribute('data-v4b-selected-reference'))
       })

@@ -188,6 +188,10 @@
     if (!/^\d+$/.test(value) || Number(value) <= 0) {
       return formatErrorMessage(meta.unit)
     }
+    // For example "Enter 20 metres or more" for BND1
+    if (meta.minQuantity && Number(value) < meta.minQuantity) {
+      return 'Enter ' + formatAmount(meta.minQuantity, meta.unit) + ' or more'
+    }
     return null
   }
 

@@ -54,14 +54,17 @@
         <h1 class="govuk-heading-l">Your land and actions</h1>
         {% if flashMessage %}
           <p class="govuk-body">
-            You removed the last land parcel. You must add at least one land parcel to continue your application.
+            You removed the last land parcel. You need to add actions to at least one land parcel to continue your application.
           </p>
         {% else %}
           <p class="govuk-body">You have not added any land parcels or actions yet.</p>
         {% endif %}
-        <p class="govuk-body">
-          <a class="govuk-link" href="/sfi-grasslands-v4b/select-parcels">Select a land parcel and add actions</a>
-        </p>
+        {# Selected actions are kept when land is removed, so the next step is choosing land.
+           Goes to the map or list view the user was using. #}
+        {{ govukButton({
+          text: "Select land for your actions",
+          href: "/sfi-grasslands-v4b/select-parcels" + ("?view=list" if data and data.v4bParcelView == "list" else "")
+        }) }}
       {% else %}
         <h1 class="govuk-heading-l">Review land parcels and actions</h1>
         {% for parcel in parcels %}
