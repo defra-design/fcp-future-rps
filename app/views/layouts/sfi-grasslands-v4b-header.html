@@ -24,12 +24,6 @@
           <img src="/public/images/brand.png" alt="Department for Environment, Food and Rural Affairs" class="govuk-header__logotype" height="30">
         </a>
       </div>
-      <a class="app-v4b-refresh" href="#refresh">
-        <svg class="app-v4b-refresh__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.75 10h-2.1A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-        </svg>
-        Refresh
-      </a>
     </div>
   </div>
 
@@ -148,17 +142,5 @@
       })
     })
 
-    var refreshLink = document.querySelector('.app-v4b-refresh')
-    if (refreshLink) {
-      refreshLink.addEventListener('click', function (event) {
-        event.preventDefault()
-        // GET the current page. The browser Refresh button resubmits the last form and errors.
-        var form = document.createElement('form')
-        form.method = 'get'
-        form.action = window.location.pathname + window.location.search + window.location.hash
-        document.body.appendChild(form)
-        form.submit()
-      })
-    }
   </script>
 {% endblock %}
