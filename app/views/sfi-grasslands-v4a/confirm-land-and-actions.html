@@ -80,7 +80,7 @@
               </ul>
             </div>
             <div class="govuk-summary-card__content">
-              <table class="govuk-table">
+              <table class="govuk-table app-stack-table">
                 <caption class="govuk-table__caption govuk-visually-hidden">
                   Actions on land parcel {{ parcelRef }}
                 </caption>
@@ -95,15 +95,15 @@
                 <tbody class="govuk-table__body">
                   {% for action in parcel.actions %}
                     <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">
+                      <td class="govuk-table__cell app-stack-table__title">
                         {{ action.code }}: {{ action.name }}
                         {% if action.consentHint %}
                           <span class="app-confirm-parcel-card__hint">{{ action.consentHint }}</span>
                         {% endif %}
                       </td>
-                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.quantityDisplay }}</td>
-                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ action.yearlyPaymentFormatted }}</td>
-                      <td class="govuk-table__cell govuk-table__cell--numeric">
+                      <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Quantity">{{ action.quantityDisplay }}</td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Yearly payment">{{ action.yearlyPaymentFormatted }}</td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric app-stack-table__change">
                         <a class="govuk-link" href="/sfi-grasslands-v4a/confirm-land-and-actions/change/{{ parcel.parcelId }}{% if action.code %}?actionCode={{ action.code }}{% endif %}{% if fromCheckYourAnswers %}{% if action.code %}&amp;{% else %}?{% endif %}from=check-your-answers{% endif %}">
                           Change<span class="govuk-visually-hidden"> {{ action.code }}: {{ action.name }}</span>
                         </a>
@@ -112,9 +112,9 @@
                   {% endfor %}
                   <tr class="govuk-table__row app-confirm-parcel-card__subtotal">
                     <th scope="row" class="govuk-table__cell">Subtotal</th>
-                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell app-stack-table__empty"></td>
                     <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.yearlyPaymentFormatted }}</td>
-                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell app-stack-table__empty"></td>
                   </tr>
                 </tbody>
               </table>

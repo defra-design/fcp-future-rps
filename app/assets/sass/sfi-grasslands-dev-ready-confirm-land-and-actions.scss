@@ -53,3 +53,165 @@
   margin-top: 15px;
   margin-bottom: 0;
 }
+
+// Mobile: stack each action row (HMRC / MOJ responsive table pattern).
+// Also used by check-your-answers.html and view-application.html, which load this stylesheet.
+// Labels follow the GOV.UK summary list: bold key, regular value, all in
+// the text colour (no secondary grey). Everything is 16px, the GOV.UK
+// mobile body size.
+@media (max-width: 40.0525em) {
+  .app-stack-table,
+  .app-stack-table tbody,
+  .app-stack-table tr,
+  .app-stack-table th,
+  .app-stack-table td {
+    display: block;
+    width: auto !important;
+  }
+
+  .app-stack-table thead {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    border: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .app-stack-table .govuk-table__row {
+    padding: 20px 0;
+    border-bottom: 1px solid #b1b4b6;
+  }
+
+  .app-stack-table .govuk-table__body .govuk-table__row:first-child {
+    padding-top: 5px;
+  }
+
+  .app-stack-table .govuk-table__cell {
+    padding: 0;
+    border-bottom: 0;
+    color: #0b0c0c;
+    font-size: 16px;
+    line-height: 1.25;
+    text-align: left;
+  }
+
+  .app-stack-table .app-stack-table__title {
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+
+  .app-stack-table .app-stack-table__title .app-confirm-parcel-card__hint {
+    margin-top: 5px;
+    font-weight: 400;
+  }
+
+  // Values sit on the right, like the desktop numeric columns, so the
+  // amounts line up with the subtotal. Tabular figures keep digits aligned.
+  .app-stack-table td[data-label],
+  .app-stack-table .app-confirm-parcel-card__subtotal .govuk-table__cell {
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .app-stack-table td[data-label] {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 10px;
+    text-align: right;
+  }
+
+  .app-stack-table td[data-label]::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .app-stack-table .app-stack-table__change {
+    margin-top: 15px;
+  }
+
+  .app-stack-table .app-stack-table__empty {
+    display: none;
+  }
+
+  .app-stack-table .app-confirm-parcel-card__subtotal {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  // Only the "Subtotal" label is bold; the amount stays regular, as on desktop
+  .app-stack-table .app-confirm-parcel-card__subtotal th.govuk-table__cell {
+    font-weight: 700;
+  }
+
+  .app-stack-table .app-confirm-parcel-card__subtotal td.govuk-table__cell {
+    font-weight: 400;
+  }
+
+  // Keep "Remove parcel" (or "Change") on the right of the card title on
+  // phones, instead of GOV.UK's default of stacking it underneath.
+  .app-confirm-parcel-card .govuk-summary-card__title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .app-confirm-parcel-card .govuk-summary-card__title {
+    margin-bottom: 0;
+  }
+
+  // Never split the parcel reference (e.g. "SO3757 3190") across lines
+  .app-confirm-parcel-card__title-ref {
+    white-space: nowrap;
+  }
+
+  .app-confirm-parcel-card .govuk-summary-card__actions {
+    flex-shrink: 0;
+    margin: 0;
+    text-align: right;
+  }
+
+  // Payment summary card (_includes/payment-summary-card.html): match the
+  // parcel cards, with the label on the left and the amount on the right.
+  .app-payment-summary .govuk-summary-list__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 15px;
+    margin-bottom: 0;
+    padding: 15px 0;
+  }
+
+  .app-payment-summary .govuk-summary-list__row:first-child {
+    padding-top: 5px;
+  }
+
+  .app-payment-summary .govuk-summary-list__key,
+  .app-payment-summary .govuk-summary-list__value {
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .app-payment-summary .govuk-summary-list__value {
+    flex-shrink: 0;
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .app-confirm-parcel-card__add-action {
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+}

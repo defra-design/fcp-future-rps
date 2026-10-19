@@ -435,7 +435,21 @@ tr .govuk-error-message {
 	display: block;
 	clear: both;
   }
-  @media print {
+
+// Account bar (sfi-grasslands-v4a, v4b, dev-ready _includes/account-bar.html):
+// the signed-in user sits on the right on desktop. On phones the grid columns
+// stack, so it is left-aligned to read as one block with the business details.
+.app-account-bar__user {
+  text-align: right;
+}
+
+@media (max-width: 40.0525em) {
+  .app-account-bar__user {
+    text-align: left;
+  }
+}
+
+@media print {
 	.login-nav {
 	  font-family: sans-serif;
 	}
