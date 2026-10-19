@@ -1667,18 +1667,23 @@ function getLinearLengthReducers(actionCode) {
   return [];
 }
 
-// Using a share of one action's starting length removes the same share from the other.
-// far-meadow (BND1 2,000 / CHRW2 4,000): 1,000 m CHRW2 takes 500 m off BND1,
-// and 1,000 m BND1 takes 2,000 m off CHRW2. Matching starting lengths give 1:1.
+// Using a share of one action's starting length removes the same share from the other,
+// except that a both-sides action (hedgerows) never takes less than 1 m per metre off a
+// one-side action (19 October 2026). far-meadow (BND1 2,000 / CHRW2 4,000): 1,000 m CHRW2
+// takes 1,000 m off BND1, and 1,000 m BND1 takes 2,000 m off CHRW2. Matching starting
+// lengths give 1:1.
 function getLinearLengthDeductionMultiplier(targetCode, reducerCode, parcelId) {
   var id = parcelId || currentSelectedParcel || null;
   var targetMax = getBoundaryLengthStartingMax(id, targetCode);
   var reducerMax = getBoundaryLengthStartingMax(id, reducerCode);
-  if (!targetMax || !reducerMax) {
+  var ratio = (!targetMax || !reducerMax)
     // No fixed maxima: the starting lengths differ only by sidedness
-    return linearSideFactor(targetCode) / linearSideFactor(reducerCode);
+    ? linearSideFactor(targetCode) / linearSideFactor(reducerCode)
+    : targetMax / reducerMax;
+  if (linearSideFactor(reducerCode) > linearSideFactor(targetCode)) {
+    return Math.max(1, ratio);
   }
-  return targetMax / reducerMax;
+  return ratio;
 }
 
 function getMetresUsedByReducers(actionCode) {
