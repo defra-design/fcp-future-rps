@@ -39,6 +39,20 @@ const sfiGrasslandsV4bConsent = require('./sfi-grasslands-v4b/consent')
 const sfiGrasslandsV4bLandDetails = require('./sfi-grasslands-v4b/land-details')
 const sfiGrasslandsV4bRuralPayments = require('./sfi-grasslands-v4b/rural-payments')
 const sfiGrasslandsV4bRevenueActions = require('./sfi-grasslands-v4b/revenue-actions')
+const sfiGrasslandsV4bRpaLand = require('./sfi-grasslands-v4b/rpa-land')
+
+// v4b prototype tool: a real farm's land loaded by SBI from the RPA Land API replaces the
+// Agile Farm test parcels for this session (see app/sfi-grasslands-v4b/rpa-land.js).
+// This must run before every other v4b route.
+router.use('/sfi-grasslands-v4b', sfiGrasslandsV4bRpaLand.middleware)
+router.post('/sfi-grasslands-v4b/prototype-tools/rpa-land', sfiGrasslandsV4bRpaLand.handlePost)
+// Demo configuration: business name and SBI (real land from the RPA Land API), then the task list
+router.get('/sfi-grasslands-v4b/demo-configuration', sfiGrasslandsV4bRpaLand.handleDemoConfigurationGet)
+router.post('/sfi-grasslands-v4b/demo-configuration', sfiGrasslandsV4bRpaLand.handleDemoConfigurationPost)
+// Participant link made on the demo configuration page
+router.get('/sfi-grasslands-v4b/demo-start', sfiGrasslandsV4bRpaLand.handleDemoStart)
+router.get('/sfi-grasslands-v4b/demo-configuration/check-sbi', sfiGrasslandsV4bRpaLand.handleSbiCheck)
+router.get('/sfi-grasslands-v4b/demo-configuration/reset', sfiGrasslandsV4bRpaLand.handleDemoReset)
 const sfiAgreementV1Offer = require('./sfi-agreement-v1-offer')
 const sfiAgreementV2Offer = require('./sfi-agreement-v2-offer')
 
@@ -10502,6 +10516,7 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
           totalArea: selectedParcel.totalArea,
           availableArea: selectedParcel.availableArea,
           landCover: selectedParcel.landCover,
+          perimeterMetres: selectedParcel.perimeterMetres,
           actions: parcelActions.map(function (action) {
             return { code: action.code, unit: action.unit, rate: action.rate, minQuantity: action.minQuantity || null, supplementOf: action.supplementOf || null, fullBaseArea: Boolean(action.fullBaseArea), wholeRemainingArea: Boolean(action.wholeRemainingArea) }
           }),

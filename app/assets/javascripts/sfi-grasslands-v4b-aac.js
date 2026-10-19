@@ -552,6 +552,12 @@
   }
 
   function getBoundaryLengthStartingMax (code) {
+    // Real land loaded by SBI (rpa-land.js) has the parcel's measured perimeter.
+    // Same boundary length rule: hedges and banks get both sides, walls and ditches one.
+    var perimeter = state.parcel && Number(state.parcel.perimeterMetres)
+    if (Number.isFinite(perimeter) && perimeter > 0) {
+      return Math.round(perimeter * linearSideFactor(code))
+    }
     var byParcel = BOUNDARY_LENGTH_STARTING_MAXIMA[state.parcelId]
     if (!byParcel) {
       return null

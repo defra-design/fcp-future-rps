@@ -39,15 +39,15 @@
     {% elif data['agileSFD'] == 'True' %}
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
       <span class="govuk-caption-l govuk-!-margin-bottom-2">Alfred Waldron</span>
-      Agile Farm Ltd
+      {{ v4bBusinessName or "Agile Farm Ltd" }}
     </h1>
-    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): {{ v4bSbi or "123456789" }}</p>
     {% else %}
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
       <span class="govuk-caption-l">Alfred Waldron</span>
-      Agile Farm Ltd
+      {{ v4bBusinessName or "Agile Farm Ltd" }}
     </h1>
-    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 123456789</p>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): {{ v4bSbi or "123456789" }}</p>
     {% endif %}
 
     <h2 class="govuk-heading-m">

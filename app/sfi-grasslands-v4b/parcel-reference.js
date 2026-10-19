@@ -67,10 +67,16 @@
     'wood-lane-field': { sheetId: 'SP8128', parcelId: '2841' },
   }
 
+  // Real land loaded by SBI (rpa-land.js) uses ids like "rpa-SP8722-2207"
+  function parseLoadedId (id) {
+    var match = String(id || '').match(/^rpa-([A-Z]{2}\d{4})-(\d{4})$/)
+    return match ? { sheetId: match[1], parcelId: match[2] } : null
+  }
+
   function getParts (parcelOrId) {
     if (!parcelOrId) { return null }
     if (typeof parcelOrId === 'string') {
-      return PARCEL_REFERENCES[parcelOrId] || null
+      return PARCEL_REFERENCES[parcelOrId] || parseLoadedId(parcelOrId)
     }
     var id = parcelOrId.id || parcelOrId.parcelId || ''
     if (parcelOrId.sheetId && (parcelOrId.landParcelId || parcelOrId.parcelRefId)) {
@@ -86,7 +92,7 @@
     if (id && PARCEL_REFERENCES[id]) {
       return PARCEL_REFERENCES[id]
     }
-    return null
+    return parseLoadedId(id)
   }
 
   function format (parcelOrId) {

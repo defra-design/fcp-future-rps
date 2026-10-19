@@ -198,8 +198,11 @@ $app-v4b-light-grey: #f3f2f1;
   margin-bottom: 0;
 }
 
+// No top margin: whatever sits above (the "Save and add another land parcel" button,
+// the inset or the summary cards) already leaves its own 30px or so, and adding more
+// made a 62px gap between the two buttons (19 October 2026).
 .app-v4b-continue {
-  margin-top: 30px;
+  margin-top: 0;
 }
 
 .app-v4b-panel {

@@ -17,6 +17,9 @@
   }
 
   var PAGE_URL = '/sfi-grasslands-v4b/select-parcels'
+  // "test" for the Agile Farm test land, or the SBI of a real farm loaded from the
+  // footer's prototype tools (app/sfi-grasslands-v4b/rpa-land.js)
+  var LAND_SOURCE = dataEl.getAttribute('data-land-source') || 'test'
   // Home farm — outlying parcels are reached from the list
   var FARM_CENTER = { lng: -0.7448892, lat: 51.9497679 }
   var FARM_ZOOM = 13
@@ -47,7 +50,8 @@
   parcels.forEach(function (parcel) {
     parcelData[parcel.parcelId] = parcel
   })
-  var SAVED_VIEW_KEY = 'sfiGrasslandsV4bSelectParcelsMapView'
+  // Each farm keeps its own saved map view
+  var SAVED_VIEW_KEY = 'sfiGrasslandsV4bSelectParcelsMapView' + (LAND_SOURCE === 'test' ? '' : ':' + LAND_SOURCE)
   var keyboardParcelId = null
 
   function toRing (coords) {
@@ -475,6 +479,21 @@
       getParcels: function () { return parcelData },
       formatReference: function (parcel) { return parcel.parcelReference || parcel.parcelId }
     }))
+  }
+
+  // A real farm starts over its own land, not over Agile Farm
+  if (LAND_SOURCE !== 'test') {
+    var landCoords = []
+    parcels.forEach(function (parcel) {
+      ;(parcel.coords || []).forEach(function (latLng) { landCoords.push(latLng) })
+    })
+    if (landCoords.length) {
+      var landBounds = getBounds(landCoords)
+      FARM_CENTER = {
+        lng: (landBounds[0][0] + landBounds[1][0]) / 2,
+        lat: (landBounds[0][1] + landBounds[1][1]) / 2
+      }
+    }
   }
 
   var interactiveMap = new window.defra.InteractiveMap('v4b-parcel-map', {

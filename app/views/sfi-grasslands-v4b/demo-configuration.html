@@ -1,0 +1,270 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v4b/task-list" %}
+{% extends "layouts/sfi-grasslands-v4b-header.html" %}
+
+{# Prototype set-up for research sessions: business, address and land (app/sfi-grasslands-v4b/rpa-land.js) #}
+
+{% block pageTitle %}
+  {{ "Error: " if errors.length }}Set up a research session - Prototype set-up - SFI Grasslands v4b
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v4b/index"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if errors.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
+
+      {% if participantLink %}
+        <div class="govuk-panel govuk-panel--confirmation app-v4b-demo-link">
+          <h2 class="govuk-panel__title govuk-!-font-size-27">Link for a participant</h2>
+          <div class="govuk-panel__body govuk-!-font-size-19">
+            {{ participantLinkSummary }}. The link opens the task list in a fresh session with this business and land.
+          </div>
+        </div>
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="v4b-demo-link">Link</label>
+          <input class="govuk-input" id="v4b-demo-link" type="text" value="{{ participantLink }}" readonly spellcheck="false">
+        </div>
+        <div class="govuk-button-group">
+          <button type="button" class="govuk-button" data-module="govuk-button" data-v4b-demo-copy>Copy link</button>
+          <a class="govuk-link" href="{{ participantLink }}" data-v4b-demo-open target="_blank" rel="noopener noreferrer">Open the link (opens in new tab)</a>
+        </div>
+        <p class="govuk-body-s" role="status" data-v4b-demo-copied hidden>Link copied.</p>
+        <p class="govuk-body-s">Anyone with the link can see the business name, address and SBI in it. Only send it to the participant.</p>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {% endif %}
+
+      <strong class="govuk-tag govuk-tag--grey govuk-!-margin-bottom-3">Prototype only</strong>
+      <span class="govuk-caption-l">Prototype set-up</span>
+      <h1 class="govuk-heading-l">Set up a research session</h1>
+
+      <div class="govuk-inset-text app-v4b-demo-current">
+        <p class="govuk-body govuk-!-margin-bottom-1"><strong>Currently using</strong></p>
+        <p class="govuk-body govuk-!-margin-bottom-1">{{ current.businessName }}, {{ current.address }}</p>
+        <p class="govuk-body govuk-!-margin-bottom-{{ '0' if current.isDefault else '2' }}">SBI {{ current.sbi }}: {{ current.land }}</p>
+        {% if not current.isDefault %}
+          <p class="govuk-body govuk-!-margin-bottom-0">
+            <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v4b/demo-configuration/reset">Reset to defaults</a>
+          </p>
+        {% endif %}
+      </div>
+
+      <p class="govuk-body">Leave any field blank to use the Agile Farm default.</p>
+
+      <form method="post" action="/sfi-grasslands-v4b/demo-configuration" novalidate data-v4b-demo-form>
+
+        {% call govukFieldset({
+          legend: { text: "Business details", classes: "govuk-fieldset__legend--m" }
+        }) %}
+
+          {{ govukInput({
+            label: { text: "Business name", classes: "govuk-label--s" },
+            hint: { text: "Default: " + defaultBusinessName },
+            id: "v4b-demo-business-name",
+            name: "v4bDemoBusinessNameInput",
+            value: businessNameValue,
+            autocomplete: "off",
+            spellcheck: false,
+            classes: "govuk-!-width-two-thirds"
+          }) }}
+
+          {{ govukTextarea({
+            label: { text: "Business address", classes: "govuk-label--s" },
+            hint: { text: "Paste or type the address, one part on each line. Leave blank for Agile Farm (" + defaultAddress + ", " + defaultPostcode + ")." },
+            id: "v4b-demo-address",
+            name: "v4bDemoAddressInput",
+            value: addressValue,
+            rows: 5,
+            autocomplete: "off",
+            spellcheck: false,
+            classes: "govuk-!-width-two-thirds"
+          }) }}
+          <p class="govuk-body govuk-!-margin-top-n4" data-v4b-address-fields-link hidden>
+            <button type="button" class="app-v4b-link-button govuk-link" data-v4b-open-address-fields>Enter the address in separate fields</button>
+          </p>
+
+        {% endcall %}
+
+        {% call govukFieldset({
+          legend: { text: "Land", classes: "govuk-fieldset__legend--m" }
+        }) %}
+
+          <div class="govuk-form-group{% if sbiError %} govuk-form-group--error{% endif %}">
+            <label class="govuk-label govuk-label--s" for="v4b-demo-sbi">Single business identifier (SBI)</label>
+            <div id="v4b-demo-sbi-hint" class="govuk-hint">
+              Leave blank to use the Agile Farm test land. A real SBI loads that farm's land parcels from the Rural Payments Agency. Only use it with the farm's permission.
+            </div>
+            {% if sbiError %}
+              <p id="v4b-demo-sbi-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ sbiError.text }}</p>
+            {% endif %}
+            <div class="app-v4b-demo-inline">
+              <input class="govuk-input govuk-input--width-10{% if sbiError %} govuk-input--error{% endif %}" id="v4b-demo-sbi" name="v4bDemoSbiInput" type="text" inputmode="numeric" value="{{ sbiValue }}" autocomplete="off" spellcheck="false" aria-describedby="v4b-demo-sbi-hint{% if sbiError %} v4b-demo-sbi-error{% endif %}">
+              <button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" data-v4b-check-sbi hidden>Check SBI</button>
+            </div>
+            <p class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0" role="status" data-v4b-sbi-result></p>
+          </div>
+
+        {% endcall %}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Create a link for a participant",
+            preventDoubleClick: true,
+            name: "v4bDemoIntent",
+            value: "link"
+          }) }}
+          {{ govukButton({
+            text: "Start the prototype myself",
+            classes: "govuk-button--secondary",
+            preventDoubleClick: true,
+            name: "v4bDemoIntent",
+            value: "continue"
+          }) }}
+        </div>
+        <p class="govuk-body-s govuk-!-margin-top-0" data-v4b-demo-loading hidden role="status">Checking the address and land…</p>
+      </form>
+
+      <p class="govuk-body-s">
+        Land loaded by SBI is kept for that browser session only. It is derived from Ordnance Survey data and covered by the
+        <a class="govuk-link" href="https://environment.data.gov.uk/rpa/api-doc/" target="_blank" rel="noopener noreferrer">RPA Land API licence terms (opens in new tab)</a>.
+      </p>
+    </div>
+  </div>
+
+  {# Address fields pop-up: the GOV.UK address pattern, which fills the address box (needs JavaScript) #}
+  <dialog class="app-v4b-dialog" id="v4b-address-dialog" aria-labelledby="v4b-address-dialog-title">
+    <form method="dialog" novalidate data-v4b-address-form>
+      <h2 class="govuk-heading-m" id="v4b-address-dialog-title">Business address</h2>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v4b-address-line-1">Address line 1</label>
+        <input class="govuk-input" id="v4b-address-line-1" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v4b-address-line-2">Address line 2 (optional)</label>
+        <input class="govuk-input" id="v4b-address-line-2" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v4b-address-town">Town or city</label>
+        <input class="govuk-input govuk-!-width-two-thirds" id="v4b-address-town" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v4b-address-county">County (optional)</label>
+        <input class="govuk-input govuk-!-width-two-thirds" id="v4b-address-county" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v4b-address-postcode">Postcode</label>
+        <input class="govuk-input govuk-input--width-10" id="v4b-address-postcode" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-button-group govuk-!-margin-bottom-0">
+        <button type="submit" class="govuk-button govuk-!-margin-bottom-0" value="use">Use this address</button>
+        <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <style>
+    .app-v4b-demo-inline { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+    .app-v4b-demo-inline .govuk-button { margin-top: 0; }
+    .app-v4b-demo-link { text-align: left; }
+    .app-v4b-dialog { width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 64px); padding: 30px; border: 5px solid #0b0c0c; box-sizing: border-box; }
+    .app-v4b-dialog::backdrop { background: rgba(11, 12, 12, 0.6); }
+    .app-v4b-dialog { overflow-y: auto; }
+    .app-v4b-link-button { padding: 0; border: 0; background: none; cursor: pointer; font: inherit; color: #1d70b8; text-decoration: underline; text-decoration-thickness: max(1px, .0625rem); text-underline-offset: .1578em; }
+    .app-v4b-link-button:hover { color: #003078; text-decoration-thickness: max(3px, .1875rem); }
+    .app-v4b-link-button:focus { outline: 3px solid transparent; color: #0b0c0c; background-color: #ffdd00; box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c; text-decoration: none; }
+  </style>
+
+  <script>
+    (function () {
+      var form = document.querySelector('[data-v4b-demo-form]')
+      if (!form) { return }
+
+      // Participant link: a full address, using the address this page was opened on
+      var linkField = document.getElementById('v4b-demo-link')
+      if (linkField && linkField.value.charAt(0) === '/') {
+        linkField.value = window.location.origin + linkField.value
+        var openLink = document.querySelector('[data-v4b-demo-open]')
+        if (openLink) { openLink.href = linkField.value }
+      }
+      var copy = document.querySelector('[data-v4b-demo-copy]')
+      if (copy) {
+        copy.addEventListener('click', function () {
+          linkField.select()
+          var done = function () { document.querySelector('[data-v4b-demo-copied]').hidden = false }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(linkField.value).then(done, function () { document.execCommand('copy'); done() })
+          } else {
+            document.execCommand('copy')
+            done()
+          }
+        })
+      }
+
+      form.addEventListener('submit', function () {
+        form.querySelector('[data-v4b-demo-loading]').hidden = false
+      })
+
+      // Address fields pop-up: fills the address box, one part on each line
+      var dialog = document.getElementById('v4b-address-dialog')
+      var addressBox = document.getElementById('v4b-demo-address')
+      var fieldIds = ['v4b-address-line-1', 'v4b-address-line-2', 'v4b-address-town', 'v4b-address-county', 'v4b-address-postcode']
+      if (dialog && typeof dialog.showModal === 'function') {
+        document.querySelector('[data-v4b-address-fields-link]').hidden = false
+        var opener = document.querySelector('[data-v4b-open-address-fields]')
+        opener.addEventListener('click', function () {
+          // Start from what is in the box, if it has the usual 3 to 5 lines
+          var lines = addressBox.value.split(/\n/).map(function (line) { return line.trim() }).filter(Boolean)
+          var fields = fieldIds.map(function (id) { return document.getElementById(id) })
+          fields.forEach(function (field) { field.value = '' })
+          if (lines.length) {
+            var postcode = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(lines[lines.length - 1]) ? lines.pop() : ''
+            fields[4].value = postcode
+            fields[0].value = lines.shift() || ''
+            if (lines.length >= 3) { fields[1].value = lines.shift() }
+            fields[2].value = lines.shift() || ''
+            fields[3].value = lines.join(', ')
+          }
+          dialog.showModal()
+          fields[0].focus()
+        })
+        dialog.addEventListener('close', function () {
+          if (dialog.returnValue === 'use') {
+            addressBox.value = fieldIds.map(function (id) {
+              var value = document.getElementById(id).value.trim()
+              return id === 'v4b-address-postcode' ? value.toUpperCase() : value
+            }).filter(Boolean).join('\n')
+            addressBox.focus()
+          } else {
+            opener.focus()
+          }
+        })
+      }
+
+      // Check SBI: shows what the SBI finds before the link is made
+      var checkButton = document.querySelector('[data-v4b-check-sbi]')
+      var sbiInput = document.getElementById('v4b-demo-sbi')
+      var sbiResult = document.querySelector('[data-v4b-sbi-result]')
+      checkButton.hidden = false
+      checkButton.addEventListener('click', function () {
+        sbiResult.textContent = 'Checking…'
+        fetch('/sfi-grasslands-v4b/demo-configuration/check-sbi?sbi=' + encodeURIComponent(sbiInput.value))
+          .then(function (response) { return response.json() })
+          .then(function (result) { sbiResult.textContent = result.message })
+          .catch(function () { sbiResult.textContent = 'The land could not be checked right now.' })
+      })
+    })()
+  </script>
+{% endblock %}

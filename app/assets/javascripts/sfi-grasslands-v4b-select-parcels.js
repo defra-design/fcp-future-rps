@@ -697,7 +697,9 @@
   aac.setParcel(config.parcelId, {
     totalArea: config.totalArea,
     availableArea: config.availableArea,
-    landCover: config.landCover
+    landCover: config.landCover,
+    // Real land loaded by SBI: the parcel's actual boundary length
+    perimeterMetres: config.perimeterMetres || null
   }, codes, { resetSelections: true })
 
   function setRevealed (code, revealed) {

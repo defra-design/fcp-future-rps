@@ -7,7 +7,10 @@
 
 var parcelReference = require('./parcel-reference')
 var outlyingParcels = require('../assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
-var parcelsById = outlyingParcels.addTo(Object.assign({}, require('../data/sfi-grasslands-v4b-land-details-parcels.json')))
+var rpaLand = require('./rpa-land')
+// The Agile Farm test parcels, or a real farm's parcels when one has been loaded by SBI
+// from the footer's prototype tools (see rpa-land.js)
+var parcelsById = rpaLand.parcelsFor(outlyingParcels.addTo(Object.assign({}, require('../data/sfi-grasslands-v4b-land-details-parcels.json'))))
 
 var BASE_PATH = '/sfi-grasslands-v4b/rural-payments'
 var BUSINESS_NAME = 'AGILE FARM LTD'

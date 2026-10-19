@@ -416,7 +416,7 @@
   <script src="/public/javascripts/sfi-grasslands-v4b-parcel-search.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-map-reset-button.js"></script>
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
-  <script id="v4b-map-parcels-json" type="application/json">{{ mapParcels | dump | safe }}</script>
+  <script id="v4b-map-parcels-json" type="application/json" data-land-source="{{ v4bRpaLand.sbi if v4bRpaLand else 'test' }}">{{ mapParcels | dump | safe }}</script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-land-map-clusters.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-map.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-layout.js"></script>

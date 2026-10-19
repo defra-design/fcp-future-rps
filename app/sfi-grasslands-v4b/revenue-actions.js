@@ -10,7 +10,10 @@ var consent = require('./consent')
 var parcelReference = require('./parcel-reference')
 var compatibilityMatrix = require('../compatibility-matrix')
 var outlyingParcels = require('../assets/javascripts/sfi-grasslands-v4b-outlying-parcels')
-var parcelsById = outlyingParcels.addTo(Object.assign({}, require('../data/sfi-grasslands-v4b-land-details-parcels.json')))
+var rpaLand = require('./rpa-land')
+// The Agile Farm test parcels, or a real farm's parcels when one has been loaded by SBI
+// from the footer's prototype tools (see rpa-land.js)
+var parcelsById = rpaLand.parcelsFor(outlyingParcels.addTo(Object.assign({}, require('../data/sfi-grasslands-v4b-land-details-parcels.json'))))
 
 var INTERESTED_ACTIONS_KEY = 'sfiV4bInterestedActions'
 var FLASH_KEY = 'sfiV4bSelectParcelsFlash'
@@ -250,6 +253,9 @@ function buildParcel (req, parcelId) {
     landCover: landCover,
     landCoverSummary: landCover.join(', '),
     coords: Array.isArray(raw.coords) ? raw.coords : [],
+    // Only real land loaded by SBI has these (rpa-land.js): boundary length and hedge length in metres
+    perimeterMetres: raw.perimeterMetres || null,
+    hedgeMetres: raw.hedgeMetres || 0,
     sssi: Boolean(flags.sssi),
     hefer: Boolean(flags.hefer),
     savedActions: summary.actions,
