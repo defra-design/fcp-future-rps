@@ -15,6 +15,18 @@
 {% endblock %}
 
 {% block header %}
+  {# OS Maps basemap when the server has an OS Maps API key (app/os-maps.js), otherwise OpenFreeMap #}
+  <script>
+    window.SFI_OS_MAPS = {{ 'true' if osMapsEnabled else 'false' }}
+    window.sfiMapStyle = function (fallbackUrl) {
+      return window.SFI_OS_MAPS
+        ? window.location.origin + '/os-maps/style.json?origin=' + encodeURIComponent(window.location.origin)
+        : fallbackUrl
+    }
+    window.sfiMapAttribution = function (fallbackText) {
+      return window.SFI_OS_MAPS ? 'Contains OS data © Crown copyright and database rights ' + new Date().getFullYear() : fallbackText
+    }
+  </script>
   <header class="app-rps-header" role="banner">
     <div class="govuk-width-container app-rps-header__container">
       <div class="app-rps-header__logo">

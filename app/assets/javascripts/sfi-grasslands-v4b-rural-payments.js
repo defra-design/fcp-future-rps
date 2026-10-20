@@ -18,7 +18,8 @@
     },
     layers: [{ id: 'photo', type: 'raster', source: 'photo' }]
   }
-  var MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty'
+  // OS Maps when the server has a key (app/os-maps.js), otherwise OpenFreeMap
+  var MAP_STYLE = window.sfiMapStyle ? window.sfiMapStyle('https://tiles.openfreemap.org/styles/liberty') : 'https://tiles.openfreemap.org/styles/liberty'
 
   var PARCEL_COLOUR = '#0000ff'
   var SELECTED_COLOUR = '#7f00b2'

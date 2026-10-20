@@ -103,8 +103,16 @@
   }
 
   // Same content and layout as v4a, without the available actions count
+  // The OS map sheet, as shown on the cluster circles (for example SO3 from SO3757 3195)
+  function sheetReference (parcel) {
+    var match = String(parcel && parcel.parcelReference || '').replace(/\s+/g, '').toUpperCase().match(/^([A-Z]{2})(\d)/)
+    return match ? match[1] + match[2] : ''
+  }
+
   function popupHtml (parcel) {
-    return '<h3 class="app-v4b-map-popup__title">' + escapeHtml(parcel.parcelReference) + '</h3>' +
+    var sheet = sheetReference(parcel)
+    return (sheet ? '<p class="app-v4b-map-popup__caption">OS sheet reference ' + escapeHtml(sheet) + '</p>' : '') +
+      '<h3 class="app-v4b-map-popup__title">' + escapeHtml(parcel.parcelReference) + '</h3>' +
       '<p>Land covers: ' + escapeHtml(parcel.landCoverSummary || '-') + '</p>' +
       '<p>Total area: ' + escapeHtml(parcel.totalAreaShort || '-') + '</p>'
   }
@@ -496,6 +504,75 @@
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // Map styles: Default, Satellite and Light (the "Styles" button). OS Maps when the
+  // server has a key (app/os-maps.js), otherwise OpenFreeMap. Satellite is Esri imagery.
+  // ---------------------------------------------------------------------------
+  function tileAt (lat, lng, zoom) {
+    var n = Math.pow(2, zoom)
+    var rad = lat * Math.PI / 180
+    return {
+      x: Math.floor((lng + 180) / 360 * n),
+      y: Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * n),
+      z: zoom
+    }
+  }
+
+  function buildMapStyles () {
+    var origin = window.location.origin
+    var styleUrl = function (layer) {
+      return origin + '/os-maps/style.json?origin=' + encodeURIComponent(origin) + '&layer=' + layer
+    }
+    // Previews: the same spot for every farm. Central Newbury (river, roads and buildings)
+    // shows the difference between the styles. Farmland looked almost blank in all three.
+    var thumb = tileAt(51.4007, -1.3236, 16)
+    var osThumb = function (layer) {
+      return origin + '/os-maps/tiles/' + layer + '/' + thumb.z + '/' + thumb.x + '/' + thumb.y + '.png'
+    }
+    var osMaps = Boolean(window.SFI_OS_MAPS)
+    var osAttribution = window.sfiMapAttribution ? window.sfiMapAttribution('') : ''
+    return [
+      {
+        id: 'default',
+        label: 'Default',
+        url: osMaps ? styleUrl('Outdoor_3857') : 'https://tiles.openfreemap.org/styles/liberty',
+        attribution: osMaps ? osAttribution : 'OpenFreeMap © OpenMapTiles Data from OpenStreetMap',
+        backgroundColor: '#f5f5f0',
+        thumbnail: osMaps ? osThumb('Outdoor_3857') : undefined
+      },
+      {
+        id: 'satellite',
+        label: 'Satellite',
+        url: styleUrl('satellite'),
+        attribution: 'Tiles © Esri',
+        backgroundColor: '#1b2a1b',
+        mapColorScheme: 'dark',
+        thumbnail: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/' +
+          thumb.z + '/' + thumb.y + '/' + thumb.x
+      },
+      {
+        id: 'light',
+        label: 'Light',
+        url: osMaps ? styleUrl('Light_3857') : 'https://tiles.openfreemap.org/styles/positron',
+        attribution: osMaps ? osAttribution : 'OpenFreeMap © OpenMapTiles Data from OpenStreetMap',
+        backgroundColor: '#ffffff',
+        thumbnail: osMaps ? osThumb('Light_3857') : undefined
+      }
+    ]
+  }
+
+  if (window.defra.mapStylesPlugin) {
+    mapPlugins.push(window.defra.mapStylesPlugin({ mapStyles: buildMapStyles() }))
+    // The map sits inside the page's form, and the Styles panel's buttons have no type,
+    // so they would submit the form. Make them plain buttons before the click goes through.
+    container.addEventListener('click', function (event) {
+      var button = event.target.closest && event.target.closest('.im-c-map-styles__button')
+      if (button && !button.hasAttribute('type')) {
+        button.setAttribute('type', 'button')
+      }
+    }, true)
+  }
+
   var interactiveMap = new window.defra.InteractiveMap('v4b-parcel-map', {
     behaviour: 'inline',
     mapProvider: window.defra.maplibreProvider(),
@@ -504,11 +581,15 @@
     zoom: FARM_ZOOM,
     minZoom: 6,
     maxZoom: 19,
+    // The map is about 630px wide in its column. Treat that as tablet, not phone, so the
+    // Styles and Key buttons show their labels and the Key opens beside the map
+    maxMobileWidth: 500,
     containerHeight: Math.max(window.innerHeight - 260, 380) + 'px',
     enableZoomControls: true,
     mapStyle: {
-      url: 'https://tiles.openfreemap.org/styles/liberty',
-      attribution: 'OpenFreeMap © OpenMapTiles Data from OpenStreetMap',
+      // OS Maps when the server has a key (app/os-maps.js), otherwise OpenFreeMap
+      url: window.sfiMapStyle ? window.sfiMapStyle('https://tiles.openfreemap.org/styles/liberty') : 'https://tiles.openfreemap.org/styles/liberty',
+      attribution: window.sfiMapAttribution ? window.sfiMapAttribution('OpenFreeMap © OpenMapTiles Data from OpenStreetMap') : 'OpenFreeMap © OpenMapTiles Data from OpenStreetMap',
       backgroundColor: '#f5f5f0'
     },
     plugins: mapPlugins
@@ -735,12 +816,125 @@
     }
   }
 
+  // Changing the map style (Styles button) replaces the whole MapLibre style, which would
+  // drop the parcels. Carry our sources and layers (land parcels and the cluster circles)
+  // over to the new style, so their click and hover handlers keep working.
+  var OWN_SOURCES = ['v4b-parcels', 'parcel-cluster-points']
+
+  function keepParcelLayersOnStyleChange (map) {
+    var setStyle = map.setStyle.bind(map)
+    map.setStyle = function (style, options) {
+      return setStyle(style, Object.assign({}, options, {
+        transformStyle: function (previous, next) {
+          if (!previous) {
+            return next
+          }
+          var sources = Object.assign({}, next.sources)
+          OWN_SOURCES.forEach(function (id) {
+            if (previous.sources && previous.sources[id]) {
+              sources[id] = previous.sources[id]
+            }
+          })
+          var ownLayers = (previous.layers || []).filter(function (layer) {
+            return OWN_SOURCES.indexOf(layer.source) !== -1
+          })
+          return Object.assign({}, next, {
+            // Our labels need fonts, so keep a glyphs address if the new style has none
+            glyphs: next.glyphs || previous.glyphs || 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+            sources: sources,
+            layers: (next.layers || []).concat(ownLayers)
+          })
+        }
+      }))
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Key: a "Key" button and panel, styled like the map's own panels.
+  // ---------------------------------------------------------------------------
+  var KEY_ICON = '<path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/>'
+
+  function keyPanelHtml () {
+    var items = [
+      ['available', 'Available'],
+      ['selected', 'Selected'],
+      ['added', 'Actions added'],
+      ['unavailable', 'No actions available']
+    ]
+    // A subheading so the colours read as land parcel states (not land cover),
+    // and so more groups can be added later
+    return '<h3 class="app-v4b-map-key-panel__heading">Land parcels</h3>' +
+      '<ul class="govuk-list app-v4b-map-key-panel">' + items.map(function (item) {
+        return '<li class="app-v4b-map-key-panel__item"><span class="app-v4b-map__swatch app-v4b-map__swatch--' + item[0] + '"></span>' + item[1] + '</li>'
+      }).join('') +
+      // The blue circles seen when zoomed out
+      '<li class="app-v4b-map-key-panel__item"><span class="app-v4b-map-key-panel__cluster" aria-hidden="true">3</span>Group of land parcels (select to zoom in)</li>' +
+      '</ul>'
+  }
+
+  function addKey () {
+    // Open by itself once per prototype session, the first time the map is shown with no
+    // land parcel open and no actions added (decided by the server: showMapKeyOnLoad in routes.js)
+    var showOnLoad = dataEl.getAttribute('data-show-key') === 'true'
+    interactiveMap.addPanel('v4bKeyPanel', {
+      label: 'Key',
+      html: keyPanelHtml(),
+      focus: false,
+      mobile: { slot: 'drawer', modal: true, open: false },
+      tablet: { slot: 'left-top', width: '260px', open: showOnLoad },
+      desktop: { slot: 'left-top', width: '280px', open: showOnLoad }
+    })
+    if (showOnLoad) {
+      interactiveMap.showPanel('v4bKeyPanel', { focus: false })
+      keyOpen = true
+    }
+    interactiveMap.addButton('v4bKey', {
+      label: 'Key',
+      panelId: 'v4bKeyPanel',
+      iconSvgContent: KEY_ICON,
+      mobile: { slot: 'top-left', showLabel: true },
+      tablet: { slot: 'top-left', showLabel: true },
+      desktop: { slot: 'top-left', showLabel: true }
+    })
+    // The key under the map is only for when JavaScript is off
+    var staticKey = document.querySelector('[data-v4b-static-key]')
+    if (staticKey) {
+      staticKey.style.display = 'none'
+    }
+  }
+
+  interactiveMap.on('app:ready', addKey)
+
+  // Close the Key when the user clicks or taps anywhere else (as the search box does).
+  // The Key button itself still toggles it.
+  var keyOpen = false
+  interactiveMap.on('app:panelopened', function (event) {
+    if (event && event.panelId === 'v4bKeyPanel') { keyOpen = true }
+  })
+  interactiveMap.on('app:panelclosed', function (event) {
+    if (event && event.panelId === 'v4bKeyPanel') { keyOpen = false }
+  })
+  document.addEventListener('pointerdown', function (event) {
+    if (!keyOpen) {
+      return
+    }
+    var panel = container.querySelector('[id$="-panel-v4b-key-panel"]')
+    var keyButton = container.querySelector('button[aria-controls$="-panel-v4b-key-panel"]')
+    if ((panel && panel.contains(event.target)) || (keyButton && keyButton.contains(event.target))) {
+      return
+    }
+    interactiveMap.hidePanel('v4bKeyPanel')
+    keyOpen = false
+  }, true)
+
   interactiveMap.on('map:ready', function (event) {
     var map = event && event.map
     if (!map) {
       return
     }
     rawMap = map
+
+    keepParcelLayersOnStyleChange(map)
 
     // The search plugin jumps straight to a result with no animation. Skip that jump:
     // search:match then opens the parcel, and highlightParcel moves the map there smoothly.

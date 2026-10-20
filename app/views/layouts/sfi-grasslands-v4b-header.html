@@ -12,6 +12,18 @@
 
 {# Match https://farm-and-land.service.defra.gov.uk/ header markup and spacing #}
 {% block header %}
+  {# OS Maps basemap when the server has an OS Maps API key (app/os-maps.js), otherwise OpenFreeMap #}
+  <script>
+    window.SFI_OS_MAPS = {{ 'true' if osMapsEnabled else 'false' }}
+    window.sfiMapStyle = function (fallbackUrl) {
+      return window.SFI_OS_MAPS
+        ? window.location.origin + '/os-maps/style.json?origin=' + encodeURIComponent(window.location.origin)
+        : fallbackUrl
+    }
+    window.sfiMapAttribution = function (fallbackText) {
+      return window.SFI_OS_MAPS ? 'Contains OS data © Crown copyright and database rights ' + new Date().getFullYear() : fallbackText
+    }
+  </script>
   {% if _showDesignSpec %}
     {% include "_common/design-spec.html" %}
   {% endif %}

@@ -40,6 +40,12 @@ const sfiGrasslandsV4bLandDetails = require('./sfi-grasslands-v4b/land-details')
 const sfiGrasslandsV4bRuralPayments = require('./sfi-grasslands-v4b/rural-payments')
 const sfiGrasslandsV4bRevenueActions = require('./sfi-grasslands-v4b/revenue-actions')
 const sfiGrasslandsV4bRpaLand = require('./sfi-grasslands-v4b/rpa-land')
+const osMaps = require('./os-maps')
+
+// OS Maps basemap: tiles go through this server so the key stays private (app/os-maps.js)
+router.use(osMaps.middleware)
+router.get('/os-maps/style.json', osMaps.handleStyle)
+router.get('/os-maps/tiles/:layer/:z/:x/:y.png', osMaps.handleTile)
 
 // v4b prototype tool: a real farm's land loaded by SBI from the RPA Land API replaces the
 // Agile Farm test parcels for this session (see app/sfi-grasslands-v4b/rpa-land.js).
@@ -10459,7 +10465,17 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
     }
   })
 
+  // The map Key opens by itself once per session: the first time the map is shown with
+  // no land parcel open and no actions added yet ("Clear data" or a participant link resets it)
+  var keySessionData = getSfiGrasslandsV4bSessionData(req)
+  var showMapKeyOnLoad = !selectedParcel && !keySessionData.v4bMapKeyShown &&
+    !parcels.some(function (parcel) { return parcel.savedCount > 0 })
+  if (showMapKeyOnLoad) {
+    keySessionData.v4bMapKeyShown = true
+  }
+
   res.status(opts.errors && opts.errors.length ? 400 : 200).render('sfi-grasslands-v4b/select-parcels', Object.assign({
+    showMapKeyOnLoad: showMapKeyOnLoad,
     data: getSfiGrasslandsV4bSessionData(req),
     interestedActions: interestedActions,
     parcels: parcels,
@@ -10490,19 +10506,24 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
     listParcels: parcels.map(function (parcel) {
       var parcelSaved = sfiGrasslandsV4bRevenueActions.getSavedQuantities(req, parcel.parcelId)
       // Same actions as the parcel's actions page shows
-      var availableActionCount = sfiGrasslandsV4bRevenueActions.getActionsForParcel(req, parcel.parcelId)
+      var availableActions = sfiGrasslandsV4bRevenueActions.getActionsForParcel(req, parcel.parcelId)
         .filter(function (action) {
           return parcelSaved[action.code] || sfiGrasslandsV4bRevenueActions.parcelHasEligibleAction(
             parcel.landCover,
             [action.code]
           )
-        }).length
+        })
+      var availableActionCount = availableActions.length
       return {
         parcelId: parcel.parcelId,
         parcelReference: parcel.parcelReference,
         landCoverSummary: parcel.landCoverSummary,
         totalAreaShort: parcel.totalAreaShort,
         availableActionCount: availableActionCount,
+        // Listed as bullets in the parcel's details, for example "CIGL1: Take grassland field corners…"
+        availableActionNames: availableActions.map(function (action) {
+          return action.code + ': ' + (action.name || action.displayName || '')
+        }),
         status: parcel.savedCount > 0 ? 'added' : (availableActionCount ? 'available' : 'unavailable'),
         chosen: (req.body && req.body.v4bListParcel ? req.body.v4bListParcel : getSfiGrasslandsV4bSessionData(req).v4bListLastParcel) === parcel.parcelId
       }

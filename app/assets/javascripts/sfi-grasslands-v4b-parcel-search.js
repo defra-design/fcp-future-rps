@@ -84,6 +84,14 @@
 
   function createPlugin(options) {
     return root.defra.searchPlugin({
+      // Show "Search" next to the icon, like Styles and Key (icon only on phones, to save space)
+      manifest: {
+        buttons: [{
+          id: 'search',
+          tablet: { slot: 'top-left', showLabel: true },
+          desktop: { slot: 'top-left', showLabel: true }
+        }]
+      },
       placeholder: 'Search by land parcel',
       width: '300px',
       showMarker: false,

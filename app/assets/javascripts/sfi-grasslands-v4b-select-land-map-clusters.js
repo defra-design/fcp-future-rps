@@ -75,10 +75,11 @@
       }
     })
     var sheetKeys = Object.keys(sheets)
+    // One sheet: the same small line as the parcel popup. Several: a count instead.
     var title = sheetKeys.length === 1 && sheetKeys[0] !== '?'
-      ? 'OS sheet reference ' + sheetKeys[0]
-      : parcelIds.length + (parcelIds.length === 1 ? ' land parcel' : ' land parcels')
-    return '<h3 class="app-v4b-map-popup__title">' + title + '</h3>' +
+      ? '<p class="app-v4b-map-popup__caption">OS sheet reference ' + sheetKeys[0] + '</p>'
+      : '<h3 class="app-v4b-map-popup__title">' + parcelIds.length + (parcelIds.length === 1 ? ' land parcel' : ' land parcels') + '</h3>'
+    return title +
       '<p>Available land parcels: ' + available + '</p>' +
       '<p>Total area: ' + formatHectares(area) + '</p>'
   }

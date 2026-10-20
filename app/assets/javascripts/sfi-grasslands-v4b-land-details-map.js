@@ -206,7 +206,8 @@
 
     var map = new maplibregl.Map({
       container: mapEl,
-      style: 'https://tiles.openfreemap.org/styles/liberty',
+      // OS Maps when the server has a key (app/os-maps.js), otherwise OpenFreeMap
+      style: window.sfiMapStyle ? window.sfiMapStyle('https://tiles.openfreemap.org/styles/liberty') : 'https://tiles.openfreemap.org/styles/liberty',
       center: [-0.752, 51.9525],
       zoom: isMini ? 14 : 13.5,
       minZoom: 6,

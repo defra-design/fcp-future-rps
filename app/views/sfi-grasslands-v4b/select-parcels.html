@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/dist/css/index.css">
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/css/index.css">
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/css/index.css">
+  <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/map-styles/dist/css/index.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v4b-select-parcels.css">
   {# In the list view a parcel is its own step, so Back returns to the list #}
@@ -114,7 +115,15 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Available actions</dt>
-                <dd class="govuk-summary-list__value">{{ parcel.availableActionCount }}</dd>
+                <dd class="govuk-summary-list__value">
+                  {% if parcel.availableActionNames.length %}
+                    <ul class="govuk-list govuk-!-margin-bottom-0 app-v4b-parcel-list__actions">
+                      {% for name in parcel.availableActionNames %}<li>{{ name }}</li>{% endfor %}
+                    </ul>
+                  {% else %}
+                    None
+                  {% endif %}
+                </dd>
               </div>
             </dl>
           {% endset %}
@@ -162,7 +171,8 @@
         </div>
         {# How to zoom, just under the map. The script swaps in the wording for the device (Mac, Windows or touch). #}
         <p class="app-v4b-map__zoom-hint" id="v4b-map-zoom-hint">Hold the Ctrl key and scroll to zoom</p>
-        <ul class="govuk-list govuk-body-s app-v4b-map__key" aria-label="Map key">
+        {# Without JavaScript only: the map has its own Key panel (sfi-grasslands-v4b-select-parcels-map.js) #}
+        <ul class="govuk-list govuk-body-s app-v4b-map__key" aria-label="Map key" data-v4b-static-key>
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--available"></span>Available</li>
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--selected"></span>Selected</li>
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--added"></span>Actions added</li>
@@ -413,10 +423,11 @@
   <script src="/plugin-assets/%40defra%2Finteractive-map/providers/maplibre/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/scale-bar/dist/umd/index.js"></script>
   <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/search/dist/umd/index.js"></script>
+  <script src="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/map-styles/dist/umd/index.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-parcel-search.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-map-reset-button.js"></script>
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
-  <script id="v4b-map-parcels-json" type="application/json" data-land-source="{{ v4bRpaLand.sbi if v4bRpaLand else 'test' }}">{{ mapParcels | dump | safe }}</script>
+  <script id="v4b-map-parcels-json" type="application/json" data-land-source="{{ v4bRpaLand.sbi if v4bRpaLand else 'test' }}" data-show-key="{{ 'true' if showMapKeyOnLoad else 'false' }}">{{ mapParcels | dump | safe }}</script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-land-map-clusters.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-map.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-layout.js"></script>
