@@ -26,6 +26,8 @@ var DEFAULT_SBI = '123456789'
 var BUSINESS_NAME_KEY = 'v4bDemoBusinessName'
 var SBI_KEY = 'v4bDemoSbi'
 var ADDRESS_KEY = 'v4bDemoAddress'
+var USER_NAME_KEY = 'v4bDemoUserName'
+var DEFAULT_USER_NAME = 'Alfred Waldron'
 var DEFAULT_ADDRESS = 'Canal Walk, Newbury, Berkshire'
 var DEFAULT_POSTCODE = 'RG14 1AA'
 
@@ -39,6 +41,24 @@ function getLoadedLand (req) {
   return land && land.parcels && Object.keys(land.parcels).length ? land : null
 }
 
+// Email made from the name and business, like the default alfred.waldron@agilefarm.co.uk:
+// "Jane Mary Smith" at "Hill Top Farm Ltd" gives jane.smith@hilltopfarm.co.uk
+function emailPart (text) {
+  return String(text || '').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '')
+}
+
+function buildEmail (userName, businessName) {
+  var names = String(userName || '').trim().split(/\s+/).map(emailPart).filter(Boolean)
+  var local = names.length > 1 ? names[0] + '.' + names[names.length - 1] : (names[0] || 'name')
+  var business = String(businessName || '')
+    .replace(/&/g, ' and ')
+    .replace(/\b(ltd|limited|llp|plc|inc|co)\b\.?/gi, ' ')
+  var domain = emailPart(business) || 'farm'
+  return local + '@' + domain + '.co.uk'
+}
+
 // Runs the rest of the request with the loaded land (or null) as its context
 function middleware (req, res, next) {
   var land = getLoadedLand(req)
@@ -49,6 +69,14 @@ function middleware (req, res, next) {
   // Used by the account bar and the business details pages instead of fixed text
   res.locals.v4bBusinessName = data[BUSINESS_NAME_KEY] || DEFAULT_BUSINESS_NAME
   res.locals.v4bSbi = data[SBI_KEY] || DEFAULT_SBI
+  // The signed-in person: account bar, applicant details and check business details
+  var userName = data[USER_NAME_KEY] || DEFAULT_USER_NAME
+  var nameParts = userName.split(/\s+/)
+  res.locals.v4bUserName = userName
+  res.locals.v4bUserFirstName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : userName
+  res.locals.v4bUserLastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''
+  res.locals.v4bUserTitle = data[USER_NAME_KEY] ? '' : 'Mr'
+  res.locals.v4bUserEmail = buildEmail(userName, data[BUSINESS_NAME_KEY] || DEFAULT_BUSINESS_NAME)
   // null means the pages keep their usual Agile Farm address
   res.locals.v4bAddressLines = data[ADDRESS_KEY] ? String(data[ADDRESS_KEY]).split('\n') : null
   if (data[MESSAGE_KEY]) {
@@ -406,6 +434,8 @@ function renderDemoConfiguration (req, res, options) {
   var errors = opts.errors || []
   res.status(errors.length ? 400 : 200).render(DEMO_VIEW, {
     defaultBusinessName: DEFAULT_BUSINESS_NAME,
+    defaultUserName: DEFAULT_USER_NAME,
+    userNameValue: opts.userName != null ? opts.userName : (data[USER_NAME_KEY] || ''),
     defaultSbi: DEFAULT_SBI,
     defaultAddress: DEFAULT_ADDRESS,
     defaultPostcode: DEFAULT_POSTCODE,
@@ -415,13 +445,14 @@ function renderDemoConfiguration (req, res, options) {
     participantLink: opts.participantLink || null,
     participantLinkSummary: opts.participantLinkSummary || null,
     current: {
+      userName: data[USER_NAME_KEY] || DEFAULT_USER_NAME,
       businessName: data[BUSINESS_NAME_KEY] || DEFAULT_BUSINESS_NAME,
       address: data[ADDRESS_KEY] ? String(data[ADDRESS_KEY]).split('\n').join(', ') : DEFAULT_ADDRESS + ', ' + DEFAULT_POSTCODE,
       sbi: data[SBI_KEY] || DEFAULT_SBI,
       land: land
         ? land.parcelCount + ' land parcel' + (land.parcelCount === 1 ? '' : 's') + ' from the Rural Payments Agency'
         : 'Agile Farm test land',
-      isDefault: !data[BUSINESS_NAME_KEY] && !data[ADDRESS_KEY] && !land
+      isDefault: !data[USER_NAME_KEY] && !data[BUSINESS_NAME_KEY] && !data[ADDRESS_KEY] && !land
     },
     errors: errors,
     sbiError: fieldError(errors, 'sbi')
@@ -442,8 +473,18 @@ function parseAddress (value) {
   return parts.map(function (part) { return part.trim().replace(/,$/, '') }).filter(Boolean).slice(0, 8)
 }
 
+// The answers the footer's "Complete bys" tool sets (routes.js, /prototype-tools/complete-check-tasks)
+var CHECK_TASK_ANSWERS = {
+  'business-details-answer': 'yes',
+  'land-details-answer': 'yes',
+  'land-eligible-answer': 'yes',
+  'management-answer-v2': 'yes'
+}
+
 function readDemoInputs (body) {
   return {
+    completeChecks: [].concat(body.v4bDemoCompleteChecks || []).indexOf('yes') !== -1,
+    userName: String(body.v4bDemoUserNameInput || '').trim().replace(/\s+/g, ' ').slice(0, 100),
     businessName: String(body.v4bDemoBusinessNameInput || '').trim(),
     sbi: String(body.v4bDemoSbiInput || '').replace(/\s+/g, ''),
     addressLines: parseAddress(body.v4bDemoAddressInput)
@@ -484,6 +525,11 @@ function checkDemoConfiguration (config) {
 
 function applyDemoConfiguration (req, config, addressLines, land) {
   var data = getSessionData(req)
+  if (config.userName) {
+    data[USER_NAME_KEY] = config.userName
+  } else {
+    delete data[USER_NAME_KEY]
+  }
   if (config.businessName) {
     data[BUSINESS_NAME_KEY] = config.businessName
   } else {
@@ -501,6 +547,9 @@ function applyDemoConfiguration (req, config, addressLines, land) {
     delete data[SESSION_KEY]
     delete data[SBI_KEY]
   }
+  if (config.completeChecks) {
+    Object.assign(data, CHECK_TASK_ANSWERS)
+  }
   resetApplicationLand(req)
 }
 
@@ -508,9 +557,11 @@ function applyDemoConfiguration (req, config, addressLines, land) {
 // This only tidies the link. Anyone with it can read the settings, so treat it like the SBI itself.
 function encodeDemoLink (config, addressLines) {
   var json = JSON.stringify({
+    u: config.userName || '',
     n: config.businessName || '',
     a: (addressLines || []).join('\n'),
-    s: config.sbi || ''
+    s: config.sbi || '',
+    c: config.completeChecks ? 1 : 0
   })
   return Buffer.from(json, 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
@@ -520,9 +571,11 @@ function decodeDemoLink (value) {
     var text = Buffer.from(String(value || '').slice(0, 4000).replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8')
     var parsed = JSON.parse(text)
     return {
+      userName: String(parsed.u || '').trim().replace(/\s+/g, ' ').slice(0, 100),
       businessName: String(parsed.n || '').trim().slice(0, 200),
       addressLines: String(parsed.a || '').split('\n').map(function (line) { return line.trim().slice(0, 200) }).filter(Boolean).slice(0, 6),
-      sbi: String(parsed.s || '').replace(/\s+/g, '')
+      sbi: String(parsed.s || '').replace(/\s+/g, ''),
+      completeChecks: Boolean(parsed.c)
     }
   } catch (error) {
     return null
@@ -534,7 +587,7 @@ function handleDemoConfigurationPost (req, res) {
   var body = req.body || {}
   var config = readDemoInputs(body)
   var makeLink = body.v4bDemoIntent === 'link'
-  ;['v4bDemoBusinessNameInput', 'v4bDemoSbiInput', 'v4bDemoAddressInput', 'v4bDemoIntent'].forEach(function (key) {
+  ;['v4bDemoUserNameInput', 'v4bDemoBusinessNameInput', 'v4bDemoSbiInput', 'v4bDemoAddressInput', 'v4bDemoIntent', 'v4bDemoCompleteChecks'].forEach(function (key) {
     delete data[key]
   })
 
@@ -545,10 +598,11 @@ function handleDemoConfigurationPost (req, res) {
       return renderDemoConfiguration(req, res, Object.assign({}, config, {
         // A path: the page adds the address the researcher is using (the server can sit behind a proxy)
         participantLink: '/sfi-grasslands-v4b/demo-start?d=' + encodeDemoLink(config, result.addressLines),
-        participantLinkSummary: (config.businessName || DEFAULT_BUSINESS_NAME) +
-          ', ' + (result.addressLines ? result.addressLines.join(', ') : DEFAULT_ADDRESS) +
+        participantLinkSummary: (config.userName || DEFAULT_USER_NAME) + ', ' + (config.businessName || DEFAULT_BUSINESS_NAME) +
+          ', ' + (result.addressLines && result.addressLines.length ? result.addressLines.join(', ') : DEFAULT_ADDRESS + ', ' + DEFAULT_POSTCODE) +
           ', SBI ' + (config.sbi || DEFAULT_SBI) +
-          (land ? ' (' + land.parcelCount + ' land parcel' + (land.parcelCount === 1 ? '' : 's') + ')' : ' (Agile Farm test land)')
+          (land ? ' (' + land.parcelCount + ' land parcel' + (land.parcelCount === 1 ? '' : 's') + ')' : ' (Agile Farm test land)') +
+          (config.completeChecks ? ', with "Check before you start" complete' : '')
       }))
     }
     applyDemoConfiguration(req, config, result.addressLines, result.land)
@@ -608,6 +662,7 @@ function handleDemoStart (req, res) {
 }
 
 module.exports = {
+  buildEmail: buildEmail,
   handleSbiCheck: handleSbiCheck,
   handleDemoReset: handleDemoReset,
   handleDemoStart: handleDemoStart,

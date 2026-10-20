@@ -32,19 +32,19 @@
 
     {% if data['valleySFD'] == 'True' %}
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
-      <span class="govuk-caption-l">Alfred Waldron</span>
+      <span class="govuk-caption-l">{{ v4bUserName or "Alfred Waldron" }}</span>
       Valley Farm
     </h1>
     <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 192846125</p>
     {% elif data['agileSFD'] == 'True' %}
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
-      <span class="govuk-caption-l govuk-!-margin-bottom-2">Alfred Waldron</span>
+      <span class="govuk-caption-l govuk-!-margin-bottom-2">{{ v4bUserName or "Alfred Waldron" }}</span>
       {{ v4bBusinessName or "Agile Farm Ltd" }}
     </h1>
     <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): {{ v4bSbi or "123456789" }}</p>
     {% else %}
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
-      <span class="govuk-caption-l">Alfred Waldron</span>
+      <span class="govuk-caption-l">{{ v4bUserName or "Alfred Waldron" }}</span>
       {{ v4bBusinessName or "Agile Farm Ltd" }}
     </h1>
     <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): {{ v4bSbi or "123456789" }}</p>

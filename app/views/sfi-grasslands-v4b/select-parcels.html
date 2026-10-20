@@ -174,7 +174,6 @@
         {# Without JavaScript only: the map has its own Key panel (sfi-grasslands-v4b-select-parcels-map.js) #}
         <ul class="govuk-list govuk-body-s app-v4b-map__key" aria-label="Map key" data-v4b-static-key>
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--available"></span>Available</li>
-          <li><span class="app-v4b-map__swatch app-v4b-map__swatch--selected"></span>Selected</li>
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--added"></span>Actions added</li>
           <li><span class="app-v4b-map__swatch app-v4b-map__swatch--unavailable"></span>No actions available</li>
         </ul>
@@ -427,7 +426,7 @@
   <script src="/public/javascripts/sfi-grasslands-v4b-parcel-search.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-map-reset-button.js"></script>
   <script src="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.js"></script>
-  <script id="v4b-map-parcels-json" type="application/json" data-land-source="{{ v4bRpaLand.sbi if v4bRpaLand else 'test' }}" data-show-key="{{ 'true' if showMapKeyOnLoad else 'false' }}">{{ mapParcels | dump | safe }}</script>
+  <script id="v4b-map-parcels-json" type="application/json" data-land-source="{{ v4bRpaLand.sbi if v4bRpaLand else 'test' }}">{{ mapParcels | dump | safe }}</script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-land-map-clusters.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-map.js"></script>
   <script src="/public/javascripts/sfi-grasslands-v4b-select-parcels-layout.js"></script>

@@ -7,7 +7,7 @@
     </div>
 
     <div class="govuk-grid-column-one-third app-account-bar__user">
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Alfred Waldron</h3>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">{{ v4bUserName or "Alfred Waldron" }}</h3>
       {% if signOutUrl %}
         <p class="govuk-body-s govuk-!-margin-bottom-2">
           <a class="govuk-link" href="{{ signOutUrl }}">Sign out</a>

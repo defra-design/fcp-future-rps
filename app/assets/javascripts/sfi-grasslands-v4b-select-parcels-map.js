@@ -203,10 +203,9 @@
         window.sessionStorage.removeItem(ZOOM_TO_PARCEL_KEY)
       } catch (error) {}
       highlightParcel(parcelId, options)
-      swap.load(parcelId).catch(function () {
+      return swap.load(parcelId).catch(function () {
         window.location.href = PAGE_URL + '?parcel=' + encodeURIComponent(parcelId)
       })
-      return
     }
     try {
       window.sessionStorage.setItem('v4bScrollToParcel', String(window.scrollY || 0))
@@ -857,7 +856,6 @@
   function keyPanelHtml () {
     var items = [
       ['available', 'Available'],
-      ['selected', 'Selected'],
       ['added', 'Actions added'],
       ['unavailable', 'No actions available']
     ]
@@ -873,21 +871,15 @@
   }
 
   function addKey () {
-    // Open by itself once per prototype session, the first time the map is shown with no
-    // land parcel open and no actions added (decided by the server: showMapKeyOnLoad in routes.js)
-    var showOnLoad = dataEl.getAttribute('data-show-key') === 'true'
+    // Closed when the page loads; the Key button opens it (changed 20 October 2026)
     interactiveMap.addPanel('v4bKeyPanel', {
       label: 'Key',
       html: keyPanelHtml(),
       focus: false,
       mobile: { slot: 'drawer', modal: true, open: false },
-      tablet: { slot: 'left-top', width: '260px', open: showOnLoad },
-      desktop: { slot: 'left-top', width: '280px', open: showOnLoad }
+      tablet: { slot: 'left-top', width: '260px', open: false },
+      desktop: { slot: 'left-top', width: '280px', open: false }
     })
-    if (showOnLoad) {
-      interactiveMap.showPanel('v4bKeyPanel', { focus: false })
-      keyOpen = true
-    }
     interactiveMap.addButton('v4bKey', {
       label: 'Key',
       panelId: 'v4bKeyPanel',
@@ -904,6 +896,37 @@
   }
 
   interactiveMap.on('app:ready', addKey)
+
+  // "Added land parcels" links (map view): open the parcel as a click on the map does
+  // (the map zooms to it, no page reload, which could bring back the list view),
+  // then go down to its actions
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest && event.target.closest('.app-v4b-saved-summary a[href*="select-parcels?parcel="]')
+    var form = document.getElementById('v4b-select-parcels-form')
+    if (!link || (form && form.classList.contains('app-v4b-is-list'))) {
+      return
+    }
+    var parcelId = new URL(link.href, window.location.href).searchParams.get('parcel')
+    if (!parcelId || !parcelData[parcelId]) {
+      return
+    }
+    event.preventDefault()
+    var opened = (selected && selected.parcelId === parcelId)
+      ? Promise.resolve()
+      : openParcel(parcelId, { zoom: true })
+    Promise.resolve(opened).then(function () {
+      // Take the user down to "Select actions for this land parcel" (the parcel's actions,
+      // below the map) and move focus there for keyboard and screen reader users
+      var target = document.getElementById('selected-parcel')
+      if (!target) {
+        return
+      }
+      var top = target.getBoundingClientRect().top + window.pageYOffset - 15
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      target.focus({ preventScroll: true })
+      window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' })
+    })
+  })
 
   // Close the Key when the user clicks or taps anywhere else (as the search box does).
   // The Key button itself still toggles it.

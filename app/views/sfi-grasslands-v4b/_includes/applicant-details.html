@@ -9,17 +9,20 @@
 
 <h3 class="govuk-heading-s">Your details</h3>
 <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+  {# No title for a name set on the demo configuration page #}
+  {% if v4bUserTitle is not defined or v4bUserTitle %}
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">Title</dt>
-    <dd class="govuk-summary-list__value">Mr</dd>
+    <dd class="govuk-summary-list__value">{{ v4bUserTitle if v4bUserTitle is defined else "Mr" }}</dd>
   </div>
+  {% endif %}
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">First name</dt>
-    <dd class="govuk-summary-list__value">Alfred</dd>
+    <dd class="govuk-summary-list__value">{{ v4bUserFirstName or "Alfred" }}</dd>
   </div>
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">Last name</dt>
-    <dd class="govuk-summary-list__value">Waldron</dd>
+    <dd class="govuk-summary-list__value">{{ v4bUserLastName if v4bUserLastName is defined else "Waldron" }}</dd>
   </div>
 </dl>
 
@@ -63,6 +66,6 @@
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">Email address</dt>
-    <dd class="govuk-summary-list__value">alfred.waldron@agilefarm.co.uk</dd>
+    <dd class="govuk-summary-list__value">{{ v4bUserEmail or "alfred.waldron@agilefarm.co.uk" }}</dd>
   </div>
 </dl>

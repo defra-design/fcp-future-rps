@@ -10465,17 +10465,7 @@ function renderSfiGrasslandsV4bSelectParcels (req, res, options) {
     }
   })
 
-  // The map Key opens by itself once per session: the first time the map is shown with
-  // no land parcel open and no actions added yet ("Clear data" or a participant link resets it)
-  var keySessionData = getSfiGrasslandsV4bSessionData(req)
-  var showMapKeyOnLoad = !selectedParcel && !keySessionData.v4bMapKeyShown &&
-    !parcels.some(function (parcel) { return parcel.savedCount > 0 })
-  if (showMapKeyOnLoad) {
-    keySessionData.v4bMapKeyShown = true
-  }
-
   res.status(opts.errors && opts.errors.length ? 400 : 200).render('sfi-grasslands-v4b/select-parcels', Object.assign({
-    showMapKeyOnLoad: showMapKeyOnLoad,
     data: getSfiGrasslandsV4bSessionData(req),
     interestedActions: interestedActions,
     parcels: parcels,

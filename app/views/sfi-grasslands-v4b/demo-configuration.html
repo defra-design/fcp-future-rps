@@ -43,7 +43,7 @@
           <a class="govuk-link" href="{{ participantLink }}" data-v4b-demo-open target="_blank" rel="noopener noreferrer">Open the link (opens in new tab)</a>
         </div>
         <p class="govuk-body-s" role="status" data-v4b-demo-copied hidden>Link copied.</p>
-        <p class="govuk-body-s">Anyone with the link can see the business name, address and SBI in it. Only send it to the participant.</p>
+        <p class="govuk-body-s">Anyone with the link can see the name, business name, address and SBI in it. Only send it to the participant.</p>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
       {% endif %}
 
@@ -53,7 +53,7 @@
 
       <div class="govuk-inset-text app-v4b-demo-current">
         <p class="govuk-body govuk-!-margin-bottom-1"><strong>Currently using</strong></p>
-        <p class="govuk-body govuk-!-margin-bottom-1">{{ current.businessName }}, {{ current.address }}</p>
+        <p class="govuk-body govuk-!-margin-bottom-1">{{ current.userName }}, {{ current.businessName }}, {{ current.address }}</p>
         <p class="govuk-body govuk-!-margin-bottom-{{ '0' if current.isDefault else '2' }}">SBI {{ current.sbi }}: {{ current.land }}</p>
         {% if not current.isDefault %}
           <p class="govuk-body govuk-!-margin-bottom-0">
@@ -69,6 +69,17 @@
         {% call govukFieldset({
           legend: { text: "Business details", classes: "govuk-fieldset__legend--m" }
         }) %}
+
+          {{ govukInput({
+            label: { text: "Name", classes: "govuk-label--s" },
+            hint: { text: "The person signed in. Default: " + defaultUserName },
+            id: "v4b-demo-user-name",
+            name: "v4bDemoUserNameInput",
+            value: userNameValue,
+            autocomplete: "off",
+            spellcheck: false,
+            classes: "govuk-!-width-two-thirds"
+          }) }}
 
           {{ govukInput({
             label: { text: "Business name", classes: "govuk-label--s" },
@@ -117,7 +128,56 @@
             <p class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0" role="status" data-v4b-sbi-result></p>
           </div>
 
+          {# Sample SBIs to try, smallest farm first #}
+          {% set sampleSbis = [
+            { sbi: "107172777", parcels: "21" },
+            { sbi: "106290790", parcels: "23" },
+            { sbi: "109050730", parcels: "25" },
+            { sbi: "106200859", parcels: "29" },
+            { sbi: "106332870", parcels: "33" },
+            { sbi: "106623360", parcels: "40" },
+            { sbi: "106172811", parcels: "50" },
+            { sbi: "107034018", parcels: "65" },
+            { sbi: "106200212", parcels: "80" },
+            { sbi: "111089693", parcels: "104" },
+            { sbi: "113319980", parcels: "151" },
+            { sbi: "106327021", parcels: "13,143", note: "National Trust. Very large: slow to load, and only the first 2,000 land parcels are shown" }
+          ] %}
+          <details class="govuk-details app-v4b-sample-sbis">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">Sample SBIs</span>
+            </summary>
+            <div class="govuk-details__text">
+              <table class="govuk-table govuk-!-margin-bottom-0">
+                <caption class="govuk-table__caption govuk-visually-hidden">Sample SBIs and their number of land parcels</caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">SBI</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Land parcels</th>
+                    <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Use</span></th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  {% for sample in sampleSbis %}
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">
+                        {{ sample.sbi }}
+                        {% if sample.note %}<span class="govuk-hint govuk-!-margin-bottom-0 app-v4b-sample-sbis__note">{{ sample.note }}</span>{% endif %}
+                      </td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ sample.parcels }}</td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <button type="button" class="app-v4b-link-button govuk-link" data-v4b-use-sbi="{{ sample.sbi }}">Use<span class="govuk-visually-hidden"> SBI {{ sample.sbi }}</span></button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </details>
+
         {% endcall %}
+
+        <input type="hidden" name="v4bDemoCompleteChecks" value="" data-v4b-complete-checks>
 
         <div class="govuk-button-group">
           {{ govukButton({
@@ -182,6 +242,14 @@
     .app-v4b-dialog { width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 64px); padding: 30px; border: 5px solid #0b0c0c; box-sizing: border-box; }
     .app-v4b-dialog::backdrop { background: rgba(11, 12, 12, 0.6); }
     .app-v4b-dialog { overflow-y: auto; }
+    /* Sample SBIs table: 14px */
+    .app-v4b-sample-sbis .govuk-table,
+    .app-v4b-sample-sbis .govuk-table__header,
+    .app-v4b-sample-sbis .govuk-table__cell,
+    .app-v4b-sample-sbis .app-v4b-link-button,
+    .app-v4b-sample-sbis .app-v4b-sample-sbis__note { font-size: 14px; line-height: 1.3; }
+    .app-v4b-sample-sbis .govuk-table__header,
+    .app-v4b-sample-sbis .govuk-table__cell { padding-top: 6px; padding-bottom: 6px; }
     .app-v4b-link-button { padding: 0; border: 0; background: none; cursor: pointer; font: inherit; color: #1d70b8; text-decoration: underline; text-decoration-thickness: max(1px, .0625rem); text-underline-offset: .1578em; }
     .app-v4b-link-button:hover { color: #003078; text-decoration-thickness: max(3px, .1875rem); }
     .app-v4b-link-button:focus { outline: 3px solid transparent; color: #0b0c0c; background-color: #ffdd00; box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c; text-decoration: none; }
@@ -212,6 +280,18 @@
           }
         })
       }
+
+      // Footer "Complete bys" on this page: save what has been typed, with the tasks complete,
+      // rather than leaving the page and losing it
+      document.querySelectorAll('a[href^="/prototype-tools/complete-check-tasks"]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault()
+          var tick = form.querySelector('[data-v4b-complete-checks]')
+          if (tick) { tick.value = 'yes' }
+          var start = form.querySelector('button[value="continue"]')
+          if (start) { start.click() } else { form.submit() }
+        })
+      })
 
       form.addEventListener('submit', function () {
         form.querySelector('[data-v4b-demo-loading]').hidden = false
@@ -252,6 +332,20 @@
           }
         })
       }
+
+      // Sample SBIs: "Use" fills in the SBI and closes the list (they are known to work,
+      // so there is no need to check them)
+      document.querySelectorAll('[data-v4b-use-sbi]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var field = document.getElementById('v4b-demo-sbi')
+          field.value = button.getAttribute('data-v4b-use-sbi')
+          var samples = button.closest('details')
+          if (samples) { samples.open = false }
+          var result = document.querySelector('[data-v4b-sbi-result]')
+          if (result) { result.textContent = '' }
+          field.focus()
+        })
+      })
 
       // Check SBI: shows what the SBI finds before the link is made
       var checkButton = document.querySelector('[data-v4b-check-sbi]')
