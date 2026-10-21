@@ -729,3 +729,14 @@ $app-v4b-light-grey: #f3f2f1;
 .app-v4b-is-list .app-v4b-saved-summary {
   display: none;
 }
+
+// Search box width: as wide as the map allows, up to 520px, leaving room for the map
+// controls button top right. Measured from the map itself (container query units), so it
+// follows the map's size. Phones keep the plugin's full-width header box.
+#v4b-parcel-map {
+  container-type: inline-size;
+}
+
+#v4b-parcel-map .im-o-app:not(.im-o-app--mobile) .im-c-search-form {
+  width: min(520px, calc(100cqw - 110px)) !important;
+}

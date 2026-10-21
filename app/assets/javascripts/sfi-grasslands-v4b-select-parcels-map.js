@@ -330,6 +330,8 @@
         hoverSummary: true,
         // A cluster of land in two places splits into them before zooming to fit
         splitClusters: true,
+        // Selecting a group zooms in at least this far, so the fields are big enough to pick
+        clusterMinZoom: 14,
         // Wide enough that land close together stays in one circle
         clusterRadius: 80,
         // OS map sheet (for example SO3) under the circle, when the whole circle is on one sheet
@@ -504,9 +506,10 @@
       formatReference: function (parcel) { return parcel.parcelReference || parcel.parcelId },
       // Search is the main control, so it takes the top of the map on its own.
       // Styles and Key sit bottom left (BOTTOM_LEFT_BUTTON below)
-      // The box's parent shrinks to fit, so a % width doesn't work: size it from the map,
-      // leaving room for the map controls button top right
-      width: Math.max(260, Math.min(520, container.clientWidth - 110)) + 'px'
+      // Width is set in the page CSS from the map's own width (container query), so it
+      // follows the map when the window changes. Measuring here gave a tiny box when the
+      // map wasn't laid out yet
+      width: '520px'
     }))
   }
 
@@ -622,7 +625,9 @@
     // The map is about 630px wide in its column. Treat that as tablet, not phone, so the
     // Styles and Key buttons show their labels and the Key opens beside the map
     maxMobileWidth: 500,
-    containerHeight: Math.max(window.innerHeight - 260, 380) + 'px',
+    // Close to the window's height (at least 480px), so on smaller laptop screens the
+    // fields aren't tiny. Was innerHeight - 260, min 380, which felt small in Edge
+    containerHeight: Math.max(window.innerHeight - 140, 480) + 'px',
     enableZoomControls: true,
     mapStyle: {
       // OS Maps when the server has a key (app/os-maps.js), otherwise OpenFreeMap
@@ -1034,6 +1039,8 @@
       return
     }
     rawMap = map
+    // For checking the map from the browser console (prototype only)
+    window.sfiGrasslandsV4bParcelMap = map
 
     keepParcelLayersOnStyleChange(map)
 

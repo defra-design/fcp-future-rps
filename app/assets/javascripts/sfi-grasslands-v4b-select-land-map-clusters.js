@@ -109,7 +109,7 @@
 
   // select-parcels: a cluster that holds land in more than one place splits into
   // those places first, instead of zooming out far enough to show them all at once
-  function zoomToClusterOrSplit (map, parcelData, clusterFeature) {
+  function zoomToClusterOrSplit (map, parcelData, clusterFeature, minZoom) {
     var source = map.getSource(POINT_SOURCE_ID)
     var clusterId = clusterFeature.properties.cluster_id
     Promise.resolve(source.getClusterExpansionZoom(clusterId)).then(function (expansionZoom) {
@@ -117,13 +117,15 @@
         map.easeTo({ center: clusterFeature.geometry.coordinates, zoom: expansionZoom })
         return
       }
-      zoomToCluster(map, parcelData, clusterFeature)
+      zoomToCluster(map, parcelData, clusterFeature, minZoom)
     }).catch(function () {
-      zoomToCluster(map, parcelData, clusterFeature)
+      zoomToCluster(map, parcelData, clusterFeature, minZoom)
     })
   }
 
-  function zoomToCluster (map, parcelData, clusterFeature) {
+  // minZoom (optional): fitting a long or spread-out group can stop so far out that the
+  // fields are tiny. Then zoom in to minZoom on the middle of the group instead.
+  function zoomToCluster (map, parcelData, clusterFeature, minZoom) {
     var source = map.getSource(POINT_SOURCE_ID)
     var clusterId = clusterFeature.properties.cluster_id
 
@@ -134,6 +136,16 @@
       var bounds = getBounds(parcelIds, parcelData)
       if (!bounds) {
         throw new Error('No parcel bounds for cluster')
+      }
+      var camera = minZoom && typeof map.cameraForBounds === 'function'
+        ? map.cameraForBounds(bounds, { padding: FIT_PADDING_PX, maxZoom: 16 })
+        : null
+      if (camera && Number.isFinite(camera.zoom) && camera.zoom < minZoom) {
+        map.easeTo({
+          center: [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2],
+          zoom: minZoom
+        })
+        return
       }
       map.fitBounds(bounds, { padding: FIT_PADDING_PX, maxZoom: 16 })
     }).catch(function () {
@@ -246,9 +258,9 @@
         return
       }
       if (feature.properties.cluster && opts.splitClusters) {
-        zoomToClusterOrSplit(map, parcelData, feature)
+        zoomToClusterOrSplit(map, parcelData, feature, opts.clusterMinZoom)
       } else if (feature.properties.cluster) {
-        zoomToCluster(map, parcelData, feature)
+        zoomToCluster(map, parcelData, feature, opts.clusterMinZoom)
       } else {
         zoomToParcel(map, parcelData, feature)
       }
