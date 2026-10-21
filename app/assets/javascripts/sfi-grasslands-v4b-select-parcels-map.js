@@ -608,6 +608,36 @@
     return coords.length ? getBounds(coords) : null
   }
 
+  // Share of parcels (by their middle point) inside the map at this centre and zoom
+  function shareOfLandInView (map, center, zoom) {
+    var container = map.getContainer()
+    var halfWidth = (container.clientWidth - ALL_PADDING.left - ALL_PADDING.right) / 2
+    var halfHeight = (container.clientHeight - ALL_PADDING.top - ALL_PADDING.bottom) / 2
+    var worldSize = 512 * Math.pow(2, zoom)
+    var toPixels = function (lng, lat) {
+      var sin = Math.sin(lat * Math.PI / 180)
+      return {
+        x: (lng + 180) / 360 * worldSize,
+        y: (0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * worldSize
+      }
+    }
+    var middle = toPixels(center.lng, center.lat)
+    var total = 0
+    var inView = 0
+    parcels.forEach(function (parcel) {
+      if (!parcel.coords || !parcel.coords.length) {
+        return
+      }
+      var bounds = getBounds(parcel.coords)
+      var point = toPixels((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
+      total += 1
+      if (Math.abs(point.x - middle.x) <= halfWidth && Math.abs(point.y - middle.y) <= halfHeight) {
+        inView += 1
+      }
+    })
+    return total ? inView / total : 1
+  }
+
   function establishDefaultView (map) {
     var bounds = allParcelBounds()
     if (bounds && typeof map.cameraForBounds === 'function') {
@@ -622,7 +652,15 @@
         // On a narrow (phone) map that level would push most of the land off screen,
         // so there the view still fits everything.
         var wideMap = map.getContainer().clientWidth >= 500
-        defaultView = { lat: center.lat, lng: center.lng, zoom: wideMap ? Math.max(camera.zoom, START_MIN_ZOOM) : camera.zoom }
+        var zoom = wideMap ? Math.max(camera.zoom, START_MIN_ZOOM) : camera.zoom
+        // Some farms have land miles apart (106172811 has 3 parcels 25km from the rest).
+        // Then the middle of all the land can be empty fields, and zooming in to the
+        // minimum level would show no parcels or circles at all. If that closer view
+        // would hide much of the land, fit all of it instead, so every area shows a circle.
+        if (zoom > camera.zoom && shareOfLandInView(map, center, zoom) < 0.9) {
+          zoom = camera.zoom
+        }
+        defaultView = { lat: center.lat, lng: center.lng, zoom: zoom }
         return
       }
     }

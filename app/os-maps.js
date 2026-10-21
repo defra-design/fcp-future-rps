@@ -123,11 +123,60 @@ function handleTile (req, res) {
   })
 }
 
+// Postcode lookup for the set-up page's address picker (OS Places API, same key).
+// Returns { addresses: [{ label, lines }] }, or { error } with OS's status code.
+function titleCase (text) {
+  return String(text || '').toLowerCase().replace(/(^|[\s\-'/(])([a-z])/g, function (m, p, c) { return p + c.toUpperCase() })
+}
+
+function addressLines (dpa) {
+  var first = [dpa.SUB_BUILDING_NAME, dpa.BUILDING_NAME, dpa.ORGANISATION_NAME && !dpa.BUILDING_NAME && !dpa.BUILDING_NUMBER ? dpa.ORGANISATION_NAME : '']
+    .filter(Boolean).map(titleCase)
+  var street = [dpa.BUILDING_NUMBER, titleCase(dpa.DEPENDENT_THOROUGHFARE_NAME || dpa.THOROUGHFARE_NAME)].filter(Boolean).join(' ')
+  return first.concat([street, titleCase(dpa.DEPENDENT_LOCALITY), titleCase(dpa.POST_TOWN), dpa.POSTCODE])
+    .filter(Boolean)
+}
+
+function handlePlaces (req, res) {
+  var key = apiKey()
+  var postcode = String(req.query.postcode || '').toUpperCase().replace(/[^A-Z0-9]/g, '')
+  res.set('Cache-Control', 'no-store')
+  if (!key) {
+    return res.status(404).json({ error: 'OS key not set' })
+  }
+  if (!/^[A-Z]{1,2}[0-9][A-Z0-9]?[0-9][A-Z]{2}$/.test(postcode)) {
+    return res.status(400).json({ error: 'Enter a real postcode' })
+  }
+  var url = 'https://api.os.uk/search/places/v1/postcode?dataset=DPA&maxresults=100&postcode=' + encodeURIComponent(postcode)
+  var upstream = https.get(url, { headers: { key: key } }, function (response) {
+    var body = ''
+    response.setEncoding('utf8')
+    response.on('data', function (chunk) { body += chunk })
+    response.on('end', function () {
+      if (response.statusCode !== 200) {
+        return res.status(response.statusCode).json({ error: 'OS Places returned ' + response.statusCode })
+      }
+      var json
+      try { json = JSON.parse(body) } catch (e) { return res.status(502).json({ error: 'Bad response from OS Places' }) }
+      var addresses = (json.results || []).map(function (r) {
+        var lines = addressLines(r.DPA || {})
+        return { label: lines.join(', '), lines: lines }
+      })
+      res.json({ addresses: addresses })
+    })
+  })
+  upstream.on('error', function () {
+    if (!res.headersSent) { res.status(502).json({ error: 'Could not reach OS Places' }) }
+  })
+  upstream.setTimeout(15000, function () { upstream.destroy() })
+}
+
 module.exports = {
   isEnabled: isEnabled,
   attribution: attribution,
   middleware: middleware,
   handleStyle: handleStyle,
-  handleTile: handleTile
+  handleTile: handleTile,
+  handlePlaces: handlePlaces
 }
 

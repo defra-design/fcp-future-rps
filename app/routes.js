@@ -46,6 +46,7 @@ const osMaps = require('./os-maps')
 router.use(osMaps.middleware)
 router.get('/os-maps/style.json', osMaps.handleStyle)
 router.get('/os-maps/tiles/:layer/:z/:x/:y.png', osMaps.handleTile)
+router.get('/os-maps/places', osMaps.handlePlaces)
 
 // v4b prototype tool: a real farm's land loaded by SBI from the RPA Land API replaces the
 // Agile Farm test parcels for this session (see app/sfi-grasslands-v4b/rpa-land.js).

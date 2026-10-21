@@ -92,6 +92,9 @@
           desktop: { slot: 'top-left', showLabel: true }
         }]
       },
+      // Search is a main way to find land, so the box is always open. Open by default, it
+      // doesn't take over the map, so Styles and Key stay visible beside it.
+      expanded: true,
       placeholder: 'Search by land parcel',
       width: '300px',
       showMarker: false,
