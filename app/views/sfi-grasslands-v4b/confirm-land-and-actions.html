@@ -43,6 +43,13 @@
           </div>
           <div class="govuk-notification-banner__content">
             <p class="govuk-notification-banner__heading">{{ flashMessage }}</p>
+            {% if not summary.isEmpty %}
+              {# Same as the "Add another land parcel" button at the bottom of the form, so the
+                 user doesn't have to scroll past every parcel to find it #}
+              <p class="govuk-body">
+                <button type="submit" form="confirm-land-actions-form" name="confirmAction" value="addAnother" class="app-v4b-banner-link govuk-link">Add another land parcel</button>
+              </p>
+            {% endif %}
           </div>
         </div>
       {% endif %}

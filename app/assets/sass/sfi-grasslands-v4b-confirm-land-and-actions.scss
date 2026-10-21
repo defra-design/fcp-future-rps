@@ -215,3 +215,24 @@
     margin-bottom: 15px;
   }
 }
+
+// "Add another land parcel" in the success banner: a submit button (it needs the form's
+// addAnother action) that looks like a standard blue GOV.UK link
+.app-v4b-banner-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  // GOV.UK sets link colours on :link and :visited, which a button never matches
+  color: #1d70b8;
+
+  &:hover {
+    color: #003078;
+  }
+
+  &:focus {
+    color: #0b0c0c;
+  }
+}
