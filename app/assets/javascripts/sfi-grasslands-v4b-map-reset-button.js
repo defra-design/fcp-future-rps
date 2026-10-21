@@ -7,15 +7,21 @@
     '<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>' +
     '<path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>';
 
-  function add(interactiveMap, onClick) {
+  // options.slot: a different slot for this map. options.order: its place in the slot
+  // (select-parcels puts it after Styles and Key)
+  function add(interactiveMap, onClick, options) {
+    var slot = options && options.slot ? { slot: options.slot } : SLOT;
+    if (options && options.order != null) {
+      slot = Object.assign({}, slot, { order: options.order });
+    }
     interactiveMap.addButton(BUTTON_ID, {
       label: 'View all land parcels',
       iconSvgContent: ICON,
       isHidden: true,
       onClick: onClick,
-      mobile: SLOT,
-      tablet: SLOT,
-      desktop: SLOT
+      mobile: slot,
+      tablet: slot,
+      desktop: slot
     });
   }
 

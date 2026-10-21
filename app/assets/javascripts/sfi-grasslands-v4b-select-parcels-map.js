@@ -19,6 +19,9 @@
   var PAGE_URL = '/sfi-grasslands-v4b/select-parcels'
   // "test" for the Agile Farm test land, or the SBI of a real farm loaded from the
   // footer's prototype tools (app/sfi-grasslands-v4b/rpa-land.js)
+  // Styles and Key on tablet and desktop: below the map's corner, leaving the top to search
+  var BOTTOM_LEFT_BUTTON = { slot: 'bottom-left', showLabel: true }
+
   var LAND_SOURCE = dataEl.getAttribute('data-land-source') || 'test'
   // Home farm — outlying parcels are reached from the list
   var FARM_CENTER = { lng: -0.7448892, lat: 51.9497679 }
@@ -482,9 +485,28 @@
     mapPlugins.push(window.defra.scaleBarPlugin({ units: 'metric' }))
   }
   if (window.sfiGrasslandsV4bParcelSearch && window.defra.searchPlugin) {
+    // "Search by land parcel, SO3757 3185 or 3185": a full reference and its last 4 digits.
+    // Agile Farm uses SO3757 3185; a real farm (demo set-up) uses its own first reference,
+    // so the example always matches a parcel that can be found
+    var searchReferences = Object.keys(parcelData).map(function (parcelId) {
+      return parcelData[parcelId].parcelReference || ''
+    }).filter(function (reference) {
+      return /\s\d{4}$/.test(reference)
+    }).sort(function (a, b) {
+      return a.localeCompare(b, 'en-GB', { numeric: true })
+    })
+    var searchExample = searchReferences.indexOf('SO3757 3185') !== -1 ? 'SO3757 3185' : searchReferences[0]
     mapPlugins.push(window.sfiGrasslandsV4bParcelSearch.createPlugin({
+      placeholder: searchExample
+        ? 'Search by land parcel, ' + searchExample + ' or ' + searchExample.slice(-4)
+        : 'Search by land parcel',
       getParcels: function () { return parcelData },
-      formatReference: function (parcel) { return parcel.parcelReference || parcel.parcelId }
+      formatReference: function (parcel) { return parcel.parcelReference || parcel.parcelId },
+      // Search is the main control, so it takes the top of the map on its own.
+      // Styles and Key sit bottom left (BOTTOM_LEFT_BUTTON below)
+      // The box's parent shrinks to fit, so a % width doesn't work: size it from the map,
+      // leaving room for the map controls button top right
+      width: Math.max(260, Math.min(520, container.clientWidth - 110)) + 'px'
     }))
   }
 
@@ -561,7 +583,24 @@
   }
 
   if (window.defra.mapStylesPlugin) {
-    mapPlugins.push(window.defra.mapStylesPlugin({ mapStyles: buildMapStyles() }))
+    mapPlugins.push(window.defra.mapStylesPlugin({
+      mapStyles: buildMapStyles(),
+      // Bottom left, beside Key, so the search box can be wider (phones keep the icon top left)
+      manifest: {
+        buttons: [{
+          id: 'mapStyles',
+          mobile: { slot: 'top-left', showLabel: false },
+          tablet: BOTTOM_LEFT_BUTTON,
+          desktop: BOTTOM_LEFT_BUTTON
+        }],
+        panels: [{
+          id: 'mapStyles',
+          mobile: { slot: 'drawer', modal: true, dismissible: true },
+          tablet: { slot: 'left-bottom', modal: true, width: '400px', dismissible: true },
+          desktop: { slot: 'left-bottom', modal: true, width: '400px', dismissible: true }
+        }]
+      }
+    }))
     // The map sits inside the page's form, and the Styles panel's buttons have no type,
     // so they would submit the form. Make them plain buttons before the click goes through.
     container.addEventListener('click', function (event) {
@@ -718,11 +757,12 @@
   interactiveMap.on('app:ready', function () {
     interactiveMap.toggleButtonState('mapControls', 'expanded', true)
     if (window.sfiGrasslandsV4bMapResetButton) {
+      // Bottom left, after Styles and Key, so the three sit in a row
       window.sfiGrasslandsV4bMapResetButton.add(interactiveMap, function () {
         if (rawMap) {
           showAllParcels(rawMap)
         }
-      })
+      }, { slot: 'bottom-left', order: 10 })
     }
   })
 
@@ -915,16 +955,16 @@
       html: keyPanelHtml(),
       focus: false,
       mobile: { slot: 'drawer', modal: true, open: false },
-      tablet: { slot: 'left-top', width: '260px', open: false },
-      desktop: { slot: 'left-top', width: '280px', open: false }
+      tablet: { slot: 'left-bottom', width: '260px', open: false },
+      desktop: { slot: 'left-bottom', width: '280px', open: false }
     })
     interactiveMap.addButton('v4bKey', {
       label: 'Key',
       panelId: 'v4bKeyPanel',
       iconSvgContent: KEY_ICON,
       mobile: { slot: 'top-left', showLabel: true },
-      tablet: { slot: 'top-left', showLabel: true },
-      desktop: { slot: 'top-left', showLabel: true }
+      tablet: BOTTOM_LEFT_BUTTON,
+      desktop: BOTTOM_LEFT_BUTTON
     })
     // The key under the map is only for when JavaScript is off
     var staticKey = document.querySelector('[data-v4b-static-key]')

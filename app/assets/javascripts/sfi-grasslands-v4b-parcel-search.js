@@ -95,8 +95,9 @@
       // Search is a main way to find land, so the box is always open. Open by default, it
       // doesn't take over the map, so Styles and Key stay visible beside it.
       expanded: true,
-      placeholder: 'Search by land parcel',
-      width: '300px',
+      placeholder: options.placeholder || 'Search by land parcel',
+      // A page can ask for a wider box (select-parcels does, with Styles and Key moved below)
+      width: options.width || '300px',
       showMarker: false,
       noResultsMessage: 'No matching land parcels',
       customDatasets: [{
