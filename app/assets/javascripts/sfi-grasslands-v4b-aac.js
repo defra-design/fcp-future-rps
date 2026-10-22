@@ -1205,6 +1205,12 @@
         if (action.unit !== 'ha' || action.selectedQuantity > 0 || action.hardConflict) {
           return
         }
+        // Supplements (GRH7, GRH8, GRH10) sit on top of CLIG3's land rather than using
+        // land of their own, so CLIG3 using all the land is exactly when they can be added
+        // (fixed 21 October 2026: they were greyed out with 0 hectares available)
+        if (isSupplementAction(action.code) && getSelectedQuantity(getSupplementBaseCode(action.code)) > 0) {
+          return
+        }
         action.status = 'unavailable'
         action.statusText = 'Unavailable'
         action.available = 0

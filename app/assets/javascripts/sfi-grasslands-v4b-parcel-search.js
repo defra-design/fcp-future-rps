@@ -82,6 +82,36 @@
       });
   }
 
+  // Two-size hint in the search box: "Enter parcel reference" at normal size, the
+  // bracketed example smaller. A placeholder can only have one style, so the native one is
+  // made transparent (CSS) and this span sits over the input. It hides with
+  // :placeholder-shown once the user types. The native placeholder keeps the full text,
+  // which is also the input's label for screen readers.
+  function addHint(mapId, hint) {
+    var container = document.getElementById(mapId);
+    if (!container || !hint) {
+      return;
+    }
+    function place() {
+      var input = container.querySelector('.im-c-search__input');
+      if (!input || input.parentNode.querySelector('.app-v4b-search-hint')) {
+        return;
+      }
+      var el = document.createElement('span');
+      el.className = 'app-v4b-search-hint';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = escapeHtml(hint.lead) +
+        (hint.example ? ' <span class="app-v4b-search-hint__example">' + escapeHtml(hint.example) + '</span>' : '');
+      var style = window.getComputedStyle(input);
+      el.style.left = (input.offsetLeft + parseFloat(style.paddingLeft || 0)) + 'px';
+      input.parentNode.insertBefore(el, input.nextSibling);
+    }
+    // The plugin draws the box after the map loads, and redraws it between phone and
+    // larger layouts, so keep watching for a new input
+    place();
+    new MutationObserver(place).observe(container, { childList: true, subtree: true });
+  }
+
   function createPlugin(options) {
     return root.defra.searchPlugin({
       // Show "Search" next to the icon, like Styles and Key (icon only on phones, to save space)
@@ -129,5 +159,5 @@
     }
   }, true);
 
-  root.sfiGrasslandsV4bParcelSearch = { createPlugin: createPlugin, isResultBounds: isResultBounds };
+  root.sfiGrasslandsV4bParcelSearch = { createPlugin: createPlugin, isResultBounds: isResultBounds, addHint: addHint };
 })(window);

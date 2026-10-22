@@ -641,6 +641,15 @@ $app-v4b-light-grey: #f3f2f1;
   margin-top: 0;
 }
 
+// The selected parcel's popup has a link down to its actions, so it takes clicks
+.app-v4b-map-popup--selected {
+  pointer-events: auto;
+}
+
+.app-v4b-map-popup .maplibregl-popup-content .app-v4b-map-popup__action {
+  margin: 6px 0 0;
+}
+
 // Parcel details revealed under a selected radio in the list view
 .govuk-summary-list.app-v4b-parcel-list__summary {
   font-size: 1rem;
@@ -739,4 +748,38 @@ $app-v4b-light-grey: #f3f2f1;
 
 #v4b-parcel-map .im-o-app:not(.im-o-app--mobile) .im-c-search-form {
   width: min(520px, calc(100cqw - 110px)) !important;
+}
+
+// List view, parcel step ("Select actions for this land parcel"): no "Selected actions"
+// card, as the same actions are listed on the page with their checkboxes (21 October 2026)
+.app-v4b-is-list-step .app-v4b-interested {
+  display: none;
+}
+
+// Search box hint (sfi-grasslands-v4b-parcel-search.js addHint): "Enter parcel reference"
+// with the bracketed example smaller. The native placeholder is hidden and this sits over
+// the input until the user types. (Not a class on the input: React resets its classes.)
+.im-c-search__input-container:has(.app-v4b-search-hint) .im-c-search__input::placeholder {
+  color: transparent;
+}
+
+.app-v4b-search-hint {
+  position: absolute;
+  top: 50%;
+  right: 48px; // clear of the search icon
+  transform: translateY(-50%);
+  overflow: hidden;
+  color: #0b0c0c;
+  font-size: 1rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.app-v4b-search-hint__example {
+  font-size: 0.875rem;
+}
+
+.im-c-search__input:not(:placeholder-shown) ~ .app-v4b-search-hint {
+  display: none;
 }

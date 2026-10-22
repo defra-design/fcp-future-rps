@@ -132,34 +132,63 @@
     return vertical + horizontal
   }
 
+  // The selected parcel's popup stays open and has a link down to its actions (below the
+  // map, often off screen). Other parcels' popups only show on hover. (21 October 2026)
+  var hoverPopupKey = null
+  // Below this zoom the parcels are hidden behind the group circles
+  var PARCELS_MIN_ZOOM = 12
+
+  function selectedPopupLinkHtml (parcel) {
+    return '<p class="app-v4b-map-popup__action"><a class="govuk-link app-v4b-map-popup__link" href="#selected-parcel">' +
+      (parcel.added ? 'Change actions for this parcel' : 'Select actions for this parcel') +
+      '</a></p>'
+  }
+
+  function removeHoverPopup () {
+    if (hoverPopup) {
+      hoverPopup.remove()
+      hoverPopup = null
+    }
+    hoverPopupKey = null
+  }
+
+  // parcelId: the parcel under the mouse or keyboard, or null for none. With none, the
+  // selected parcel's popup shows (if there is one).
   function showHoverPopup (map, parcelId) {
-    var parcel = parcelId && parcelData[parcelId]
-    if (!parcel || !parcel.coords || !window.maplibregl || !window.maplibregl.Popup) {
-      if (hoverPopup) {
-        hoverPopup.remove()
-        hoverPopup = null
-      }
+    var pinned = !parcelId || Boolean(selected && parcelId === selected.parcelId)
+    var id = parcelId || (selected && selected.parcelId)
+    var parcel = id && parcelData[id]
+    if (!parcel || !parcel.coords || !window.maplibregl || !window.maplibregl.Popup ||
+        (pinned && map.getZoom() < PARCELS_MIN_ZOOM)) {
+      removeHoverPopup()
+      return
+    }
+    var key = id + (pinned ? ':selected:' + (parcel.added ? 'added' : '') : '')
+    if (hoverPopup && hoverPopupKey === key) {
       return
     }
     var bounds = getBounds(parcel.coords)
     var centre = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2]
-    if (hoverPopup) {
-      hoverPopup.remove()
-    }
+    removeHoverPopup()
+    hoverPopupKey = key
     hoverPopup = new window.maplibregl.Popup({
       anchor: popupAnchor(map, centre),
       offset: 12,
       closeButton: false,
       closeOnClick: false,
+      // MapLibre focuses the first link in a popup when it opens, which would take focus
+      // from the search box or map. Leave focus where the user is.
+      focusAfterOpen: false,
       maxWidth: '216px',
-      className: 'app-v4b-map-popup'
+      className: 'app-v4b-map-popup' + (pinned ? ' app-v4b-map-popup--selected' : '')
     })
       .setLngLat(centre)
-      .setHTML(popupHtml(parcel))
+      .setHTML(popupHtml(parcel) + (pinned ? selectedPopupLinkHtml(parcel) : ''))
       .addTo(map)
-    // The popup is for mouse users only; the keyboard status message says the same
+    // A hover popup is for mouse users only; the keyboard status message says the same.
+    // The selected parcel's popup has a link, so it stays readable and clickable.
     var element = hoverPopup.getElement()
-    if (element) {
+    if (element && !pinned) {
       element.setAttribute('aria-hidden', 'true')
     }
   }
@@ -180,6 +209,8 @@
     if (source) {
       source.setData(toFeatureCollection())
     }
+    // Show the newly selected parcel's popup, with its link to the actions
+    showHoverPopup(map, null)
     if (selected && selected.coords && selected.coords.length) {
       var bounds = getBounds(selected.coords)
       if (opts.zoom || map.getZoom() < PARCEL_VIEW_MIN_ZOOM) {
@@ -192,6 +223,29 @@
   }
 
   window.SfiGrasslandsV4bSelectParcelsMap = { highlight: highlightParcel }
+
+  // Take the user down to "Select actions for this land parcel" (the parcel's actions,
+  // below the map) and move focus there for keyboard and screen reader users
+  function goToSelectedParcel () {
+    var target = document.getElementById('selected-parcel')
+    if (!target) {
+      return
+    }
+    var top = target.getBoundingClientRect().top + window.pageYOffset - 15
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    target.focus({ preventScroll: true })
+    window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' })
+  }
+
+  // The link in the selected parcel's popup
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest && event.target.closest('.app-v4b-map-popup__link')
+    if (!link) {
+      return
+    }
+    event.preventDefault()
+    goToSelectedParcel()
+  })
 
   // Swap the parcel's actions in under the map, without reloading the page.
   // If that is not possible, fall back to loading the page for that parcel.
@@ -310,6 +364,26 @@
     })
     map.on('mouseleave', 'v4b-parcels-fill', function () {
       setHover(null)
+    })
+    // The selected parcel's popup hides while the group circles show, and comes back after
+    map.on('zoomend', function () {
+      if (!hoveredId) {
+        showHoverPopup(map, null)
+      }
+    })
+    // After the map flies to a parcel (search, or a parcel near the edge), place the
+    // selected parcel's popup again, so it opens on the side with room and stays in view
+    map.on('moveend', function () {
+      if (!hoveredId && hoverPopupKey && hoverPopupKey.indexOf(':selected:') !== -1) {
+        removeHoverPopup()
+        showHoverPopup(map, null)
+      }
+    })
+    // A parcel already selected when the page loads (for example after saving)
+    map.once('idle', function () {
+      if (!hoveredId) {
+        showHoverPopup(map, null)
+      }
     })
     map.on('click', 'v4b-parcels-fill', function (event) {
       if (window.SfiGrasslandsV4bSelectLandMapClusters &&
@@ -487,7 +561,8 @@
     mapPlugins.push(window.defra.scaleBarPlugin({ units: 'metric' }))
   }
   if (window.sfiGrasslandsV4bParcelSearch && window.defra.searchPlugin) {
-    // "Search by land parcel, SO3757 3185 or 3185": a full reference and its last 4 digits.
+    // "Enter parcel reference (for example SO3757 3185 or 3185)", the brackets in smaller
+    // text (addHint): a full reference and its last 4 digits.
     // Agile Farm uses SO3757 3185; a real farm (demo set-up) uses its own first reference,
     // so the example always matches a parcel that can be found
     var searchReferences = Object.keys(parcelData).map(function (parcelId) {
@@ -498,10 +573,12 @@
       return a.localeCompare(b, 'en-GB', { numeric: true })
     })
     var searchExample = searchReferences.indexOf('SO3757 3185') !== -1 ? 'SO3757 3185' : searchReferences[0]
+    var searchHint = searchExample
+      ? '(for example ' + searchExample + ' or ' + searchExample.slice(-4) + ')'
+      : ''
+    window.sfiGrasslandsV4bParcelSearch.addHint('v4b-parcel-map', { lead: 'Enter parcel reference', example: searchHint })
     mapPlugins.push(window.sfiGrasslandsV4bParcelSearch.createPlugin({
-      placeholder: searchExample
-        ? 'Search by land parcel, ' + searchExample + ' or ' + searchExample.slice(-4)
-        : 'Search by land parcel',
+      placeholder: 'Enter parcel reference' + (searchHint ? ' ' + searchHint : ''),
       getParcels: function () { return parcelData },
       formatReference: function (parcel) { return parcel.parcelReference || parcel.parcelId },
       // Search is the main control, so it takes the top of the map on its own.
@@ -997,18 +1074,7 @@
     var opened = (selected && selected.parcelId === parcelId)
       ? Promise.resolve()
       : openParcel(parcelId, { zoom: true })
-    Promise.resolve(opened).then(function () {
-      // Take the user down to "Select actions for this land parcel" (the parcel's actions,
-      // below the map) and move focus there for keyboard and screen reader users
-      var target = document.getElementById('selected-parcel')
-      if (!target) {
-        return
-      }
-      var top = target.getBoundingClientRect().top + window.pageYOffset - 15
-      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      target.focus({ preventScroll: true })
-      window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' })
-    })
+    Promise.resolve(opened).then(goToSelectedParcel)
   })
 
   // Close the Key when the user clicks or taps anywhere else (as the search box does).
