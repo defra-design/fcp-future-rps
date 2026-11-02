@@ -1,0 +1,63 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v5/task-list" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{% block pageTitle %}
+  Your grasslands application
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: backHref or "/sfi-grasslands-v5/confirmation",
+    classes: "govuk-!-display-none-print"
+  }) }}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-confirm-land-and-actions.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-view-application.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-check-your-answers.css">
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row app-view-application">
+    <div class="govuk-grid-column-full">
+
+      <p class="govuk-body govuk-!-display-none-print">
+        <a class="govuk-link" href="#" onclick="window.print(); return false;">Print this page</a>
+      </p>
+
+      <h1 class="govuk-heading-l">Your grasslands application</h1>
+
+      <h2 class="govuk-heading-m">Application details</h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">Application number</dt>
+          <dd class="govuk-summary-list__value">HDJ2123F</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">Submitted</dt>
+          <dd class="govuk-summary-list__value">{{ applicationSubmittedDateFormatted }}</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">Business</dt>
+          <dd class="govuk-summary-list__value">{{ v5BusinessName or "Agile Farm Ltd" }}</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">Single business identifier (SBI)</dt>
+          <dd class="govuk-summary-list__value">{{ v5Sbi or "123456789" }}</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">Submitted by</dt>
+          <dd class="govuk-summary-list__value">{{ v5UserName or "Alfred Waldron" }}</dd>
+        </div>
+      </dl>
+
+      {% set showChangeLinks = false %}
+      {% set declarationsHeading = "Submitted answers" %}
+      {% include "sfi-grasslands-v5/_includes/application-answers.html" %}
+
+    </div>
+  </div>
+{% endblock %}

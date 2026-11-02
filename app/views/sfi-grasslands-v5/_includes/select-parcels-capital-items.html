@@ -1,0 +1,47 @@
+{#- Capital items on the select land parcels page: one-off payments, in their own group
+    under the actions. Each checkbox reveals its quantity. Expects parcelCapitalItems,
+    capitalSelectedCodes, capitalValues and errorsByCode. -#}
+{% if parcelCapitalItems.length %}
+<div class="govuk-form-group app-v5-capital-items" id="v5-capital-items">
+  <fieldset class="govuk-fieldset" aria-describedby="v5-capital-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s app-v5-action-group__heading">
+      <h3 class="govuk-fieldset__heading">Capital items</h3>
+    </legend>
+    <div id="v5-capital-hint" class="govuk-hint govuk-!-font-size-16">One-off payments, claimed once the work is finished</div>
+    <div class="govuk-checkboxes app-v5-actions" data-module="govuk-checkboxes" id="v5-capital-checkboxes">
+      {% for item in parcelCapitalItems %}
+        {% set fieldId = "v5CapitalQuantity-" + item.code %}
+        {% set isChecked = item.code in capitalSelectedCodes %}
+        {% set itemError = errorsByCode['capital-' + item.code] %}
+        <div class="app-v5-action" id="v5-capital-{{ item.code }}">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="v5CapitalSelected-{{ item.code }}" name="v5CapitalSelected" type="checkbox" value="{{ item.code }}" aria-describedby="{{ fieldId }}-hints" data-aria-controls="v5-capital-conditional-{{ item.code }}"{% if isChecked %} checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="v5CapitalSelected-{{ item.code }}">{{ item.code }}: {{ item.name }}</label>
+            <div class="govuk-hint govuk-checkboxes__hint app-v5-action__hints" id="{{ fieldId }}-hints">
+              <span class="app-v5-action__hint">One-off payment: {{ item.paymentRateFormatted }}</span>
+            </div>
+          </div>
+          <div class="govuk-checkboxes__conditional{% if not isChecked %} govuk-checkboxes__conditional--hidden{% endif %}" id="v5-capital-conditional-{{ item.code }}">
+            {{ govukInput({
+              id: fieldId,
+              name: fieldId,
+              label: {
+                html: 'Quantity<span class="govuk-visually-hidden"> for ' + item.code + '</span>',
+                classes: "app-v5-action__quantity-label"
+              },
+              hint: { text: item.quantityHint } if item.unit != "m" else undefined,
+              suffix: { text: item.quantitySuffix },
+              inputmode: "numeric",
+              spellcheck: false,
+              classes: "govuk-input--width-5",
+              formGroup: { classes: "govuk-!-margin-bottom-0" },
+              value: capitalValues[item.code],
+              errorMessage: { text: itemError } if itemError else undefined
+            }) }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </fieldset>
+</div>
+{% endif %}

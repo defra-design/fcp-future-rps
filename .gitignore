@@ -3,3 +3,7 @@ app/data/sql/all_lms_data_sample.sql
 app/view/.DS_Store
 app/.DS_Store
 .DS_Store
+CLAUDE.md
+
+# Local secrets, e.g. OS_PLACES_API_KEY for the v4b set-up page
+.env

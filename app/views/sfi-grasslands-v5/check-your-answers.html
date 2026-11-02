@@ -1,0 +1,46 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v5/task-list" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{% block pageTitle %}
+  Check your answers
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-confirm-land-and-actions.css">
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-check-your-answers.css">
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v5/task-list"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+
+    {% set journeySection = "Review and submit your application" %}
+    {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
+    <h1 class="govuk-heading-l">Check your answers before sending your application</h1>
+
+    {% include "sfi-grasslands-v5/_includes/application-answers.html" %}
+      
+         <form class="form" action="/sfi-grasslands-v5/check-your-answers" method="post">
+<button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+  Save and continue
+</button>
+</form>
+
+<!--<button type="submit" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">-->
+<!--  Continue-->
+<!--</button>-->
+
+      </div>
+    </div>
+
+<script src="/public/javascripts/sfi-grasslands-v5-check-your-answers.js"></script>
+
+{% endblock %}

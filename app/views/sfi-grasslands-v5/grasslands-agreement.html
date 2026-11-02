@@ -1,0 +1,65 @@
+{% set serviceName = "Farm and Land Service" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{% block pageTitle %}
+  Grasslands agreement
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
+  {{ govukBackLink({ text: "Back", href: "/sfi-grasslands-v5/your-applications" }) }}
+{% endblock %}
+
+{% block content %}
+{% set applicationSubmitted = data.sfiGrasslandsV5ApplicationSubmitted or (data.sfiGrasslandsV5Tasks and data.sfiGrasslandsV5Tasks.submitApplication == 'completed') %}
+{# Grasslands agreement page (2 November 2026): one place for the application, then the
+   agreement offer, the active agreement and amendments. Only the application stage is built. #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Grasslands agreement</h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Status</dt>
+        <dd class="govuk-summary-list__value">
+          {% if applicationSubmitted %}<strong class="govuk-tag govuk-tag--green">Submitted</strong>{% else %}<strong class="govuk-tag govuk-tag--blue">In progress</strong>{% endif %}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Application number</dt>
+        <dd class="govuk-summary-list__value">HDJ2123F</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Last updated</dt>
+        <dd class="govuk-summary-list__value">{{ v5SubmittedDateFormatted if applicationSubmitted else v5LastSavedDateFormatted }}</dd>
+      </div>
+    </dl>
+
+    {% if applicationSubmitted %}
+      {% if v5LandingNextStep %}
+        <h2 class="govuk-heading-m">What you need to do</h2>
+        {% set needsSssi = 'SSSI' in v5LandingNextStep %}
+        {% set needsHefer = 'HEFER' in v5LandingNextStep %}
+        <p class="govuk-body">{{ v5LandingNextStep }} for the actions on your land that need {{ 'them' if (needsSssi and needsHefer) else 'it' }}.{% if needsSssi %} We cannot review your agreement until you’ve requested SSSI consent.{% endif %}</p>
+        <ul class="govuk-list">
+          {% if needsSssi %}<li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">Read the SFI26 guidance on SSSI consent (opens in new tab)</a></li>{% endif %}
+          {% if needsHefer %}<li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">Read the SFI26 guidance on HEFERs (opens in new tab)</a></li>{% endif %}
+        </ul>
+      {% endif %}
+
+      <h2 class="govuk-heading-m">Your application</h2>
+      <p class="govuk-body"><a class="govuk-link" href="/sfi-grasslands-v5/view-application?from=landing">View your application</a></p>
+
+      <h2 class="govuk-heading-m">What happens next</h2>
+      <p class="govuk-body">We’ll review your application and email you when your agreement offer is ready to check. Your offer will appear on this page.</p>
+
+      <h2 class="govuk-heading-m">Your agreement</h2>
+      <p class="govuk-body">Once your agreement starts, you’ll be able to view it and request changes here.</p>
+    {% else %}
+      <p class="govuk-body">You have not submitted your application yet.</p>
+      {{ govukButton({ text: "Continue application", href: "/sfi-grasslands-v5/task-list" }) }}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

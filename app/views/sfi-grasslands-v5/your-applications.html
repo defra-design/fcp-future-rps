@@ -1,0 +1,39 @@
+{% set serviceName = "Farm and Land Service" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{% block pageTitle %}
+  Your applications
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
+  {{ govukBackLink({ text: "Back", href: "/sfi-grasslands-v5/singlefrontdoor/landing/landing" }) }}
+{% endblock %}
+
+{% block content %}
+{% set applicationSubmitted = data.sfiGrasslandsV5ApplicationSubmitted or (data.sfiGrasslandsV5Tasks and data.sfiGrasslandsV5Tasks.submitApplication == 'completed') %}
+{% set applicationInProgress = (not applicationSubmitted) and (data.sfiGrasslandsV5ApplicationInProgress or (data.sfiGrasslandsV5Tasks and (
+  data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'in-progress' or
+  data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'completed' or
+  data.sfiGrasslandsV5Tasks.checkLandDetails == 'in-progress' or
+  data.sfiGrasslandsV5Tasks.checkLandDetails == 'completed' or
+  data.sfiGrasslandsV5Tasks.confirmEligible == 'in-progress' or
+  data.sfiGrasslandsV5Tasks.confirmEligible == 'completed' or
+  data.sfiGrasslandsV5Tasks.selectLand == 'incomplete' or
+  data.sfiGrasslandsV5Tasks.selectLand == 'completed'
+))) %}
+{# Your applications (2 November 2026): kept very simple, one link per scheme.
+   Status and next steps live on each scheme's own page. Water management grant is an example only. #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Your applications</h1>
+    <ul class="govuk-list govuk-list--spaced">
+      {% if applicationSubmitted or applicationInProgress %}
+        <li><a class="govuk-link govuk-!-font-weight-bold" href="/sfi-grasslands-v5/grasslands-agreement">Grasslands agreement</a></li>
+      {% endif %}
+      <li><a class="govuk-link govuk-!-font-weight-bold" href="#">Water management grant</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

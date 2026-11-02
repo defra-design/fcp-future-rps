@@ -1,0 +1,39 @@
+{#- Land parcels beside the map (canvas J06): 15 a page, the open parcel highlighted.
+    Expects parcelListPage from renderSfiGrasslandsV5SelectParcels. -#}
+<section class="app-v5-parcel-rows" id="v5-parcel-rows" aria-labelledby="v5-parcel-rows-heading">
+  <div class="app-v5-parcel-rows__header">
+    <h2 class="govuk-heading-s govuk-!-margin-bottom-1" id="v5-parcel-rows-heading">Land parcels ({{ parcelListPage.total }})</h2>
+    <p class="govuk-body-s govuk-!-margin-bottom-0">{{ farmSummary.totalAreaLabel }} ha in total</p>
+    <p class="govuk-body-s govuk-!-margin-bottom-0 app-v5-parcel-rows__count">Showing {{ parcelListPage.from }} to {{ parcelListPage.to }} of {{ parcelListPage.total }}</p>
+  </div>
+  <ul class="app-v5-parcel-rows__list">
+    {% for row in parcelListPage.rows %}
+      <li class="app-v5-parcel-rows__item{% if row.selected %} app-v5-parcel-rows__item--selected{% endif %}">
+        <span class="app-v5-parcel-rows__line">
+          <a class="govuk-link app-v5-parcel-rows__link" href="/sfi-grasslands-v5/select-parcels?parcel={{ row.parcelId }}&amp;page={{ parcelListPage.page }}#selected-parcel" data-v5-parcel-link="{{ row.parcelId }}"{% if row.selected %} aria-current="true"{% endif %}>{{ row.parcelReference }}{% if row.statusText %}<span class="govuk-visually-hidden">, {{ row.statusText | lower }}</span>{% endif %}</a>
+          <span class="app-v5-parcel-rows__area">{{ row.totalAreaShort }}</span>
+        </span>
+        {% if row.statusText %}
+          <span class="app-v5-parcel-rows__tag app-v5-parcel-rows__tag--{{ row.status }}" aria-hidden="true">{{ row.statusText }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  {% if parcelListPage.pageCount > 1 %}
+    <nav class="app-v5-parcel-rows__pages" aria-label="Land parcel pages">
+      {% if parcelListPage.page > 1 %}
+        <a class="govuk-link app-v5-parcel-rows__page-link" href="/sfi-grasslands-v5/select-parcels?page={{ parcelListPage.page - 1 }}{% if selectedParcel %}&amp;parcel={{ selectedParcel.parcelId }}{% endif %}#v5-parcel-rows">‹ Previous<span class="govuk-visually-hidden"> page</span></a>
+      {% endif %}
+      {% for n in range(1, parcelListPage.pageCount + 1) %}
+        {% if n == parcelListPage.page %}
+          <span class="app-v5-parcel-rows__page app-v5-parcel-rows__page--current" aria-current="page">{{ n }}</span>
+        {% else %}
+          <a class="govuk-link app-v5-parcel-rows__page" href="/sfi-grasslands-v5/select-parcels?page={{ n }}{% if selectedParcel %}&amp;parcel={{ selectedParcel.parcelId }}{% endif %}#v5-parcel-rows"><span class="govuk-visually-hidden">Page </span>{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if parcelListPage.page < parcelListPage.pageCount %}
+        <a class="govuk-link app-v5-parcel-rows__page-link" href="/sfi-grasslands-v5/select-parcels?page={{ parcelListPage.page + 1 }}{% if selectedParcel %}&amp;parcel={{ selectedParcel.parcelId }}{% endif %}#v5-parcel-rows">Next<span class="govuk-visually-hidden"> page</span> ›</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+</section>

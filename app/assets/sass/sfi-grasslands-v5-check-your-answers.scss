@@ -1,0 +1,46 @@
+// Check your answers — sfi-grasslands-v5/check-your-answers.html
+
+.app-cya-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+// v5: actions, capital items and payment tables line up
+.app-v5-answers-heading {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #b1b4b6;
+}
+
+.app-v5-answers-table__hint {
+  display: block;
+  margin-top: 4px;
+}
+
+@media (min-width: 40.0625em) {
+  .app-v5-answers-table {
+    table-layout: fixed;
+  }
+
+  .app-v5-answers-table__parcel,
+  .app-v5-answers-table__qty,
+  .app-v5-payments-table__amount {
+    width: 20%;
+  }
+
+  .app-v5-answers-table__name {
+    width: 60%;
+  }
+
+  .app-v5-payments-table__name {
+    width: 58%;
+  }
+
+  .app-v5-payments-table__rate {
+    width: 22%;
+  }
+}

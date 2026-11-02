@@ -1,0 +1,108 @@
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{% block pageTitle %}
+  Your businesses
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
+
+  {{ govukBackLink({
+    text: "Choose another business",
+    href: "../start/your-businesses-list"
+  }) }}
+{% endblock %}
+
+{% block content %}
+{% set applicationSubmitted = data.sfiGrasslandsV5ApplicationSubmitted or (data.sfiGrasslandsV5Tasks and data.sfiGrasslandsV5Tasks.submitApplication == 'completed') %}
+{% set applicationInProgress = (not applicationSubmitted) and (data.sfiGrasslandsV5ApplicationInProgress or (data.sfiGrasslandsV5Tasks and (
+  data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'in-progress' or
+  data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'completed' or
+  data.sfiGrasslandsV5Tasks.checkLandDetails == 'in-progress' or
+  data.sfiGrasslandsV5Tasks.checkLandDetails == 'completed' or
+  data.sfiGrasslandsV5Tasks.confirmEligible == 'in-progress' or
+  data.sfiGrasslandsV5Tasks.confirmEligible == 'completed' or
+  data.sfiGrasslandsV5Tasks.selectLand == 'incomplete' or
+  data.sfiGrasslandsV5Tasks.selectLand == 'completed'
+))) %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if data['valleySFD'] == 'True' %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l">{{ v5UserName or "Alfred Waldron" }}</span>
+      Valley Farm
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): 192846125</p>
+    {% elif data['agileSFD'] == 'True' %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l govuk-!-margin-bottom-2">{{ v5UserName or "Alfred Waldron" }}</span>
+      {{ v5BusinessName or "Agile Farm Ltd" }}
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): {{ v5Sbi or "123456789" }}</p>
+    {% else %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+      <span class="govuk-caption-l">{{ v5UserName or "Alfred Waldron" }}</span>
+      {{ v5BusinessName or "Agile Farm Ltd" }}
+    </h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): {{ v5Sbi or "123456789" }}</p>
+    {% endif %}
+
+    {# Your applications: a link to the cards on their own page (2 November 2026) #}
+    <h2 class="govuk-heading-m">Your applications</h2>
+    <div class="gem-c-cards card-page govuk-!-margin-bottom-6">
+      <ul class="gem-c-cards__list gem-c-cards__list-cards gem-c-cards__list--single-wide">
+        <li class="gem-c-cards__list-item-variant">
+          <div class="gem-c-cards__list-item-wrapper-variant">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Applications you’ve started or submitted</h3>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+              <a href="/sfi-grasslands-v5/your-applications" class="govuk-link govuk-link--no-visited-state">View applications</a>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    {# Apply cards only for schemes not already started #}
+    {% if not (applicationSubmitted or applicationInProgress) %}
+    <h2 class="govuk-heading-m">
+      Apply for schemes and grants
+    </h2>
+
+    <div class="gem-c-cards card-page govuk-!-margin-bottom-6">
+      <ul class="gem-c-cards__list gem-c-cards__list-cards gem-c-cards__list--single-wide">
+        <li class="gem-c-cards__list-item-variant">
+          <div class="gem-c-cards__list-item-wrapper-variant">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+              Apply for a grasslands agreement
+            </h3>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+              <a href="/clear-session-data?returnUrl=/sfi-grasslands-v5/apply-start" class="govuk-link govuk-link--no-visited-state">
+                Go to application
+              </a>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    {% endif %}
+
+    <h2 class="govuk-heading-m">
+      Business details
+    </h2>
+    <p class="govuk-body">
+      <a class="govuk-link" href="#">View and update your business details</a>
+    </p>
+
+    <h2 class="govuk-heading-m">
+      Personal details
+    </h2>
+    <p class="govuk-body">
+      <a class="govuk-link" href="#">View and update your personal details</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,364 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v5/task-list" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{# Prototype set-up for research sessions: business, address and land (app/sfi-grasslands-v5/rpa-land.js) #}
+
+{% block pageTitle %}
+  {{ "Error: " if errors.length }}Set up a research session - Prototype set-up - SFI Grasslands v5
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v5/index"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if errors.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
+
+      {% if participantLink %}
+        <div class="govuk-panel govuk-panel--confirmation app-v5-demo-link">
+          <h2 class="govuk-panel__title govuk-!-font-size-27">Link for a participant</h2>
+          <div class="govuk-panel__body govuk-!-font-size-19">
+            {{ participantLinkSummary }}. The link opens the task list in a fresh session with this business and land.
+          </div>
+        </div>
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="v5-demo-link">Link</label>
+          <input class="govuk-input" id="v5-demo-link" type="text" value="{{ participantLink }}" readonly spellcheck="false">
+        </div>
+        <div class="govuk-button-group">
+          <button type="button" class="govuk-button" data-module="govuk-button" data-v5-demo-copy>Copy link</button>
+          <a class="govuk-link" href="{{ participantLink }}" data-v5-demo-open target="_blank" rel="noopener noreferrer">Open the link (opens in new tab)</a>
+        </div>
+        <p class="govuk-body-s" role="status" data-v5-demo-copied hidden>Link copied.</p>
+        <p class="govuk-body-s">Anyone with the link can see the name, business name, address and SBI in it. Only send it to the participant.</p>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {% endif %}
+
+      <strong class="govuk-tag govuk-tag--grey govuk-!-margin-bottom-3">Prototype only</strong>
+      <span class="govuk-caption-l">Prototype set-up</span>
+      <h1 class="govuk-heading-l">Set up a research session</h1>
+
+      <div class="govuk-inset-text app-v5-demo-current">
+        <p class="govuk-body govuk-!-margin-bottom-1"><strong>Currently using</strong></p>
+        <p class="govuk-body govuk-!-margin-bottom-1">{{ current.userName }}, {{ current.businessName }}, {{ current.address }}</p>
+        <p class="govuk-body govuk-!-margin-bottom-{{ '0' if current.isDefault else '2' }}">SBI {{ current.sbi }}: {{ current.land }}</p>
+        {% if not current.isDefault %}
+          <p class="govuk-body govuk-!-margin-bottom-0">
+            <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/demo-configuration/reset">Reset to defaults</a>
+          </p>
+        {% endif %}
+      </div>
+
+      <p class="govuk-body">Leave any field blank to use the Agile Farm default.</p>
+
+      <form method="post" action="/sfi-grasslands-v5/demo-configuration" novalidate data-v5-demo-form>
+
+        {% call govukFieldset({
+          legend: { text: "Business details", classes: "govuk-fieldset__legend--m" }
+        }) %}
+
+          {{ govukInput({
+            label: { text: "Name", classes: "govuk-label--s" },
+            hint: { text: "The person signed in. Default: " + defaultUserName },
+            id: "v5-demo-user-name",
+            name: "v5DemoUserNameInput",
+            value: userNameValue,
+            autocomplete: "off",
+            spellcheck: false,
+            classes: "govuk-!-width-two-thirds"
+          }) }}
+
+          {{ govukInput({
+            label: { text: "Business name", classes: "govuk-label--s" },
+            hint: { text: "Default: " + defaultBusinessName },
+            id: "v5-demo-business-name",
+            name: "v5DemoBusinessNameInput",
+            value: businessNameValue,
+            autocomplete: "off",
+            spellcheck: false,
+            classes: "govuk-!-width-two-thirds"
+          }) }}
+
+          {{ govukTextarea({
+            label: { text: "Business address", classes: "govuk-label--s" },
+            hint: { text: "Paste or type the address, one part on each line. Leave blank for Agile Farm (" + defaultAddress + ", " + defaultPostcode + ")." },
+            id: "v5-demo-address",
+            name: "v5DemoAddressInput",
+            value: addressValue,
+            rows: 5,
+            autocomplete: "off",
+            spellcheck: false,
+            classes: "govuk-!-width-two-thirds"
+          }) }}
+          <p class="govuk-body govuk-!-margin-top-n4" data-v5-address-fields-link hidden>
+            <button type="button" class="app-v5-link-button govuk-link" data-v5-open-address-fields>Enter the address in separate fields</button>
+          </p>
+
+        {% endcall %}
+
+        {% call govukFieldset({
+          legend: { text: "Land", classes: "govuk-fieldset__legend--m" }
+        }) %}
+
+          <div class="govuk-form-group{% if sbiError %} govuk-form-group--error{% endif %}">
+            <label class="govuk-label govuk-label--s" for="v5-demo-sbi">Single business identifier (SBI)</label>
+            <div id="v5-demo-sbi-hint" class="govuk-hint">
+              Leave blank to use the Agile Farm test land. A real SBI loads that farm's land parcels from the Rural Payments Agency. Only use it with the farm's permission.
+            </div>
+            {% if sbiError %}
+              <p id="v5-demo-sbi-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ sbiError.text }}</p>
+            {% endif %}
+            <div class="app-v5-demo-inline">
+              <input class="govuk-input govuk-input--width-10{% if sbiError %} govuk-input--error{% endif %}" id="v5-demo-sbi" name="v5DemoSbiInput" type="text" inputmode="numeric" value="{{ sbiValue }}" autocomplete="off" spellcheck="false" aria-describedby="v5-demo-sbi-hint{% if sbiError %} v5-demo-sbi-error{% endif %}">
+              <button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" data-v5-check-sbi hidden>Check SBI</button>
+            </div>
+            <p class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0" role="status" data-v5-sbi-result></p>
+          </div>
+
+          {# Sample SBIs to try, smallest farm first #}
+          {% set sampleSbis = [
+            { sbi: "107172777", parcels: "21" },
+            { sbi: "106290790", parcels: "23" },
+            { sbi: "109050730", parcels: "25" },
+            { sbi: "106200859", parcels: "29" },
+            { sbi: "106332870", parcels: "33" },
+            { sbi: "106623360", parcels: "40" },
+            { sbi: "106172811", parcels: "50" },
+            { sbi: "107034018", parcels: "65" },
+            { sbi: "106200212", parcels: "80" },
+            { sbi: "111089693", parcels: "104" },
+            { sbi: "113319980", parcels: "151" },
+            { sbi: "106327021", parcels: "13,143", note: "National Trust. Very large: slow to load, and only the first 2,000 land parcels are shown" }
+          ] %}
+          <details class="govuk-details app-v5-sample-sbis">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">Sample SBIs</span>
+            </summary>
+            <div class="govuk-details__text">
+              <table class="govuk-table govuk-!-margin-bottom-0">
+                <caption class="govuk-table__caption govuk-visually-hidden">Sample SBIs and their number of land parcels</caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">SBI</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Land parcels</th>
+                    <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Use</span></th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  {% for sample in sampleSbis %}
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">
+                        {{ sample.sbi }}
+                        {% if sample.note %}<span class="govuk-hint govuk-!-margin-bottom-0 app-v5-sample-sbis__note">{{ sample.note }}</span>{% endif %}
+                      </td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">{{ sample.parcels }}</td>
+                      <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <button type="button" class="app-v5-link-button govuk-link" data-v5-use-sbi="{{ sample.sbi }}">Use<span class="govuk-visually-hidden"> SBI {{ sample.sbi }}</span></button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+        {% endcall %}
+
+        <input type="hidden" name="v5DemoCompleteChecks" value="" data-v5-complete-checks>
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Create a link for a participant",
+            preventDoubleClick: true,
+            name: "v5DemoIntent",
+            value: "link"
+          }) }}
+          {{ govukButton({
+            text: "Start the prototype myself",
+            classes: "govuk-button--secondary",
+            preventDoubleClick: true,
+            name: "v5DemoIntent",
+            value: "continue"
+          }) }}
+        </div>
+        <p class="govuk-body-s govuk-!-margin-top-0" data-v5-demo-loading hidden role="status">Checking the address and land…</p>
+      </form>
+
+      <p class="govuk-body-s">
+        Land loaded by SBI is kept for that browser session only. It is derived from Ordnance Survey data and covered by the
+        <a class="govuk-link" href="https://environment.data.gov.uk/rpa/api-doc/" target="_blank" rel="noopener noreferrer">RPA Land API licence terms (opens in new tab)</a>.
+      </p>
+    </div>
+  </div>
+
+  {# Address fields pop-up: the GOV.UK address pattern, which fills the address box (needs JavaScript) #}
+  <dialog class="app-v5-dialog" id="v5-address-dialog" aria-labelledby="v5-address-dialog-title">
+    <form method="dialog" novalidate data-v5-address-form>
+      <h2 class="govuk-heading-m" id="v5-address-dialog-title">Business address</h2>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v5-address-line-1">Address line 1</label>
+        <input class="govuk-input" id="v5-address-line-1" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v5-address-line-2">Address line 2 (optional)</label>
+        <input class="govuk-input" id="v5-address-line-2" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v5-address-town">Town or city</label>
+        <input class="govuk-input govuk-!-width-two-thirds" id="v5-address-town" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v5-address-county">County (optional)</label>
+        <input class="govuk-input govuk-!-width-two-thirds" id="v5-address-county" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="v5-address-postcode">Postcode</label>
+        <input class="govuk-input govuk-input--width-10" id="v5-address-postcode" type="text" autocomplete="off">
+      </div>
+      <div class="govuk-button-group govuk-!-margin-bottom-0">
+        <button type="submit" class="govuk-button govuk-!-margin-bottom-0" value="use">Use this address</button>
+        <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <style>
+    .app-v5-demo-inline { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+    .app-v5-demo-inline .govuk-button { margin-top: 0; }
+    .app-v5-demo-link { text-align: left; }
+    .app-v5-dialog { width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 64px); padding: 30px; border: 5px solid #0b0c0c; box-sizing: border-box; }
+    .app-v5-dialog::backdrop { background: rgba(11, 12, 12, 0.6); }
+    .app-v5-dialog { overflow-y: auto; }
+    /* Sample SBIs table: 14px */
+    .app-v5-sample-sbis .govuk-table,
+    .app-v5-sample-sbis .govuk-table__header,
+    .app-v5-sample-sbis .govuk-table__cell,
+    .app-v5-sample-sbis .app-v5-link-button,
+    .app-v5-sample-sbis .app-v5-sample-sbis__note { font-size: 14px; line-height: 1.3; }
+    .app-v5-sample-sbis .govuk-table__header,
+    .app-v5-sample-sbis .govuk-table__cell { padding-top: 6px; padding-bottom: 6px; }
+    .app-v5-link-button { padding: 0; border: 0; background: none; cursor: pointer; font: inherit; color: #1d70b8; text-decoration: underline; text-decoration-thickness: max(1px, .0625rem); text-underline-offset: .1578em; }
+    .app-v5-link-button:hover { color: #003078; text-decoration-thickness: max(3px, .1875rem); }
+    .app-v5-link-button:focus { outline: 3px solid transparent; color: #0b0c0c; background-color: #ffdd00; box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c; text-decoration: none; }
+  </style>
+
+  <script>
+    (function () {
+      var form = document.querySelector('[data-v5-demo-form]')
+      if (!form) { return }
+
+      // Participant link: a full address, using the address this page was opened on
+      var linkField = document.getElementById('v5-demo-link')
+      if (linkField && linkField.value.charAt(0) === '/') {
+        linkField.value = window.location.origin + linkField.value
+        var openLink = document.querySelector('[data-v5-demo-open]')
+        if (openLink) { openLink.href = linkField.value }
+      }
+      var copy = document.querySelector('[data-v5-demo-copy]')
+      if (copy) {
+        copy.addEventListener('click', function () {
+          linkField.select()
+          var done = function () { document.querySelector('[data-v5-demo-copied]').hidden = false }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(linkField.value).then(done, function () { document.execCommand('copy'); done() })
+          } else {
+            document.execCommand('copy')
+            done()
+          }
+        })
+      }
+
+      // Footer "Complete bys" on this page: save what has been typed, with the tasks complete,
+      // rather than leaving the page and losing it
+      document.querySelectorAll('a[href^="/prototype-tools/complete-check-tasks"]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault()
+          var tick = form.querySelector('[data-v5-complete-checks]')
+          if (tick) { tick.value = 'yes' }
+          var start = form.querySelector('button[value="continue"]')
+          if (start) { start.click() } else { form.submit() }
+        })
+      })
+
+      form.addEventListener('submit', function () {
+        form.querySelector('[data-v5-demo-loading]').hidden = false
+      })
+
+      // Address fields pop-up: fills the address box, one part on each line
+      var dialog = document.getElementById('v5-address-dialog')
+      var addressBox = document.getElementById('v5-demo-address')
+      var fieldIds = ['v5-address-line-1', 'v5-address-line-2', 'v5-address-town', 'v5-address-county', 'v5-address-postcode']
+      if (dialog && typeof dialog.showModal === 'function') {
+        document.querySelector('[data-v5-address-fields-link]').hidden = false
+        var opener = document.querySelector('[data-v5-open-address-fields]')
+        opener.addEventListener('click', function () {
+          // Start from what is in the box, if it has the usual 3 to 5 lines
+          var lines = addressBox.value.split(/\n/).map(function (line) { return line.trim() }).filter(Boolean)
+          var fields = fieldIds.map(function (id) { return document.getElementById(id) })
+          fields.forEach(function (field) { field.value = '' })
+          if (lines.length) {
+            var postcode = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(lines[lines.length - 1]) ? lines.pop() : ''
+            fields[4].value = postcode
+            fields[0].value = lines.shift() || ''
+            if (lines.length >= 3) { fields[1].value = lines.shift() }
+            fields[2].value = lines.shift() || ''
+            fields[3].value = lines.join(', ')
+          }
+          dialog.showModal()
+          fields[0].focus()
+        })
+        dialog.addEventListener('close', function () {
+          if (dialog.returnValue === 'use') {
+            addressBox.value = fieldIds.map(function (id) {
+              var value = document.getElementById(id).value.trim()
+              return id === 'v5-address-postcode' ? value.toUpperCase() : value
+            }).filter(Boolean).join('\n')
+            addressBox.focus()
+          } else {
+            opener.focus()
+          }
+        })
+      }
+
+      // Sample SBIs: "Use" fills in the SBI and closes the list (they are known to work,
+      // so there is no need to check them)
+      document.querySelectorAll('[data-v5-use-sbi]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var field = document.getElementById('v5-demo-sbi')
+          field.value = button.getAttribute('data-v5-use-sbi')
+          var samples = button.closest('details')
+          if (samples) { samples.open = false }
+          var result = document.querySelector('[data-v5-sbi-result]')
+          if (result) { result.textContent = '' }
+          field.focus()
+        })
+      })
+
+      // Check SBI: shows what the SBI finds before the link is made
+      var checkButton = document.querySelector('[data-v5-check-sbi]')
+      var sbiInput = document.getElementById('v5-demo-sbi')
+      var sbiResult = document.querySelector('[data-v5-sbi-result]')
+      checkButton.hidden = false
+      checkButton.addEventListener('click', function () {
+        sbiResult.textContent = 'Checking…'
+        fetch('/sfi-grasslands-v5/demo-configuration/check-sbi?sbi=' + encodeURIComponent(sbiInput.value))
+          .then(function (response) { return response.json() })
+          .then(function (result) { sbiResult.textContent = result.message })
+          .catch(function () { sbiResult.textContent = 'The land could not be checked right now.' })
+      })
+    })()
+  </script>
+{% endblock %}

@@ -1,0 +1,163 @@
+// Loaded by sfi-grasslands-v5 select-land, select-land-map-fluid-find and select-actions.
+// Creates a Defra interactive map search plugin that finds land parcels by parcel ID.
+(function (root) {
+  var MAX_RESULTS = 8;
+  // The plugin fits the map tightly to a result's bounds, so widen them on every side
+  // (as a share of the parcel's size) to keep the neighbouring parcels in view
+  var RESULT_BOUNDS_MARGIN = 0.6;
+
+  function compact(value) {
+    return String(value || '').replace(/\s+/g, '').toUpperCase();
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function(char) {
+      return '&#' + char.charCodeAt(0) + ';';
+    });
+  }
+
+  // Parcel coords are [lat, lng]; the map wants [lng, lat].
+  function getBounds(coords) {
+    var lats = coords.map(function(point) { return point[0]; });
+    var lngs = coords.map(function(point) { return point[1]; });
+    return [Math.min.apply(null, lngs), Math.min.apply(null, lats), Math.max.apply(null, lngs), Math.max.apply(null, lats)];
+  }
+
+  function widenBounds(bounds, margin) {
+    var padLng = (bounds[2] - bounds[0]) * margin;
+    var padLat = (bounds[3] - bounds[1]) * margin;
+    return [bounds[0] - padLng, bounds[1] - padLat, bounds[2] + padLng, bounds[3] + padLat];
+  }
+
+  function markMatch(reference, query) {
+    var start = reference.toUpperCase().indexOf(query.trim().toUpperCase());
+    if (start === -1) {
+      return '<mark>' + escapeHtml(reference) + '</mark>';
+    }
+    var end = start + query.trim().length;
+    return escapeHtml(reference.slice(0, start)) +
+      '<mark>' + escapeHtml(reference.slice(start, end)) + '</mark>' +
+      escapeHtml(reference.slice(end));
+  }
+
+  // The bounds handed to the plugin for the latest results. A page can use this to stop the
+  // plugin's own instant jump and move the map smoothly itself (select-parcels does).
+  var resultBoundsKeys = {};
+
+  function boundsKey(bounds) {
+    return Array.isArray(bounds) ? bounds.map(function(value) { return Number(value).toFixed(7); }).join(',') : '';
+  }
+
+  function isResultBounds(bounds) {
+    return Boolean(resultBoundsKeys[boundsKey(bounds)]);
+  }
+
+  function findParcels(query, parcels, formatReference) {
+    var needle = compact(query);
+
+    return Object.keys(parcels)
+      .map(function(parcelId) {
+        var parcel = parcels[parcelId];
+        var reference = formatReference(Object.assign({ id: parcelId, parcelId: parcelId }, parcel)) || parcelId;
+        return { parcelId: parcelId, parcel: parcel, reference: reference };
+      })
+      .filter(function(item) {
+        return item.parcel && item.parcel.coords && compact(item.reference).indexOf(needle) !== -1;
+      })
+      .sort(function(a, b) {
+        return a.reference.localeCompare(b.reference, 'en-GB', { numeric: true });
+      })
+      .slice(0, MAX_RESULTS)
+      .map(function(item) {
+        var bounds = getBounds(item.parcel.coords);
+        return {
+          id: item.parcelId,
+          parcelId: item.parcelId,
+          text: item.reference,
+          marked: markMatch(item.reference, query),
+          point: [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2],
+          bounds: widenBounds(bounds, RESULT_BOUNDS_MARGIN),
+          type: 'parcel'
+        };
+      });
+  }
+
+  // Two-size hint in the search box: "Enter parcel reference" at normal size, the
+  // bracketed example smaller. A placeholder can only have one style, so the native one is
+  // made transparent (CSS) and this span sits over the input. It hides with
+  // :placeholder-shown once the user types. The native placeholder keeps the full text,
+  // which is also the input's label for screen readers.
+  function addHint(mapId, hint) {
+    var container = document.getElementById(mapId);
+    if (!container || !hint) {
+      return;
+    }
+    function place() {
+      var input = container.querySelector('.im-c-search__input');
+      if (!input || input.parentNode.querySelector('.app-v5-search-hint')) {
+        return;
+      }
+      var el = document.createElement('span');
+      el.className = 'app-v5-search-hint';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = escapeHtml(hint.lead) +
+        (hint.example ? ' <span class="app-v5-search-hint__example">' + escapeHtml(hint.example) + '</span>' : '');
+      var style = window.getComputedStyle(input);
+      el.style.left = (input.offsetLeft + parseFloat(style.paddingLeft || 0)) + 'px';
+      input.parentNode.insertBefore(el, input.nextSibling);
+    }
+    // The plugin draws the box after the map loads, and redraws it between phone and
+    // larger layouts, so keep watching for a new input
+    place();
+    new MutationObserver(place).observe(container, { childList: true, subtree: true });
+  }
+
+  function createPlugin(options) {
+    return root.defra.searchPlugin({
+      // Show "Search" next to the icon, like Styles and Key (icon only on phones, to save space)
+      manifest: {
+        buttons: [{
+          id: 'search',
+          tablet: { slot: 'top-left', showLabel: true },
+          desktop: { slot: 'top-left', showLabel: true }
+        }]
+      },
+      // Search is a main way to find land, so the box is always open. Open by default, it
+      // doesn't take over the map, so Styles and Key stay visible beside it.
+      expanded: true,
+      placeholder: options.placeholder || 'Search by land parcel',
+      // A page can ask for a wider box (select-parcels does, with Styles and Key moved below)
+      width: options.width || '300px',
+      showMarker: false,
+      noResultsMessage: 'No matching land parcels',
+      customDatasets: [{
+        name: 'parcel',
+        // The plugin always fetches its results, so the matches are passed in as a data: URL.
+        buildRequest: function(query) {
+          var results = findParcels(query, options.getParcels() || {}, options.formatReference);
+          results.forEach(function(result) {
+            resultBoundsKeys[boundsKey(result.bounds)] = true;
+          });
+          return {
+            url: 'data:application/json,' + encodeURIComponent(JSON.stringify(results)),
+            options: { method: 'GET' }
+          };
+        },
+        parseResults: function(json) {
+          return json;
+        }
+      }]
+    });
+  }
+
+  // After a key press the plugin hides its results when the input loses focus, and pressing
+  // the mouse on a result takes focus away before the click lands. Keeping focus on the
+  // input until the click fires lets the result be chosen.
+  document.addEventListener('mousedown', function(event) {
+    if (event.target.closest && event.target.closest('.im-c-search-suggestions__item')) {
+      event.preventDefault();
+    }
+  }, true);
+
+  root.sfiGrasslandsV5ParcelSearch = { createPlugin: createPlugin, isResultBounds: isResultBounds, addHint: addHint };
+})(window);

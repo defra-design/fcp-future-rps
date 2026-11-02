@@ -20,6 +20,7 @@ Do **not** use `style=""` in templates. Put the CSS in the page Sass file and to
 1. Create `app/assets/sass/<journey>-<page>.scss` (example: `sfi-grasslands-v2-select-actions.scss`)
 2. Link it from the page as `/public/stylesheets/<filename>.css` (after plugin CSS if you override it)
 3. Do **not** `@import` page styles into `application.scss` — that file runs on every page
+4. Do **not** use GOV.UK Sass variables or functions (`$govuk-…`, `govuk-colour()`, `govuk-spacing()`) in a page file. It is compiled on its own without `govuk-frontend`, so use hex colours and plain values
 
 ```html
 <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v2-select-actions.css">

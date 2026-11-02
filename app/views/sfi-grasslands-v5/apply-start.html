@@ -1,0 +1,52 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v5/apply-start" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{% block pageTitle %}
+  Apply for a grasslands agreement
+{% endblock %}
+
+{% block content %}
+{# Start page for the v5 journey (2 November 2026): before sign-in, so no account bar.
+   Start now → sign in → choose a business → task list. Kept short: the task list shows the steps. #}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Apply for a grasslands agreement</h1>
+
+    <p class="govuk-body">Use this service to:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>choose actions and capital items for your land</li>
+      <li>see what you could be paid before you apply</li>
+    </ul>
+    <p class="govuk-body">As you add actions, we’ll work out how much land is available for each one and what you could be paid. These are estimates until you get your agreement offer.</p>
+    <p class="govuk-body">Grasslands agreements last for 3 years.</p>
+
+    <h2 class="govuk-heading-m">Who can apply</h2>
+    <p class="govuk-body">You can apply if:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>your business is registered with the Rural Payments Agency and has a single business identifier (SBI)</li>
+      <li>you have management control of the land for 3 years</li>
+      <li>your land will stay eligible for 3 years</li>
+      <li>the actions are not already funded by another scheme</li>
+      <li>the actions are not something you’re already legally required to do</li>
+    </ul>
+    <p class="govuk-body">If you’re an agent, you need permission to apply for the business.</p>
+
+    <h2 class="govuk-heading-m">Before you start</h2>
+    <p class="govuk-body">You’ll sign in to the Farm and Land Service with your Rural Payments customer reference number (CRN) and password.</p>
+    <p class="govuk-body">Check your land details are up to date in the Rural Payments service. If they’re wrong, you’ll need to update them before you can apply.</p>
+    <p class="govuk-body">Your answers are saved as you go. You can return to your application from the Farm and Land Service.</p>
+
+    {{ govukButton({
+      text: "Start now",
+      href: "/sfi-grasslands-v5/sign-in",
+      isStartButton: true
+    }) }}
+
+    <h2 class="govuk-heading-m">Get help</h2>
+    <p class="govuk-body">Contact the Rural Payments Agency.</p>
+    <p class="govuk-body govuk-!-margin-bottom-1">Phone: 03000 200 301</p>
+    <p class="govuk-body">Monday to Friday, 8.30am to 5pm (except bank holidays)</p>
+  </div>
+</div>
+{% endblock %}

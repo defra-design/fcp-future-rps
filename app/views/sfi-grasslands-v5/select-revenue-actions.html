@@ -1,0 +1,112 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v5/task-list" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{% block pageTitle %}
+  {% if errors %}Error: {% endif %}Select actions
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-select-revenue-actions.css">
+  {{ govukBackLink({
+    text: "Back",
+    href: "/sfi-grasslands-v5/task-list"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if errors %}
+      {% set errorList = [] %}
+      {% if errors.actions %}
+        {% set errorList = (errorList.push({ text: errors.actions, href: "#v5RevenueActions" }), errorList) %}
+      {% endif %}
+      {{ govukErrorSummary({ titleText: "There is a problem", errorList: errorList }) }}
+    {% endif %}
+
+    <form method="post" action="/sfi-grasslands-v5/select-revenue-actions" novalidate>
+      {% set journeySection = "Select your actions and items" %}
+      {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
+      <h1 class="govuk-heading-l">Select actions</h1>
+      <p class="govuk-body">Each action lasts for 3 years.</p>
+      <p class="govuk-body">Select all that apply. You will choose which land parcels to use them on next.</p>
+
+      {% macro actionLabel(action, used) -%}
+        {{ action.code }}: {{ action.name }}<span class="app-v5-action-hint">{{ action.rateShortText }}</span>
+      {%- endmacro %}
+      {% macro actionGuidance(action) -%}
+        <a class="govuk-link app-v5-guidance-link" href="{{ action.guidanceUrl }}" target="_blank" rel="noopener noreferrer">Read guidance on {{ action.code }} (opens in new tab)</a>
+      {%- endmacro %}
+
+      {% set supplementItems = [] %}
+      {% for supplement in supplements %}
+        {% set supplementItems = (supplementItems.push({
+          value: supplement.code,
+          html: actionLabel(supplement, usageByCode[supplement.code]),
+          hint: { html: actionGuidance(supplement) },
+          checked: supplement.code in selectedCodes
+        }), supplementItems) %}
+      {% endfor %}
+
+      {% set clig3SupplementsHtml %}
+        {{ govukCheckboxes({
+          idPrefix: "v5Clig3Supplements",
+          name: "v5Clig3Supplements",
+          formGroup: { classes: "govuk-!-margin-bottom-0 app-v5-clig3-supplements" },
+          fieldset: {
+            legend: {
+              text: "Add a supplement (optional)",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            classes: "govuk-!-font-size-16",
+            text: "Paid on top of CLIG3. You can use one supplement per land parcel."
+          },
+          items: supplementItems
+        }) }}
+      {% endset %}
+
+      {% set actionItems = [] %}
+      {% for action in actions %}
+        {% set actionItems = (actionItems.push({
+          value: action.code,
+          html: actionLabel(action, usageByCode[action.code]),
+          hint: { html: actionGuidance(action) },
+          checked: action.code in selectedCodes,
+          conditional: { html: clig3SupplementsHtml } if action.code == "CLIG3"
+        }), actionItems) %}
+      {% endfor %}
+
+      {{ govukCheckboxes({
+        idPrefix: "v5RevenueActions",
+        name: "v5RevenueActions",
+        classes: "app-v5-revenue-actions",
+        fieldset: {
+          legend: {
+            text: "Select actions",
+            classes: "govuk-visually-hidden"
+          }
+        },
+        errorMessage: { text: errors.actions } if errors and errors.actions else undefined,
+        items: actionItems
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      {# As on select land: once land has been added, leave without saving these changes #}
+      {% if fromReview and hasSavedParcels %}
+        <p class="govuk-body">
+          <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-land-actions-draft">Cancel<span class="govuk-visually-hidden"> and return to review land parcels and actions</span></a>
+        </p>
+      {% endif %}
+    </form>
+
+  </div>
+</div>
+{% endblock %}
