@@ -35,14 +35,14 @@
 {% endif %}
 
 {% if answers.actionRows.length %}
-  <h3 class="govuk-heading-m govuk-!-font-size-24">Actions</h3>
+  <h3 class="govuk-heading-s app-v5-answers-subheading">Actions</h3>
   <table class="govuk-table app-v5-answers-table govuk-!-margin-bottom-9">
     <caption class="govuk-table__caption govuk-visually-hidden">Actions on each land parcel</caption>
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header app-v5-answers-table__parcel">Land parcel</th>
         <th scope="col" class="govuk-table__header app-v5-answers-table__name">Action</th>
-        <th scope="col" class="govuk-table__header app-v5-answers-table__qty">Quantity</th>
+        <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-answers-table__qty">Quantity</th>
       </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -53,7 +53,7 @@
             {{ row.name }}
             {% if row.consentHint %}<span class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0 app-v5-answers-table__hint">{{ row.consentHint }}</span>{% endif %}
           </td>
-          <td class="govuk-table__cell">{{ row.quantity }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.quantity }}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -61,14 +61,14 @@
 {% endif %}
 
 {% if answers.capitalRows.length %}
-  <h3 class="govuk-heading-m govuk-!-font-size-24">Capital items</h3>
+  <h3 class="govuk-heading-s app-v5-answers-subheading">Capital items</h3>
   <table class="govuk-table app-v5-answers-table govuk-!-margin-bottom-9">
     <caption class="govuk-table__caption govuk-visually-hidden">Capital items on each land parcel</caption>
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header app-v5-answers-table__parcel">Land parcel</th>
         <th scope="col" class="govuk-table__header app-v5-answers-table__name">Capital item</th>
-        <th scope="col" class="govuk-table__header app-v5-answers-table__qty">Quantity</th>
+        <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-answers-table__qty">Quantity</th>
       </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -76,7 +76,7 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">{{ row.parcelReference }}</td>
           <td class="govuk-table__cell">{{ row.name }}</td>
-          <td class="govuk-table__cell">{{ row.quantity }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.quantity }}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -92,7 +92,7 @@
 
   {% if answers.actionPayments.length %}
     <table class="govuk-table app-v5-answers-table app-v5-payments-table govuk-!-margin-bottom-8">
-      <caption class="govuk-table__caption govuk-table__caption--s">Payments for each action</caption>
+      <caption class="govuk-table__caption govuk-table__caption--s app-v5-answers-caption">Payments for each action</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header app-v5-payments-table__name">Action</th>
@@ -124,7 +124,7 @@
 
   {% if answers.capitalPayments.length %}
     <table class="govuk-table app-v5-answers-table app-v5-payments-table govuk-!-margin-bottom-8">
-      <caption class="govuk-table__caption govuk-table__caption--s">Payments for each capital item</caption>
+      <caption class="govuk-table__caption govuk-table__caption--s app-v5-answers-caption">Payments for each capital item</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header app-v5-payments-table__name">Capital item</th>

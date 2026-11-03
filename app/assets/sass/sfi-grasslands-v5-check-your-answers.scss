@@ -9,11 +9,20 @@
   margin-bottom: 20px;
 }
 
-// v5: actions, capital items and payment tables line up
+// v5: one column grid for the whole page (3 November 2026). The summary list's key / value /
+// actions are 30% / 50% / 20%, so the parcel tables use the same 30 / 50 / 20, and every
+// right-hand column (Change, Quantity, payments) is right aligned in the last 20%.
 .app-v5-answers-heading {
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #b1b4b6;
+  margin-bottom: 15px;
+}
+
+.app-v5-answers-subheading {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.app-v5-answers-caption {
+  margin-bottom: 5px;
 }
 
 .app-v5-answers-table__hint {
@@ -26,21 +35,27 @@
     table-layout: fixed;
   }
 
-  .app-v5-answers-table__parcel,
+  .app-v5-answers-table__parcel {
+    width: 30%;
+  }
+
+  // No width: it takes what is left after the cells' padding, so it starts exactly where the
+  // summary list's values start (a 50% width pushed the columns 12px out of line)
+  .app-v5-answers-table__name {
+    width: auto;
+  }
+
   .app-v5-answers-table__qty,
   .app-v5-payments-table__amount {
     width: 20%;
   }
 
-  .app-v5-answers-table__name {
-    width: 60%;
-  }
-
+  // Payments: the action or item name needs more room, so 50 / 30 / 20; the amounts still line up on the right
   .app-v5-payments-table__name {
-    width: 58%;
+    width: auto;
   }
 
   .app-v5-payments-table__rate {
-    width: 22%;
+    width: 30%;
   }
 }
