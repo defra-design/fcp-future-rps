@@ -14615,10 +14615,13 @@ function buildSfiV5ApplicationAnswers (req) {
           code: action.code,
           name: label,
           rate: rate != null ? '£' + rate + (SFI_V5_RATE_UNITS[info.unit || action.unit] || '') : '',
+          unit: action.unit || info.unit || 'ha',
+          quantity: 0,
           payment: 0
         }
         actionPayments.push(row)
       }
+      row.quantity += Number(action.quantity) || 0
       row.payment += yearly
     })
     sfiGrasslandsV5CapitalItems.normaliseParcelItems(parcel.capitalItems).forEach(function (item) {
@@ -14632,6 +14635,9 @@ function buildSfiV5ApplicationAnswers (req) {
 
   actionPayments.forEach(function (row) {
     row.paymentFormatted = sfiGrasslandsV5CapitalItems.formatMoney(row.payment)
+    // "Rate and quantity" (3 November 2026): the total quantity across land parcels, so each
+    // row reads rate × quantity = payment, e.g. "£151 per ha × 83.1098 ha"
+    row.quantityFormatted = sfiGrasslandsV5LandActions.formatQuantityDisplay({ unit: row.unit, quantity: row.quantity })
   })
   var capital = sfiGrasslandsV5CapitalItems.summariseApplication(parcels)
   var years = 3

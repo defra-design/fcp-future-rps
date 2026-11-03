@@ -162,13 +162,18 @@ function summariseApplication (parcels) {
       total += i.payment
       var row = rows.find(function (r) { return r.code === i.code })
       if (!row) {
-        row = { code: i.code, name: i.name, paymentRateFormatted: i.paymentRateFormatted, payment: 0 }
+        row = { code: i.code, name: i.name, paymentRateFormatted: i.paymentRateFormatted, quantity: 0, payment: 0 }
         rows.push(row)
       }
+      row.quantity += Number(i.quantity) || 0
       row.payment += i.payment
     })
   })
-  rows.forEach(function (r) { r.paymentFormatted = formatMoney(r.payment) })
+  rows.forEach(function (r) {
+    r.paymentFormatted = formatMoney(r.payment)
+    // Total quantity across land parcels, for "£6.34 per metre × 300 m"
+    r.quantityFormatted = formatQuantity(getItem(r.code), r.quantity)
+  })
   return { rows: rows, total: total, totalFormatted: formatMoney(total), hasItems: rows.length > 0 }
 }
 

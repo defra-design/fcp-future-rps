@@ -55,7 +55,12 @@
     width: auto;
   }
 
+  // Action | Quantity | Payment rate | payment (quantity as its own column, 3 November 2026)
   .app-v5-payments-table__rate {
-    width: 30%;
+    width: 20%;
+  }
+
+  .app-v5-payments-table__qty {
+    width: 18%;
   }
 }

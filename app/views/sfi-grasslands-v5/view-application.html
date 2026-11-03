@@ -24,9 +24,13 @@
   <div class="govuk-grid-row app-view-application">
     <div class="govuk-grid-column-full">
 
-      <p class="govuk-body govuk-!-display-none-print">
-        <a class="govuk-link" href="#" onclick="window.print(); return false;">Print this page</a>
-      </p>
+      {# Print and Download as a PDF (3 November 2026). The PDF is made in the browser from this
+         page (html2pdf.js); if that cannot load, the button opens the print dialog instead, where
+         "Save as PDF" does the same. Both buttons are left out of the print and the PDF. #}
+      <div class="govuk-button-group govuk-!-display-none-print" data-html2canvas-ignore>
+        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button" data-v5-print>Print</button>
+        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button" data-v5-download-pdf>Download as a PDF</button>
+      </div>
 
       <h1 class="govuk-heading-l">Your grasslands application</h1>
 
@@ -60,4 +64,37 @@
 
     </div>
   </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  (function () {
+    var printButton = document.querySelector('[data-v5-print]')
+    var pdfButton = document.querySelector('[data-v5-download-pdf]')
+    if (printButton) {
+      printButton.addEventListener('click', function () { window.print() })
+    }
+    if (pdfButton) {
+      pdfButton.addEventListener('click', function () {
+        var content = document.querySelector('.app-view-application')
+        if (!window.html2pdf || !content) {
+          window.print()
+          return
+        }
+        pdfButton.disabled = true
+        window.html2pdf().set({
+          margin: [12, 12, 12, 12],
+          filename: 'grasslands-application-HDJ2123F.pdf',
+          image: { type: 'jpeg', quality: 0.95 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', '.govuk-summary-list__row'] }
+        }).from(content).save().then(function () {
+          pdfButton.disabled = false
+        }, function () {
+          pdfButton.disabled = false
+          window.print()
+        })
+      })
+    }
+  })()
+</script>
 {% endblock %}
