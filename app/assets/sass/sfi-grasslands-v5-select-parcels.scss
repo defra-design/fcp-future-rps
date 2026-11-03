@@ -1091,6 +1091,11 @@ $app-v5-light-grey: #f3f2f1;
   outline: 0;
 }
 
+// On the yellow, the usual green (#00703c) is only 4.6:1; the darker GOV.UK tag green is 6.2:1
+.app-v5-parcel-rows__item--selected .app-v5-parcel-rows__tag--added {
+  color: #005a30;
+}
+
 // The count is a quiet status line under the search (3 November 2026)
 .app-v5-parcel-rows__count.govuk-body {
   color: #505a5f;
