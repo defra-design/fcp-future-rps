@@ -1,0 +1,19 @@
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{# A participant link older than 24 hours, changed, or made before links expired (3 November 2026).
+   See handleDemoStart in app/sfi-grasslands-v5/rpa-land.js #}
+
+{% block pageTitle %}
+  This link has expired - Apply for a grasslands agreement
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">This link has expired</h1>
+    <p class="govuk-body">Links to this research session only work for 24 hours.</p>
+    <p class="govuk-body">Ask the researcher who sent it to you for a new link.</p>
+  </div>
+</div>
+{% endblock %}

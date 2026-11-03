@@ -8,6 +8,7 @@
 // - Every v5 module that reads parcels uses parcelsFor(defaults), which returns the loaded
 //   farm's parcels for the current request, or the test parcels when none are loaded.
 var https = require('https')
+var crypto = require('crypto')
 var AsyncLocalStorage = require('async_hooks').AsyncLocalStorage
 var sessionDataDefaults = require('../data/session-data-defaults')
 
@@ -444,6 +445,7 @@ function renderDemoConfiguration (req, res, options) {
     sbiValue: opts.sbi != null ? opts.sbi : (land ? land.sbi : ''),
     participantLink: opts.participantLink || null,
     participantLinkSummary: opts.participantLinkSummary || null,
+    participantLinkExpiry: opts.participantLinkExpiry || null,
     current: {
       userName: data[USER_NAME_KEY] || DEFAULT_USER_NAME,
       businessName: data[BUSINESS_NAME_KEY] || DEFAULT_BUSINESS_NAME,
@@ -553,33 +555,73 @@ function applyDemoConfiguration (req, config, addressLines, land) {
   resetApplicationLand(req)
 }
 
-// Participant links: the settings go in one "d" value so the link stays short.
-// This only tidies the link. Anyone with it can read the settings, so treat it like the SBI itself.
-function encodeDemoLink (config, addressLines) {
+// Participant links (3 November 2026): the settings are encrypted into one "t" value that
+// stops working 24 hours after the link is made. Without the secret nobody can read the SBI in
+// it or change it. The secret comes from DEMO_LINK_SECRET in .env (and the Heroku config vars).
+// Without one, a random secret is made when the server starts, so links stop working on a restart.
+var LINK_LIFETIME_MS = 24 * 60 * 60 * 1000
+var linkSecret = process.env.DEMO_LINK_SECRET || crypto.randomBytes(32).toString('hex')
+if (!process.env.DEMO_LINK_SECRET) {
+  console.warn('[v5 demo links] DEMO_LINK_SECRET is not set: participant links will stop working when the server restarts')
+}
+var linkKey = crypto.createHash('sha256').update('v5-demo-link:' + linkSecret).digest()
+
+function toBase64Url (buffer) {
+  return buffer.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+function fromBase64Url (value) {
+  return Buffer.from(String(value || '').replace(/-/g, '+').replace(/_/g, '/'), 'base64')
+}
+
+function encodeDemoLink (config, addressLines, expiresAt) {
   var json = JSON.stringify({
     u: config.userName || '',
     n: config.businessName || '',
     a: (addressLines || []).join('\n'),
     s: config.sbi || '',
-    c: config.completeChecks ? 1 : 0
+    c: config.completeChecks ? 1 : 0,
+    e: expiresAt
   })
-  return Buffer.from(json, 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  var iv = crypto.randomBytes(12)
+  var cipher = crypto.createCipheriv('aes-256-gcm', linkKey, iv)
+  var encrypted = Buffer.concat([cipher.update(json, 'utf8'), cipher.final()])
+  return toBase64Url(Buffer.concat([iv, cipher.getAuthTag(), encrypted]))
 }
 
+// Resolves to { config } for a good link, { expired: true } for an old or changed one
 function decodeDemoLink (value) {
   try {
-    var text = Buffer.from(String(value || '').slice(0, 4000).replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8')
-    var parsed = JSON.parse(text)
+    var raw = fromBase64Url(String(value || '').slice(0, 4000))
+    if (raw.length < 29) {
+      return { expired: true }
+    }
+    var decipher = crypto.createDecipheriv('aes-256-gcm', linkKey, raw.subarray(0, 12))
+    decipher.setAuthTag(raw.subarray(12, 28))
+    var parsed = JSON.parse(Buffer.concat([decipher.update(raw.subarray(28)), decipher.final()]).toString('utf8'))
+    if (!(Number(parsed.e) > Date.now())) {
+      return { expired: true }
+    }
     return {
-      userName: String(parsed.u || '').trim().replace(/\s+/g, ' ').slice(0, 100),
-      businessName: String(parsed.n || '').trim().slice(0, 200),
-      addressLines: String(parsed.a || '').split('\n').map(function (line) { return line.trim().slice(0, 200) }).filter(Boolean).slice(0, 6),
-      sbi: String(parsed.s || '').replace(/\s+/g, ''),
-      completeChecks: Boolean(parsed.c)
+      config: {
+        userName: String(parsed.u || '').trim().replace(/\s+/g, ' ').slice(0, 100),
+        businessName: String(parsed.n || '').trim().slice(0, 200),
+        addressLines: String(parsed.a || '').split('\n').map(function (line) { return line.trim().slice(0, 200) }).filter(Boolean).slice(0, 6),
+        sbi: String(parsed.s || '').replace(/\s+/g, ''),
+        completeChecks: Boolean(parsed.c)
+      }
     }
   } catch (error) {
-    return null
+    // Changed, made with another secret, or made before a restart without DEMO_LINK_SECRET
+    return { expired: true }
   }
+}
+
+function formatLinkExpiry (time) {
+  var date = new Date(time)
+  var clock = date.toLocaleTimeString('en-GB', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Europe/London' })
+    .replace(/\s/g, '').toLowerCase()
+  return clock + ' on ' + date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/London' })
 }
 
 function handleDemoConfigurationPost (req, res) {
@@ -597,7 +639,8 @@ function handleDemoConfigurationPost (req, res) {
       var land = result.land
       return renderDemoConfiguration(req, res, Object.assign({}, config, {
         // A path: the page adds the address the researcher is using (the server can sit behind a proxy)
-        participantLink: '/sfi-grasslands-v5/demo-start?d=' + encodeDemoLink(config, result.addressLines),
+        participantLink: '/sfi-grasslands-v5/demo-start?t=' + encodeDemoLink(config, result.addressLines, Date.now() + LINK_LIFETIME_MS),
+        participantLinkExpiry: formatLinkExpiry(Date.now() + LINK_LIFETIME_MS),
         participantLinkSummary: (config.userName || DEFAULT_USER_NAME) + ', ' + (config.businessName || DEFAULT_BUSINESS_NAME) +
           ', ' + (result.addressLines && result.addressLines.length ? result.addressLines.join(', ') : DEFAULT_ADDRESS + ', ' + DEFAULT_POSTCODE) +
           ', SBI ' + (config.sbi || DEFAULT_SBI) +
@@ -643,12 +686,15 @@ function handleDemoReset (req, res) {
   res.redirect('/sfi-grasslands-v5/demo-configuration')
 }
 
-// The participant's link: start a fresh session with the researcher's settings, then the task list
+// The participant's link: start a fresh session with the researcher's settings, then the task list.
+// After 24 hours (or if it has been changed) it shows "This link has expired" instead. Old links
+// made before 3 November 2026 (?d=) count as expired, as they could be read and changed.
 function handleDemoStart (req, res) {
-  var config = decodeDemoLink(req.query.d)
-  if (!config) {
-    return res.redirect('/sfi-grasslands-v5/demo-configuration')
+  var decoded = req.query.t ? decodeDemoLink(req.query.t) : { expired: true }
+  if (!decoded.config) {
+    return res.status(410).render('sfi-grasslands-v5/demo-link-expired')
   }
+  var config = decoded.config
   loadDemoLand(config.sbi).then(function (land) {
     // Same as "Clear data": a fresh session for the participant
     req.session.data = Object.assign({}, sessionDataDefaults)

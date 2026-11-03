@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block content %}
-{% set applicationSubmitted = data.sfiGrasslandsV5ApplicationSubmitted or (data.sfiGrasslandsV5Tasks and data.sfiGrasslandsV5Tasks.submitApplication == 'completed') %}
+{% set applicationSubmitted = data.v5AgreementStage or data.sfiGrasslandsV5ApplicationSubmitted or (data.sfiGrasslandsV5Tasks and data.sfiGrasslandsV5Tasks.submitApplication == 'completed') %}
 {% set applicationInProgress = (not applicationSubmitted) and (data.sfiGrasslandsV5ApplicationInProgress or (data.sfiGrasslandsV5Tasks and (
   data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'in-progress' or
   data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'completed' or
@@ -50,15 +50,26 @@
     <p class="govuk-caption-m govuk-!-margin-bottom-7">Single Business Identifier (SBI): {{ v5Sbi or "123456789" }}</p>
     {% endif %}
 
-    {# Your applications: a link to the cards on their own page (2 November 2026) #}
+    {# Your applications: one card per scheme, each going to that scheme's own page (3 November 2026).
+       Grasslands shows once started; Woodlands is the existing example application. #}
     <h2 class="govuk-heading-m">Your applications</h2>
     <div class="gem-c-cards card-page govuk-!-margin-bottom-6">
       <ul class="gem-c-cards__list gem-c-cards__list-cards gem-c-cards__list--single-wide">
+        {% if applicationSubmitted or applicationInProgress %}
         <li class="gem-c-cards__list-item-variant">
           <div class="gem-c-cards__list-item-wrapper-variant">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Applications you’ve started or submitted</h3>
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Grasslands agreement</h3>
             <p class="govuk-body govuk-!-margin-bottom-0">
-              <a href="/sfi-grasslands-v5/your-applications" class="govuk-link govuk-link--no-visited-state">View applications</a>
+              <a href="/sfi-grasslands-v5/grasslands-agreement" class="govuk-link govuk-link--no-visited-state">{{ "View agreement" if data.v5AgreementStage in ["offer", "active"] else "View application" }}<span class="govuk-visually-hidden"> for grasslands agreement</span></a>
+            </p>
+          </div>
+        </li>
+        {% endif %}
+        <li class="gem-c-cards__list-item-variant">
+          <div class="gem-c-cards__list-item-wrapper-variant">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Woodlands</h3>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+              <a href="/sfi-grasslands-v5/view-woodlands-application?from=landing" class="govuk-link govuk-link--no-visited-state">View application<span class="govuk-visually-hidden"> for woodlands</span></a>
             </p>
           </div>
         </li>

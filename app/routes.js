@@ -12640,8 +12640,75 @@ router.get('/sfi-grasslands-v5/your-applications', function (req, res) {
   res.render('sfi-grasslands-v5/your-applications', getSfiV5ApplicationsLocals(req))
 })
 
+// Grasslands agreement page by stage (3 November 2026): in-progress, submitted (awaiting review),
+// offer (agreement offer ready) and active (agreement signed). Submitting moves to "submitted";
+// the later stages are set with ?stage= (links on the v5 index) because there is no back office.
+var SFI_V5_AGREEMENT_STAGES = ['in-progress', 'submitted', 'offer', 'active']
+
+function getSfiV5AgreementLocals (req) {
+  var locals = getSfiV5ApplicationsLocals(req)
+  var data = locals.data
+  var now = new Date()
+  var dateOptions = { day: 'numeric', month: 'long', year: 'numeric' }
+  function fmt (d) { return d.toLocaleDateString('en-GB', dateOptions) }
+  function addDays (d, n) { var c = new Date(d.getTime()); c.setDate(c.getDate() + n); return c }
+
+  if (req.query.stage && SFI_V5_AGREEMENT_STAGES.indexOf(req.query.stage) !== -1) {
+    req.session.data.v5AgreementStage = req.query.stage
+    if (req.query.stage === 'offer' && !req.session.data.v5AgreementOfferAt) {
+      req.session.data.v5AgreementOfferAt = now.toISOString()
+    }
+    if (req.query.stage === 'active') {
+      if (!req.session.data.v5AgreementOfferAt) req.session.data.v5AgreementOfferAt = addDays(now, -7).toISOString()
+      if (!req.session.data.v5AgreementAcceptedAt) req.session.data.v5AgreementAcceptedAt = now.toISOString()
+    }
+  }
+
+  var submitted = data.sfiGrasslandsV5ApplicationSubmitted ||
+    (data.sfiGrasslandsV5Tasks && data.sfiGrasslandsV5Tasks.submitApplication === 'completed')
+  var stage = data.v5AgreementStage || (submitted ? 'submitted' : 'in-progress')
+  if (stage === 'in-progress' && submitted) stage = 'submitted'
+
+  var submittedAt = data.sfiGrasslandsV5ApplicationSubmittedAt ? new Date(data.sfiGrasslandsV5ApplicationSubmittedAt) : addDays(now, -14)
+  var startedAt = data.sfiGrasslandsV5ApplicationStartedAt ? new Date(data.sfiGrasslandsV5ApplicationStartedAt)
+    : (stage === 'in-progress' ? now : addDays(submittedAt, -3))
+  var offerAt = data.v5AgreementOfferAt ? new Date(data.v5AgreementOfferAt) : now
+  var acceptedAt = data.v5AgreementAcceptedAt ? new Date(data.v5AgreementAcceptedAt) : now
+  var agreementStart = new Date(acceptedAt.getFullYear(), acceptedAt.getMonth() + 1, 1)
+  var agreementEnd = addDays(new Date(agreementStart.getFullYear() + 3, agreementStart.getMonth(), 1), -1)
+
+  var basketParcels = sfiGrasslandsV5LandActions.buildBasketParcels(req)
+  var basket = sfiGrasslandsV5LandActions.summariseBasket(basketParcels)
+  // Sample figures (as on the canvas) when the stage is set without an application
+  var parcelCount = basket.isEmpty ? 4 : basketParcels.length
+  var actionCount = basket.isEmpty ? 6 : basketParcels.reduce(function (total, parcel) {
+    return total + (parcel.actions || []).length
+  }, 0)
+
+  var history = []
+  if (stage === 'active') history.push({ title: 'Agreement accepted', date: fmt(acceptedAt), byline: true, link: { text: 'View your agreement', href: '/sfi-agreement-v2/agreement' } })
+  if (stage === 'offer' || stage === 'active') history.push({ title: 'Agreement offer made', date: fmt(offerAt), link: { text: 'View agreement offer', href: '/sfi-agreement-v2/offer' } })
+  if (stage !== 'in-progress') history.push({ title: 'Application submitted', date: fmt(submittedAt), byline: true, link: { text: 'View application', href: '/sfi-grasslands-v5/view-application?from=landing' } })
+  history.push({ title: 'Application started', date: fmt(startedAt), byline: true })
+
+  return Object.assign(locals, {
+    v5AgreementStage: stage,
+    v5AgreementTab: req.query.tab === 'history' ? 'history' : 'overview',
+    v5AgreementHistory: history,
+    v5StartedDateFormatted: fmt(startedAt),
+    v5SubmittedDateFormatted: fmt(submittedAt),
+    v5OfferDateFormatted: fmt(offerAt),
+    v5OfferAcceptByFormatted: fmt(addDays(offerAt, 30)),
+    v5AgreementStartFormatted: fmt(agreementStart),
+    v5AgreementEndFormatted: fmt(agreementEnd),
+    v5ParcelCount: parcelCount,
+    v5ActionCount: actionCount,
+    v5YearlyPaymentFormatted: basket.isEmpty ? '£14,944.58' : basket.totalYearlyPaymentFormatted
+  })
+}
+
 router.get('/sfi-grasslands-v5/grasslands-agreement', function (req, res) {
-  res.render('sfi-grasslands-v5/grasslands-agreement', getSfiV5ApplicationsLocals(req))
+  res.render('sfi-grasslands-v5/grasslands-agreement', getSfiV5AgreementLocals(req))
 })
 
 // Start page before the task list (2 November 2026)
@@ -12654,6 +12721,10 @@ router.get('/sfi-grasslands-v5/apply-start', function (req, res) {
 })
 
 router.get('/sfi-grasslands-v5/task-list', function (req, res) {
+  req.session.data = req.session.data || {}
+  if (!req.session.data.sfiGrasslandsV5ApplicationStartedAt) {
+    req.session.data.sfiGrasslandsV5ApplicationStartedAt = new Date().toISOString()
+  }
   setSfiV5CheckBeforeYouStartLinearFlow(req, false)
   sfiGrasslandsV5Tasks.ensureTasks(req)
 
@@ -13214,7 +13285,8 @@ function renderSfiGrasslandsV5SelectParcels (req, res, options) {
 
   // Land parcels beside the map (canvas J06): sorted by reference, 15 a page.
   // Opens on the page holding the open parcel, unless a page was asked for.
-  var V5_LIST_PAGE_SIZE = 15
+  // 20 a page (design, 3 November 2026; was 15)
+  var V5_LIST_PAGE_SIZE = 20
   var interestedCodesForList = interestedActions.map(function (action) { return action.code })
   var sortedParcels = parcels.slice().sort(function (a, b) {
     return String(a.parcelReference).localeCompare(String(b.parcelReference), 'en-GB', { numeric: true })
@@ -13229,13 +13301,23 @@ function renderSfiGrasslandsV5SelectParcels (req, res, options) {
   }
   listPage = Math.min(listPage, listPageCount)
   var listStart = (listPage - 1) * V5_LIST_PAGE_SIZE
+  // "Find a land parcel" filters the list (3 November 2026). Every parcel is in the list so the
+  // page script can filter as you type; rows off the current page are hidden. Without
+  // JavaScript, ?find= (opts.listFilter) shows only the matching rows, with no pages.
+  var listFilter = String(opts.listFilter || '').replace(/\s+/g, '').toUpperCase()
+  function matchesListFilter (parcel) {
+    return String(parcel.parcelReference || '').replace(/\s+/g, '').toUpperCase().indexOf(listFilter) !== -1
+  }
+  var filteredCount = listFilter ? sortedParcels.filter(matchesListFilter).length : sortedParcels.length
   var parcelListPage = {
     page: listPage,
     pageCount: listPageCount,
     total: sortedParcels.length,
+    filter: opts.findValue || '',
+    filteredCount: filteredCount,
     from: sortedParcels.length ? listStart + 1 : 0,
     to: Math.min(listStart + V5_LIST_PAGE_SIZE, sortedParcels.length),
-    rows: sortedParcels.slice(listStart, listStart + V5_LIST_PAGE_SIZE).map(function (parcel) {
+    rows: sortedParcels.map(function (parcel, index) {
       var unavailable = !(parcel.savedCount > 0) &&
         !sfiGrasslandsV5RevenueActions.parcelHasEligibleAction(parcel.landCover, interestedCodesForList)
       var status = parcel.savedCount > 0 ? 'added' : (unavailable ? 'unavailable' : 'available')
@@ -13245,7 +13327,10 @@ function renderSfiGrasslandsV5SelectParcels (req, res, options) {
         totalAreaShort: parcel.totalAreaShort,
         status: status,
         statusText: status === 'added' ? 'Actions added' : (status === 'unavailable' ? 'No actions available' : ''),
-        selected: Boolean(selectedParcel && selectedParcel.parcelId === parcel.parcelId)
+        selected: Boolean(selectedParcel && selectedParcel.parcelId === parcel.parcelId),
+        matchKey: String(parcel.parcelReference || '').replace(/\s+/g, '').toUpperCase(),
+        listPage: Math.floor(index / V5_LIST_PAGE_SIZE) + 1,
+        shown: listFilter ? matchesListFilter(parcel) : (index >= listStart && index < listStart + V5_LIST_PAGE_SIZE)
       }
     })
   }
@@ -13362,29 +13447,29 @@ router.get('/sfi-grasslands-v5/select-parcels', function (req, res) {
   }
   sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.selectLand)
 
-  // "Find a land parcel" without JavaScript: a full reference or its last 4 digits
+  // "Find a land parcel" without JavaScript (3 November 2026): it filters the list. One match
+  // (anywhere in the reference, or the full reference / last 4 digits exactly) opens that parcel
   if (typeof req.query.find === 'string') {
     var findRaw = req.query.find.trim()
     var findKey = findRaw.replace(/\s+/g, '').toUpperCase()
-    var findError = null
-    if (!findKey) {
-      findError = 'Enter a parcel reference'
-    } else {
-      var found = sfiGrasslandsV5RevenueActions.getParcels(req).filter(function (parcel) {
-        var ref = String(parcel.parcelReference || '').replace(/\s+/g, '').toUpperCase()
+    if (findKey) {
+      var allParcels = sfiGrasslandsV5RevenueActions.getParcels(req)
+      function refKey (parcel) { return String(parcel.parcelReference || '').replace(/\s+/g, '').toUpperCase() }
+      var exact = allParcels.filter(function (parcel) {
+        var ref = refKey(parcel)
         return ref === findKey || (findKey.length === 4 && ref.slice(-4) === findKey)
+      })
+      var found = exact.length === 1 ? exact : allParcels.filter(function (parcel) {
+        return refKey(parcel).indexOf(findKey) !== -1
       })
       if (found.length === 1) {
         return res.redirect('/sfi-grasslands-v5/select-parcels?parcel=' + encodeURIComponent(found[0].parcelId) + '#selected-parcel')
       }
-      findError = found.length
-        ? 'More than one land parcel ends in ' + findRaw + '. Enter the full parcel reference'
-        : 'No land parcel matches ' + findRaw + '. Check the parcel reference and try again'
+      return renderSfiGrasslandsV5SelectParcels(req, res, {
+        findValue: findRaw,
+        listFilter: findKey
+      })
     }
-    return renderSfiGrasslandsV5SelectParcels(req, res, {
-      findValue: findRaw,
-      errors: [{ field: 'find', href: '#v5-find', text: findError }]
-    })
   }
   if (req.query.view === 'list') {
     getSfiGrasslandsV5SessionData(req).v5ParcelView = 'list'
@@ -13393,6 +13478,13 @@ router.get('/sfi-grasslands-v5/select-parcels', function (req, res) {
     if (req.query.parcel) {
       getSfiGrasslandsV5SessionData(req).v5ListLastParcel = req.query.parcel
     }
+  }
+  // After "Add another parcel" with a search in the box, the list comes back filtered
+  if (typeof req.query.filter === 'string' && req.query.filter.trim()) {
+    return renderSfiGrasslandsV5SelectParcels(req, res, {
+      findValue: req.query.filter.trim(),
+      listFilter: req.query.filter.trim().replace(/\s+/g, '').toUpperCase()
+    })
   }
   renderSfiGrasslandsV5SelectParcels(req, res)
 })
@@ -13486,14 +13578,33 @@ router.post('/sfi-grasslands-v5/select-parcels', function (req, res) {
     if (!sfiGrasslandsV5LandActions.hasSavedLandAndActions(req)) {
       return renderSfiGrasslandsV5SelectParcels(req, res, {
         parcelId: parcelId,
-        errors: [{ code: null, href: req.body.v5View === 'list' ? '#v5-parcel-list' : '#v5-parcel-map', text: 'Add actions or capital items to at least one land parcel before you continue' }]
+        // "Save and continue" with nothing added (3 November 2026: the button always shows)
+        errors: [{ field: 'continue', code: null, href: req.body.v5View === 'list' ? '#v5-parcel-list' : (parcelId ? '#selected-parcel' : '#v5-find'), text: 'Select a land parcel and add actions or capital items to it' }]
       })
     }
     return res.redirect('/sfi-grasslands-v5/confirm-land-and-actions')
   }
 
   // Back to the top, where the success banner is. List users go back to the list.
-  res.redirect('/sfi-grasslands-v5/select-parcels' + (req.body.v5View === 'list' ? '?view=list' : ''))
+  if (req.body.v5View === 'list') {
+    return res.redirect('/sfi-grasslands-v5/select-parcels?view=list')
+  }
+  // Map view (3 November 2026): keep the land parcels list where it was, on the page holding the
+  // parcel just saved and with any search still applied, so the next parcel is easy to pick
+  var listQuery = []
+  var listFilter = String(req.body.v5ListFilter || '').trim()
+  if (listFilter) {
+    listQuery.push('filter=' + encodeURIComponent(listFilter))
+  } else if (parcelId) {
+    var listOrder = sfiGrasslandsV5RevenueActions.getParcels(req).slice().sort(function (a, b) {
+      return String(a.parcelReference).localeCompare(String(b.parcelReference), 'en-GB', { numeric: true })
+    })
+    var savedIndex = listOrder.findIndex(function (parcel) { return parcel.parcelId === parcelId })
+    if (savedIndex > 0) {
+      listQuery.push('page=' + (Math.floor(savedIndex / 20) + 1))
+    }
+  }
+  res.redirect('/sfi-grasslands-v5/select-parcels' + (listQuery.length ? '?' + listQuery.join('&') : ''))
 })
 
 router.get('/sfi-grasslands-v5/cancel-land-actions-draft', function (req, res) {
@@ -14091,6 +14202,9 @@ function recordSfiGrasslandsV5ApplicationSubmitted (req) {
   req.session.data = req.session.data || {}
   req.session.data.sfiGrasslandsV5ApplicationSubmitted = true
   req.session.data.sfiGrasslandsV5ApplicationInProgress = false
+  if (req.session.data.v5AgreementStage === 'in-progress') {
+    delete req.session.data.v5AgreementStage
+  }
   if (!req.session.data.sfiGrasslandsV5ApplicationSubmittedAt) {
     req.session.data.sfiGrasslandsV5ApplicationSubmittedAt = new Date().toISOString()
   }
@@ -14227,7 +14341,9 @@ router.get('/sfi-grasslands-v5/applications-and-agreements', function (req, res)
 router.get('/sfi-grasslands-v5/view-woodlands-application', function (req, res) {
   res.render('sfi-grasslands-v5/view-woodlands-application', {
     data: getSfiGrasslandsV5SessionData(req),
-    woodlandsApplication: getSfiGrasslandsV5WoodlandsApplication(req)
+    woodlandsApplication: getSfiGrasslandsV5WoodlandsApplication(req),
+    // Opened from the Farm and Land Service landing page: Back goes there
+    backHref: req.query.from === 'landing' ? '/sfi-grasslands-v5/singlefrontdoor/landing/landing' : '/sfi-grasslands-v5/applications-and-agreements'
   })
 })
 

@@ -13,29 +13,33 @@
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-xl">Apply for a grasslands agreement</h1>
 
-    <p class="govuk-body">Use this service to:</p>
+    {# Wording from the user's design (3 November 2026) #}
+    <p class="govuk-body">Use this service to apply for a grasslands agreement.</p>
+    <p class="govuk-body">The service helps you:</p>
     <ul class="govuk-list govuk-list--bullet">
-      <li>choose actions and capital items for your land</li>
-      <li>see what you could be paid before you apply</li>
+      <li>choose actions and capital items for each parcel of land</li>
+      <li>find out what you could be paid</li>
     </ul>
-    <p class="govuk-body">As you add actions, we’ll work out how much land is available for each one and what you could be paid. These are estimates until you get your agreement offer.</p>
-    <p class="govuk-body">Grasslands agreements last for 3 years.</p>
+    {{ govukInsetText({ text: "Grasslands agreements last 3 years." }) }}
 
     <h2 class="govuk-heading-m">Who can apply</h2>
-    <p class="govuk-body">You can apply if:</p>
+    <p class="govuk-body">You can apply for an agreement if:</p>
     <ul class="govuk-list govuk-list--bullet">
-      <li>your business is registered with the Rural Payments Agency and has a single business identifier (SBI)</li>
-      <li>you have management control of the land for 3 years</li>
-      <li>your land will stay eligible for 3 years</li>
-      <li>the actions are not already funded by another scheme</li>
-      <li>the actions are not something you’re already legally required to do</li>
+      <li>you will have management control of the land for the duration of the agreement</li>
+      <li>your land will stay eligible for the duration of the agreement</li>
+      <li>the actions and capital items are not already funded by another scheme</li>
+      <li>the actions are not things you’re legally required to do</li>
     </ul>
     <p class="govuk-body">If you’re an agent, you need permission to apply for the business.</p>
 
-    <h2 class="govuk-heading-m">Before you start</h2>
-    <p class="govuk-body">You’ll sign in to the Farm and Land Service with your Rural Payments customer reference number (CRN) and password.</p>
-    <p class="govuk-body">Check your land details are up to date in the Rural Payments service. If they’re wrong, you’ll need to update them before you can apply.</p>
-    <p class="govuk-body">Your answers are saved as you go. You can return to your application from the Farm and Land Service.</p>
+    <h2 class="govuk-heading-m">How the service works</h2>
+    <p class="govuk-body">You’ll need to sign in using your Rural Payments customer reference number (CRN) and password.</p>
+    <p class="govuk-body">As you add actions and capital items, the service will automatically calculate:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>how much remaining land is available</li>
+      <li>what you could be paid</li>
+    </ul>
+    <p class="govuk-body">You can save your application at any time, and return to it through the <a class="govuk-link" href="/sfi-grasslands-v5/start">Farm and Land Service</a>.</p>
 
     {{ govukButton({
       text: "Start now",
@@ -43,7 +47,7 @@
       isStartButton: true
     }) }}
 
-    <h2 class="govuk-heading-m">Get help</h2>
+    <h2 class="govuk-heading-m">Get help with your application</h2>
     <p class="govuk-body">Contact the Rural Payments Agency.</p>
     <p class="govuk-body govuk-!-margin-bottom-1">Phone: 03000 200 301</p>
     <p class="govuk-body">Monday to Friday, 8.30am to 5pm (except bank holidays)</p>

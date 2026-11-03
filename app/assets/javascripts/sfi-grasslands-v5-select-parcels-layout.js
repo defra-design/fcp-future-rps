@@ -159,8 +159,10 @@
     }
     var hasParcel = Boolean(document.getElementById('selected-parcel'))
     var savedCount = wrapper ? Number(wrapper.getAttribute('data-v5-saved-count')) || 0 : 0
-    button.textContent = hasParcel ? 'Save and continue' : 'Continue'
-    button.classList.toggle('app-v5-hidden', !hasParcel && !savedCount)
+    // Always "Save and continue" (design, 3 November 2026)
+    button.textContent = 'Save and continue'
+    // Always shown (3 November 2026): with nothing added the server shows an error
+    button.classList.remove('app-v5-hidden')
   }
 
   function copyJson (fromDoc, id) {

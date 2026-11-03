@@ -19,8 +19,12 @@
   var PAGE_URL = '/sfi-grasslands-v5/select-parcels'
   // "test" for the Agile Farm test land, or the SBI of a real farm loaded from the
   // footer's prototype tools (app/sfi-grasslands-v5/rpa-land.js)
-  // Styles and Key on tablet and desktop: below the map's corner, leaving the top to search
-  var BOTTOM_LEFT_BUTTON = { slot: 'bottom-left', showLabel: true }
+  // Styles and Key on tablet and desktop: top left of the map (back at the top, 3 November 2026,
+  // as the find box is above the map now). The selected parcel's panel opens just under them;
+  // "View all land parcels" sits bottom left on its own
+  // In the right column with the map's own controls button, laid out as one row in the page CSS
+  var BOTTOM_LEFT_BUTTON = { slot: 'right-top', showLabel: true, order: 1 }
+  var KEY_BUTTON = { slot: 'right-top', showLabel: true, order: 2 }
 
   var LAND_SOURCE = dataEl.getAttribute('data-land-source') || 'test'
   // Home farm — outlying parcels are reached from the list
@@ -98,6 +102,7 @@
   // Hover popup, as in v4a: land parcel reference, land cover and total area
   // ---------------------------------------------------------------------------
   var hoverPopup = null
+  var SHOW_HOVER_TOOLTIP = false
 
   function escapeHtml (value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (ch) {
@@ -191,8 +196,8 @@
       html: parcelPanelHtml(parcel),
       focus: false,
       mobile: { slot: 'drawer', dismissible: true },
-      tablet: { slot: 'left-top', dismissible: true, width: '260px' },
-      desktop: { slot: 'left-top', dismissible: true, width: '260px' }
+      tablet: { slot: 'left-top', dismissible: true, width: '220px' },
+      desktop: { slot: 'left-top', dismissible: true, width: '220px' }
     })
     interactiveMap.showPanel(PARCEL_PANEL_ID, { focus: false })
   }
@@ -207,6 +212,13 @@
     if (pinned) {
       removeHoverPopup()
       updateParcelPanel()
+      return
+    }
+    // No hover tooltip (removed 3 November 2026): hovering only highlights the parcel, and
+    // the map's own label shows its reference. The keyboard status message still reads it out.
+    // The popup code below is kept in case it comes back.
+    if (SHOW_HOVER_TOOLTIP !== true) {
+      removeHoverPopup()
       return
     }
     if (!parcel || !parcel.coords || !window.maplibregl || !window.maplibregl.Popup ||
@@ -730,8 +742,8 @@
         panels: [{
           id: 'mapStyles',
           mobile: { slot: 'drawer', modal: true, dismissible: true },
-          tablet: { slot: 'left-bottom', modal: true, width: '400px', dismissible: true },
-          desktop: { slot: 'left-bottom', modal: true, width: '400px', dismissible: true }
+          tablet: { slot: 'right-top', modal: true, width: '400px', dismissible: true },
+          desktop: { slot: 'right-top', modal: true, width: '400px', dismissible: true }
         }]
       }
     }))
@@ -758,7 +770,9 @@
     maxMobileWidth: 500,
     // Close to the window's height (at least 480px), so on smaller laptop screens the
     // fields aren't tiny. Was innerHeight - 260, min 380, which felt small in Edge
-    containerHeight: Math.max(window.innerHeight - 140, 480) + 'px',
+    // Smaller (3 November 2026): 520px, as in the design, or less on short screens (at least 400px).
+    // Was the window height minus 140px
+    containerHeight: Math.max(Math.min(window.innerHeight - 140, 520), 400) + 'px',
     enableZoomControls: true,
     mapStyle: {
       // OS Maps when the server has a key (app/os-maps.js), otherwise OpenFreeMap
@@ -891,9 +905,9 @@
   }
 
   interactiveMap.on('app:ready', function () {
-    interactiveMap.toggleButtonState('mapControls', 'expanded', true)
+    // Map controls (arrows) start closed: only zoom shows until the controls button is used (design, 3 November 2026)
     if (window.sfiGrasslandsV5MapResetButton) {
-      // Bottom left, after Styles and Key, so the three sit in a row
+      // Bottom left on its own (Styles and Key are top left)
       window.sfiGrasslandsV5MapResetButton.add(interactiveMap, function () {
         if (rawMap) {
           showAllParcels(rawMap)
@@ -1091,16 +1105,16 @@
       html: keyPanelHtml(),
       focus: false,
       mobile: { slot: 'drawer', modal: true, open: false },
-      tablet: { slot: 'left-bottom', width: '260px', open: false },
-      desktop: { slot: 'left-bottom', width: '280px', open: false }
+      tablet: { slot: 'right-top', width: '260px', open: false },
+      desktop: { slot: 'right-top', width: '280px', open: false }
     })
     interactiveMap.addButton('v5Key', {
       label: 'Key',
       panelId: 'v5KeyPanel',
       iconSvgContent: KEY_ICON,
       mobile: { slot: 'top-left', showLabel: true },
-      tablet: BOTTOM_LEFT_BUTTON,
-      desktop: BOTTOM_LEFT_BUTTON
+      tablet: KEY_BUTTON,
+      desktop: KEY_BUTTON
     })
     // The key under the map is only for when JavaScript is off
     var staticKey = document.querySelector('[data-v5-static-key]')
@@ -1319,7 +1333,9 @@
     })
   }
 
-  if (externalFind) {
+  // The suggestions dropdown is off (3 November 2026): typing filters the list instead
+  // (sfi-grasslands-v5-parcel-filter.js). initFindTypeahead is kept in case it comes back.
+  if (externalFind && window.SFI_V5_FIND_TYPEAHEAD) {
     initFindTypeahead()
   }
 

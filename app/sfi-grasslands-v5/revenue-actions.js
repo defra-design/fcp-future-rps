@@ -253,6 +253,10 @@ function buildParcel (req, parcelId) {
     availableAreaFormatted: Number(areas.availableArea).toFixed(4) + ' hectares',
     landCover: landCover,
     landCoverSummary: landCover.join(', '),
+    // One line per land cover with its area, e.g. "Temporary grass - 45.7450 ha" (3 November 2026)
+    landCoverLines: parcelReference.allocateLandCoverAreas(landCover, areas.totalArea).map(function (share) {
+      return share.ha === null ? share.name : share.name + ' - ' + Number(share.ha).toFixed(4) + ' ha'
+    }),
     coords: Array.isArray(raw.coords) ? raw.coords : [],
     // Only real land loaded by SBI has these (rpa-land.js): boundary length and hedge length in metres
     perimeterMetres: raw.perimeterMetres || null,

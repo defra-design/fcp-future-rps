@@ -32,6 +32,7 @@
           <h2 class="govuk-panel__title govuk-!-font-size-27">Link for a participant</h2>
           <div class="govuk-panel__body govuk-!-font-size-19">
             {{ participantLinkSummary }}. The link opens the task list in a fresh session with this business and land.
+            {% if participantLinkExpiry %}<br>It stops working at {{ participantLinkExpiry }}.{% endif %}
           </div>
         </div>
         <div class="govuk-form-group">
@@ -43,7 +44,7 @@
           <a class="govuk-link" href="{{ participantLink }}" data-v5-demo-open target="_blank" rel="noopener noreferrer">Open the link (opens in new tab)</a>
         </div>
         <p class="govuk-body-s" role="status" data-v5-demo-copied hidden>Link copied.</p>
-        <p class="govuk-body-s">Anyone with the link can see the name, business name, address and SBI in it. Only send it to the participant.</p>
+        <p class="govuk-body-s">The name, business name, address and SBI are encrypted in the link, so they cannot be read from it. Anyone with the link can still open the session until it stops working, so only send it to the participant.</p>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
       {% endif %}
 

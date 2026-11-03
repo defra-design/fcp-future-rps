@@ -4,10 +4,10 @@
 {% if parcelCapitalItems.length %}
 <div class="govuk-form-group app-v5-capital-items" id="v5-capital-items">
   <fieldset class="govuk-fieldset" aria-describedby="v5-capital-hint">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s app-v5-action-group__heading">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
       <h3 class="govuk-fieldset__heading">Capital items</h3>
     </legend>
-    <div id="v5-capital-hint" class="govuk-hint govuk-!-font-size-16">One-off payments, claimed once the work is finished</div>
+    <p class="govuk-body" id="v5-capital-hint">If a capital item is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">select a capital item</a> to add to your application.</p>
     <div class="govuk-checkboxes app-v5-actions" data-module="govuk-checkboxes" id="v5-capital-checkboxes">
       {% for item in parcelCapitalItems %}
         {% set fieldId = "v5CapitalQuantity-" + item.code %}

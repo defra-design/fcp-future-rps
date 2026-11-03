@@ -462,7 +462,7 @@ function getTaskListPageData (req) {
         status: states.selectActions.status
       }),
       buildTaskItem({
-        title: 'Select capital items (optional)',
+        title: 'Select capital items',
         href: states.selectCapitalItems.href,
         status: states.selectCapitalItems.status
       }),
