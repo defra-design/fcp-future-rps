@@ -180,7 +180,8 @@
       return null
     }
     if (meta.unit === 'ha') {
-      if (!/^\d+\.\d{4}$/.test(value) || Number(value) <= 0) {
+      // Up to 4 decimal places (3 November 2026): 18, 18.0 and 18.0000 are fine, 18.00000 is not
+      if (!/^(\d+(\.\d{0,4})?|\.\d{1,4})$/.test(value) || Number(value) <= 0) {
         return formatErrorMessage(meta.unit)
       }
       return null

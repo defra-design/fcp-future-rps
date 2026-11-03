@@ -58,18 +58,19 @@
         {% if applicationSubmitted or applicationInProgress %}
         <li class="gem-c-cards__list-item-variant">
           <div class="gem-c-cards__list-item-wrapper-variant">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Grasslands agreement</h3>
+            {# Titles and "Go to application" from the user's design (3 November 2026) #}
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Apply for grasslands agreement</h3>
             <p class="govuk-body govuk-!-margin-bottom-0">
-              <a href="/sfi-grasslands-v5/grasslands-agreement" class="govuk-link govuk-link--no-visited-state">{{ "View agreement" if data.v5AgreementStage in ["offer", "active"] else "View application" }}<span class="govuk-visually-hidden"> for grasslands agreement</span></a>
+              <a href="/sfi-grasslands-v5/grasslands-agreement" class="govuk-link govuk-link--no-visited-state">Go to application<span class="govuk-visually-hidden"> for a grasslands agreement</span></a>
             </p>
           </div>
         </li>
         {% endif %}
         <li class="gem-c-cards__list-item-variant">
           <div class="gem-c-cards__list-item-wrapper-variant">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Woodlands</h3>
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Apply for a woodland management plan</h3>
             <p class="govuk-body govuk-!-margin-bottom-0">
-              <a href="/sfi-grasslands-v5/view-woodlands-application?from=landing" class="govuk-link govuk-link--no-visited-state">View application<span class="govuk-visually-hidden"> for woodlands</span></a>
+              <a href="/sfi-grasslands-v5/view-woodlands-application?from=landing" class="govuk-link govuk-link--no-visited-state">Go to application<span class="govuk-visually-hidden"> for a woodland management plan</span></a>
             </p>
           </div>
         </li>

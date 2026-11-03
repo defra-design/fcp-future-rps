@@ -2139,10 +2139,10 @@ function getFormatErrorMessage(unit) {
   return 'Enter number of hectares, up to 4 decimal places – for example, 12.3456';
 }
 
-// Hectares must be typed with exactly 4 decimal places, for example 10.0000
+// Hectares can have up to 4 decimal places (3 November 2026), for example 18, 18.0 or 18.0000
 function hasFourDecimalPlaces(rawValue) {
   var normalised = String(rawValue || '').trim().replace(/,/g, '').replace(/\s/g, '');
-  return /^\d+\.\d{4}$/.test(normalised);
+  return /^(\d+(\.\d{0,4})?|\.\d{1,4})$/.test(normalised);
 }
 
 function getOverLimitErrorMessage(unit) {

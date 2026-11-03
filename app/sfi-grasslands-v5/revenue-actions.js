@@ -353,7 +353,8 @@ function parseQuantity (raw, action) {
     return { error: formatErrorMessage(action.unit) }
   }
   if (action.unit === 'ha') {
-    if (!/^\d+\.\d{4}$/.test(text)) {
+    // Up to 4 decimal places (3 November 2026): 18, 18.0, 18.000 and 18.0000 are fine, 18.00000 is not
+    if (!/^(\d+(\.\d{0,4})?|\.\d{1,4})$/.test(text)) {
       return { error: formatErrorMessage(action.unit) }
     }
   } else if (!Number.isInteger(value)) {
