@@ -6,7 +6,7 @@
 {% set listStep = listView and selectedParcel %}
 
 {% block pageTitle %}
-  {% if errors.length %}Error: {% endif %}{% if listStep %}Select actions for this land parcel{% else %}Select land for your actions and items{% endif %}
+  {% if errors.length %}Error: {% endif %}{% if listStep %}Select actions for this land parcel{% else %}Add actions and capital items to your land parcels{% endif %}
 {% endblock %}
 
 {% block beforeContent %}
@@ -49,13 +49,13 @@
       {{ govukErrorSummary({ titleText: "There is a problem", errorList: errorList }) }}
     {% endif %}
 
-    {% set journeySection = "Select your actions and items" if listStep else "Land parcels" %}
+    {% set journeySection = "Add actions and capital items to your land" %}
     {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
     {% if listStep %}
     <h1 class="govuk-heading-l">Select actions for this land parcel</h1>
     {% else %}
-    <h1 class="govuk-heading-l">Select land for your actions and items</h1>
-    <p class="govuk-body">Select a land parcel to add actions or capital items to it.</p>
+    <h1 class="govuk-heading-l">Add actions and capital items to your land parcels</h1>
+    <p class="govuk-body">Select land parcels one at a time to add actions or capital items to them.</p>
     {% endif %}
 
 
@@ -208,7 +208,7 @@
 
           {# In the list view the page heading already says this #}
           {% if not listStep %}
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Select actions for this land parcel</h2>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Add actions and capital items to selected land parcel</h2>
           {% endif %}
 
           <dl class="govuk-summary-list govuk-!-margin-bottom-8 app-v5-parcel-summary">
@@ -267,7 +267,7 @@
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h3 class="govuk-fieldset__heading">Actions</h3>
               </legend>
-              <p class="govuk-body" id="v5-actions-hint">If an action is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-revenue-actions">select an action</a> to add to your application.</p>
+              <p class="govuk-body" id="v5-actions-hint">If an action is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-revenue-actions">select the action</a> to include in your application.</p>
               {% if selectionError %}
                 <p id="v5-actions-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ selectionError }}</p>
               {% endif %}
@@ -310,8 +310,9 @@
               classes: "" if listStep else "govuk-button--secondary"
             }) }}
           </div>
+          {# Content of 4 November 2026 #}
           {% if not listStep %}
-            <p class="govuk-body">Once you have added all your land parcels</p>
+            {{ govukInsetText({ text: "You can review and edit everything you’ve added to your land parcels when you save and continue." }) }}
           {% endif %}
           {% if listStep and fromReview and savedParcelCount %}
             <p class="govuk-body">
@@ -335,11 +336,11 @@
         {% set continueError = false %}
         {% for error in errors %}{% if error.field == "continue" %}{% set continueError = error.text %}{% endif %}{% endfor %}
         <div class="app-v5-map-only app-v5-no-parcel{% if continueError %} govuk-form-group--error{% endif %}">
-          <h2 class="govuk-heading-m">Add actions or capital items to land parcel</h2>
+          <h2 class="govuk-heading-m">Add actions and capital items to selected land parcel</h2>
           {% if continueError %}
             <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ continueError }}</p>
           {% endif %}
-          <p class="govuk-body">Select a land parcel to add actions and capital items to it.</p>
+          <p class="govuk-body">Select a land parcel to add actions or capital items to it.</p>
         </div>
       {% endif %}
       </div>

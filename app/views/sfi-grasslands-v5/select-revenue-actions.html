@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% block pageTitle %}
-  {% if errors %}Error: {% endif %}Select actions
+  {% if errors %}Error: {% endif %}Select your actions
 {% endblock %}
 
 {% block beforeContent %}
@@ -29,11 +29,12 @@
     {% endif %}
 
     <form method="post" action="/sfi-grasslands-v5/select-revenue-actions" novalidate>
-      {% set journeySection = "Select your actions and items" %}
+      {% set journeySection = "Add actions and capital items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
-      <h1 class="govuk-heading-l">Select actions</h1>
-      <p class="govuk-body">Each action lasts for 3 years.</p>
-      <p class="govuk-body">Select all that apply. You will choose which land parcels to use them on next.</p>
+      <h1 class="govuk-heading-l">Select your actions</h1>
+      {# Content of 4 November 2026 #}
+      <p class="govuk-body">Each action lasts 3 years.</p>
+      <p class="govuk-body">Select all actions that will be included in this application. You’ll be able to add them to parcels of land as you continue through the service.</p>
 
       {% macro actionLabel(action, used) -%}
         {{ action.code }}: {{ action.name }}<span class="app-v5-action-hint">{{ action.rateShortText }}</span>

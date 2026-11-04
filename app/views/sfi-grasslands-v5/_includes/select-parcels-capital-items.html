@@ -7,7 +7,7 @@
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
       <h3 class="govuk-fieldset__heading">Capital items</h3>
     </legend>
-    <p class="govuk-body" id="v5-capital-hint">If a capital item is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">select a capital item</a> to add to your application.</p>
+    <p class="govuk-body" id="v5-capital-hint">If a capital item is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">select the capital item</a> to include in your application.</p>
     <div class="govuk-checkboxes app-v5-actions" data-module="govuk-checkboxes" id="v5-capital-checkboxes">
       {% for item in parcelCapitalItems %}
         {% set fieldId = "v5CapitalQuantity-" + item.code %}

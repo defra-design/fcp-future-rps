@@ -12,6 +12,8 @@ var TASK_IDS = {
   selectActions: 'selectActions',
   selectCapitalItems: 'selectCapitalItems',
   selectLand: 'selectLand',
+  // "Check what you've added to your land parcels" (task list of 4 November 2026)
+  reviewLand: 'reviewLand',
   checkAnswers: 'checkAnswers',
   submitApplication: 'submitApplication'
 }
@@ -32,6 +34,7 @@ var DEFAULT_TASKS = {
   selectActions: STATUS.NOT_STARTED,
   selectCapitalItems: STATUS.NOT_STARTED,
   selectLand: STATUS.NOT_STARTED,
+  reviewLand: STATUS.NOT_STARTED,
   checkAnswers: STATUS.NOT_STARTED,
   submitApplication: STATUS.NOT_STARTED
 }
@@ -39,6 +42,8 @@ var DEFAULT_TASKS = {
 var SELECT_ACTIONS_HREF = '/sfi-grasslands-v5/select-revenue-actions'
 var SELECT_LAND_HREF = '/sfi-grasslands-v5/select-parcels'
 var SELECT_CAPITAL_ITEMS_HREF = '/sfi-grasslands-v5/select-capital-items'
+var REVIEW_LAND_HREF = '/sfi-grasslands-v5/confirm-land-and-actions'
+var REVIEW_SUBMIT_HREF = '/sfi-grasslands-v5/check-your-answers'
 
 var IN_PROGRESS_TASKS = [
   TASK_IDS.beforeYouStart,
@@ -212,6 +217,12 @@ function syncFromSessionAnswers (req, options) {
     tasks.selectLand = STATUS.COMPLETED
   }
 
+  // Sessions from before the review task existed: already past the review, so it is done
+  if (tasks.checkAnswers === STATUS.COMPLETED || tasks.submitApplication === STATUS.COMPLETED ||
+    data.sfiGrasslandsV5ApplicationSubmitted) {
+    tasks.reviewLand = STATUS.COMPLETED
+  }
+
   return tasks
 }
 
@@ -250,6 +261,7 @@ function getResolvedTaskStates (req) {
   var landDetailsStored = getStoredStatus(req, TASK_IDS.checkLandDetails)
   var eligibleStored = getStoredStatus(req, TASK_IDS.confirmEligible)
   var selectLandStored = getStoredStatus(req, TASK_IDS.selectLand)
+  var reviewLandStored = getStoredStatus(req, TASK_IDS.reviewLand)
   var checkAnswersStored = getStoredStatus(req, TASK_IDS.checkAnswers)
   var submitStored = getStoredStatus(req, TASK_IDS.submitApplication)
 
@@ -261,6 +273,7 @@ function getResolvedTaskStates (req) {
   var section1Complete = businessCompleted && landDetailsCompleted && eligibleCompleted
   var selectActionsCompleted = getStoredStatus(req, TASK_IDS.selectActions) === STATUS.COMPLETED
   var selectLandCompleted = selectLandStored === STATUS.COMPLETED
+  var reviewLandCompleted = selectLandCompleted && reviewLandStored === STATUS.COMPLETED
   var checkAnswersCompleted = checkAnswersStored === STATUS.COMPLETED
   var submitCompleted = submitStored === STATUS.COMPLETED
 
@@ -350,7 +363,7 @@ function getResolvedTaskStates (req) {
     selectLand = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      href: '/sfi-grasslands-v5/confirm-land-and-actions'
+      href: SELECT_LAND_HREF
     }
   } else {
     selectLand = {
@@ -360,52 +373,55 @@ function getResolvedTaskStates (req) {
     }
   }
 
-  // 3a. Check answers — locked until land selected
-  var checkAnswers
+  // 2d. Check what you've added to your land parcels — locked until land has been added
+  var reviewLand
   if (!selectLandCompleted) {
-    checkAnswers = {
+    reviewLand = {
       key: STATUS.CANNOT_START,
       status: statusViewCannotStart(),
       href: null
     }
-  } else if (checkAnswersCompleted) {
-    checkAnswers = {
+  } else if (reviewLandCompleted) {
+    reviewLand = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      href: '/sfi-grasslands-v5/check-your-answers'
+      href: REVIEW_LAND_HREF
     }
   } else {
-    checkAnswers = {
+    reviewLand = {
       key: STATUS.INCOMPLETE,
       status: statusViewIncomplete(),
-      href: '/sfi-grasslands-v5/check-your-answers'
+      href: REVIEW_LAND_HREF
     }
   }
 
-  // 3b. Submit — locked until check answers completed
-  var submitApplication
-  if (!checkAnswersCompleted) {
-    submitApplication = {
+  // 3. Review and submit your application (one page since 4 November 2026: check your
+  // answers, the declaration and submit) — locked until the land parcels have been checked
+  var checkAnswers
+  if (!reviewLandCompleted) {
+    checkAnswers = {
       key: STATUS.CANNOT_START,
       status: statusViewCannotStart(),
       href: null
     }
   } else if (submitCompleted) {
-    submitApplication = {
+    checkAnswers = {
       key: STATUS.COMPLETED,
       status: statusViewCompleted(),
-      href: '/sfi-grasslands-v5/submit-application'
+      href: REVIEW_SUBMIT_HREF
     }
   } else {
-    submitApplication = {
+    checkAnswers = {
       key: STATUS.INCOMPLETE,
       status: statusViewIncomplete(),
-      href: '/sfi-grasslands-v5/submit-application'
+      href: REVIEW_SUBMIT_HREF
     }
   }
+  // Kept for older callers: the submit step is now the same page
+  var submitApplication = checkAnswers
 
-  var section2Complete = selectActionsCompleted && selectLandCompleted
-  var section3Complete = checkAnswersCompleted && submitCompleted
+  var section2Complete = selectActionsCompleted && selectLandCompleted && reviewLandCompleted
+  var section3Complete = submitCompleted
 
   var completedSections = 0
   if (section1Complete) completedSections += 1
@@ -420,6 +436,7 @@ function getResolvedTaskStates (req) {
     selectActions: selectActions,
     selectCapitalItems: selectCapitalItems,
     selectLand: selectLand,
+    reviewLand: reviewLand,
     checkAnswers: checkAnswers,
     submitApplication: submitApplication,
     section1Complete: section1Complete,
@@ -455,33 +472,34 @@ function getTaskListPageData (req) {
         status: states.confirmEligible.status
       })
     ],
+    // Task names from the design of 4 November 2026
     section2Items: [
       buildTaskItem({
-        title: 'Select actions',
+        title: 'Select your actions',
         href: states.selectActions.href,
         status: states.selectActions.status
       }),
       buildTaskItem({
-        title: 'Select capital items',
+        title: 'Select your capital items',
         href: states.selectCapitalItems.href,
         status: states.selectCapitalItems.status
       }),
       buildTaskItem({
-        title: 'Select land for your actions and items',
+        title: 'Add actions and capital items to your land parcels',
         href: states.selectLand.href,
         status: states.selectLand.status
+      }),
+      buildTaskItem({
+        title: 'Check what you’ve added to your land parcels',
+        href: states.reviewLand.href,
+        status: states.reviewLand.status
       })
     ],
     section3Items: [
       buildTaskItem({
-        title: 'Check your answers',
+        title: 'Review and submit your application',
         href: states.checkAnswers.href,
         status: states.checkAnswers.status
-      }),
-      buildTaskItem({
-        title: 'Submit your application',
-        href: states.submitApplication.href,
-        status: states.submitApplication.status
       })
     ]
   }
@@ -498,6 +516,7 @@ function getTaskStatusesForView (req) {
     selectActions: states.selectActions.status,
     selectCapitalItems: states.selectCapitalItems.status,
     selectLand: states.selectLand.status,
+    reviewLand: states.reviewLand.status,
     checkAnswers: states.checkAnswers.status,
     submitApplication: states.submitApplication.status
   }

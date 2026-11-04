@@ -13963,6 +13963,11 @@ router.post('/sfi-grasslands-v5/confirm-land-and-actions', function (req, res) {
     return res.redirect('/sfi-grasslands-v5/select-parcels' + (sessionData.v5ParcelView === 'list' ? '?view=list' : ''))
   }
 
+  // "Check what you've added to your land parcels" is done once they continue from it
+  if (sfiGrasslandsV5LandActions.hasSavedLandAndActions(req)) {
+    sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.reviewLand)
+  }
+
   var goingToCya = action === 'returnToCya' ||
     req.body.from === 'check-your-answers' ||
     sessionData.returnToCheckYourAnswers
@@ -14123,36 +14128,11 @@ router.get('/sfi-grasslands-v5/eligibility-not-confirmed', function (req, res) {
   })
 })
 
-router.get('/sfi-grasslands-v5/submit-application', function (req, res) {
-  var previewType = req.query.preview
-  var allowedPreviewTypes = ['sssi', 'hefer', 'sssi-hefer', 'none']
-  var requiresSssi
-  var requiresHefer
-
-  if (previewType && allowedPreviewTypes.indexOf(previewType) !== -1) {
-    requiresSssi = previewType === 'sssi' || previewType === 'sssi-hefer'
-    requiresHefer = previewType === 'hefer' || previewType === 'sssi-hefer'
-  } else {
-    var consent = sfiGrasslandsV5Consent.getConsentRequirementsForParcels(
-      sfiGrasslandsV5LandActions.buildBasketParcels(req)
-    )
-    requiresSssi = consent.requiresSssi
-    requiresHefer = consent.requiresHefer
-  }
-
-  sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.submitApplication)
-  res.render('sfi-grasslands-v5/submit-application', {
-    data: getSfiGrasslandsV5SessionData(req),
-    requiresSssi: requiresSssi,
-    requiresHefer: requiresHefer
-  })
-})
-
-router.post('/sfi-grasslands-v5/submit-application', function (req, res) {
-  req.session.data = Object.assign(req.session.data || {}, req.body || {})
-  sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.checkAnswers)
-  sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.submitApplication)
-  res.redirect('/sfi-grasslands-v5/submit-application')
+// Submit is part of "Review and submit your application" since 4 November 2026 (the
+// declaration and the submit button are on the check your answers page)
+router.all('/sfi-grasslands-v5/submit-application', function (req, res) {
+  var preview = req.query.preview ? '?preview=' + encodeURIComponent(req.query.preview) : ''
+  res.redirect('/sfi-grasslands-v5/check-your-answers' + preview)
 })
 
 function getSfiGrasslandsV5ConfirmationNotices (req) {
@@ -14198,6 +14178,8 @@ function formatSfiGrasslandsV5SubmittedAt (date) {
 }
 
 function recordSfiGrasslandsV5ApplicationSubmitted (req) {
+  sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.reviewLand)
+  sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.checkAnswers)
   sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.submitApplication)
   req.session.data = req.session.data || {}
   req.session.data.sfiGrasslandsV5ApplicationSubmitted = true
@@ -14694,8 +14676,26 @@ router.get('/sfi-grasslands-v5/check-your-answers', function (req, res) {
 
   sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.checkAnswers)
 
+  // The declaration only lists SSSI consent and the HEFER when the land needs them
+  // (?preview=sssi|hefer|sssi-hefer|none to see each version)
+  var previewType = req.query.preview
+  var requiresSssi
+  var requiresHefer
+  if (['sssi', 'hefer', 'sssi-hefer', 'none'].indexOf(previewType) !== -1) {
+    requiresSssi = previewType === 'sssi' || previewType === 'sssi-hefer'
+    requiresHefer = previewType === 'hefer' || previewType === 'sssi-hefer'
+  } else {
+    var consentNeeded = sfiGrasslandsV5Consent.getConsentRequirementsForParcels(
+      sfiGrasslandsV5LandActions.buildBasketParcels(req)
+    )
+    requiresSssi = consentNeeded.requiresSssi
+    requiresHefer = consentNeeded.requiresHefer
+  }
+
   res.render('sfi-grasslands-v5/check-your-answers', {
     data: Object.assign({}, req.session.data),
+    requiresSssi: requiresSssi,
+    requiresHefer: requiresHefer,
     actionsSummaryRows: actionsSummary.rows,
     actionsSummaryTotal: actionsSummary.total,
     consentHintsByParcel: consentHintsByParcel,
@@ -14705,11 +14705,9 @@ router.get('/sfi-grasslands-v5/check-your-answers', function (req, res) {
   })
 })
 
+// The page's form posts straight to the confirmation page now; kept for old links
 router.post('/sfi-grasslands-v5/check-your-answers', function (req, res) {
-  req.session.data = Object.assign(req.session.data || {}, req.body || {})
-  sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.checkAnswers)
-  sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.submitApplication)
-  res.redirect('/sfi-grasslands-v5/submit-application')
+  res.redirect('/sfi-grasslands-v5/check-your-answers')
 })
 
 

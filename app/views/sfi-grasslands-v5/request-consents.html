@@ -3,13 +3,13 @@
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% if consents.requiresSssi and consents.requiresHefer %}
-  {% set consentTitle = "Request SSSI consent and a HEFER" %}
+  {% set consentTitle = "You need SSSI consent and a HEFER" %}
   {% set consentNeed = "SSSI consent and a HEFER" %}
 {% elif consents.requiresSssi %}
-  {% set consentTitle = "Request SSSI consent" %}
+  {% set consentTitle = "You need SSSI consent" %}
   {% set consentNeed = "SSSI consent" %}
 {% else %}
-  {% set consentTitle = "Request a HEFER" %}
+  {% set consentTitle = "You need a HEFER" %}
   {% set consentNeed = "a HEFER" %}
 {% endif %}
 
@@ -29,16 +29,16 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    {% set journeySection = "Select your actions and items" %}
+    {% set journeySection = "Add actions and capital items to your land" %}
     {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
     <h1 class="govuk-heading-l">{{ consentTitle }}</h1>
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         {% if consents.requiresSssi and consents.requiresHefer %}
-          <p class="govuk-body">Some of your actions are on land in a site of special scientific interest (SSSI) or could affect historic features. We cannot review your agreement until you’ve requested SSSI consent.</p>
+          <p class="govuk-body">Some of your actions are on land in a site of special scientific interest (SSSI) or could affect historic features. We cannot offer you an agreement until you’ve requested SSSI consent.</p>
         {% elif consents.requiresSssi %}
-          <p class="govuk-body">Some of your actions are on land in a site of special scientific interest (SSSI). We cannot review your agreement until you’ve requested SSSI consent.</p>
+          <p class="govuk-body">Some of your actions are on land in a site of special scientific interest (SSSI). We cannot offer you an agreement until you’ve requested SSSI consent.</p>
         {% else %}
           <p class="govuk-body">Some of your actions could affect historic or archaeological features, so you need to request a Historic Environment Farm Environment Record (HEFER).</p>
         {% endif %}
@@ -74,11 +74,11 @@
             <li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">SSSI consent and how to get it (opens in new tab)</a></li>
           {% endif %}
           {% if consents.requiresHefer %}
-            <li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">what a HEFER is and how to request one (opens in new tab)</a></li>
+            <li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">What a HEFER is and how to request one (opens in new tab)</a></li>
           {% endif %}
         </ul>
 
-        <p class="govuk-body">By selecting ‘Confirm and continue’, you confirm you understand you need to request {{ consentNeed }} for these actions.</p>
+        <p class="govuk-body">By selecting ‘Confirm and continue’, you confirm that you understand you need to request {{ consentNeed }} for these actions or capital items.</p>
 
         <form method="post" action="/sfi-grasslands-v5/request-consents" novalidate>
           {{ govukButton({ text: "Confirm and continue" }) }}

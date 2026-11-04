@@ -11,7 +11,7 @@
   {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
 
   {{ govukBackLink({
-    text: "Back",
+    text: "Back to Farm and Land Service",
     href: "/sfi-grasslands-v5/singlefrontdoor/landing/landing"
   }) }}
 {% endblock %}
@@ -30,14 +30,14 @@
         items: section1Items
       }) }}
 
-      <h2 class="govuk-heading-m govuk-!-margin-top-5">Select your actions and items</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Add actions and capital items to your land</h2>
 
       {{ govukTaskList({
         idPrefix: "select-land-parcels",
         items: section2Items
       }) }}
 
-      <h2 class="govuk-heading-m govuk-!-margin-top-5">Review and submit your application</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Submit your application</h2>
 
       {{ govukTaskList({
         idPrefix: "review-and-submit",

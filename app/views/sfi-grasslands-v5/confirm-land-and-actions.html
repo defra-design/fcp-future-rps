@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% block pageTitle %}
-  {% if basketSummary and basketSummary.isEmpty %}Your land and actions{% else %}Review your actions and capital items{% endif %}
+  {% if basketSummary and basketSummary.isEmpty %}Your land and actions{% else %}Check what you’ve added to your land parcels{% endif %}
 {% endblock %}
 
 {% block beforeContent %}
@@ -54,7 +54,7 @@
         </div>
       {% endif %}
 
-      {% set journeySection = "Select your actions and items" %}
+      {% set journeySection = "Add actions and capital items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
 
       {% if summary.isEmpty %}
@@ -69,11 +69,11 @@
         {# Selected actions are kept when land is removed, so the next step is choosing land.
            Goes to the map or list view the user was using. #}
         {{ govukButton({
-          text: "Select land for your actions and items",
+          text: "Add actions and capital items to your land parcels",
           href: "/sfi-grasslands-v5/select-parcels" + ("?view=list" if data and data.v5ParcelView == "list" else "")
         }) }}
       {% else %}
-        <h1 class="govuk-heading-l">Review your actions and capital items</h1>
+        <h1 class="govuk-heading-l">Check what you’ve added to your land parcels</h1>
         {% for parcel in parcels %}
           {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
           {% set changeHref = "/sfi-grasslands-v5/confirm-land-and-actions/change/" + parcel.parcelId + ("?from=check-your-answers" if fromCheckYourAnswers else "") %}
@@ -190,11 +190,11 @@
           <div class="govuk-button-group">
             {% if fromCheckYourAnswers %}
               <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="returnToCya">
-                Save and continue
+                Continue
               </button>
             {% else %}
               <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="save">
-                Save and continue
+                Continue
               </button>
             {% endif %}
             <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" name="confirmAction" value="addAnother">

@@ -2,13 +2,15 @@
     Expects `answers` from buildSfiV5ApplicationAnswers. Set showChangeLinks to false
     on the view and print page. -#}
 {% set showChange = showChangeLinks if showChangeLinks is defined else true %}
+{#- On Review and submit (4 November 2026) the rows are named after the "Check before you
+    start" tasks. The view and print page keeps the plain labels. -#}
 {% set declarations = [
-  { key: "Details are correct", value: data['business-details-answer'], href: "/sfi-grasslands-v5/check-business-details?from=check-your-answers" },
-  { key: "Digital land maps are up to date", value: data['land-details-answer'], href: "/sfi-grasslands-v5/check-land-details?from=check-your-answers" },
-  { key: "Management control of the land", value: data['management-answer-v2'], href: "/sfi-grasslands-v5/management-control?from=check-your-answers" }
+  { key: "Check your details" if showChange else "Details are correct", value: data['business-details-answer'], href: "/sfi-grasslands-v5/check-business-details?from=check-your-answers" },
+  { key: "Confirm land details are correct" if showChange else "Digital land maps are up to date", value: data['land-details-answer'], href: "/sfi-grasslands-v5/check-land-details?from=check-your-answers" },
+  { key: "Confirm management control of the land" if showChange else "Management control of the land", value: data['management-answer-v2'], href: "/sfi-grasslands-v5/management-control?from=check-your-answers" }
 ] %}
 
-<h2 class="govuk-heading-m">{{ declarationsHeading or "Your declarations" }}</h2>
+<h2 class="govuk-heading-m">{{ declarationsHeading or "Before you start" }}</h2>
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
   {% for row in declarations %}
     <div class="govuk-summary-list__row{% if not showChange %} govuk-summary-list__row--no-actions{% endif %}">
@@ -85,10 +87,13 @@
 
 {% if answers.actionPayments.length or answers.capitalPayments.length %}
   <h2 class="govuk-heading-m">Payments</h2>
+  {# Not on Review and submit (design of 4 November 2026) #}
+  {% if not showChange %}
   <p class="govuk-body govuk-!-margin-bottom-6">
     {% if answers.actionPayments.length %}Action payments are made every 3 months.{% endif %}
     {% if answers.capitalPayments.length %}Capital items are paid once, after you finish the work and claim.{% endif %}
   </p>
+  {% endif %}
 
   {% if answers.actionPayments.length %}
     <table class="govuk-table app-v5-answers-table app-v5-payments-table govuk-!-margin-bottom-8">
@@ -111,7 +116,7 @@
           </tr>
         {% endfor %}
         <tr class="govuk-table__row">
-          <th scope="row" class="govuk-table__header">Total a year</th>
+          <th scope="row" class="govuk-table__header">Yearly payment</th>
           <td class="govuk-table__cell"></td>
           <td class="govuk-table__cell"></td>
           <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">{{ answers.actionYearlyTotalFormatted }}</td>

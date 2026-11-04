@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2460" height="1040" viewBox="0 0 2460 1040">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0b0c0c"/></marker></defs>
+<rect width="2460" height="1040" fill="#ffffff"/>
+<text x="90" y="50" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#0b0c0c">Grasslands agreement: journey from the start page</text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#0b0c0c" text-anchor="start"><tspan x="90" y="122.3">Coming back later</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#0b0c0c" text-anchor="start"><tspan x="90" y="352.3">Apply</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#0b0c0c" text-anchor="start"><tspan x="201.0" y="565.3">After submitting</tspan></text>
+<rect x="690" y="150" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="785.0" y="187.8">Farm and Land Service</tspan><tspan x="785.0" y="206.0">home: your applications</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="785.0" y="254.2">Board 16</tspan></text>
+<rect x="990" y="150" width="190" height="84" rx="4" fill="#d2e2f1" stroke="#1d70b8" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1085.0" y="178.7">Apply for grasslands</tspan><tspan x="1085.0" y="196.9">agreement: Latest tab</tspan><tspan x="1085.0" y="215.1">(current stage)</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1085.0" y="142.2">Boards 17 to 20</tspan></text>
+<rect x="1590" y="150" width="190" height="84" rx="4" fill="#d2e2f1" stroke="#1d70b8" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1685.0" y="196.9">History tab</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1685.0" y="254.2">Board 21</tspan></text>
+<polyline points="880,192.0 984,192.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="935" y="184.2">Go to application</tspan></text>
+<polyline points="1180,168 1584,168" fill="none" stroke="#0b0c0c" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<polyline points="1180,218 1385.0,218 1385.0,374" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="start"><tspan x="1393.0" y="270.4">In progress:</tspan><tspan x="1393.0" y="286.0">Continue application</tspan></text>
+<rect x="90" y="380" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="185.0" y="426.9">Start page</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="185.0" y="484.2">Board 0</tspan></text>
+<rect x="390" y="380" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="485.0" y="426.9">Sign in</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="485.0" y="484.2">Board 0a</tspan></text>
+<rect x="690" y="380" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="785.0" y="426.9">Choose business</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="785.0" y="484.2">Only if more than one (0b)</tspan></text>
+<polygon points="1085.0,364.0 1180.0,422.0 1085.0,480.0 990.0,422.0" fill="#fff7bf" stroke="#594d00" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1085.0" y="409.7">Grasslands</tspan><tspan x="1085.0" y="426.6">application</tspan><tspan x="1085.0" y="443.5">already started?</tspan></text>
+<rect x="1290" y="380" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1385.0" y="426.9">Task list</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1385.0" y="484.2">Board 1</tspan></text>
+<rect x="1590" y="380" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1685.0" y="426.9">Complete the tasks</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1685.0" y="484.2">Details, land, actions, items (2 to 11)</tspan></text>
+<rect x="1890" y="380" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1985.0" y="426.9">Check your answers</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1985.0" y="484.2">Board 12</tspan></text>
+<rect x="2190" y="380" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="2285.0" y="426.9">Submit application</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="2285.0" y="484.2">Board 13</tspan></text>
+<polyline points="280,422.0 384,422.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polyline points="580,422.0 684,422.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polyline points="880,422.0 984.0,422.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polyline points="1180.0,422.0 1284,422.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1215.0" y="416.2">No</tspan></text>
+<polyline points="1085.0,364.0 1085.0,240" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="end"><tspan x="1075.0" y="336.2">Yes</tspan></text>
+<polyline points="1480,422.0 1584,422.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polyline points="1780,422.0 1884,422.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polyline points="2080,422.0 2184,422.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polyline points="2285.0,490 2285.0,519 185.0,519 185.0,718.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polygon points="185.0,724.0 280.0,782.0 185.0,840.0 90.0,782.0" fill="#fff7bf" stroke="#594d00" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="185.0" y="769.6">SSSI consent</tspan><tspan x="185.0" y="786.5">or HEFER</tspan><tspan x="185.0" y="803.4">needed?</tspan></text>
+<rect x="390" y="655" width="190" height="84" rx="4" fill="#cce2d8" stroke="#00703c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="485.0" y="692.8">Application complete</tspan><tspan x="485.0" y="711.0">+ what you need to do</tspan></text>
+<rect x="390" y="825" width="190" height="84" rx="4" fill="#cce2d8" stroke="#00703c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="485.0" y="871.9">Application complete</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="485.0" y="929.2">Boards 14 and 14a</tspan></text>
+<polyline points="185.0,724.0 185.0,697.0 384,697.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="245.0" y="691.2">Yes</tspan></text>
+<polyline points="185.0,840.0 185.0,867.0 384,867.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="245.0" y="861.2">No</tspan></text>
+<polyline points="580,697.0 610,697.0 610,782.0" fill="none" stroke="#0b0c0c" stroke-width="2"/>
+<polyline points="580,867.0 610,867.0 610,782.0" fill="none" stroke="#0b0c0c" stroke-width="2"/>
+<polyline points="610,782.0 684,782.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="648" y="752.4">Go to</tspan><tspan x="648" y="768.0">application</tspan></text>
+<rect x="690" y="740" width="190" height="84" rx="4" fill="#d2e2f1" stroke="#1d70b8" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="785.0" y="777.8">Latest tab:</tspan><tspan x="785.0" y="796.0">Awaiting review</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="785.0" y="844.2">Board 18</tspan></text>
+<rect x="990" y="740" width="190" height="84" rx="4" fill="#f3f2f1" stroke="#505a5f" stroke-width="2" stroke-dasharray="6 4"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="normal" fill="#0b0c0c" text-anchor="middle"><tspan x="1085.0" y="777.8">Defra reviews</tspan><tspan x="1085.0" y="796.0">the application</tspan></text>
+<rect x="1290" y="740" width="190" height="84" rx="4" fill="#d2e2f1" stroke="#1d70b8" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1385.0" y="777.8">Latest tab:</tspan><tspan x="1385.0" y="796.0">Offer ready</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1385.0" y="844.2">Board 19</tspan></text>
+<rect x="1590" y="740" width="190" height="84" rx="4" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1685.0" y="777.8">Review agreement</tspan><tspan x="1685.0" y="796.0">offer</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1685.0" y="844.2">Agreement offer pages</tspan></text>
+<rect x="1890" y="740" width="190" height="84" rx="4" fill="#cce2d8" stroke="#00703c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="1985.0" y="786.9">Agreement accepted</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1985.0" y="844.2">Board 19a</tspan></text>
+<rect x="2190" y="740" width="190" height="84" rx="4" fill="#d2e2f1" stroke="#1d70b8" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#0b0c0c" text-anchor="middle"><tspan x="2285.0" y="777.8">Latest tab:</tspan><tspan x="2285.0" y="796.0">Agreement active</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="2285.0" y="844.2">Board 20</tspan></text>
+<polyline points="880,782.0 984,782.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<polyline points="1180,782.0 1284,782.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1235" y="752.4">Email:</tspan><tspan x="1235" y="768.0">offer ready</tspan></text>
+<polyline points="1480,782.0 1584,782.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1535" y="752.4">Review</tspan><tspan x="1535" y="768.0">agreement offer</tspan></text>
+<polyline points="1780,782.0 1884,782.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="1835" y="774.2">Accept</tspan></text>
+<polyline points="2080,782.0 2184,782.0" fill="none" stroke="#0b0c0c" stroke-width="2" marker-end="url(#a)"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="normal" fill="#505a5f" text-anchor="middle"><tspan x="2135" y="752.4">Go to</tspan><tspan x="2135" y="768.0">agreement</tspan></text>
+<text font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#0b0c0c" text-anchor="start"><tspan x="90" y="949.6">Key</tspan></text>
+<rect x="90" y="970" width="34" height="22" rx="3" fill="#ffffff" stroke="#0b0c0c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#0b0c0c" text-anchor="start"><tspan x="134" y="985.5">Page</tspan></text>
+<rect x="203.6" y="970" width="34" height="22" rx="3" fill="#d2e2f1" stroke="#1d70b8" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#0b0c0c" text-anchor="start"><tspan x="247.6" y="985.5">Apply for grasslands agreement page</tspan></text>
+<rect x="546.6" y="970" width="34" height="22" rx="3" fill="#cce2d8" stroke="#00703c" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#0b0c0c" text-anchor="start"><tspan x="590.6" y="985.5">Confirmation page</tspan></text>
+<rect x="756.4000000000001" y="970" width="34" height="22" rx="3" fill="#f3f2f1" stroke="#505a5f" stroke-dasharray="6 4" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#0b0c0c" text-anchor="start"><tspan x="800.4000000000001" y="985.5">Defra step (no page)</tspan></text>
+<polygon points="1005.4000000000001,966 1022.4000000000001,981 1005.4000000000001,996 988.4000000000001,981" fill="#fff7bf" stroke="#594d00" stroke-width="2"/>
+<text font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#0b0c0c" text-anchor="start"><tspan x="1032.4" y="985.5">Decision</tspan></text>
+</svg>

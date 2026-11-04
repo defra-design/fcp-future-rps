@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% block pageTitle %}
-  Select capital items
+  Select your capital items
 {% endblock %}
 
 {% block beforeContent %}
@@ -21,11 +21,12 @@
   <div class="govuk-grid-column-two-thirds">
 
     <form method="post" action="/sfi-grasslands-v5/select-capital-items" novalidate>
-      {% set journeySection = "Select your actions and items" %}
+      {% set journeySection = "Add actions and capital items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
-      <h1 class="govuk-heading-l">Select capital items</h1>
-      <p class="govuk-body">Capital items are one-off payments for work such as putting up fencing or gates. You claim the payment once the work is finished.</p>
-      <p class="govuk-body">Select all that apply. You will choose which land parcels to use them on next.</p>
+      <h1 class="govuk-heading-l">Select your capital items</h1>
+      {# Content of 4 November 2026 #}
+      <p class="govuk-body">You can claim payment for capital items when the work is completed.</p>
+      <p class="govuk-body">Select all items that will be included in this application. You’ll be able to add them to parcels of land as you continue through the service.</p>
 
       {# Keeps an empty choice when nothing is ticked, so the page counts as answered #}
       <input type="hidden" name="v5CapitalItems" value="_unchecked">
@@ -43,6 +44,7 @@
           }), groupItems) %}
         {% endfor %}
 
+        {# One group (fencing and gates): no visible heading, as in the design of 4 November 2026 #}
         {{ govukCheckboxes({
           idPrefix: "v5CapitalItems" + loop.index,
           name: "v5CapitalItems",
@@ -50,7 +52,7 @@
           fieldset: {
             legend: {
               text: group.heading,
-              classes: "govuk-fieldset__legend--m"
+              classes: "govuk-visually-hidden" if capitalGroups.length == 1 else "govuk-fieldset__legend--m"
             }
           },
           items: groupItems
