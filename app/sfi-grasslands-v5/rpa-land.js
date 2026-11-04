@@ -557,12 +557,18 @@ function applyDemoConfiguration (req, config, addressLines, land) {
 
 // Participant links (3 November 2026): the settings are encrypted into one "t" value that
 // stops working 24 hours after the link is made. Without the secret nobody can read the SBI in
-// it or change it. The secret comes from DEMO_LINK_SECRET in .env (and the Heroku config vars).
-// Without one, a random secret is made when the server starts, so links stop working on a restart.
+// it or change it. The secret is DEMO_LINK_SECRET if it is set; otherwise (4 November 2026) it
+// falls back to the map key that .env and the Heroku config vars already have, so links keep
+// working after a restart or a deploy without another config var. The key itself is never put
+// in a link: only a hash of it is used. Changing that key makes existing links stop working.
+// With none of these set, a random secret is made when the server starts.
 var LINK_LIFETIME_MS = 24 * 60 * 60 * 1000
-var linkSecret = process.env.DEMO_LINK_SECRET || crypto.randomBytes(32).toString('hex')
-if (!process.env.DEMO_LINK_SECRET) {
-  console.warn('[v5 demo links] DEMO_LINK_SECRET is not set: participant links will stop working when the server restarts')
+var linkSecret = process.env.DEMO_LINK_SECRET ||
+  process.env.LAND_MAPS_API_KEY ||
+  process.env.OS_MAPS_API_KEY ||
+  crypto.randomBytes(32).toString('hex')
+if (!process.env.DEMO_LINK_SECRET && !process.env.LAND_MAPS_API_KEY && !process.env.OS_MAPS_API_KEY) {
+  console.warn('[v5 demo links] No DEMO_LINK_SECRET or map key is set: participant links will stop working when the server restarts')
 }
 var linkKey = crypto.createHash('sha256').update('v5-demo-link:' + linkSecret).digest()
 
