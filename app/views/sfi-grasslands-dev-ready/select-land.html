@@ -693,6 +693,25 @@
         </div>
 
         <div id="parcel-list-view" class="app-parcel-list-view" hidden>
+          {# Search (5 November 2026): filters the radios as you type, by parcel reference #}
+          <style>
+            .app-parcel-list-search { margin-bottom: 20px; }
+            .app-parcel-list-search .govuk-input::-webkit-search-cancel-button { display: none; }
+            .app-parcel-list-search__count { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 10px 0 0; color: #505a5f; }
+          </style>
+          <div class="govuk-form-group app-parcel-list-search" role="search" id="parcel-list-search-group">
+            <label class="govuk-label" for="parcel-list-search">Search by land parcel reference</label>
+            <div class="govuk-hint" id="parcel-list-search-hint">For example SO3757 3185 or 3185</div>
+            <input class="govuk-input govuk-input--width-10" id="parcel-list-search" type="search" autocomplete="off" spellcheck="false" aria-describedby="parcel-list-search-hint">
+            <p class="govuk-body-s app-parcel-list-search__count" aria-live="polite">
+              <span id="parcel-list-search-count"></span>
+              <a class="govuk-link app-parcel-list-search__clear" href="#parcel-list-search" id="parcel-list-search-clear" hidden>Clear search</a>
+            </p>
+            <p class="govuk-body" id="parcel-list-search-empty" hidden>
+              No land parcels match <span id="parcel-list-search-term"></span>.
+              <a class="govuk-link" href="#parcel-list-search" data-parcel-list-search-clear>Clear search</a>
+            </p>
+          </div>
           <div class="govuk-form-group" id="parcel-list-form-group">
             <fieldset class="govuk-fieldset" id="parcel-list-fieldset">
               <legend class="govuk-fieldset__legend govuk-visually-hidden">
@@ -707,6 +726,8 @@
               </div>
             </fieldset>
           </div>
+          {# 20 parcels a page (5 November 2026); hidden while searching, which looks at every parcel #}
+          <nav class="govuk-pagination" id="parcel-list-pagination" aria-label="Land parcel pages" hidden></nav>
         </div>
       </div>
 
@@ -715,7 +736,8 @@
           <table class="govuk-table">
             <caption class="govuk-table__caption">Agile Farm</caption>
             <tbody class="govuk-table__body">
-              <tr class="govuk-table__row">
+              {# Hidden (5 November 2026): the list's count line already says how many #}
+              <tr class="govuk-table__row" hidden>
                 <td class="govuk-table__cell">Available land parcels</td>
                 <td class="govuk-table__cell govuk-table__cell--numeric" id="farm-available-parcel-count">—</td>
               </tr>
@@ -4527,6 +4549,7 @@
       if (!toggle) {
         return;
       }
+
       if (currentParcelView === 'list') {
         toggle.textContent = 'View parcels on a map';
         toggle.setAttribute('href', buildParcelViewHref('map'));
@@ -4683,6 +4706,171 @@
       return list;
     }
 
+    // Search by reference (5 November 2026): hides radios that do not match. The ticked parcel
+    // always stays, so a search never hides the user's choice.
+    function parcelListSearchKey(value) {
+      return String(value || '').replace(/\s+/g, '').toUpperCase();
+    }
+
+    var PARCEL_LIST_PAGE_SIZE = 20;
+    var parcelListPage = null;
+
+    function renderParcelListPagination(pageCount) {
+      var nav = document.getElementById('parcel-list-pagination');
+      if (!nav) {
+        return;
+      }
+      nav.innerHTML = '';
+      nav.hidden = pageCount < 2;
+      if (pageCount < 2) {
+        return;
+      }
+      function link(className, page, html) {
+        var wrap = document.createElement('div');
+        wrap.className = className;
+        var a = document.createElement('a');
+        a.className = 'govuk-link govuk-pagination__link';
+        a.href = '#parcel-list-search';
+        a.setAttribute('data-parcel-list-page', String(page));
+        a.setAttribute('rel', className.indexOf('prev') !== -1 ? 'prev' : 'next');
+        a.innerHTML = html;
+        wrap.appendChild(a);
+        return wrap;
+      }
+      if (parcelListPage > 1) {
+        nav.appendChild(link('govuk-pagination__prev', parcelListPage - 1,
+          '<svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13"><path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path></svg><span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span>'));
+      }
+      var list = document.createElement('ul');
+      list.className = 'govuk-pagination__list';
+      for (var i = 1; i <= pageCount; i++) {
+        var li = document.createElement('li');
+        li.className = 'govuk-pagination__item' + (i === parcelListPage ? ' govuk-pagination__item--current' : '');
+        var a = document.createElement('a');
+        a.className = 'govuk-link govuk-pagination__link';
+        a.href = '#parcel-list-search';
+        a.textContent = String(i);
+        a.setAttribute('aria-label', 'Page ' + i);
+        a.setAttribute('data-parcel-list-page', String(i));
+        if (i === parcelListPage) {
+          a.setAttribute('aria-current', 'page');
+        }
+        li.appendChild(a);
+        list.appendChild(li);
+      }
+      nav.appendChild(list);
+      if (parcelListPage < pageCount) {
+        nav.appendChild(link('govuk-pagination__next', parcelListPage + 1,
+          '<span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span><svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13"><path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path></svg>'));
+      }
+    }
+
+    function applyParcelListSearch() {
+      var input = document.getElementById('parcel-list-search');
+      var container = document.getElementById('parcel-list-radios');
+      if (!input || !container) {
+        return;
+      }
+      var term = parcelListSearchKey(input.value);
+      var items = container.querySelectorAll('.govuk-radios__item[data-parcel-key]');
+      var total = items.length;
+      var pageCount = Math.max(1, Math.ceil(total / PARCEL_LIST_PAGE_SIZE));
+      // First time: open the page with the ticked parcel on it
+      if (parcelListPage === null) {
+        parcelListPage = 1;
+        Array.prototype.forEach.call(items, function(item, index) {
+          var radio = item.querySelector('input[type="radio"]');
+          if (radio && radio.checked) {
+            parcelListPage = Math.floor(index / PARCEL_LIST_PAGE_SIZE) + 1;
+          }
+        });
+      }
+      parcelListPage = Math.min(Math.max(1, parcelListPage), pageCount);
+      var shown = 0;
+      Array.prototype.forEach.call(items, function(item, index) {
+        var radio = item.querySelector('input[type="radio"]');
+        var onPage = Math.floor(index / PARCEL_LIST_PAGE_SIZE) + 1 === parcelListPage;
+        var matches = term ? item.getAttribute('data-parcel-key').indexOf(term) !== -1 : onPage;
+        var show = matches || Boolean(term && radio && radio.checked);
+        item.style.display = show ? '' : 'none';
+        var conditional = document.getElementById(item.getAttribute('data-conditional-id'));
+        if (conditional) {
+          conditional.style.display = show ? '' : 'none';
+        }
+        if (matches) {
+          shown += 1;
+        }
+      });
+      var count = document.getElementById('parcel-list-search-count');
+      var first = (parcelListPage - 1) * PARCEL_LIST_PAGE_SIZE + 1;
+      var text = term
+        ? 'Showing ' + shown + ' of ' + total + ' parcels'
+        : (pageCount > 1
+          ? 'Showing ' + first + ' to ' + Math.min(first + PARCEL_LIST_PAGE_SIZE - 1, total) + ' of ' + total + ' parcels'
+          : 'Showing ' + total + ' parcels');
+      if (count && count.textContent !== text) {
+        count.textContent = text;
+      }
+      renderParcelListPagination(term ? 1 : pageCount);
+      var clear = document.getElementById('parcel-list-search-clear');
+      if (clear) {
+        clear.hidden = !term;
+      }
+      var empty = document.getElementById('parcel-list-search-empty');
+      if (empty) {
+        empty.hidden = !(term && shown === 0);
+        var termEl = document.getElementById('parcel-list-search-term');
+        if (termEl) {
+          termEl.textContent = input.value.trim();
+        }
+      }
+    }
+
+    function initParcelListSearch() {
+      var input = document.getElementById('parcel-list-search');
+      if (!input || input.getAttribute('data-search-ready') === 'true') {
+        return;
+      }
+      input.setAttribute('data-search-ready', 'true');
+      var timer = null;
+      input.addEventListener('input', function() {
+        window.clearTimeout(timer);
+        // A short pause so the count is read out once, not after every key
+        timer = window.setTimeout(applyParcelListSearch, 150);
+      });
+      // Enter filters; it must not submit the page's form
+      input.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          applyParcelListSearch();
+        }
+      });
+      document.addEventListener('click', function(event) {
+        var pageLink = event.target.closest && event.target.closest('[data-parcel-list-page]');
+        if (pageLink) {
+          event.preventDefault();
+          parcelListPage = Number(pageLink.getAttribute('data-parcel-list-page')) || 1;
+          applyParcelListSearch();
+          // Back to the top of the list, with focus on the search so keyboard users start there.
+          // The count line (aria-live) reads out the new page.
+          var panel = document.getElementById('parcel-list-search-group');
+          if (panel && panel.scrollIntoView) {
+            panel.scrollIntoView({ block: 'start' });
+          }
+          input.focus({ preventScroll: true });
+          return;
+        }
+        var link = event.target.closest && event.target.closest('#parcel-list-search-clear, [data-parcel-list-search-clear]');
+        if (!link) {
+          return;
+        }
+        event.preventDefault();
+        input.value = '';
+        applyParcelListSearch();
+        input.focus();
+      });
+    }
+
     function buildParcelList() {
       var container = document.getElementById('parcel-list-radios');
       if (!container) {
@@ -4704,6 +4892,9 @@
 
         var item = document.createElement('div');
         item.className = 'govuk-radios__item';
+        // For the search: the reference without spaces, in capitals
+        item.setAttribute('data-parcel-key', String(reference).replace(/\s+/g, '').toUpperCase());
+        item.setAttribute('data-conditional-id', conditionalId);
 
         var input = document.createElement('input');
         input.className = 'govuk-radios__input';
@@ -4759,6 +4950,8 @@
       });
 
       syncParcelListConditionals();
+      initParcelListSearch();
+      applyParcelListSearch();
     }
 
     buildParcelList();
