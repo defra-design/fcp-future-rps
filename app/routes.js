@@ -50,6 +50,12 @@ const sfiGrasslandsV5CapitalItems = require('./sfi-grasslands-v5/capital-items')
 const sfiGrasslandsV5RpaLand = require('./sfi-grasslands-v5/rpa-land')
 const osMaps = require('./os-maps')
 
+// Participant links (5 November 2026): a session opened from one can only use the v5 journey,
+// and "/sfi-grasslands-v5/researcher-exit" ends that (app/sfi-grasslands-v5/rpa-land.js).
+// Must run before every other route.
+router.use(sfiGrasslandsV5RpaLand.participantGuard)
+router.get('/sfi-grasslands-v5/researcher-exit', sfiGrasslandsV5RpaLand.handleResearcherExit)
+
 // OS Maps basemap: tiles go through this server so the key stays private (app/os-maps.js)
 router.use(osMaps.middleware)
 router.get('/os-maps/style.json', osMaps.handleStyle)

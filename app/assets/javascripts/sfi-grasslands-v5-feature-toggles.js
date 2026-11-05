@@ -70,6 +70,10 @@
     if (!toggle) {
       return false
     }
+    // Participant link sessions: always the defaults, so the URL cannot switch toggles
+    if (window.SFI_V5_PARTICIPANT) {
+      return Boolean(toggle.defaultOn)
+    }
     if (getQueryFlag(toggle.queryParam)) {
       return true
     }

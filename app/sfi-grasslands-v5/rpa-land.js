@@ -705,6 +705,7 @@ function handleDemoStart (req, res) {
     // Same as "Clear data": a fresh session for the participant
     req.session.data = Object.assign({}, sessionDataDefaults)
     applyDemoConfiguration(req, config, config.addressLines, land)
+    startParticipantMode(req)
     res.redirect(DEMO_NEXT)
   }).catch(function (error) {
     renderDemoConfiguration(req, res, Object.assign({}, config, {
@@ -713,8 +714,82 @@ function handleDemoStart (req, res) {
   })
 }
 
+// Participant mode (5 November 2026): a session opened from a participant link can only use the
+// v5 journey. The flag and a copy of the link's settings live on req.session, outside
+// req.session.data, so the kit's automatic storing of query and form values cannot change them.
+// Ended by /sfi-grasslands-v5/researcher-exit (not linked anywhere) or a new browser session.
+var PARTICIPANT_LOCKED_KEYS = [SESSION_KEY, SBI_KEY, BUSINESS_NAME_KEY, ADDRESS_KEY, USER_NAME_KEY]
+// Query values that would change the set-up; ignored for participants
+var PARTICIPANT_IGNORED_QUERY = ['stage', 'preview']
+var PARTICIPANT_HOME = '/sfi-grasslands-v5/task-list'
+
+function startParticipantMode (req) {
+  var data = getSessionData(req)
+  var locked = {}
+  PARTICIPANT_LOCKED_KEYS.forEach(function (key) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      locked[key] = data[key]
+    }
+  })
+  req.session.v5Participant = { locked: locked }
+}
+
+function isParticipantPathAllowed (path) {
+  // Files pages need (styles, scripts, images, the map) and the agreement offer pages
+  if (/^\/(public|plugin-assets|assets|extension-assets|node_modules|os-maps)\//.test(path) ||
+    path === '/favicon.ico') {
+    return true
+  }
+  if (/^\/sfi-agreement-v2\/.+/.test(path) && !/^\/sfi-agreement-v2\/index/.test(path)) {
+    return true
+  }
+  // Signing in to view the agreement offer uses the v3 sign-in page
+  if (path === '/sfi-grasslands-v3/sign-in') {
+    return true
+  }
+  if (path.indexOf('/sfi-grasslands-v5/') !== 0) {
+    return false
+  }
+  // Inside v5: everything except the prototype's own pages
+  return !/^\/sfi-grasslands-v5\/(index|demo-configuration|prototype-tools)(\/|$)/.test(path)
+}
+
+function participantGuard (req, res, next) {
+  var participant = req.session && req.session.v5Participant
+  if (!participant) {
+    return next()
+  }
+  if (req.path === '/sfi-grasslands-v5/researcher-exit' || req.path === '/sfi-grasslands-v5/demo-start') {
+    return next()
+  }
+  if (!isParticipantPathAllowed(req.path)) {
+    return res.redirect(PARTICIPANT_HOME)
+  }
+  // Put back the link's settings in case a query value changed them, and drop set-up values
+  var data = getSessionData(req)
+  PARTICIPANT_LOCKED_KEYS.forEach(function (key) {
+    if (Object.prototype.hasOwnProperty.call(participant.locked, key)) {
+      data[key] = participant.locked[key]
+    } else {
+      delete data[key]
+    }
+  })
+  PARTICIPANT_IGNORED_QUERY.forEach(function (key) {
+    delete req.query[key]
+  })
+  res.locals.v5ParticipantMode = true
+  next()
+}
+
+function handleResearcherExit (req, res) {
+  delete req.session.v5Participant
+  res.redirect('/sfi-grasslands-v5/demo-configuration')
+}
+
 module.exports = {
   buildEmail: buildEmail,
+  participantGuard: participantGuard,
+  handleResearcherExit: handleResearcherExit,
   handleSbiCheck: handleSbiCheck,
   handleDemoReset: handleDemoReset,
   handleDemoStart: handleDemoStart,
