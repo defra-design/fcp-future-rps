@@ -4,6 +4,31 @@
 {# A participant link older than 24 hours, changed, or made before links expired (3 November 2026).
    See handleDemoStart in app/sfi-grasslands-v5/rpa-land.js #}
 
+{# No way back into the prototype from here (5 November 2026): the logo, service name, phase
+   banner and footer have no links, so a participant cannot get round the expired link #}
+{% block header %}
+  <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-header.css">
+  <div class="govuk-header">
+    <div class="govuk-header__container govuk-width-container app-v5-header__bar">
+      <div class="govuk-header__logo">
+        <span class="govuk-header__homepage-link">
+          <img src="/public/images/brand.png" alt="Department for Environment, Food and Rural Affairs" class="govuk-header__logotype" height="30">
+        </span>
+      </div>
+    </div>
+  </div>
+  {{ govukServiceNavigation({
+    rebrand: true,
+    serviceName: serviceName
+  }) }}
+{% endblock %}
+
+{% block beforeContent %}{% endblock %}
+
+{% block footer %}
+  {{ govukFooter({ rebrand: true }) }}
+{% endblock %}
+
 {% block pageTitle %}
   This link has expired - Apply for a grasslands agreement
 {% endblock %}
