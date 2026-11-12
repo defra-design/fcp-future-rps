@@ -92,17 +92,30 @@
     // What is left of the CLIG3 area once every entered quantity is taken off, including the
     // field's own — the same as the available hints on the actions page (12 November 2026)
     var remaining = Math.max(0, round4(clig3Ha - partTotal(null)))
+    // A ticked whole-remaining supplement (GRH10) has taken that remainder, so there is
+    // nothing left for the others. Its own hint shows what it is applied to, the wording the
+    // actions page uses for the supplements.
+    var wholeTicked = checkboxes.some(function (box) {
+      return isWholeRemaining(box) && box.checked
+    })
+
     checkboxes.forEach(function (box) {
       var code = box.getAttribute('data-supplement')
       var hint = form.querySelector('[data-available-hint="' + code + '"]')
-      if (hint) {
-        hint.textContent = format(remaining) + ' hectares available'
-      }
       if (isWholeRemaining(box)) {
         var amount = form.querySelector('[data-remaining-amount="' + code + '"]')
         if (amount) {
           amount.textContent = format(remaining)
         }
+        if (hint) {
+          hint.textContent = box.checked
+            ? 'Applied to ' + format(remaining) + ' hectares'
+            : format(remaining) + ' hectares available'
+        }
+        return
+      }
+      if (hint) {
+        hint.textContent = format(wholeTicked ? 0 : remaining) + ' hectares available'
       }
     })
   }
