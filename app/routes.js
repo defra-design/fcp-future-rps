@@ -15361,8 +15361,9 @@ router.get('/sfi-grasslands-dev-ready/clig3-supplements', function (req, res) {
     draftParcel: draftParcel,
     draftActions: draftActions,
     supplementOptions: sfiGrasslandsDevReadyLandActions.getClig3SupplementOptions(clig3Ha),
-    selectedSupplementCode: sfiGrasslandsDevReadyLandActions.getClig3SupplementSelectionForPage(req, draftActions),
-    selectedSupplementQuantity: sfiGrasslandsDevReadyLandActions.getSelectedClig3SupplementQuantity(draftActions),
+    selectedSupplementCodes: sfiGrasslandsDevReadyLandActions.getSelectedClig3SupplementCodes(draftActions),
+    supplementQuantities: sfiGrasslandsDevReadyLandActions.getClig3SupplementQuantities(draftActions),
+    clig3Ha: clig3Ha,
     clig3AreaFormatted: sfiGrasslandsDevReadyLandActions.formatHectares(clig3Ha),
     backHref: backHref,
     quantityError: null,
@@ -15390,50 +15391,22 @@ router.post('/sfi-grasslands-dev-ready/clig3-supplements', function (req, res) {
     return res.redirect('/sfi-grasslands-dev-ready/confirm-land-and-actions')
   }
 
-  var rawSupplement = req.body ? req.body.clig3Supplement : undefined
-  if (rawSupplement === undefined || rawSupplement === null) {
-    var clig3HaMissing = sfiGrasslandsDevReadyLandActions.getClig3AppliedQuantity(draftActions)
-    var directEditMissing = Boolean(sessionData.clig3SupplementsDirectEdit)
-    var backHrefMissing = '/sfi-grasslands-dev-ready/select-actions'
-    if (directEditMissing && sessionData.returnToCheckYourAnswers) {
-      backHrefMissing = '/sfi-grasslands-dev-ready/check-your-answers'
-    } else if (directEditMissing) {
-      backHrefMissing = '/sfi-grasslands-dev-ready/confirm-land-and-actions'
-    }
+  // Checkboxes (12 November 2026): none, one or several. The page is optional, so nothing
+  // ticked is valid and just continues.
+  var rawCodes = req.body ? req.body.clig3Supplements : undefined
+  var codes = (Array.isArray(rawCodes) ? rawCodes : (rawCodes ? [rawCodes] : []))
+    .map(function (code) { return String(code || '').toUpperCase() })
+  var quantities = {}
+  codes.forEach(function (code) {
+    quantities[code] = req.body ? req.body['quantity-' + code.toLowerCase()] : ''
+  })
 
-    return res.render('sfi-grasslands-dev-ready/clig3-supplements', {
-      data: sessionData,
-      draftParcel: draftParcel,
-      draftActions: draftActions,
-      supplementOptions: sfiGrasslandsDevReadyLandActions.getClig3SupplementOptions(clig3HaMissing),
-      selectedSupplementCode: '',
-      selectedSupplementQuantity: '',
-      clig3AreaFormatted: sfiGrasslandsDevReadyLandActions.formatHectares(clig3HaMissing),
-      backHref: backHrefMissing,
-      quantityError: {
-        fieldId: 'clig3-supplement-none',
-        text: 'Select a supplement or choose no supplement'
-      },
-      showCancelToLandAndActions: sfiGrasslandsDevReadyLandActions.shouldShowCancelLandActions(req)
-    })
-  }
+  var applied = sfiGrasslandsDevReadyLandActions.applyClig3Supplements(draftActions, {
+    codes: codes,
+    quantities: quantities
+  })
 
-  var supplementCode = String(rawSupplement || '').toUpperCase()
-  if (supplementCode === 'NONE') {
-    supplementCode = ''
-  }
-  var quantityField = supplementCode
-    ? 'quantity-' + supplementCode.toLowerCase()
-    : ''
-  var quantityRaw = quantityField && req.body ? req.body[quantityField] : ''
-
-  var applied = sfiGrasslandsDevReadyLandActions.applyClig3SupplementSelection(
-    draftActions,
-    supplementCode,
-    quantityRaw
-  )
-
-  if (applied.error) {
+  if (applied.errors && applied.errors.length) {
     var clig3HaError = sfiGrasslandsDevReadyLandActions.getClig3AppliedQuantity(draftActions)
     var directEditError = Boolean(sessionData.clig3SupplementsDirectEdit)
     var backHrefError = '/sfi-grasslands-dev-ready/select-actions'
@@ -15448,11 +15421,12 @@ router.post('/sfi-grasslands-dev-ready/clig3-supplements', function (req, res) {
       draftParcel: draftParcel,
       draftActions: draftActions,
       supplementOptions: sfiGrasslandsDevReadyLandActions.getClig3SupplementOptions(clig3HaError),
-      selectedSupplementCode: supplementCode,
-      selectedSupplementQuantity: quantityRaw,
+      selectedSupplementCodes: codes,
+      supplementQuantities: quantities,
+      clig3Ha: clig3HaError,
       clig3AreaFormatted: sfiGrasslandsDevReadyLandActions.formatHectares(clig3HaError),
       backHref: backHrefError,
-      quantityError: applied.error,
+      supplementErrors: applied.errors,
       showCancelToLandAndActions: sfiGrasslandsDevReadyLandActions.shouldShowCancelLandActions(req)
     })
   }

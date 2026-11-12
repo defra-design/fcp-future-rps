@@ -17,11 +17,11 @@
 
 {% block content %}
   {% set options = supplementOptions or [] %}
-  {% set selectedCode = selectedSupplementCode or '' %}
-  {% set selectedQuantity = selectedSupplementQuantity or '' %}
+  {% set selectedCodes = selectedSupplementCodes or [] %}
+  {% set quantitiesByCode = supplementQuantities or {} %}
   {% set appliedAreaText = clig3AreaFormatted or '0.0000 hectares' %}
   {% set fromCheckYourAnswers = data['returnToCheckYourAnswers'] or false %}
-  {% set error = quantityError or null %}
+  {% set errors = supplementErrors or [] %}
 
   <style>
     .app-action-hint,
@@ -70,16 +70,18 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {% if error %}
+      {% if errors.length %}
         <div class="govuk-error-summary" data-module="govuk-error-summary" tabindex="-1" role="alert" aria-labelledby="error-summary-title">
           <h2 class="govuk-error-summary__title" id="error-summary-title">
             There is a problem
           </h2>
           <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
-              <li>
-                <a href="#{{ error.fieldId }}">{{ error.text }}</a>
-              </li>
+              {% for item in errors %}
+                {% if item.summary !== false %}
+                  <li><a href="#{{ item.fieldId }}">{{ item.text }}</a></li>
+                {% endif %}
+              {% endfor %}
             </ul>
           </div>
         </div>
@@ -88,108 +90,110 @@
       {% set journeySection = "Select land and actions" %}
       {% include "sfi-grasslands-dev-ready/_includes/journey-caption.html" %}
 
-      <h1 class="govuk-heading-l">Add a supplement to CLIG3</h1>
+      <h1 class="govuk-heading-l">Add a supplement to CLIG3 (optional)</h1>
 
       {% if draftParcel %}
-        <p class="govuk-body">
+        <p class="govuk-body govuk-!-margin-bottom-1">
           <strong>Land parcel:</strong> {{ draftParcel.parcelReference or draftParcel.osReference or draftParcel.parcelName }}
         </p>
       {% endif %}
+      <p class="govuk-body"><strong>CLIG3 area:</strong> {{ appliedAreaText }}</p>
+      <p class="govuk-body">Supplements are paid on top of CLIG3 and last for the same 3 years. You do not have to add one.</p>
 
-      <form action="/sfi-grasslands-dev-ready/clig3-supplements" method="post" novalidate>
+      <form action="/sfi-grasslands-dev-ready/clig3-supplements" method="post" novalidate data-clig3-supplements-form data-clig3-area="{{ clig3Ha }}">
         {% if fromCheckYourAnswers %}
           <input type="hidden" name="from" value="check-your-answers">
         {% endif %}
 
-        <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
-          <fieldset class="govuk-fieldset"{% if error %} aria-describedby="clig3-supplement-error"{% endif %}>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-visually-hidden">
               Add a supplement to CLIG3
             </legend>
-            <p class="govuk-body">Each of these actions lasts for 3 years. Read the guidance for each action for what you’ll need to do.</p>
-            {% if error and error.fieldId == 'clig3-supplement-none' %}
-              <p id="clig3-supplement-error" class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
-              </p>
-            {% endif %}
 
-            <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
               {% for option in options %}
-                <div class="govuk-radios__item">
+                {% set codeLower = option.code | lower %}
+                {% set isChecked = option.code in selectedCodes %}
+                {% set codeError = null %}
+                {% for item in errors %}
+                  {% if item.fieldId == ('quantity-' + codeLower) or item.fieldId == ('clig3-supplement-' + codeLower) %}
+                    {% set codeError = item %}
+                  {% endif %}
+                {% endfor %}
+                <div class="govuk-checkboxes__item">
                   <input
-                    class="govuk-radios__input"
-                    id="clig3-supplement-{{ option.code | lower }}"
-                    name="clig3Supplement"
-                    type="radio"
+                    class="govuk-checkboxes__input"
+                    id="clig3-supplement-{{ codeLower }}"
+                    name="clig3Supplements"
+                    type="checkbox"
                     value="{{ option.code }}"
-                    data-aria-controls="conditional-{{ option.code | lower }}"
-                    aria-describedby="action-hint-{{ option.code | lower }} action-available-hint-{{ option.code | lower }}"
-                    {% if selectedCode == option.code %}checked{% endif %}
+                    data-aria-controls="conditional-{{ codeLower }}"
+                    aria-describedby="action-hint-{{ codeLower }} action-available-hint-{{ codeLower }}"
+                    data-supplement="{{ option.code }}"
+                    {% if option.appliesFullClig3Area %}data-whole-remaining-area="true"{% endif %}
+                    {% if isChecked %}checked{% endif %}
                   >
-                  <label class="govuk-label govuk-radios__label" for="clig3-supplement-{{ option.code | lower }}">
+                  <label class="govuk-label govuk-checkboxes__label" for="clig3-supplement-{{ codeLower }}">
                     {{ option.code }}: {{ option.name }}
-                    <span class="app-action-hint" id="action-hint-{{ option.code | lower }}">
+                    <span class="app-action-hint" id="action-hint-{{ codeLower }}">
                       Payment rate per year: {{ option.rateText }}
                     </span>
-                    <span class="app-action-available-hint" id="action-available-hint-{{ option.code | lower }}">
+                    <span class="app-action-available-hint" id="action-available-hint-{{ codeLower }}" data-available-hint="{{ option.code }}">
                       {{ option.availableText }}
                     </span>
                   </label>
-                  <div class="govuk-radios__hint app-action-guidance">
+                  <div class="govuk-checkboxes__hint app-action-guidance">
                     <a class="govuk-link govuk-!-font-size-16" href="{{ option.guidanceUrl }}" target="_blank" rel="noopener noreferrer">Read guidance on {{ option.code }} (opens in new tab)</a>
                   </div>
                 </div>
-                <div class="govuk-radios__conditional{% if selectedCode != option.code %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ option.code | lower }}">
+                <div class="govuk-checkboxes__conditional{% if not isChecked %} govuk-checkboxes__conditional--hidden{% endif %}" id="conditional-{{ codeLower }}">
+                  <div class="app-supplement-messages" data-supplement-messages="{{ option.code }}"></div>
                   {% if option.requiresQuantityInput %}
-                    <div class="govuk-form-group{% if error and error.fieldId == ('quantity-' + (option.code | lower)) %} govuk-form-group--error{% endif %} govuk-!-margin-bottom-0">
-                      <label class="govuk-label" for="quantity-{{ option.code | lower }}">
+                    <div class="govuk-form-group{% if codeError %} govuk-form-group--error{% endif %} govuk-!-margin-bottom-0">
+                      <label class="govuk-label" for="quantity-{{ codeLower }}">
                         Quantity
                       </label>
-                      {% if error and error.fieldId == ('quantity-' + (option.code | lower)) %}
-                        <p id="quantity-{{ option.code | lower }}-error" class="govuk-error-message">
-                          <span class="govuk-visually-hidden">Error:</span> {{ error.text }}
+                      {% if codeError %}
+                        <p id="quantity-{{ codeLower }}-error" class="govuk-error-message">
+                          <span class="govuk-visually-hidden">Error:</span> {{ codeError.text }}
                         </p>
                       {% endif %}
                       <div class="govuk-input__wrapper">
                         <input
-                          class="govuk-input govuk-input--width-5{% if error and error.fieldId == ('quantity-' + (option.code | lower)) %} govuk-input--error{% endif %}"
-                          id="quantity-{{ option.code | lower }}"
-                          name="quantity-{{ option.code | lower }}"
+                          class="govuk-input govuk-input--width-5{% if codeError %} govuk-input--error{% endif %}"
+                          id="quantity-{{ codeLower }}"
+                          name="quantity-{{ codeLower }}"
                           type="text"
                           inputmode="decimal"
                           spellcheck="false"
-                          value="{% if selectedCode == option.code %}{{ selectedQuantity }}{% endif %}"
-                          {% if error and error.fieldId == ('quantity-' + (option.code | lower)) %}aria-describedby="quantity-{{ option.code | lower }}-error"{% endif %}
+                          data-supplement-quantity="{{ option.code }}"
+                          value="{{ quantitiesByCode[option.code] or '' }}"
+                          {% if codeError %}aria-describedby="quantity-{{ codeLower }}-error"{% endif %}
                         >
                         <div class="govuk-input__suffix" aria-hidden="true">ha</div>
                       </div>
                     </div>
                   {% elif option.appliesFullClig3Area %}
                     <div class="govuk-form-group govuk-!-margin-bottom-0" data-whole-remaining-area="true">
-                      <p class="govuk-label govuk-!-margin-bottom-1">
+                      {% if codeError %}
+                        <p id="clig3-supplement-{{ codeLower }}-error" class="govuk-error-message">
+                          <span class="govuk-visually-hidden">Error:</span> {{ codeError.text }}
+                        </p>
+                      {% endif %}
+                      <p class="govuk-label govuk-!-margin-bottom-1" id="whole-remaining-label-{{ codeLower }}">
                         Quantity
                       </p>
-                      <p class="govuk-body govuk-!-margin-bottom-0">
-                        <strong>{{ appliedAreaText }}</strong>
+                      <p class="govuk-body govuk-!-margin-bottom-1" aria-labelledby="whole-remaining-label-{{ codeLower }}">
+                        <strong><span class="app-whole-remaining-amount" data-remaining-amount="{{ option.code }}">{{ appliedAreaText | replace(" hectares", "") }}</span> ha</strong>
+                      </p>
+                      <p class="govuk-hint app-action-full-area-hint" id="action-full-area-hint-{{ codeLower }}">
+                        <strong>This supplement uses the total remaining area.</strong><br>To add another supplement, deselect this supplement and select the other supplement first. You can then select this supplement again to use the remaining area.
                       </p>
                     </div>
                   {% endif %}
                 </div>
               {% endfor %}
-
-              <div class="govuk-radios__item">
-                <input
-                  class="govuk-radios__input"
-                  id="clig3-supplement-none"
-                  name="clig3Supplement"
-                  type="radio"
-                  value="none"
-                  {% if selectedCode == 'NONE' or selectedCode == 'none' %}checked{% endif %}
-                >
-                <label class="govuk-label govuk-radios__label" for="clig3-supplement-none">
-                  I do not want to add a supplement
-                </label>
-              </div>
             </div>
           </fieldset>
         </div>
@@ -209,4 +213,6 @@
       </form>
     </div>
   </div>
+
+  <script src="/public/javascripts/sfi-grasslands-dev-ready-clig3-supplements.js"></script>
 {% endblock %}

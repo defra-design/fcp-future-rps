@@ -501,6 +501,120 @@ function parseSupplementQuantity (rawValue) {
   return { valid: true, value: Math.round(value * 10000) / 10000 }
 }
 
+// Multiple supplements on one land parcel (12 November 2026). GRH7 and GRH8 take part of the
+// CLIG3 area and share it between them; GRH10 takes whatever is left, exactly as CLIG3 itself
+// takes the remaining eligible area on the actions page.
+function getSelectedClig3SupplementCodes (actions) {
+  return (actions || [])
+    .filter(function (action) { return isClig3SupplementAction(action && action.code) })
+    .map(function (action) { return String(action.code).toUpperCase() })
+}
+
+function getClig3SupplementQuantities (actions) {
+  var quantities = {}
+  ;(actions || []).forEach(function (action) {
+    if (isClig3SupplementAction(action && action.code)) {
+      quantities[String(action.code).toUpperCase()] = formatHectares(toNumber(action.quantity))
+        .replace(' hectares', '')
+    }
+  })
+  return quantities
+}
+
+// selections: { codes: ['GRH7', ...], quantities: { GRH7: '10' } }
+function applyClig3Supplements (actions, selections) {
+  var nextActions = stripClig3Supplements(actions)
+  var chosen = (selections && Array.isArray(selections.codes) ? selections.codes : [])
+    .map(function (code) { return String(code || '').toUpperCase() })
+    .filter(function (code) { return STACKED_SUPPLEMENT_CODES[code] })
+  var quantities = (selections && selections.quantities) || {}
+  var errors = []
+
+  if (!chosen.length || !draftHasClig3(nextActions)) {
+    return { actions: nextActions, errors: errors }
+  }
+
+  var clig3Ha = getClig3AppliedQuantity(nextActions)
+  var partCodes = chosen.filter(function (code) { return supplementRequiresQuantityInput(code) })
+  var fullCodes = chosen.filter(function (code) { return supplementAppliesFullClig3Area(code) })
+  var partTotal = 0
+  var parsedByCode = {}
+
+  partCodes.forEach(function (code) {
+    var parsed = parseSupplementQuantity(quantities[code])
+    if (!parsed.valid) {
+      errors.push({
+        fieldId: 'quantity-' + code.toLowerCase(),
+        text: 'Enter a quantity for ' + code
+      })
+      return
+    }
+    if (parsed.value > clig3Ha + 0.00005) {
+      errors.push({
+        fieldId: 'quantity-' + code.toLowerCase(),
+        text: 'Quantity for ' + code + ' must be ' + clig3Ha.toFixed(4) + ' hectares or less'
+      })
+      return
+    }
+    parsedByCode[code] = parsed.value
+    partTotal += parsed.value
+  })
+
+  // The supplements share the CLIG3 area, so the ones with a quantity cannot add up to more
+  // One message, but every quantity box is in error. summary: false keeps the error summary
+  // to a single entry while each field still shows it.
+  if (!errors.length && partTotal > clig3Ha + 0.00005) {
+    partCodes.forEach(function (code, index) {
+      errors.push({
+        fieldId: 'quantity-' + code.toLowerCase(),
+        summary: index === 0,
+        text: 'Your supplements add up to ' + partTotal.toFixed(4) + ' hectares. They cannot be more than the CLIG3 area of ' + clig3Ha.toFixed(4) + ' hectares'
+      })
+    })
+  }
+
+  var remaining = Math.max(0, Math.round((clig3Ha - partTotal) * 10000) / 10000)
+
+  if (!errors.length) {
+    fullCodes.forEach(function (code) {
+      if (remaining <= 0) {
+        errors.push({
+          fieldId: 'clig3-supplement-' + code.toLowerCase(),
+          text: 'There is no CLIG3 area left for ' + code + '. Deselect it, or reduce your other supplements'
+        })
+      }
+    })
+  }
+
+  if (errors.length) {
+    return { actions: nextActions, errors: errors }
+  }
+
+  CLIG3_SUPPLEMENT_CODE_ORDER.forEach(function (code) {
+    if (chosen.indexOf(code) === -1) {
+      return
+    }
+    var ratePerHa = CLIG3_SUPPLEMENT_RATE_PER_HA[code]
+    if (!Number.isFinite(ratePerHa)) {
+      return
+    }
+    var quantity = supplementAppliesFullClig3Area(code) ? remaining : parsedByCode[code]
+    if (!Number.isFinite(quantity) || quantity <= 0) {
+      return
+    }
+    nextActions.push({
+      code: code,
+      name: getCatalogActionName(code) || code,
+      quantity: String(quantity),
+      unit: 'ha',
+      paymentRate: ratePerHa,
+      yearlyPayment: Math.round(quantity * ratePerHa * 100) / 100
+    })
+  })
+
+  return { actions: nextActions, errors: [] }
+}
+
 function applyClig3SupplementSelection (actions, supplementCode, quantityRaw) {
   var nextActions = stripClig3Supplements(actions)
   var code = String(supplementCode || '').toUpperCase()
@@ -878,6 +992,9 @@ module.exports = {
   getSelectedClig3SupplementQuantity: getSelectedClig3SupplementQuantity,
   stripClig3Supplements: stripClig3Supplements,
   applyClig3SupplementSelection: applyClig3SupplementSelection,
+  applyClig3Supplements: applyClig3Supplements,
+  getSelectedClig3SupplementCodes: getSelectedClig3SupplementCodes,
+  getClig3SupplementQuantities: getClig3SupplementQuantities,
   getClig3SupplementOptions: getClig3SupplementOptions,
   formatHectares: formatHectares,
   formatMoney: formatMoney,
