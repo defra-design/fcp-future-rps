@@ -12,7 +12,7 @@
       {%- endif -%}
     </p>
     {# Only while searching: the browser's own cross is hidden, as not every browser has one #}
-    <a class="govuk-link govuk-!-font-size-14 app-v5-parcel-rows__clear{% if not parcelListPage.filter %} app-v5-hidden{% endif %}" href="/sfi-grasslands-v5/select-parcels{% if selectedParcel %}?parcel={{ selectedParcel.parcelId }}{% endif %}" data-v5-list-clear data-v5-list-clear-inline>Clear search</a>
+    <a class="govuk-link govuk-!-font-size-16 app-v5-parcel-rows__clear{% if not parcelListPage.filter %} app-v5-hidden{% endif %}" href="/sfi-grasslands-v5/select-parcels{% if selectedParcel %}?parcel={{ selectedParcel.parcelId }}{% endif %}" data-v5-list-clear data-v5-list-clear-inline>Clear search</a>
 </div>
   <ul class="app-v5-parcel-rows__list">
     {% for row in parcelListPage.rows %}
@@ -29,8 +29,8 @@
   </ul>
   {# No matches for the search #}
   <div class="app-v5-parcel-rows__empty{% if not (parcelListPage.filter and parcelListPage.filteredCount == 0) %} app-v5-hidden{% endif %}" data-v5-list-empty>
-    <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">No land parcels match <span data-v5-list-empty-term>{{ parcelListPage.filter }}</span></p>
-    <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0"><a class="govuk-link" href="/sfi-grasslands-v5/select-parcels{% if selectedParcel %}?parcel={{ selectedParcel.parcelId }}{% endif %}" data-v5-list-clear>Clear search</a></p>
+    {# One Clear search only (11 November 2026): the one beside the count, in the grey header #}
+    <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">No land parcels match your search</p>
   </div>
   {% if parcelListPage.pageCount > 1 %}
     <nav class="app-v5-parcel-rows__pages{% if parcelListPage.filter %} app-v5-hidden{% endif %}" aria-label="Land parcel pages" data-v5-list-pages>

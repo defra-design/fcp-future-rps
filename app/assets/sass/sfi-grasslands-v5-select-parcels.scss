@@ -896,7 +896,7 @@ $app-v5-light-grey: #f3f2f1;
 }
 
 .app-v5-parcel-rows__area {
-  font-size: 14px;
+  font-size: 16px;
   color: #505a5f;
   white-space: nowrap;
 }
@@ -904,13 +904,12 @@ $app-v5-light-grey: #f3f2f1;
 .app-v5-parcel-rows__tag {
   display: block;
   margin-top: 2px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.25;
 }
 
 .app-v5-parcel-rows__tag--added {
   color: #00703c;
-  font-weight: 700;
 }
 
 .app-v5-parcel-rows__tag--unavailable {
@@ -1096,10 +1095,10 @@ $app-v5-light-grey: #f3f2f1;
   color: #005a30;
 }
 
-// The count is a quiet status line under the search (3 November 2026)
+// The count is a quiet status line under the search (3 November 2026; 16px from 11 November 2026)
 .app-v5-parcel-rows__count.govuk-body {
   color: #505a5f;
-  font-size: 14px !important;
+  font-size: 16px !important;
 }
 
 // Find box inside the land parcels module's grey header (3 November 2026)
@@ -1107,7 +1106,7 @@ $app-v5-light-grey: #f3f2f1;
   max-width: none;
   margin-bottom: 0;
 
-  // Label and hint read as one unit: label 16px, hint 14px grey just under it (3 November 2026)
+  // Label and hint read as one unit, both at least 16px (11 November 2026)
   .govuk-label {
     margin-bottom: 2px;
     line-height: 1.25;
@@ -1115,7 +1114,7 @@ $app-v5-light-grey: #f3f2f1;
 
   .govuk-hint {
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.3;
   }
 }

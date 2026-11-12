@@ -1,0 +1,15 @@
+{#- Declaration on Review and submit, and (10 November 2026) on the view and print page.
+    SSSI and HEFER lines only when the land needs them (requiresSssi, requiresHefer). -#}
+<h2 class="govuk-heading-m">Declaration</h2>
+<p class="govuk-body">By submitting your application, you confirm that:</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>the information in your application is correct</li>
+  {% if requiresSssi %}
+    <li>you will get site of special scientific interest (SSSI) consent for the actions or items you have selected, and you understand that an agreement will not be offered without the consent</li>
+  {% endif %}
+  {% if requiresHefer %}
+    <li>you will request a Historic Environment Farm Environment Record (HEFER) for the actions or items you have selected</li>
+  {% endif %}
+  <li>you have management control of the land for the required period</li>
+  <li>you will meet the requirements for the actions and items you have applied for</li>
+</ul>

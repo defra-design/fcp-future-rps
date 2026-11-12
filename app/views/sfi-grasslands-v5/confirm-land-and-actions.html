@@ -54,7 +54,7 @@
         </div>
       {% endif %}
 
-      {% set journeySection = "Add actions and capital items to your land" %}
+      {% set journeySection = "Add actions and items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
 
       {% if summary.isEmpty %}
@@ -69,7 +69,7 @@
         {# Selected actions are kept when land is removed, so the next step is choosing land.
            Goes to the map or list view the user was using. #}
         {{ govukButton({
-          text: "Add actions and capital items to your land parcels",
+          text: "Add actions and items to your land parcels",
           href: "/sfi-grasslands-v5/select-parcels" + ("?view=list" if data and data.v5ParcelView == "list" else "")
         }) }}
       {% else %}
@@ -97,7 +97,7 @@
                 <caption class="govuk-table__caption govuk-visually-hidden">Actions on land parcel {{ parcelRef }}</caption>
                 <thead class="govuk-table__head">
                   <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header app-v5-review-table__name">Action</th>
+                    <th scope="col" class="govuk-table__header app-v5-review-table__name">Actions</th>
                     <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-review-table__num">Quantity</th>
                     <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-review-table__num">Yearly payment</th>
                   </tr>
@@ -125,10 +125,10 @@
               {% endif %}
               {% if parcel.capitalItems.length %}
               <table class="govuk-table app-stack-table app-v5-review-table">
-                <caption class="govuk-table__caption govuk-visually-hidden">Capital items on land parcel {{ parcelRef }}</caption>
+                <caption class="govuk-table__caption govuk-visually-hidden">Items on land parcel {{ parcelRef }}</caption>
                 <thead class="govuk-table__head">
                   <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header app-v5-review-table__name">Capital item</th>
+                    <th scope="col" class="govuk-table__header app-v5-review-table__name">Items</th>
                     <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-review-table__num">Quantity</th>
                     <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-review-table__num">One-off payment</th>
                   </tr>
@@ -162,20 +162,20 @@
           <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Actions</h3>
           <dl class="govuk-summary-list app-v5-payment-summary{% if summary.hasCapitalItems %} govuk-!-margin-bottom-6{% endif %}">
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-              <dt class="govuk-summary-list__key">Yearly payment</dt>
+              <dt class="govuk-summary-list__key">Yearly payment for actions</dt>
               <dd class="govuk-summary-list__value">{{ summary.totalYearlyPaymentFormatted }}</dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-              <dt class="govuk-summary-list__key">Total over {{ summary.agreementDurationYears }} years</dt>
+              <dt class="govuk-summary-list__key">Total for actions over {{ summary.agreementDurationYears }} years</dt>
               <dd class="govuk-summary-list__value">{{ summary.estimatedTotalPaymentFormatted }}</dd>
             </div>
           </dl>
         {% endif %}
         {% if summary.hasCapitalItems %}
-          <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Capital items</h3>
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Items</h3>
           <dl class="govuk-summary-list app-v5-payment-summary">
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-              <dt class="govuk-summary-list__key">One-off payment</dt>
+              <dt class="govuk-summary-list__key">One-off payment total</dt>
               <dd class="govuk-summary-list__value">{{ summary.capital.totalFormatted }}</dd>
             </div>
           </dl>

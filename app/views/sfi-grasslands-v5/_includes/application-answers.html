@@ -1,13 +1,13 @@
-{#- Declarations, actions, capital items and payments, as on Check your answers.
+{#- Declarations, actions, items and payments, as on Check your answers.
     Expects `answers` from buildSfiV5ApplicationAnswers. Set showChangeLinks to false
     on the view and print page. -#}
 {% set showChange = showChangeLinks if showChangeLinks is defined else true %}
 {#- On Review and submit (4 November 2026) the rows are named after the "Check before you
     start" tasks. The view and print page keeps the plain labels. -#}
 {% set declarations = [
-  { key: "Check your details" if showChange else "Details are correct", value: data['business-details-answer'], href: "/sfi-grasslands-v5/check-business-details?from=check-your-answers" },
-  { key: "Confirm land details are correct" if showChange else "Digital land maps are up to date", value: data['land-details-answer'], href: "/sfi-grasslands-v5/check-land-details?from=check-your-answers" },
-  { key: "Confirm management control of the land" if showChange else "Management control of the land", value: data['management-answer-v2'], href: "/sfi-grasslands-v5/management-control?from=check-your-answers" }
+  { key: "Check your details", value: data['business-details-answer'], href: "/sfi-grasslands-v5/check-business-details?from=check-your-answers" },
+  { key: "Confirm land details are correct", value: data['land-details-answer'], href: "/sfi-grasslands-v5/check-land-details?from=check-your-answers" },
+  { key: "Confirm management control of the land", value: data['management-answer-v2'], href: "/sfi-grasslands-v5/management-control?from=check-your-answers" }
 ] %}
 
 <h2 class="govuk-heading-m">{{ declarationsHeading or "Before you start" }}</h2>
@@ -26,14 +26,14 @@
 </dl>
 
 <div class="app-cya-section-heading app-v5-answers-heading">
-  <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Actions and capital items</h2>
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Actions and items</h2>
   {% if showChange %}
-    <a class="govuk-link govuk-!-font-size-19" href="/sfi-grasslands-v5/confirm-land-and-actions?from=check-your-answers">Change<span class="govuk-visually-hidden"> actions and capital items</span></a>
+    <a class="govuk-link govuk-!-font-size-19" href="/sfi-grasslands-v5/confirm-land-and-actions?from=check-your-answers">Change<span class="govuk-visually-hidden"> actions and items</span></a>
   {% endif %}
 </div>
 
 {% if not answers.actionRows.length and not answers.capitalRows.length %}
-  <p class="govuk-body govuk-!-margin-bottom-9">No land parcels, actions or capital items have been added yet.</p>
+  <p class="govuk-body govuk-!-margin-bottom-9">No land parcels, actions or items have been added yet.</p>
 {% endif %}
 
 {% if answers.actionRows.length %}
@@ -63,13 +63,13 @@
 {% endif %}
 
 {% if answers.capitalRows.length %}
-  <h3 class="govuk-heading-s app-v5-answers-subheading">Capital items</h3>
+  <h3 class="govuk-heading-s app-v5-answers-subheading">Items</h3>
   <table class="govuk-table app-v5-answers-table govuk-!-margin-bottom-9">
-    <caption class="govuk-table__caption govuk-visually-hidden">Capital items on each land parcel</caption>
+    <caption class="govuk-table__caption govuk-visually-hidden">Items on each land parcel</caption>
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header app-v5-answers-table__parcel">Land parcel</th>
-        <th scope="col" class="govuk-table__header app-v5-answers-table__name">Capital item</th>
+        <th scope="col" class="govuk-table__header app-v5-answers-table__name">Item</th>
         <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-answers-table__qty">Quantity</th>
       </tr>
     </thead>
@@ -87,13 +87,7 @@
 
 {% if answers.actionPayments.length or answers.capitalPayments.length %}
   <h2 class="govuk-heading-m">Payments</h2>
-  {# Not on Review and submit (design of 4 November 2026) #}
-  {% if not showChange %}
-  <p class="govuk-body govuk-!-margin-bottom-6">
-    {% if answers.actionPayments.length %}Action payments are made every 3 months.{% endif %}
-    {% if answers.capitalPayments.length %}Capital items are paid once, after you finish the work and claim.{% endif %}
-  </p>
-  {% endif %}
+  {# No intro sentence on either page (designs of 4 and 10 November 2026) #}
 
   {% if answers.actionPayments.length %}
     <table class="govuk-table app-v5-answers-table app-v5-payments-table govuk-!-margin-bottom-8">
@@ -133,10 +127,10 @@
 
   {% if answers.capitalPayments.length %}
     <table class="govuk-table app-v5-answers-table app-v5-payments-table govuk-!-margin-bottom-8">
-      <caption class="govuk-table__caption govuk-table__caption--s app-v5-answers-caption">Payments for each capital item</caption>
+      <caption class="govuk-table__caption govuk-table__caption--s app-v5-answers-caption">Payments for each item</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header app-v5-payments-table__name">Capital item</th>
+          <th scope="col" class="govuk-table__header app-v5-payments-table__name">Item</th>
           <th scope="col" class="govuk-table__header app-v5-payments-table__qty">Quantity</th>
           <th scope="col" class="govuk-table__header app-v5-payments-table__rate">Payment rate</th>
           <th scope="col" class="govuk-table__header govuk-table__header--numeric app-v5-payments-table__amount">One-off payment</th>

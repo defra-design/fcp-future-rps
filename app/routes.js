@@ -12717,6 +12717,37 @@ router.get('/sfi-grasslands-v5/grasslands-agreement', function (req, res) {
   res.render('sfi-grasslands-v5/grasslands-agreement', getSfiV5AgreementLocals(req))
 })
 
+// Two ways in (11 November 2026, journey map "Grasslands : user journey"):
+// 1. Grasslands start page (apply-start): sign in, choose a business, then straight into grasslands
+//    (task list for a new application, grasslands landing page if one is already started).
+//    The Farm and Land Service overview page is skipped.
+// 2. Farm and Land Service start page (start): sign in, choose a business, then the overview page.
+function hasSfiV5GrasslandsStarted (data) {
+  var tasks = data.sfiGrasslandsV5Tasks || {}
+  return !!(
+    data.v5AgreementStage ||
+    data.sfiGrasslandsV5ApplicationSubmitted ||
+    data.sfiGrasslandsV5ApplicationInProgress ||
+    Object.keys(tasks).some(function (key) {
+      return tasks[key] === 'in-progress' || tasks[key] === 'completed' || tasks[key] === 'incomplete'
+    })
+  )
+}
+
+router.get('/sfi-grasslands-v5/start', function (req, res) {
+  req.session.data = req.session.data || {}
+  req.session.data.v5StartFromApply = false
+  res.render('sfi-grasslands-v5/start')
+})
+
+router.post('/sfi-grasslands-v5/choose-business-answer', function (req, res) {
+  var data = getSfiGrasslandsV5SessionData(req)
+  if (!data.v5StartFromApply) {
+    return res.redirect('/sfi-grasslands-v5/singlefrontdoor/landing/landing')
+  }
+  return res.redirect(hasSfiV5GrasslandsStarted(data) ? '/sfi-grasslands-v5/grasslands-agreement' : '/sfi-grasslands-v5/task-list')
+})
+
 // Start page before the task list (2 November 2026)
 router.get('/sfi-grasslands-v5/apply-start', function (req, res) {
   // Started here: after sign in and choosing a business, go straight to the task list
@@ -13088,6 +13119,7 @@ function renderSfiGrasslandsV5SelectRevenueActions (req, res, options) {
 }
 
 router.get('/sfi-grasslands-v5/select-revenue-actions', function (req, res) {
+  delete getSfiGrasslandsV5SessionData(req).v5SelectParcelsFrom
   sfiGrasslandsV5LandActions.clearDraft(req)
   sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.selectActions)
   renderSfiGrasslandsV5SelectRevenueActions(req, res)
@@ -13140,6 +13172,8 @@ function renderSfiGrasslandsV5SelectCapitalItems (req, res) {
 }
 
 router.get('/sfi-grasslands-v5/select-capital-items', function (req, res) {
+  // Back on the land parcels page is the linear one again (11 November 2026)
+  delete getSfiGrasslandsV5SessionData(req).v5SelectParcelsFrom
   if (!sfiGrasslandsV5RevenueActions.getInterestedCodes(req).length) {
     return res.redirect('/sfi-grasslands-v5/select-revenue-actions')
   }
@@ -13435,6 +13469,13 @@ function renderSfiGrasslandsV5SelectParcels (req, res, options) {
     savedParcelCount: parcels.filter(function (parcel) { return parcel.savedCount > 0 }).length,
     // Cancel only shows when the user came here from "Review land parcels and actions"
     fromReview: Boolean(getSfiGrasslandsV5SessionData(req).v5FromReview),
+    // Back goes where the user came from (11 November 2026), not always one step back in the
+    // linear order: the review page, the task list, or "Select your items"
+    backHref: getSfiGrasslandsV5SessionData(req).v5FromReview
+      ? '/sfi-grasslands-v5/confirm-land-and-actions'
+      : (getSfiGrasslandsV5SessionData(req).v5SelectParcelsFrom === 'task-list'
+          ? '/sfi-grasslands-v5/task-list'
+          : '/sfi-grasslands-v5/select-capital-items'),
     savedYearlyTotalFormatted: sfiGrasslandsV5LandActions.summariseBasket(
       sfiGrasslandsV5LandActions.buildBasketParcels(req)
     ).totalYearlyPaymentFormatted,
@@ -13450,6 +13491,11 @@ function renderSfiGrasslandsV5SelectParcels (req, res, options) {
 router.get('/sfi-grasslands-v5/select-parcels', function (req, res) {
   if (!sfiGrasslandsV5RevenueActions.getInterestedCodes(req).length) {
     return res.redirect('/sfi-grasslands-v5/select-revenue-actions')
+  }
+  // Remember the entry point for the Back link (11 November 2026). Kept across this page's own
+  // redirects (saving a parcel, switching view); cleared when the user goes back up the journey.
+  if (req.query.from === 'task-list') {
+    getSfiGrasslandsV5SessionData(req).v5SelectParcelsFrom = 'task-list'
   }
   sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.selectLand)
 
@@ -13536,7 +13582,9 @@ router.post('/sfi-grasslands-v5/select-parcels', function (req, res) {
 
     var savedSomething = result.actions.length || capitalResult.items.length
 
-    if (!result.selectedCodes.length && !capitalResult.selectedCodes.length && !hadSaved && intent === 'save') {
+    // Nothing ticked on the open land parcel: error for "Save and select next parcel" and, since
+    // 11 November 2026, for "Save and continue" too (it no longer skips past the open parcel)
+    if (!result.selectedCodes.length && !capitalResult.selectedCodes.length && !hadSaved) {
       // Link to the first checkbox on the page: Land, then Boundary, Ponds, Buildings
       var unitOrder = ['ha', 'm', 'pond', 'm²']
       var firstCode = sfiGrasslandsV5RevenueActions.getActionsForParcel(req, parcelId)
@@ -13574,7 +13622,7 @@ router.post('/sfi-grasslands-v5/select-parcels', function (req, res) {
     if (savedSomething || hadSaved) {
       sfiGrasslandsV5RevenueActions.setFlash(req, savedSomething
         ? {
-            heading: (result.actions.length ? 'Actions saved to land parcel ' : 'Capital items saved to land parcel ') + parcel.parcelReference
+            heading: (result.actions.length ? 'Actions saved to land parcel ' : 'Items saved to land parcel ') + parcel.parcelReference
           }
         : { heading: 'Land parcel ' + parcel.parcelReference + ' has been removed from your application' })
     }
@@ -13585,7 +13633,7 @@ router.post('/sfi-grasslands-v5/select-parcels', function (req, res) {
       return renderSfiGrasslandsV5SelectParcels(req, res, {
         parcelId: parcelId,
         // "Save and continue" with nothing added (3 November 2026: the button always shows)
-        errors: [{ field: 'continue', code: null, href: req.body.v5View === 'list' ? '#v5-parcel-list' : (parcelId ? '#selected-parcel' : '#v5-find'), text: 'Select a land parcel and add actions or capital items to it' }]
+        errors: [{ field: 'continue', code: null, href: req.body.v5View === 'list' ? '#v5-parcel-list' : (parcelId ? '#selected-parcel' : '#v5-find'), text: 'Select a land parcel and add actions or items to it' }]
       })
     }
     return res.redirect('/sfi-grasslands-v5/confirm-land-and-actions')
@@ -14406,8 +14454,14 @@ router.get('/sfi-grasslands-v5/view-application', function (req, res) {
     backButtonText = 'Back to Farm and Land Service'
   }
 
+  // The declaration they agreed to (10 November 2026): SSSI and HEFER lines only when needed
+  var viewConsents = sfiGrasslandsV5Consent.getConsentRequirementsForParcels(
+    sfiGrasslandsV5LandActions.buildBasketParcels(req)
+  )
   res.render('sfi-grasslands-v5/view-application', {
     data: sessionData,
+    requiresSssi: viewConsents.requiresSssi,
+    requiresHefer: viewConsents.requiresHefer,
     answers: buildSfiV5ApplicationAnswers(req),
     applicationSubmittedDateFormatted: new Date(submittedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
     reviewParcels: review.reviewParcels,

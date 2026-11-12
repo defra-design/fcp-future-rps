@@ -6,7 +6,7 @@
 {% set listStep = listView and selectedParcel %}
 
 {% block pageTitle %}
-  {% if errors.length %}Error: {% endif %}{% if listStep %}Select actions for this land parcel{% else %}Add actions and capital items to your land parcels{% endif %}
+  {% if errors.length %}Error: {% endif %}{% if listStep %}Select actions for this land parcel{% else %}Add actions and items to your land parcels{% endif %}
 {% endblock %}
 
 {% block beforeContent %}
@@ -18,11 +18,12 @@
   <link rel="stylesheet" href="/plugin-assets/%40defra%2Finteractive-map/plugins/beta/map-styles/dist/css/index.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.0.0/dist/maplibre-gl.css">
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-select-parcels.css">
-  {# In the list view a parcel is its own step, so Back returns to the list #}
+  {# In the list view a parcel is its own step, so Back returns to the list. Otherwise Back goes
+     where the user came from (backHref): the review page, the task list, or "Select your items" #}
   {{ govukBackLink({
     text: "Back",
-    href: "/sfi-grasslands-v5/select-parcels?view=list" if listStep else "/sfi-grasslands-v5/select-capital-items",
-    attributes: { "data-v5-back-link": "/sfi-grasslands-v5/select-capital-items" }
+    href: "/sfi-grasslands-v5/select-parcels?view=list" if listStep else backHref,
+    attributes: { "data-v5-back-link": backHref }
   }) }}
 {% endblock %}
 
@@ -36,7 +37,8 @@
   {{ govukNotificationBanner({ type: "success", html: flashHtml }) }}
 {% endif %}
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  {# Full width (11 November 2026) so the h1 fits on one line and lines up with the map and list below #}
+  <div class="govuk-grid-column-full">
 
     {% if errors.length %}
       {% set errorList = [] %}
@@ -49,13 +51,13 @@
       {{ govukErrorSummary({ titleText: "There is a problem", errorList: errorList }) }}
     {% endif %}
 
-    {% set journeySection = "Add actions and capital items to your land" %}
+    {% set journeySection = "Add actions and items to your land" %}
     {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
     {% if listStep %}
     <h1 class="govuk-heading-l">Select actions for this land parcel</h1>
     {% else %}
-    <h1 class="govuk-heading-l">Add actions and capital items to your land parcels</h1>
-    <p class="govuk-body">Select land parcels one at a time to add actions or capital items to them.</p>
+    <h1 class="govuk-heading-l">Add actions and items to your land parcels</h1>
+    <p class="govuk-body">Select a land parcel to add actions or items to it.</p>
     {% endif %}
 
 
@@ -84,11 +86,13 @@
          the search reloads the page with the list filtered #}
       <section class="app-v5-parcel-rows" id="v5-parcel-rows" aria-labelledby="v5-parcel-rows-heading">
         <div class="app-v5-parcel-rows__header">
-          <h2 class="govuk-heading-s govuk-!-font-size-16 govuk-!-margin-bottom-3" id="v5-parcel-rows-heading">Land parcels</h2>
+          {# Design, 11 November 2026: the label is the heading ("Find a land parcel") and the hint says it filters #}
           <div role="search" class="app-v5-find{% if listStep %} app-v5-hidden{% endif %}">
           <div class="govuk-form-group{% if findError %} govuk-form-group--error{% endif %}">
-            <label class="govuk-label govuk-!-font-size-16" for="v5-find">Search by reference</label>
-            <div id="v5-find-hint" class="govuk-hint">For example {{ findExample }} or {{ findExampleShort }}</div>
+            <h2 class="govuk-label-wrapper">
+              <label class="govuk-label govuk-label--s" for="v5-find" id="v5-parcel-rows-heading">Find a land parcel</label>
+            </h2>
+            <div id="v5-find-hint" class="govuk-hint">Enter all or part of a land parcel reference to filter the list</div>
             {% if findError %}
               <p id="v5-find-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ findError }}</p>
             {% endif %}
@@ -199,17 +203,14 @@
       </div>
 
       {# Swapped in place when another parcel is picked on the map (no page reload).
-         Layout from the design of 3 November 2026: heading, parcel summary, Actions, Capital items,
+         Layout from the design of 3 November 2026: heading, parcel summary, Actions, Items,
          then "Add another parcel" and "Save and continue" #}
       <div id="v5-parcel-area">
       {% if selectedParcel %}
         <div class="app-v5-panel" id="selected-parcel" tabindex="-1" data-v5-selected-reference="{{ selectedParcel.parcelReference }}">
           <input type="hidden" name="v5ParcelId" value="{{ selectedParcel.parcelId }}">
 
-          {# In the list view the page heading already says this #}
-          {% if not listStep %}
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Add actions and capital items to selected land parcel</h2>
-          {% endif %}
+          {# No heading above the parcel details (design of 10 November 2026) #}
 
           <dl class="govuk-summary-list govuk-!-margin-bottom-8 app-v5-parcel-summary">
             {# "Change" picks another parcel: the list in the list view, the find box in the map view.
@@ -265,7 +266,7 @@
           <div class="govuk-form-group{% if selectionError %} govuk-form-group--error{% endif %}">
             <fieldset class="govuk-fieldset" aria-describedby="v5-actions-hint{% if selectionError %} v5-actions-error{% endif %}">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                <h3 class="govuk-fieldset__heading">Actions</h3>
+                <h2 class="govuk-fieldset__heading">Add actions</h2>
               </legend>
               <p class="govuk-body" id="v5-actions-hint">If an action is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-revenue-actions">select the action</a> to include in your application.</p>
               {% if selectionError %}
@@ -304,7 +305,7 @@
             {# Map view: saves this parcel and stays on the page for the next one (secondary).
                List view: this is the only button on the step, so it stays green. #}
             {{ govukButton({
-              text: "Save and continue" if listStep else "Add another parcel",
+              text: "Save and continue" if listStep else "Save and select next parcel",
               name: "v5Intent",
               value: "save",
               classes: "" if listStep else "govuk-button--secondary"
@@ -336,23 +337,25 @@
         {% set continueError = false %}
         {% for error in errors %}{% if error.field == "continue" %}{% set continueError = error.text %}{% endif %}{% endfor %}
         <div class="app-v5-map-only app-v5-no-parcel{% if continueError %} govuk-form-group--error{% endif %}">
-          <h2 class="govuk-heading-m">Add actions and capital items to selected land parcel</h2>
+          {# Design, 11 November 2026: the sentence is shown above the button as well as under the h1 #}
           {% if continueError %}
             <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ continueError }}</p>
           {% endif %}
-          <p class="govuk-body">Select a land parcel to add actions or capital items to it.</p>
+          <p class="govuk-body">Select a land parcel to add actions or items to it.</p>
         </div>
       {% endif %}
       </div>
 
       <div class="app-v5-continue" data-v5-saved-count="{{ savedParcelCount or 0 }}">
-      {# "Save and continue", always shown (3 November 2026). With a parcel open it saves it first.
-         With nothing added to any parcel it shows "Select a land parcel and add actions or
-         capital items to it". #}
+      {# "Save and continue" only once there is something to save or continue with (11 November 2026):
+         a land parcel open, or actions already added to a parcel. With nothing at all the page just
+         says "Select a land parcel to add actions or items to it". Kept in sync by
+         syncContinueButton in sfi-grasslands-v5-select-parcels-layout.js. #}
       {{ govukButton({
         text: "Save and continue",
         name: "v5Intent",
         value: "continue",
+        classes: "" if (selectedParcel or savedParcelCount) else "app-v5-hidden",
         attributes: { "data-v5-continue": "" }
       }) }}
       {# As in v4a: once land has been added, Cancel leaves this page without saving the open

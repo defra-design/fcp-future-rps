@@ -150,7 +150,11 @@
     return 'Enter number of hectares, up to 4 decimal places – for example, 12.3456'
   }
 
-  function overLimitMessage (unit) {
+  // The amount is in the message (11 November 2026; see revenue-actions.js)
+  function overLimitMessage (unit, max) {
+    if (max != null && Number.isFinite(max) && max > 0) {
+      return 'Enter ' + formatAmount(max, unit) + ' or less'
+    }
     if (unit === 'm') {
       return 'Enter a number that is not higher than the available metres'
     }
@@ -287,9 +291,12 @@
       return null
     }
 
-    // A figure that is too high does not take land, so compare it with what is left for others
-    if (checkingThisField && Number.isFinite(result.maxAvailable) && quantity > result.maxAvailable + 0.00005) {
-      var message = overLimitMessage(result.unit)
+    // A figure that is too high does not take land, so compare it with what is left for others.
+    // Checked on EVERY field with a quantity, not just the one being edited (11 November 2026):
+    // boundary actions deduct from each other, so an entry can push an earlier one over its
+    // limit. Before, that only showed on save.
+    if (Number.isFinite(result.maxAvailable) && quantity > result.maxAvailable + 0.00005) {
+      var message = overLimitMessage(result.unit, result.maxAvailable)
       if (result.limitedAreaCapped) {
         message += '. CIGL1 and CIGL2 together can only use 25% of your total farm area'
       }

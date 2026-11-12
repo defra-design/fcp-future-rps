@@ -1,13 +1,13 @@
-{#- Capital items on the select land parcels page: one-off payments, in their own group
+{#- Items on the select land parcels page: one-off payments, in their own group
     under the actions. Each checkbox reveals its quantity. Expects parcelCapitalItems,
     capitalSelectedCodes, capitalValues and errorsByCode. -#}
 {% if parcelCapitalItems.length %}
 <div class="govuk-form-group app-v5-capital-items" id="v5-capital-items">
   <fieldset class="govuk-fieldset" aria-describedby="v5-capital-hint">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-      <h3 class="govuk-fieldset__heading">Capital items</h3>
+      <h2 class="govuk-fieldset__heading">Add items</h2>
     </legend>
-    <p class="govuk-body" id="v5-capital-hint">If a capital item is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">select the capital item</a> to include in your application.</p>
+    <p class="govuk-body" id="v5-capital-hint">If an item is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">select the item</a> to include in your application.</p>
     <div class="govuk-checkboxes app-v5-actions" data-module="govuk-checkboxes" id="v5-capital-checkboxes">
       {% for item in parcelCapitalItems %}
         {% set fieldId = "v5CapitalQuantity-" + item.code %}
@@ -22,6 +22,8 @@
             </div>
           </div>
           <div class="govuk-checkboxes__conditional{% if not isChecked %} govuk-checkboxes__conditional--hidden{% endif %}" id="v5-capital-conditional-{{ item.code }}">
+            {# No hint under Quantity (11 November 2026): the suffix already says the unit.
+               Keep comments OUTSIDE the object literal — one inside it breaks the macro call. #}
             {{ govukInput({
               id: fieldId,
               name: fieldId,
@@ -29,7 +31,6 @@
                 html: 'Quantity<span class="govuk-visually-hidden"> for ' + item.code + '</span>',
                 classes: "app-v5-action__quantity-label"
               },
-              hint: { text: item.quantityHint } if item.unit != "m" else undefined,
               suffix: { text: item.quantitySuffix },
               inputmode: "numeric",
               spellcheck: false,

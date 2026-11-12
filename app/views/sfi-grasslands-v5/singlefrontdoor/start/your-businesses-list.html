@@ -10,8 +10,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    {# From the grasslands start page: straight on to the task list #}
-    <form method="post" action="{{ '/sfi-grasslands-v5/task-list' if data['v5StartFromApply'] else '../landing/landing' }}">
+    {# From the grasslands start page: straight into grasslands (task list, or the grasslands landing page
+       if an application is already started). From the Farm and Land Service start page: the overview page. #}
+    <form method="post" action="/sfi-grasslands-v5/choose-business-answer">
 
       {{ govukRadios({
         name: "business",

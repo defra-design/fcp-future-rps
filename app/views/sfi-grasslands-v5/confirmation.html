@@ -4,7 +4,7 @@
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% block pageTitle %}
-  Application complete
+  Application submitted
 {% endblock %}
 
 {% block beforeContent %}
@@ -20,7 +20,7 @@
 
       <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
-          Application complete
+          Application submitted
         </h1>
         <div class="govuk-panel__body">
           Your application number<br><strong>HDJ2123F</strong>
@@ -35,17 +35,17 @@
         {% if showSssiNotice %}
           {% set stepNumber = stepNumber + 1 %}
           <h3 class="govuk-heading-m govuk-!-font-size-24">{{ stepNumber }}. Request SSSI consent</h3>
-          <p class="govuk-body">We cannot review your agreement until you’ve requested consent for the actions on land in a site of special scientific interest (SSSI).</p>
+          <p class="govuk-body">We cannot offer you an agreement until you’ve requested consent for the actions or items on land in a site of special scientific interest (SSSI).</p>
           <p class="govuk-body govuk-!-margin-bottom-6">
-            <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">Read the SFI26 guidance on SSSI consent and how to get it (opens in new tab)</a>
+            Read the <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">SFI26 guidance to find out about SSSI consent and how to get it (opens in new tab)</a>.
           </p>
         {% endif %}
         {% if showHeferNotice %}
           {% set stepNumber = stepNumber + 1 %}
           <h3 class="govuk-heading-m govuk-!-font-size-24">{{ stepNumber }}. Request a HEFER from Historic England</h3>
-          <p class="govuk-body">You’ve applied for actions on land with historic or archaeological features, so you must request a Historic Environment Farm Environment Record (HEFER).</p>
+          <p class="govuk-body">You’ve applied for actions or items on land with historic or archaeological features, so you must request a Historic Environment Farm Environment Record (HEFER).</p>
           <p class="govuk-body govuk-!-margin-bottom-6">
-            <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">Read the SFI26 guidance on what a HEFER is and how to request one (opens in new tab)</a>
+            Read the <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">SFI26 guidance to find out what a HEFER is and how to request one (opens in new tab)</a>.
           </p>
         {% endif %}
       {% endif %}
@@ -54,14 +54,17 @@
       {% if showSssiNotice %}
         <p class="govuk-body">Once you’ve requested SSSI consent, we’ll review your application.</p>
       {% endif %}
-      <p class="govuk-body">We’ll email you when your agreement offer is ready.</p>
-      {# Introduces the "Apply for grasslands agreement" page (3 November 2026): says what it
-         shows, so the link is not a bare "Track" or "Go to" #}
-      <p class="govuk-body">You can <a class="govuk-link" href="/sfi-grasslands-v5/grasslands-agreement">check the status of your application</a> at any time. It also shows anything you need to do and a history of your application.</p>
-
-      <p class="govuk-body govuk-!-margin-bottom-8">
+      {# Design of 10 November 2026: no status sentence; the button goes to the Farm and Land Service #}
+      <p class="govuk-body">We’ll email you when your agreement offer is ready for you to check in the Farm and Land Service.</p>
+      <p class="govuk-body">
         <a class="govuk-link" href="/sfi-grasslands-v5/view-application" target="_blank" rel="noreferrer noopener">View and print your application (opens in new tab)</a>
       </p>
+      {# Started from the grasslands start page: back to the grasslands landing page (journey map, 11 November 2026) #}
+      {% if data['v5StartFromApply'] %}
+      {{ govukButton({ text: "Go to your application", href: "/sfi-grasslands-v5/grasslands-agreement" }) }}
+      {% else %}
+      {{ govukButton({ text: "Go to Farm and Land Service", href: "/sfi-grasslands-v5/singlefrontdoor/landing/landing" }) }}
+      {% endif %}
 
       <p class="govuk-body govuk-!-padding-top-4 app-v5-feedback">
         <a class="govuk-link" href="#">What did you think of this service?</a> (takes 30 seconds)

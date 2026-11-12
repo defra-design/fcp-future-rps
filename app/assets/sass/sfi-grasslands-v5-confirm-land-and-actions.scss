@@ -278,7 +278,14 @@
   }
 }
 
+// A line under every row, including the last in each group (design, 11 November 2026).
+// GOV.UK drops the border on a summary list's last row, so put it back.
 .app-v5-payment-summary .govuk-summary-list__row:last-child {
+  border-bottom: 1px solid #b1b4b6;
+}
+
+// ...except the very last row in the card, which needs no line above the card's own edge
+.app-v5-payment-summary-card .govuk-summary-list:last-child .govuk-summary-list__row:last-child {
   border-bottom: 0;
 }
 

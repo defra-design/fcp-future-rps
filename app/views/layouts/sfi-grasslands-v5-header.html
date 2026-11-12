@@ -77,6 +77,15 @@
     {% set footerItems = [] %}
   {% endif %}
 
+  {# Researcher's way out of participant mode (11 November 2026): ends the participant session and
+     goes to the demo configuration page, where Clear data and the other prototype tools work again #}
+  {% if v5ParticipantMode %}
+    {% set footerItems = footerItems.concat([{
+      href: "/sfi-grasslands-v5/researcher-exit",
+      text: "Exit participant mode"
+    }]) %}
+  {% endif %}
+
   {% if showViewAgreementInFooter %}
     {% set footerItems = footerItems.concat([{
       href: "/sfi-agreement-v2/offer-email",

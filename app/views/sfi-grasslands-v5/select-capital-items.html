@@ -3,7 +3,7 @@
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% block pageTitle %}
-  Select your capital items
+  Select your items
 {% endblock %}
 
 {% block beforeContent %}
@@ -21,11 +21,11 @@
   <div class="govuk-grid-column-two-thirds">
 
     <form method="post" action="/sfi-grasslands-v5/select-capital-items" novalidate>
-      {% set journeySection = "Add actions and capital items to your land" %}
+      {% set journeySection = "Add actions and items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
-      <h1 class="govuk-heading-l">Select your capital items</h1>
+      <h1 class="govuk-heading-l">Select your items</h1>
       {# Content of 4 November 2026 #}
-      <p class="govuk-body">You can claim payment for capital items when the work is completed.</p>
+      <p class="govuk-body">You can claim payment for items when the work is completed.</p>
       <p class="govuk-body">Select all items that will be included in this application. You’ll be able to add them to parcels of land as you continue through the service.</p>
 
       {# Keeps an empty choice when nothing is ticked, so the page counts as answered #}
@@ -59,12 +59,13 @@
         }) }}
       {% endfor %}
 
+      {# "Save and continue" again (11 November 2026, user's call) #}
       {{ govukButton({
         text: "Save and continue"
       }) }}
       {% if fromReview and hasSavedParcels %}
         <p class="govuk-body">
-          <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-land-actions-draft">Cancel<span class="govuk-visually-hidden"> and return to review your actions and capital items</span></a>
+          <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-land-actions-draft">Cancel<span class="govuk-visually-hidden"> and return to review your actions and items</span></a>
         </p>
       {% endif %}
     </form>

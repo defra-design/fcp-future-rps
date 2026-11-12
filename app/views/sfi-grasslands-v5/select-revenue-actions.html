@@ -29,7 +29,7 @@
     {% endif %}
 
     <form method="post" action="/sfi-grasslands-v5/select-revenue-actions" novalidate>
-      {% set journeySection = "Add actions and capital items to your land" %}
+      {% set journeySection = "Add actions and items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">Select your actions</h1>
       {# Content of 4 November 2026 #}
@@ -97,6 +97,7 @@
         items: actionItems
       }) }}
 
+      {# "Save and continue" again (11 November 2026, user's call), matching Select your items #}
       {{ govukButton({
         text: "Save and continue"
       }) }}

@@ -21,13 +21,13 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {% set journeySection = "Add actions and capital items to your land" %}
+      {% set journeySection = "Add actions and items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">Remove this land parcel?</h1>
 
       {% set parcelRef = parcel.parcelReference or (parcel.heading | replace('Parcel reference ', '') | replace('Land parcel ', '')) or parcel.parcelName or '' %}
       <p class="govuk-body">
-        Land parcel <strong>{{ parcelRef }}</strong> and all its actions and capital items will be removed from your application.
+        Land parcel <strong>{{ parcelRef }}</strong> and all its actions and items will be removed from your application.
       </p>
 
       <form action="/sfi-grasslands-v5/remove-parcel-actions/{{ parcel.parcelId }}" method="post">

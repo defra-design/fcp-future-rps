@@ -40,7 +40,8 @@ var DEFAULT_TASKS = {
 }
 
 var SELECT_ACTIONS_HREF = '/sfi-grasslands-v5/select-revenue-actions'
-var SELECT_LAND_HREF = '/sfi-grasslands-v5/select-parcels'
+// ?from=task-list so the page's Back link returns here (11 November 2026)
+var SELECT_LAND_HREF = '/sfi-grasslands-v5/select-parcels?from=task-list'
 var SELECT_CAPITAL_ITEMS_HREF = '/sfi-grasslands-v5/select-capital-items'
 var REVIEW_LAND_HREF = '/sfi-grasslands-v5/confirm-land-and-actions'
 var REVIEW_SUBMIT_HREF = '/sfi-grasslands-v5/check-your-answers'
@@ -208,7 +209,7 @@ function syncFromSessionAnswers (req, options) {
     tasks.selectActions = STATUS.COMPLETED
   }
 
-  // Capital items are optional: answering the page (even with none) completes the task
+  // Items are optional: answering the page (even with none) completes the task
   if (Object.prototype.hasOwnProperty.call(data, 'sfiV5InterestedCapitalItems')) {
     tasks.selectCapitalItems = STATUS.COMPLETED
   }
@@ -328,7 +329,7 @@ function getResolvedTaskStates (req) {
     }
   }
 
-  // 2b. Select capital items (optional) — locked until actions have been selected
+  // 2b. Select items (optional) — locked until actions have been selected
   var selectCapitalItemsCompleted = getStoredStatus(req, TASK_IDS.selectCapitalItems) === STATUS.COMPLETED
   var selectCapitalItems
   if (!section1Complete || !selectActionsCompleted) {
@@ -351,7 +352,7 @@ function getResolvedTaskStates (req) {
     }
   }
 
-  // 2c. Select land — locked until actions have been selected (capital items are optional)
+  // 2c. Select land — locked until actions have been selected (items are optional)
   var selectLand
   if (!section1Complete || !selectActionsCompleted) {
     selectLand = {
@@ -480,12 +481,12 @@ function getTaskListPageData (req) {
         status: states.selectActions.status
       }),
       buildTaskItem({
-        title: 'Select your capital items',
+        title: 'Select your items',
         href: states.selectCapitalItems.href,
         status: states.selectCapitalItems.status
       }),
       buildTaskItem({
-        title: 'Add actions and capital items to your land parcels',
+        title: 'Add actions and items to your land parcels',
         href: states.selectLand.href,
         status: states.selectLand.status
       }),

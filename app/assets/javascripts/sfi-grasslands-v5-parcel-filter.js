@@ -30,7 +30,6 @@
     var count = area.querySelector('[data-v5-list-count]')
     var pages = area.querySelector('[data-v5-list-pages]')
     var empty = area.querySelector('[data-v5-list-empty]')
-    var emptyTerm = area.querySelector('[data-v5-list-empty-term]')
     var currentPage = pages && pages.querySelector('[aria-current="page"]')
     var page = currentPage ? currentPage.textContent.trim() : '1'
     var matches = []
@@ -62,9 +61,6 @@
     }
     if (empty) {
       empty.classList.toggle('app-v5-hidden', !(term && matches.length === 0))
-      if (emptyTerm) {
-        emptyTerm.textContent = input.value.trim()
-      }
     }
     return matches
   }

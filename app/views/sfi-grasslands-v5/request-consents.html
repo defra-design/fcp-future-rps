@@ -29,30 +29,34 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    {% set journeySection = "Add actions and capital items to your land" %}
+    {% set journeySection = "Add actions and items to your land" %}
     {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
     <h1 class="govuk-heading-l">{{ consentTitle }}</h1>
 
+    {# Content of 10 November 2026: a section for each thing needed, then the table #}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        {% if consents.requiresSssi and consents.requiresHefer %}
-          <p class="govuk-body">Some of your actions are on land in a site of special scientific interest (SSSI) or could affect historic features. We cannot offer you an agreement until you’ve requested SSSI consent.</p>
-        {% elif consents.requiresSssi %}
-          <p class="govuk-body">Some of your actions are on land in a site of special scientific interest (SSSI). We cannot offer you an agreement until you’ve requested SSSI consent.</p>
-        {% else %}
-          <p class="govuk-body">Some of your actions could affect historic or archaeological features, so you need to request a Historic Environment Farm Environment Record (HEFER).</p>
+        <p class="govuk-body">Before you continue with your application, you need to confirm that you will get the necessary documentation.</p>
+        {% if consents.requiresSssi %}
+          <h2 class="govuk-heading-m">Site of special scientific interest (SSSI)</h2>
+          <p class="govuk-body">You will not be offered an agreement until you have <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">requested SSSI consent (opens in new tab)</a>.</p>
+          <p class="govuk-body">The SSSI consent needs to be specific to this application. If you already have SSSI consent for another scheme, you will need to request it again.</p>
+        {% endif %}
+        {% if consents.requiresHefer %}
+          <h2 class="govuk-heading-m">Historic Environment Farm Environment Record (HEFER)</h2>
+          <p class="govuk-body">If you do not already have a HEFER, find out how to <a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">request a HEFER (opens in new tab)</a>.</p>
         {% endif %}
       </div>
     </div>
 
-    <h2 class="govuk-heading-m">Actions affected</h2>
+    <h2 class="govuk-heading-m">Documentation needed</h2>
     <table class="govuk-table govuk-!-margin-bottom-8">
-      <caption class="govuk-table__caption govuk-visually-hidden">Actions that need {{ consentNeed }}</caption>
+      <caption class="govuk-table__caption govuk-visually-hidden">Actions and items that need {{ consentNeed }}</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">Land parcel</th>
-          <th scope="col" class="govuk-table__header">Action</th>
-          <th scope="col" class="govuk-table__header">You’ll need</th>
+          <th scope="col" class="govuk-table__header">Action or item</th>
+          <th scope="col" class="govuk-table__header">Documentation needed</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
@@ -68,17 +72,13 @@
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <p class="govuk-body">Read the SFI26 guidance on:</p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
-          {% if consents.requiresSssi %}
-            <li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#sssi-consent" target="_blank" rel="noopener noreferrer">SSSI consent and how to get it (opens in new tab)</a></li>
-          {% endif %}
-          {% if consents.requiresHefer %}
-            <li><a class="govuk-link" href="https://www.gov.uk/government/publications/sustainable-farming-incentive-2026-sfi26/sfi26-scheme-rules-and-guidance#land-with-historic-or-archaeological-features" target="_blank" rel="noopener noreferrer">What a HEFER is and how to request one (opens in new tab)</a></li>
-          {% endif %}
-        </ul>
-
-        <p class="govuk-body">By selecting ‘Confirm and continue’, you confirm that you understand you need to request {{ consentNeed }} for these actions or capital items.</p>
+        {% if consents.requiresSssi and consents.requiresHefer %}
+          <p class="govuk-body">By continuing you confirm that you understand you need to get all necessary SSSI consent and HEFERs.</p>
+        {% elif consents.requiresSssi %}
+          <p class="govuk-body">By continuing you confirm that you understand you need to get all necessary SSSI consent.</p>
+        {% else %}
+          <p class="govuk-body">By continuing you confirm that you understand you need to get all necessary HEFERs.</p>
+        {% endif %}
 
         <form method="post" action="/sfi-grasslands-v5/request-consents" novalidate>
           {{ govukButton({ text: "Confirm and continue" }) }}

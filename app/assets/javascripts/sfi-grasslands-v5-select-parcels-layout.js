@@ -149,8 +149,8 @@
     }
   })
 
-  // "Save and continue" with a parcel open, "Continue" without one, and no button at all
-  // before any land has been added (see select-parcels.html)
+  // "Save and continue" whenever there is a land parcel open or actions already added;
+  // no button at all before anything has been added (see select-parcels.html)
   function syncContinueButton () {
     var button = document.querySelector('[data-v5-continue]')
     var wrapper = document.querySelector('[data-v5-saved-count]')
@@ -159,10 +159,10 @@
     }
     var hasParcel = Boolean(document.getElementById('selected-parcel'))
     var savedCount = wrapper ? Number(wrapper.getAttribute('data-v5-saved-count')) || 0 : 0
-    // Always "Save and continue" (design, 3 November 2026)
+    // Always "Save and continue" (design, 3 November 2026; confirmed 11 November 2026)
     button.textContent = 'Save and continue'
-    // Always shown (3 November 2026): with nothing added the server shows an error
-    button.classList.remove('app-v5-hidden')
+    // Only once there is something to save or continue with (11 November 2026)
+    button.classList.toggle('app-v5-hidden', !hasParcel && savedCount === 0)
   }
 
   function copyJson (fromDoc, id) {

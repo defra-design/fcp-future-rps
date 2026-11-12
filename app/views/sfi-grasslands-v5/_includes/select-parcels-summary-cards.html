@@ -25,11 +25,11 @@
         {% endfor %}
       </ul>
       <p class="govuk-body-s govuk-!-margin-bottom-0">
-        <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">Add or remove<span class="govuk-visually-hidden"> selected capital items</span></a>
+        <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">Add or remove<span class="govuk-visually-hidden"> selected items</span></a>
       </p>
     {% endset %}
     {{ govukDetails({
-      summaryText: "Selected capital items (" + parcelCapitalItems.length + ")",
+      summaryText: "Selected items (" + parcelCapitalItems.length + ")",
       html: selectedCapitalHtml,
       classes: "govuk-!-margin-bottom-6"
     }) }}
@@ -55,10 +55,10 @@
       {% if parcelCapitalItems.length %}
       <div class="govuk-summary-card app-v5-interested">
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Selected capital items</h2>
+          <h2 class="govuk-summary-card__title">Selected items</h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
-              <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">Add or remove<span class="govuk-visually-hidden"> selected capital items</span></a>
+              <a class="govuk-link" href="/sfi-grasslands-v5/select-capital-items">Add or remove<span class="govuk-visually-hidden"> selected items</span></a>
             </li>
           </ul>
         </div>
@@ -86,7 +86,7 @@
                     <a class="govuk-link" href="/sfi-grasslands-v5/select-parcels?parcel={{ parcel.parcelId }}{% if listView %}&view=list{% endif %}#selected-parcel">{{ parcel.parcelReference }}<span class="govuk-visually-hidden"> – change actions on this land parcel</span></a>
                     {% set actionCount = parcel.savedActions.length %}
                     {% set itemCount = parcel.savedCapitalItems.length %}
-                    – {% if actionCount %}{{ actionCount }} action{% if actionCount != 1 %}s{% endif %}{% endif %}{% if actionCount and itemCount %}, {% endif %}{% if itemCount %}{{ itemCount }} capital item{% if itemCount != 1 %}s{% endif %}{% endif %}
+                    – {% if actionCount %}{{ actionCount }} action{% if actionCount != 1 %}s{% endif %}{% endif %}{% if actionCount and itemCount %}, {% endif %}{% if itemCount %}{{ itemCount }} item{% if itemCount != 1 %}s{% endif %}{% endif %}
                   </li>
                 {% endif %}
               {% endfor %}

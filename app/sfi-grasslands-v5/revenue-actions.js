@@ -325,7 +325,12 @@ function formatErrorMessage (unit) {
   return 'Enter number of hectares, up to 4 decimal places – for example, 12.3456'
 }
 
-function overLimitMessage (unit) {
+// The amount is in the message (11 November 2026) because the hint above the field shows what
+// is left AFTER this field's own entry, so it cannot be read as the limit
+function overLimitMessage (unit, max) {
+  if (max != null && Number.isFinite(max) && max > 0) {
+    return 'Enter ' + formatAmount(max, unit) + ' or less'
+  }
   if (unit === 'm') {
     return 'Enter a number that is not higher than the available metres'
   }
@@ -440,7 +445,7 @@ function validateParcelQuantities (req, parcelId, body) {
     if (max != null && Number.isFinite(max) && parsed.value > max + 0.00005) {
       errors.push({
         code: action.code,
-        text: overLimitMessage(action.unit)
+        text: overLimitMessage(action.unit, max)
       })
       return
     }

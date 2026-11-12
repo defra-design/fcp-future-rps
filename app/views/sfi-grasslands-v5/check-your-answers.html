@@ -32,19 +32,7 @@
        SSSI and HEFER lines only show when the land needs them. #}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">Declaration</h2>
-        <p class="govuk-body">By submitting your application, you confirm that:</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>the information in your application is correct</li>
-          {% if requiresSssi %}
-            <li>you will get site of special scientific interest (SSSI) consent for the actions or capital items you have selected</li>
-          {% endif %}
-          {% if requiresHefer %}
-            <li>you will request a Historic Environment Farm Environment Record (HEFER) for the actions or capital items you have selected</li>
-          {% endif %}
-          <li>you have management control of the land for the required period</li>
-          <li>you will meet the requirements for the grasslands actions you have applied for</li>
-        </ul>
+        {% include "sfi-grasslands-v5/_includes/declaration.html" %}
         <form class="form" action="/sfi-grasslands-v5/confirmation" method="post" novalidate>
           {{ govukButton({ text: "Confirm and submit application", preventDoubleClick: true }) }}
         </form>

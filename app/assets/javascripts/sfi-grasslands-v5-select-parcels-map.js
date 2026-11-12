@@ -145,7 +145,7 @@
 
   function selectedPopupLinkHtml (parcel) {
     return '<p class="app-v5-map-popup__action"><a class="govuk-link app-v5-map-popup__link" href="#selected-parcel">' +
-      (parcel.added ? 'Change actions for this parcel' : 'Select actions for this parcel') +
+      (parcel.added ? 'Change actions or items for this parcel' : 'Add actions or items to this parcel') +
       '</a></p>'
   }
 
@@ -171,7 +171,7 @@
       '<div class="app-v5-parcel-panel__row"><dt>Total area</dt><dd>' + escapeHtml(parcel.totalAreaShort || '-') + '</dd></div>' +
       '</dl>' +
       '<p class="govuk-body app-v5-parcel-panel__action"><a class="govuk-link app-v5-map-popup__link" href="#selected-parcel">' +
-      (parcel.added ? 'Change actions for this parcel' : 'Select actions for this parcel') +
+      (parcel.added ? 'Change actions or items for this parcel' : 'Add actions or items to this parcel') +
       '</a></p>'
   }
 

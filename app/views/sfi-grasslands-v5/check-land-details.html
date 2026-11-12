@@ -38,22 +38,19 @@
         Check your digital maps are correct
       </h1>
 
-      <p class="govuk-body">
-        Before you continue, check that the land details on your digital maps are up to date. If they are not, you may not be able to apply for the Grasslands actions you select. Read the guidance on
-        <a class="govuk-link" href="https://www.gov.uk/guidance/rural-payments-service-how-to-register-land-and-update-digital-maps" target="_blank" rel="noopener noreferrer">how to check your digital maps (opens in new tab)</a>.
-      </p>
-
+      {# Content of 10 November 2026 #}
+      <p class="govuk-body">Check that the land details on your digital maps are up to date. If they’re not, you may not be able to apply for some actions or items.</p>
+      <p class="govuk-body">Read the <a class="govuk-link" href="https://www.gov.uk/guidance/rural-payments-service-how-to-register-land-and-update-digital-maps" target="_blank" rel="noopener noreferrer">guidance on how to check your digital maps (opens in new tab)</a>.</p>
+      <h2 class="govuk-heading-m">What to check</h2>
       <p class="govuk-body">Check that your digital maps show:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>all the land parcels you want to include in this application</li>
-        <li>the correct total area (in hectares) for each land parcel</li>
-        <li>the correct land covers for each land parcel (for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover)</li>
+        <li>the correct total area for each land parcel, in hectares</li>
+        <li>the correct land covers for each land parcel - for example, arable land, permanent grassland, permanent crops or relevant non-agricultural land cover</li>
       </ul>
-
-      <p class="govuk-body">
-        <a class="govuk-link" href="/sfi-grasslands-v5/rural-payments/land-summary" target="_blank">View your land in the Rural Payments service (opens in new tab)</a>
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        <a class="govuk-link" href="/sfi-grasslands-v5/rural-payments/land-summary" target="_blank">Check your digital maps (opens in new tab)</a>
       </p>
-
       <form class="form" action="/sfi-grasslands-v5/check-land-details-answer" method="post">
         {% include "sfi-grasslands-v5/_includes/eligibility-return-to.html" %}
         <div class="govuk-form-group{% if eligibilityError %} govuk-form-group--error{% endif %}">
