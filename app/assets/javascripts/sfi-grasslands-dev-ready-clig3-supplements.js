@@ -102,25 +102,28 @@
     })
   }
 
-  function scheduleUpdate (code) {
+  // The spinner is only for a change that moves area between the supplements. Ticking an empty
+  // box takes nothing, so it updates straight away with no spinner (12 November 2026).
+  function scheduleUpdate (spinnerCode) {
     window.clearTimeout(updateTimer)
-    if (code) {
-      showUpdating(code)
+    if (!spinnerCode) {
+      apply()
+      return
     }
+    showUpdating(spinnerCode)
     updateTimer = window.setTimeout(apply, UPDATE_DELAY_MS)
   }
 
   checkboxes.forEach(function (box) {
     var code = box.getAttribute('data-supplement')
     box.addEventListener('change', function () {
-      // Unticking frees up its area straight away
-      if (!box.checked) {
-        var input = quantityInput(code)
-        if (input) {
-          input.value = ''
-        }
+      var input = quantityInput(code)
+      var hadQuantity = Boolean(input && Number(String(input.value).replace(/,/g, '').trim()) > 0)
+      // Unticking gives its area back to the others
+      if (!box.checked && input) {
+        input.value = ''
       }
-      scheduleUpdate(box.checked ? code : null)
+      scheduleUpdate(hadQuantity ? code : null)
     })
     var input = quantityInput(code)
     if (input) {
