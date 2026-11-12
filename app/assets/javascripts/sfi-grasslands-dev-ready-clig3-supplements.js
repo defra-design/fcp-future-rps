@@ -9,6 +9,9 @@
  * "updating" pattern on the actions page (showUpdating -> recalculate -> apply).
  */
 (function () {
+  // Matches the actions page: wait 1600ms after the last keystroke, then show the spinner
+  // while the (simulated) availability call runs.
+  var QUANTITY_DEBOUNCE_MS = 1600
   var UPDATE_DELAY_MS = 700
 
   var form = document.querySelector('[data-clig3-supplements-form]')
@@ -23,6 +26,7 @@
 
   var checkboxes = Array.prototype.slice.call(form.querySelectorAll('[data-supplement]'))
   var updateTimer = null
+  var debounceTimer = null
 
   function round4 (value) {
     return Math.round(Number(value) * 10000) / 10000
@@ -104,7 +108,7 @@
 
   // The spinner is only for a change that moves area between the supplements. Ticking an empty
   // box takes nothing, so it updates straight away with no spinner (12 November 2026).
-  function scheduleUpdate (spinnerCode) {
+  function runUpdate (spinnerCode) {
     window.clearTimeout(updateTimer)
     if (!spinnerCode) {
       apply()
@@ -112,6 +116,17 @@
     }
     showUpdating(spinnerCode)
     updateTimer = window.setTimeout(apply, UPDATE_DELAY_MS)
+  }
+
+  // While typing: wait after the last keystroke, then run the update (spinner + simulated API),
+  // the same as the quantity boxes on the actions page
+  function scheduleAfterTyping (code) {
+    window.clearTimeout(debounceTimer)
+    window.clearTimeout(updateTimer)
+    clearUpdating()
+    debounceTimer = window.setTimeout(function () {
+      runUpdate(code)
+    }, QUANTITY_DEBOUNCE_MS)
   }
 
   checkboxes.forEach(function (box) {
@@ -123,11 +138,12 @@
       if (!box.checked && input) {
         input.value = ''
       }
-      scheduleUpdate(hadQuantity ? code : null)
+      window.clearTimeout(debounceTimer)
+      runUpdate(hadQuantity ? code : null)
     })
     var input = quantityInput(code)
     if (input) {
-      input.addEventListener('input', function () { scheduleUpdate(code) })
+      input.addEventListener('input', function () { scheduleAfterTyping(code) })
     }
   })
 
