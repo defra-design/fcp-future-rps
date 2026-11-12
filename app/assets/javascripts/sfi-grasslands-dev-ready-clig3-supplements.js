@@ -118,6 +118,44 @@
         hint.textContent = format(wholeTicked ? 0 : remaining) + ' hectares available'
       }
     })
+
+    lockFullSupplements(remaining, wholeTicked)
+  }
+
+  // Same as the actions page: when there is no area left, the supplements you have not
+  // ticked are disabled and say why, rather than letting you tick one and fail on save.
+  // A ticked supplement always stays interactive so you can free the area up again.
+  function lockFullSupplements (remaining, wholeTicked) {
+    var anyTicked = checkboxes.some(function (box) { return box.checked })
+    var noAreaLeft = anyTicked && (wholeTicked || remaining <= 0)
+
+    checkboxes.forEach(function (box) {
+      var label = form.querySelector('label[for="' + box.id + '"]')
+      var existingHint = label && label.querySelector('.area-full-hint')
+
+      if (noAreaLeft && !box.checked) {
+        box.disabled = true
+        box.setAttribute('data-disabled-reason', 'area-full')
+        box.setAttribute('aria-disabled', 'true')
+        if (label && !existingHint) {
+          var note = document.createElement('span')
+          note.className = 'area-full-hint'
+          note.setAttribute('style', 'display: block; font-size: 16px; color: #505a5f; font-weight: normal; margin-top: 5px;')
+          note.textContent = 'All available area on land parcel used'
+          label.appendChild(note)
+        }
+        return
+      }
+
+      if (box.getAttribute('data-disabled-reason') === 'area-full' || box.disabled) {
+        box.disabled = false
+        box.removeAttribute('data-disabled-reason')
+        box.removeAttribute('aria-disabled')
+      }
+      if (existingHint) {
+        existingHint.parentNode.removeChild(existingHint)
+      }
+    })
   }
 
   // The spinner is only for a change that moves area between the supplements. Ticking an empty
