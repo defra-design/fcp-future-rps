@@ -89,18 +89,19 @@
 
   function apply () {
     clearUpdating()
+    // What is left of the CLIG3 area once every entered quantity is taken off, including the
+    // field's own — the same as the available hints on the actions page (12 November 2026)
+    var remaining = Math.max(0, round4(clig3Ha - partTotal(null)))
     checkboxes.forEach(function (box) {
       var code = box.getAttribute('data-supplement')
       var hint = form.querySelector('[data-available-hint="' + code + '"]')
-      // Available to this supplement: the CLIG3 area minus what the others have taken
-      var available = Math.max(0, round4(clig3Ha - partTotal(code)))
       if (hint) {
-        hint.textContent = format(available) + ' hectares available'
+        hint.textContent = format(remaining) + ' hectares available'
       }
       if (isWholeRemaining(box)) {
         var amount = form.querySelector('[data-remaining-amount="' + code + '"]')
         if (amount) {
-          amount.textContent = format(available)
+          amount.textContent = format(remaining)
         }
       }
     })
