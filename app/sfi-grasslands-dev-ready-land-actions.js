@@ -536,7 +536,6 @@ function applyClig3Supplements (actions, selections) {
 
   var clig3Ha = getClig3AppliedQuantity(nextActions)
   var partCodes = chosen.filter(function (code) { return supplementRequiresQuantityInput(code) })
-  var fullCodes = chosen.filter(function (code) { return supplementAppliesFullClig3Area(code) })
   var partTotal = 0
   var parsedByCode = {}
 
@@ -573,19 +572,8 @@ function applyClig3Supplements (actions, selections) {
     })
   }
 
-  var remaining = Math.max(0, Math.round((clig3Ha - partTotal) * 10000) / 10000)
-
-  if (!errors.length) {
-    fullCodes.forEach(function (code) {
-      if (remaining <= 0) {
-        errors.push({
-          fieldId: 'clig3-supplement-' + code.toLowerCase(),
-          text: 'There is no CLIG3 area left for ' + code + '. Deselect it, or reduce your other supplements'
-        })
-      }
-    })
-  }
-
+  // GRH10 always covers the whole CLIG3 area, so it neither takes from nor is limited by
+  // the supplements that have a quantity box.
   if (errors.length) {
     return { actions: nextActions, errors: errors }
   }
@@ -598,7 +586,7 @@ function applyClig3Supplements (actions, selections) {
     if (!Number.isFinite(ratePerHa)) {
       return
     }
-    var quantity = supplementAppliesFullClig3Area(code) ? remaining : parsedByCode[code]
+    var quantity = supplementAppliesFullClig3Area(code) ? clig3Ha : parsedByCode[code]
     if (!Number.isFinite(quantity) || quantity <= 0) {
       return
     }

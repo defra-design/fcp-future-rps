@@ -1,9 +1,10 @@
 /**
  * dev-ready: "Add a supplement to CLIG3 (optional)" (12 November 2026)
  *
- * The three supplements share the CLIG3 area on the land parcel. GRH7 and GRH8 take part of
- * it and have their own quantity box; GRH10 takes whatever is left, the same way CLIG3 takes
- * the remaining eligible area on the actions page.
+ * GRH7 and GRH8 take part of the CLIG3 area on the land parcel and share it between them,
+ * each with its own quantity box. GRH10 is not part of that pool: it always covers the whole
+ * CLIG3 area (12 November 2026), so it neither takes area from the other two nor is limited
+ * by them.
  *
  * Prototype only: the setTimeout stands in for a real availability API, matching the
  * "updating" pattern on the actions page (showUpdating -> recalculate -> apply).
@@ -89,51 +90,49 @@
 
   function apply () {
     clearUpdating()
-    // What is left of the CLIG3 area once every entered quantity is taken off, including the
-    // field's own — the same as the available hints on the actions page (12 November 2026)
+    // What is left of the CLIG3 area for GRH7 and GRH8 once every entered quantity is taken
+    // off, including the field's own — the same as the available hints on the actions page
     var remaining = Math.max(0, round4(clig3Ha - partTotal(null)))
-    // A ticked whole-remaining supplement (GRH10) has taken that remainder, so there is
-    // nothing left for the others. Its own hint shows what it is applied to, the wording the
-    // actions page uses for the supplements.
-    var wholeTicked = checkboxes.some(function (box) {
-      return isWholeRemaining(box) && box.checked
-    })
 
     checkboxes.forEach(function (box) {
       var code = box.getAttribute('data-supplement')
       var hint = form.querySelector('[data-available-hint="' + code + '"]')
+      // GRH10 always covers the whole CLIG3 area, whatever the others have taken
       if (isWholeRemaining(box)) {
         var amount = form.querySelector('[data-remaining-amount="' + code + '"]')
         if (amount) {
-          amount.textContent = format(remaining)
+          amount.textContent = format(clig3Ha)
         }
         if (hint) {
           hint.textContent = box.checked
-            ? 'Applied to ' + format(remaining) + ' hectares'
-            : format(remaining) + ' hectares available'
+            ? 'Applied to ' + format(clig3Ha) + ' hectares'
+            : format(clig3Ha) + ' hectares available'
         }
         return
       }
       if (hint) {
-        hint.textContent = format(wholeTicked ? 0 : remaining) + ' hectares available'
+        hint.textContent = format(remaining) + ' hectares available'
       }
     })
 
-    lockFullSupplements(remaining, wholeTicked)
+    lockFullSupplements(remaining)
   }
 
-  // Same as the actions page: when there is no area left, the supplements you have not
-  // ticked are disabled and say why, rather than letting you tick one and fail on save.
-  // A ticked supplement always stays interactive so you can free the area up again.
-  function lockFullSupplements (remaining, wholeTicked) {
-    var anyTicked = checkboxes.some(function (box) { return box.checked })
-    var noAreaLeft = anyTicked && (wholeTicked || remaining <= 0)
+  // Same as the actions page: when GRH7 and GRH8 have used the CLIG3 area between them, the
+  // one you have not ticked is disabled and says why, rather than letting you tick it and
+  // fail on save. A ticked supplement always stays interactive so you can free the area up
+  // again, and GRH10 is never locked because it does not draw on that area.
+  function lockFullSupplements (remaining) {
+    var anyPartTicked = checkboxes.some(function (box) {
+      return !isWholeRemaining(box) && box.checked
+    })
+    var noAreaLeft = anyPartTicked && remaining <= 0
 
     checkboxes.forEach(function (box) {
       var label = form.querySelector('label[for="' + box.id + '"]')
       var existingHint = label && label.querySelector('.area-full-hint')
 
-      if (noAreaLeft && !box.checked) {
+      if (noAreaLeft && !box.checked && !isWholeRemaining(box)) {
         box.disabled = true
         box.setAttribute('data-disabled-reason', 'area-full')
         box.setAttribute('aria-disabled', 'true')

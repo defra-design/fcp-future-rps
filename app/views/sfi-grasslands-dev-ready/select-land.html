@@ -700,16 +700,19 @@
             .app-parcel-list-search__count { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 10px 0 0; color: #505a5f; }
           </style>
           <div class="govuk-form-group app-parcel-list-search" role="search" id="parcel-list-search-group">
-            <label class="govuk-label" for="parcel-list-search">Search by land parcel reference</label>
-            <div class="govuk-hint" id="parcel-list-search-hint">For example SO3757 3185 or 3185</div>
+            {# Copy matched to v5 select-parcels (12 November 2026): the label is the heading and the hint says it filters #}
+            <h2 class="govuk-label-wrapper">
+              <label class="govuk-label govuk-label--s" for="parcel-list-search">Find a land parcel</label>
+            </h2>
+            <div class="govuk-hint" id="parcel-list-search-hint">Enter all or part of a land parcel reference to filter the list</div>
             <input class="govuk-input govuk-input--width-10" id="parcel-list-search" type="search" autocomplete="off" spellcheck="false" aria-describedby="parcel-list-search-hint">
             <p class="govuk-body-s app-parcel-list-search__count" aria-live="polite">
               <span id="parcel-list-search-count"></span>
               <a class="govuk-link app-parcel-list-search__clear" href="#parcel-list-search" id="parcel-list-search-clear" hidden>Clear search</a>
             </p>
+            {# One Clear search only, beside the count (12 November 2026), as on v5 select-parcels #}
             <p class="govuk-body" id="parcel-list-search-empty" hidden>
-              No land parcels match <span id="parcel-list-search-term"></span>.
-              <a class="govuk-link" href="#parcel-list-search" data-parcel-list-search-clear>Clear search</a>
+              No land parcels match your search<span id="parcel-list-search-term" hidden></span>
             </p>
           </div>
           <div class="govuk-form-group" id="parcel-list-form-group">
