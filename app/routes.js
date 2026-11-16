@@ -89,6 +89,7 @@ router.get('/sfi-grasslands-v5/demo-configuration/check-sbi', sfiGrasslandsV5Rpa
 router.get('/sfi-grasslands-v5/demo-configuration/reset', sfiGrasslandsV5RpaLand.handleDemoReset)
 const sfiAgreementV1Offer = require('./sfi-agreement-v1-offer')
 const sfiAgreementV2Offer = require('./sfi-agreement-v2-offer')
+const sfiAgreementV3Offer = require('./sfi-agreement-v3-offer')
 
 const sfiGrasslandsDevReadyTasks = require('./sfi-grasslands-dev-ready-tasks')
 const sfiGrasslandsDevReadyLandActions = require('./sfi-grasslands-dev-ready-land-actions')
@@ -17079,4 +17080,52 @@ router.post('/sfi-agreement-v2/offer', function (req, res) {
 
 router.post('/sfi-agreement-v2/accept-offer', function (req, res) {
   res.redirect('/sfi-agreement-v2/offer-accepted')
+})
+
+// --- sfi-agreement-v3 (copy of v2, 16 November 2026; capital items to follow) ---
+
+router.get('/sfi-agreement-v3/offer', function (req, res) {
+  var data = req.session.data || {}
+  var offer = sfiAgreementV3Offer.buildOfferFromSession(data)
+
+  res.render('sfi-agreement-v3/offer', {
+    data: data,
+    offer: offer
+  })
+})
+
+router.get('/sfi-agreement-v3/offer-sign-in', function (req, res) {
+  res.redirect('/sfi-grasslands-v3/sign-in?previousAgreements=1&actionDeductions=1&returnUrl=' + encodeURIComponent('/sfi-agreement-v3/offer'))
+})
+
+router.post('/sfi-agreement-v3/offer-sign-in', function (req, res) {
+  res.redirect('/sfi-agreement-v3/offer')
+})
+
+router.get('/sfi-agreement-v3/agreement', function (req, res) {
+  var data = req.session.data || {}
+  var offer = sfiAgreementV3Offer.buildOfferFromSession(data, { signed: false })
+
+  res.render('sfi-agreement-v3/agreement', {
+    data: data,
+    offer: offer
+  })
+})
+
+router.get('/sfi-agreement-v3/agreement-signed', function (req, res) {
+  var data = req.session.data || {}
+  var offer = sfiAgreementV3Offer.buildOfferFromSession(data, { signed: true })
+
+  res.render('sfi-agreement-v3/agreement', {
+    data: data,
+    offer: offer
+  })
+})
+
+router.post('/sfi-agreement-v3/offer', function (req, res) {
+  res.redirect('/sfi-agreement-v3/accept-offer')
+})
+
+router.post('/sfi-agreement-v3/accept-offer', function (req, res) {
+  res.redirect('/sfi-agreement-v3/offer-accepted')
 })
