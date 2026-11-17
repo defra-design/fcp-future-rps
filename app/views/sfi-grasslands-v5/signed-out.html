@@ -21,7 +21,11 @@
 
     <h1 class="govuk-heading-l">You have signed out</h1>
 
-    {% if data['sfiGrasslandsV5ApplicationSubmitted'] %}
+    {% if data['v5AgreementStage'] == 'active' %}
+      <p class="govuk-body">Sign back in to check your agreement in the Farm and Land Service.</p>
+    {% elif data['v5AgreementStage'] == 'offer' %}
+      <p class="govuk-body">Your agreement offer is waiting. Sign back in to check it in the Farm and Land Service.</p>
+    {% elif data['sfiGrasslandsV5ApplicationSubmitted'] %}
       <p class="govuk-body">Your application has been submitted. Sign back in to check it in the Farm and Land Service.</p>
     {% elif data['sfiGrasslandsV5ApplicationStartedAt'] %}
       <p class="govuk-body">We have saved your application. Sign back in to carry on where you left off.</p>

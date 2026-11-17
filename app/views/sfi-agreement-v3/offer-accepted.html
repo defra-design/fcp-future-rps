@@ -1,11 +1,11 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/sfi-agreement-v3/offer" %}
-{# Both ways out of this page go to the Farm and Land Service overview (17 November 2026, user
-   asked), not straight to the grasslands agreement page and not back to the offer email - the
-   prototype shortcut every other v3 page uses, which would put you in front of an offer you have
-   already accepted. The overview's Grasslands card reads "View your agreement" from here, because
-   accepting set the stage. #}
-{% set signOutUrl = "/sfi-grasslands-v5/singlefrontdoor/landing/landing" %}
+{# Sign out behaves like the apply journey's (17 November 2026, user asked): it goes to the v5
+   signed-out page, whose "Sign back in" comes back through sign-in and choosing a business and
+   lands on the Farm and Land Service. It used to go to the offer email - the prototype shortcut
+   every other v3 page still uses - which showed an offer that had just been accepted.
+   The green button is the other way out and goes straight to the Farm and Land Service. #}
+{% set signOutUrl = "/sfi-grasslands-v5/signed-out" %}
 {% extends "layouts/sfi-agreement-v3-header.html" %}
 
 {% block pageTitle %}
