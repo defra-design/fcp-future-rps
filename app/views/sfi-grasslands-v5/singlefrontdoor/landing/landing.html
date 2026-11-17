@@ -15,8 +15,11 @@
 {% endblock %}
 
 {% block content %}
-{% set applicationSubmitted = data.v5AgreementStage or data.sfiGrasslandsV5ApplicationSubmitted or (data.sfiGrasslandsV5Tasks and data.sfiGrasslandsV5Tasks.submitApplication == 'completed') %}
-{% set applicationInProgress = (not applicationSubmitted) and (data.sfiGrasslandsV5ApplicationInProgress or (data.sfiGrasslandsV5Tasks and (
+{# "in-progress" is a stage like any other, so the old `data.v5AgreementStage or ...` counted it as
+   submitted and the card said "View application" while the application was still being filled in
+   (17 November 2026). Any OTHER stage does mean submitted. #}
+{% set applicationSubmitted = (data.v5AgreementStage and data.v5AgreementStage != 'in-progress') or data.sfiGrasslandsV5ApplicationSubmitted or (data.sfiGrasslandsV5Tasks and data.sfiGrasslandsV5Tasks.submitApplication == 'completed') %}
+{% set applicationInProgress = (not applicationSubmitted) and (data.v5AgreementStage == 'in-progress' or data.sfiGrasslandsV5ApplicationStartedAt or data.sfiGrasslandsV5ApplicationInProgress or (data.sfiGrasslandsV5Tasks and (
   data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'in-progress' or
   data.sfiGrasslandsV5Tasks.checkBusinessDetails == 'completed' or
   data.sfiGrasslandsV5Tasks.checkLandDetails == 'in-progress' or
@@ -58,17 +61,28 @@
         {% if applicationSubmitted or applicationInProgress %}
         <li class="gem-c-cards__list-item-variant">
           <div class="gem-c-cards__list-item-wrapper-variant">
-            {# Titles and "Go to application" from the user's design (3 November 2026) #}
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Apply for grasslands agreement</h3>
+            {# Titles from the user's design (3 November 2026). The link names what there is to do
+               (17 November 2026, user asked): it always said "Go to application", which was wrong
+               as soon as the application had been submitted and there was no longer one to go to. #}
+            {% if applicationInProgress %}
+              {% set grasslandsCardLinkText = "Continue application" %}
+            {% elif data.v5AgreementStage == 'offer' %}
+              {% set grasslandsCardLinkText = "View agreement offer" %}
+            {% elif data.v5AgreementStage == 'active' %}
+              {% set grasslandsCardLinkText = "View your agreement" %}
+            {% else %}
+              {% set grasslandsCardLinkText = "View application" %}
+            {% endif %}
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Grasslands agreement</h3>
             <p class="govuk-body govuk-!-margin-bottom-0">
-              <a href="/sfi-grasslands-v5/grasslands-agreement" class="govuk-link govuk-link--no-visited-state">Go to application<span class="govuk-visually-hidden"> for a grasslands agreement</span></a>
+              <a href="/sfi-grasslands-v5/grasslands-agreement" class="govuk-link govuk-link--no-visited-state">{{ grasslandsCardLinkText }}<span class="govuk-visually-hidden"> for a grasslands agreement</span></a>
             </p>
           </div>
         </li>
         {% endif %}
         <li class="gem-c-cards__list-item-variant">
           <div class="gem-c-cards__list-item-wrapper-variant">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Apply for a woodland management plan</h3>
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Woodland management plan</h3>
             <p class="govuk-body govuk-!-margin-bottom-0">
               <a href="/sfi-grasslands-v5/view-woodlands-application?from=landing" class="govuk-link govuk-link--no-visited-state">Go to application<span class="govuk-visually-hidden"> for a woodland management plan</span></a>
             </p>

@@ -552,7 +552,9 @@ function getActionUsage (req) {
       usage[code] = usage[code] || []
       usage[code].push({
         parcelId: parcel.parcelId,
-        parcelReference: landActions.getParcelDisplayReference(parcel)
+        parcelReference: landActions.getParcelDisplayReference(parcel),
+        // Quantity for the confirm-remove table (16 November 2026)
+        quantityText: landActions.formatQuantityDisplay(action)
       })
     })
   })

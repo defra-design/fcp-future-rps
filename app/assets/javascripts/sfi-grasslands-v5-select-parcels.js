@@ -26,7 +26,7 @@
   var CLIG3_GIVES_WAY = false
   var WHOLE_AREA_NOTE = CLIG3_GIVES_WAY
     ? 'It gets smaller if you add other land actions to this land parcel.'
-    : 'Other land actions on this land parcel are now unavailable. To add one, deselect CLIG3 first.'
+    : 'To add other actions to this parcel, you must deselect CLIG3, select the other actions then select CLIG3 again.'
   // Same pause as v3 before AAC recalculates available land
   var DEBOUNCE_MS = 1600
   var metaByCode = {}

@@ -29,7 +29,7 @@
 
     {{ govukNotificationBanner({
       titleText: "This is a draft version of your agreement",
-      text: "You must check the information in it before you accept your offer. Your agreement starts after you accept the offer and we have approved it."
+      html: '<p class="govuk-body">You will receive the final agreement once you accept your agreement offer.</p><p class="govuk-body govuk-!-margin-bottom-0">Your agreement will start on the first day of the month after you accept your offer.</p>'
     }) }}
   {% endif %}
 
@@ -50,12 +50,8 @@
       {% endif %}
       <dd>Agreement start date:</dd>
       <dt>{{ offer.holder.startDate }}</dt>
-      {% if offer.signed and offer.holder.endDate %}
-        <dd>Agreement end date:</dd>
-        <dt>{{ offer.holder.endDate }}</dt>
-      {% endif %}
-      <dd>Agreement duration:</dd>
-      <dt>{{ offer.holder.duration }}</dt>
+      <dd>Agreement end date:</dd>
+      <dt>{{ offer.holder.endDate or "3 years after the date you accept your agreement offer" }}</dt>
     </dl>
   </div>
 </div>
@@ -68,7 +64,7 @@
     <li><a class="govuk-link" href="#intro">1. Introduction and overview</a></li>
     <li><a class="govuk-link" href="#parties">2. Parties to the agreement</a></li>
     <li><a class="govuk-link" href="#land">3. Land covered by the agreement</a></li>
-    <li><a class="govuk-link" href="#actions">4. Summary of actions</a></li>
+    <li><a class="govuk-link" href="#actions">4. Summary of actions and items</a></li>
     <li><a class="govuk-link" href="#payment">5. Payments</a></li>
     <li><a class="govuk-link" href="#duration">6. Agreement duration</a></li>
     <li><a class="govuk-link" href="#sign">7. Electronic signature</a></li>
@@ -88,40 +84,48 @@
       1. Introduction and overview
     </h2>
     <p class="govuk-body">
-      This is the Sustainable Farming Incentive (SFI) agreement document. It describes the payment (the “Grant”)
-      you will receive for delivering the SFI action(s) you have chosen.
-    </p>
-    <p class="govuk-body">
-      The SFI “Agreement” comprises:
+      This document sets out the details of your Grasslands agreement, including:
     </p>
     <ul class="govuk-list govuk-list--bullet">
-      <li>this SFI agreement document (“Agreement Document”)</li>
-      <li>the <a class="govuk-link" href="#" onclick="return false;">Grasslands terms and conditions (opens in a new tab)</a> (“Terms and Conditions”)</li>
-      <li>the <a class="govuk-link" href="#" onclick="return false;">Grasslands actions for 2026 (opens in a new tab)</a> you have chosen (“Actions”)</li>
+      <li>the land, actions and items covered by your agreement</li>
+      <li>the payments you&rsquo;ll receive</li>
     </ul>
     <p class="govuk-body">
-      When you enter the Agreement, you are agreeing to the terms applicable to the payment of the Grant.
-      You should review the mandatory requirements of your Agreement to make sure you understand the full
-      extent of your obligations under the Agreement.
+      Your Grasslands agreement consists of:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>your Grasslands agreement</li>
+      <li>the <a class="govuk-link" href="#" onclick="return false;">Grasslands terms and conditions (opens in a new tab)</a></li>
+      <li>the actions you have selected</li>
+    </ul>
+    <p class="govuk-body">
+      By accepting this agreement, you agree to comply with the grasslands terms and conditions and the
+      requirements for your selected actions.
+    </p>
+    <p class="govuk-body">
+      You should read these documents carefully so you understand what you must do for the duration of your agreement.
     </p>
 
     <h2 id="parties" class="govuk-heading-l">
       2. Parties to the agreement
     </h2>
     <p class="govuk-body">
-      This Agreement is between:
+      This agreement is between:
     </p>
     <p class="govuk-body">
-      You, {{ offer.holder.name }}, of {{ offer.holder.addressInline }},
-      and the Secretary of State for Environment, Food and Rural Affairs
-      (“us”, “we”, “our”).
+      <strong>{{ offer.holder.name }}</strong>, {{ offer.holder.addressInline }}
+    </p>
+    <p class="govuk-body">and</p>
+    <p class="govuk-body">
+      <strong>The Rural Payments Agency</strong> (acting as a delivery body on behalf of the Department for
+      Environment, Food and Rural Affairs), PO Box 324, Worksop, S95 1DF
     </p>
 
     <h2 id="land" class="govuk-heading-l">
       3. Land covered by the agreement
     </h2>
     <p class="govuk-body">
-      The “Agreement Land” comprises the following land parcels.
+      The &ldquo;Agreement Land&rdquo; comprises the following land parcels:
     </p>
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-visually-hidden">Land parcels covered by the agreement</caption>
@@ -140,29 +144,28 @@
         {% endfor %}
       </tbody>
     </table>
-    <p class="govuk-body">
-      The Terms and Conditions contain separate obligations in relation to the “Agreement Land”.
-    </p>
-
     <h2 id="actions" class="govuk-heading-l">
-      4. Summary of actions
+      4. Summary of actions and items
     </h2>
+
+    <h3 class="govuk-heading-m">Actions</h3>
     <p class="govuk-body">
-      The following table sets out a summary of the Actions you have chosen and agree to complete under the Agreement.
-      The Terms and Conditions and the Actions set out the accompanying obligations for the chosen Actions.
+      The following tables set out a summary of the actions and items you have chosen and agree to complete
+      under the agreement. The terms and conditions and the actions set out the accompanying obligations for
+      the chosen actions and items.
     </p>
     {% if not offer.signed %}
       <p class="govuk-body">
-        Start and end dates will be displayed once you sign this agreement.
+        The start and end dates will be displayed once you sign the agreement.
       </p>
     {% endif %}
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-visually-hidden">Summary of actions</caption>
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Land parcel</th>
           <th scope="col" class="govuk-table__header">Action</th>
           <th scope="col" class="govuk-table__header">Quantity</th>
-          <th scope="col" class="govuk-table__header">Land parcel</th>
           <th scope="col" class="govuk-table__header">Start date</th>
           <th scope="col" class="govuk-table__header">End date</th>
         </tr>
@@ -170,9 +173,9 @@
       <tbody class="govuk-table__body">
         {% for row in offer.detailRows %}
           <tr class="govuk-table__row">
+            <td class="govuk-table__cell app-agreement-parcel-ref">{{ row.parcelReference }}</td>
             <td class="govuk-table__cell">{{ row.label }}</td>
             <td class="govuk-table__cell">{{ row.quantityText }}</td>
-            <td class="govuk-table__cell app-agreement-parcel-ref">{{ row.parcelReference }}</td>
             <td class="govuk-table__cell">{% if offer.signed %}{{ offer.actionStartDate }}{% endif %}</td>
             <td class="govuk-table__cell">{% if offer.signed %}{{ offer.actionEndDate }}{% endif %}</td>
           </tr>
@@ -180,16 +183,31 @@
       </tbody>
     </table>
 
+    {% set capitalItemsHeadingLevel = 3 %}
+    {% set capitalItemsShowIntro = false %}
+    {% include "sfi-agreement-v3/_capital-items.html" %}
+
     <h2 id="payment" class="govuk-heading-l">
       5. Payments
     </h2>
     <p class="govuk-body">
-      Subject to you complying with your Agreement, the following tables set out the payments for the Actions you
-      have chosen and agree to complete under the Agreement, and the total payments for the duration of your Agreement.
+      Subject to you complying with your agreement, the following tables set out a summary of:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>the total payments for the actions and items you have chosen and agree to complete under the agreement</li>
+      <li>total payments for the duration of your agreement</li>
+      <li>the relevant additional payments</li>
+    </ul>
+    <p class="govuk-body">
+      Under the agreement, your annual payment value is paid in quarterly instalments. Your first payment may be
+      a different amount due to the Rural Payments Agency rounding it up.
     </p>
     <p class="govuk-body">
-      Under the Agreement, you will be paid for each Action every 3 months (quarterly).
-      Where an Action is on more than one land parcel, the payments are combined.
+      You&rsquo;ll usually receive your first payment in the fourth month after your agreement start date.
+    </p>
+    <p class="govuk-body">
+      These figures are (or will be) correct at the agreement start date and may vary as a result of the
+      processes set out in the terms and conditions.
     </p>
 
     <table class="govuk-table">
@@ -221,28 +239,16 @@
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h3 class="govuk-heading-m">When you'll be paid</h3>
-        <p class="govuk-body">
-          Your agreement will start on the first day of the month after you accept it.
-          You'll usually get your first payment in the fourth month of your agreement, then every 3 months after that.
-        </p>
-        {% if offer.signed %}
-          <p class="govuk-body">
-            Your agreement started on {{ offer.expectedStartDateText }}. You can expect your first payment in {{ offer.firstPaymentMonthText }}.
-          </p>
-        {% else %}
-          <p class="govuk-body">
-            If you accept this offer in {{ offer.acceptMonthText }}, your agreement will start on {{ offer.expectedStartDateText }}
-            and you can expect your first payment in {{ offer.firstPaymentMonthText }}.
-          </p>
-        {% endif %}
-
+        {# Order of 17 November 2026 (user's design): the 3-year totals follow the action
+           payments they are made of, and the one-off item payments come last. The old
+           "When you'll be paid for actions" section is gone; its one useful sentence is
+           in the Payments intro above. #}
         <table class="govuk-table">
           <caption class="govuk-table__caption govuk-table__caption--m">Payments over the 3 years of your agreement</caption>
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">Agreement year</th>
-              <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total payment</th>
+              <th scope="col" class="govuk-table__header govuk-table__header--numeric">Payment</th>
             </tr>
           </thead>
           <tbody class="govuk-table__body">
@@ -253,15 +259,16 @@
               </tr>
             {% endfor %}
             <tr class="govuk-table__row">
-              <th scope="row" class="govuk-table__header">Total over 3 years</th>
+              <th scope="row" class="govuk-table__header">Total</th>
               <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">{{ offer.threeYearTotalText }}</td>
             </tr>
           </tbody>
         </table>
 
-        <p class="govuk-body">
-          These figures are correct at the Agreement start date and may vary as a result of the processes set out in the Terms and Conditions.
-        </p>
+        {% set capitalPaymentsHeading = "Payments for each item" %}
+        {% set capitalPaymentsShowIntro = false %}
+        {% set capitalPaymentsTotalLabel = "Total" %}
+        {% include "sfi-agreement-v3/_capital-payments.html" %}
       </div>
     </div>
 
@@ -269,19 +276,14 @@
       6. Agreement duration
     </h2>
     <p class="govuk-body">
-      The Agreement will start on the Agreement start date and last for the Agreement duration, subject to the
-      provisions for early termination set out in the Terms and Conditions.
+      The agreement will start on the agreement start date and end on the agreement end date, subject to the
+      provisions for early termination set out in the terms and conditions.
     </p>
     <dl class="govuk-body dataset-info">
       <dd>Agreement start date:</dd>
       <dt class="app-agreement-meta-value">{{ offer.holder.startDate }}</dt>
-      {% if offer.signed and offer.holder.endDate %}
-        <dd>Agreement end date:</dd>
-        <dt class="app-agreement-meta-value">{{ offer.holder.endDate }}</dt>
-      {% else %}
-        <dd>Agreement duration:</dd>
-        <dt class="app-agreement-meta-value">{{ offer.holder.duration }}</dt>
-      {% endif %}
+      <dd>Agreement end date:</dd>
+      <dt class="app-agreement-meta-value">{{ offer.holder.endDate or "3 years after the date you accept your agreement offer" }}</dt>
     </dl>
 
     <h2 id="sign" class="govuk-heading-l">
@@ -295,7 +297,7 @@
     {% else %}
       <p class="govuk-body">
         The agreement comprising this agreement document, the terms and conditions and the actions has been accepted by
-        [Name of individual] – [Name of business] on [Date of acceptance].
+        [name of individual] &ndash; [name of business] on [date of acceptance].
       </p>
     {% endif %}
 
@@ -304,7 +306,7 @@
     </h2>
     <p class="govuk-body">
       The Department for Environment, Food and Rural Affairs (Defra) is the data controller for personal data you give
-      to Rural Payments Agency (RPA). For information on how we handle personal data go to Condition 16 of the Terms and Conditions.
+      to Rural Payments Agency (RPA). For information on how we handle personal data go to Condition 16 of the terms and conditions.
     </p>
 
     <div class="back-to-top govuk-!-display-none-print govuk-!-margin-top-6">

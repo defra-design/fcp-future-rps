@@ -31,7 +31,8 @@
 {# Full width, above the two-thirds column #}
 {% if flashMessage and not errors.length %}
   {% set flashHtml %}
-    <p class="govuk-notification-banner__heading">{{ flashMessage.heading or flashMessage }}</p>
+    {# Normal body paragraph, not the banner heading style (16 November 2026, user asked) #}
+    <p class="govuk-body">{{ flashMessage.heading or flashMessage }}</p>
     {% if flashMessage.text %}<p class="govuk-body">{{ flashMessage.text }}</p>{% endif %}
   {% endset %}
   {{ govukNotificationBanner({ type: "success", html: flashHtml }) }}
@@ -169,12 +170,7 @@
           items: listItems
         }) }}
         {{ govukButton({ text: "Continue", name: "v5Intent", value: "choose" }) }}
-        {# As elsewhere in this section: only after coming from "Review land parcels and actions" #}
-        {% if fromReview and savedParcelCount %}
-          <p class="govuk-body">
-            <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-land-actions-draft">Cancel<span class="govuk-visually-hidden"> and return to review land parcels and actions</span></a>
-          </p>
-        {% endif %}
+{# Cancel removed 16 November 2026 (user: Back covers it). The cancel-land-actions-draft route is still there, unused by this page. #}
       </div>
 
       <div class="app-v5-map{% if listView %} app-v5-hidden{% endif %}">
@@ -216,22 +212,21 @@
             {# "Change" picks another parcel: the list in the list view, the find box in the map view.
                Once saved, the parcel can also be removed. #}
             {# No "Change" in the map view (3 November 2026): the list and map are right there.
-               The list view keeps Change (back to the list). Remove shows once the parcel is saved. #}
-            <div class="govuk-summary-list__row{% if not (listStep or selectedParcel.savedCount) %} govuk-summary-list__row--no-actions{% endif %}">
+               The list view keeps Change (back to the list).
+               Remove shows whenever a parcel is open (16 November 2026, user asked for it back).
+               With saved actions it goes to the confirm page; with none the remove route finds
+               nothing in the basket and redirects to select-parcels, which closes the parcel. #}
+            <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">Land parcel</dt>
               <dd class="govuk-summary-list__value">{{ selectedParcel.parcelReference }}</dd>
-              {% if listStep or selectedParcel.savedCount %}
               <dd class="govuk-summary-list__actions">
                 <ul class="govuk-summary-list__actions-list">
                   {% if listStep %}
                     <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="/sfi-grasslands-v5/select-parcels?view=list">Change<span class="govuk-visually-hidden"> land parcel</span></a></li>
                   {% endif %}
-                  {% if selectedParcel.savedCount %}
-                    <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="/sfi-grasslands-v5/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a></li>
-                  {% endif %}
+                  <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="/sfi-grasslands-v5/remove-parcel-actions/{{ selectedParcel.parcelId }}?returnTo=select-parcels">Remove<span class="govuk-visually-hidden"> land parcel {{ selectedParcel.parcelReference }} from your application</span></a></li>
                 </ul>
               </dd>
-              {% endif %}
             </div>
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
               <dt class="govuk-summary-list__key">Land cover</dt>
@@ -268,7 +263,8 @@
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                 <h2 class="govuk-fieldset__heading">Add actions</h2>
               </legend>
-              <p class="govuk-body" id="v5-actions-hint">If an action is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-revenue-actions">select the action</a> to include in your application.</p>
+              {# from=select-parcels (16 November 2026): Save and continue there comes straight back to this parcel, instead of going on to Select your items #}
+              <p class="govuk-body" id="v5-actions-hint">If an action is missing from this list, <a class="govuk-link" href="/sfi-grasslands-v5/select-revenue-actions?from=select-parcels{% if selectedParcel %}&amp;parcel={{ selectedParcel.parcelId }}{% endif %}">add another action</a> to include in your application.</p>
               {% if selectionError %}
                 <p id="v5-actions-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ selectionError }}</p>
               {% endif %}
@@ -315,13 +311,6 @@
           {% if not listStep %}
             {{ govukInsetText({ text: "You can review and edit everything you’ve added to your land parcels when you save and continue." }) }}
           {% endif %}
-          {% if listStep and fromReview and savedParcelCount %}
-            <p class="govuk-body">
-              <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-land-actions-draft">
-                Cancel<span class="govuk-visually-hidden"> and return to review land parcels and actions</span>
-              </a>
-            </p>
-          {% endif %}
           {% else %}
             {{ govukInsetText({
               html: '<p class="govuk-body">You cannot add any actions for this land parcel. This could be because:</p>
@@ -358,15 +347,6 @@
         classes: "" if (selectedParcel or savedParcelCount) else "app-v5-hidden",
         attributes: { "data-v5-continue": "" }
       }) }}
-      {# As in v4a: once land has been added, Cancel leaves this page without saving the open
-         land parcel and goes back to "Review land parcels and actions" #}
-      {% if fromReview and savedParcelCount %}
-        <p class="govuk-body">
-          <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-land-actions-draft">
-            Cancel<span class="govuk-visually-hidden"> and return to review land parcels and actions</span>
-          </a>
-        </p>
-      {% endif %}
       </div>
 
     </div>

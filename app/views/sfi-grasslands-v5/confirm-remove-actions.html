@@ -2,16 +2,12 @@
 {% set serviceUrl = "/sfi-grasslands-v5/task-list" %}
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
-{#- Shown when someone unticks actions on Select actions that are already on land parcels -#}
-
-{% if removingActions.length == 1 %}
-  {% set question = "Remove " + removingActions[0].code + " from your application?" %}
-{% else %}
-  {% set question = "Remove these actions from your application?" %}
-{% endif %}
+{#- Shown when someone unticks actions or items on Select your actions / Select your items
+    that are already on land parcels (rebuilt 16 November 2026 from the user's design:
+    a table and a warning button, replacing the yes/no radios) -#}
 
 {% block pageTitle %}
-  {% if error %}Error: {% endif %}{{ question }}
+  {% if error %}Error: {% endif %}Confirm that you want to remove these from your application
 {% endblock %}
 
 {% block beforeContent %}
@@ -19,60 +15,65 @@
   {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
   {{ govukBackLink({
     text: "Back",
-    href: "/sfi-grasslands-v5/select-revenue-actions"
+    href: backHref or "/sfi-grasslands-v5/select-revenue-actions"
   }) }}
 {% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-confirm-remove-actions.css">
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
     {% if error %}
       {{ govukErrorSummary({
         titleText: "There is a problem",
-        errorList: [{ text: error, href: "#v5ConfirmRemove" }]
+        errorList: [{ text: error, href: "#confirm-remove-table" }]
       }) }}
     {% endif %}
 
-    <form method="post" action="/sfi-grasslands-v5/confirm-remove-actions" novalidate>
-      {% set journeySection = "Add actions and items to your land" %}
-      {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
-      <h1 class="govuk-heading-l">{{ question }}</h1>
+    {% set journeySection = "Add actions and items to your land" %}
+    {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
+    <h1 class="govuk-heading-l">Confirm that you want to remove these from your application</h1>
 
-      <p class="govuk-body">You deselected {{ "this action" if removingActions.length == 1 else "these actions" }}, but {{ "it is" if removingActions.length == 1 else "they are" }} already on land parcels in your application.</p>
+    <p class="govuk-body">The actions or items you&rsquo;ve chosen to remove from your application have already been added to land parcels.</p>
+    <p class="govuk-body">Confirm that you want to remove these actions or items from all these land parcels.</p>
 
-      <dl class="govuk-summary-list">
-        {% for action in removingActions %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">{{ action.code }}: {{ action.name }}</dt>
-            <dd class="govuk-summary-list__value">
-              {% for parcel in action.parcels %}{{ parcel }}{% if not loop.last %}<br>{% endif %}{% endfor %}
-            </dd>
-          </div>
+    <table class="govuk-table app-v5-remove-table" id="confirm-remove-table">
+      <caption class="govuk-table__caption govuk-visually-hidden">Actions and items to be removed, and the land parcels they are on</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Action or item</th>
+          <th scope="col" class="govuk-table__header">Land parcel</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Quantity</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for row in removingActions %}
+          {# One row per land parcel, so each quantity lines up with its own parcel.
+             No line between the rows of one action or item: only under its last parcel #}
+          {% for parcel in row.parcels %}
+            <tr class="govuk-table__row{% if not loop.last %} app-v5-remove-table__row--grouped{% endif %}{% if not loop.first %} app-v5-remove-table__row--continued{% endif %}">
+              <td class="govuk-table__cell">{% if loop.first %}{{ row.code }}: {{ row.name }}{% endif %}</td>
+              <td class="govuk-table__cell app-v5-remove-table__parcel">{{ parcel.reference }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ parcel.quantityText }}</td>
+            </tr>
+          {% endfor %}
         {% endfor %}
-      </dl>
+      </tbody>
+    </table>
 
-      <p class="govuk-body">Removing {{ "it" if removingActions.length == 1 else "them" }} will take {{ "it" if removingActions.length == 1 else "them" }} off these land parcels. A land parcel with no actions left will be removed from your application.</p>
+    <p class="govuk-body">A land parcel with nothing left on it will be removed from your application.</p>
 
-      {{ govukRadios({
-        idPrefix: "v5ConfirmRemove",
-        name: "v5ConfirmRemove",
-        classes: "govuk-radios--inline",
-        fieldset: {
-          legend: {
-            text: question,
-            classes: "govuk-visually-hidden"
-          }
-        },
-        errorMessage: { text: error } if error else undefined,
-        items: [
-          { value: "yes", text: "Yes, remove " + ("it" if removingActions.length == 1 else "them") },
-          { value: "no", text: "No, keep " + ("it" if removingActions.length == 1 else "them") }
-        ]
+    <form method="post" action="/sfi-grasslands-v5/confirm-remove-actions" novalidate>
+      {{ govukButton({
+        text: "Remove",
+        classes: "govuk-button--warning"
       }) }}
-
-      {{ govukButton({ text: "Continue" }) }}
     </form>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-remove-actions">Cancel</a>
+    </p>
 
   </div>
 </div>

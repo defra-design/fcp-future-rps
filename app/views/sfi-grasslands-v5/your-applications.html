@@ -8,7 +8,7 @@
 {% block beforeContent %}
   {{ super() }}
   {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
-  {{ govukBackLink({ text: "Back", href: "/sfi-grasslands-v5/singlefrontdoor/landing/landing" }) }}
+  {{ govukBackLink({ text: "Back", href: v5BackHref or "/sfi-grasslands-v5/singlefrontdoor/landing/landing" }) }}
 {% endblock %}
 
 {% block content %}

@@ -1,0 +1,24 @@
+{# Shared by the offer page and the printable agreement, which word it differently
+   (17 November 2026): capitalPaymentsHeading, capitalPaymentsShowIntro and
+   capitalPaymentsTotalLabel default to the offer page's wording. #}
+<h3 class="govuk-heading-m">{{ capitalPaymentsHeading or "Payments for items" }}</h3>
+{# Shortened 17 November 2026: the action totals are now ABOVE this table, so the old
+   "separate from ... the action totals below" no longer pointed anywhere. The sentence stays
+   because the Payments intro above only talks about quarterly action payments. #}
+{% if capitalPaymentsShowIntro != false %}
+  <p class="govuk-body">Items are one-off payments you can claim after you complete the work.</p>
+{% endif %}
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-visually-hidden">One-off payments for items</caption>
+  <thead class="govuk-table__head"><tr class="govuk-table__row">
+    <th scope="col" class="govuk-table__header">Item</th>
+    <th scope="col" class="govuk-table__header">Payment rate</th>
+    <th scope="col" class="govuk-table__header govuk-table__header--numeric">One-off payment</th>
+  </tr></thead>
+  <tbody class="govuk-table__body">
+  {% for item in offer.capitalItems %}
+    <tr class="govuk-table__row"><td class="govuk-table__cell">{{ item.label }}</td><td class="govuk-table__cell">{{ item.paymentRateText }}</td><td class="govuk-table__cell govuk-table__cell--numeric">{{ item.paymentText }}</td></tr>
+  {% endfor %}
+    <tr class="govuk-table__row"><th scope="row" colspan="2" class="govuk-table__header">{{ capitalPaymentsTotalLabel or "One-off payment total" }}</th><td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-weight-bold">{{ offer.capitalTotalText }}</td></tr>
+  </tbody>
+</table>

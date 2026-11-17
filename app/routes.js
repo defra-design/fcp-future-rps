@@ -56,6 +56,49 @@ const osMaps = require('./os-maps')
 router.use(sfiGrasslandsV5RpaLand.participantGuard)
 router.get('/sfi-grasslands-v5/researcher-exit', sfiGrasslandsV5RpaLand.handleResearcherExit)
 
+// Back links that go where you came from (16 November 2026, user asked).
+//
+// Every v5 page GET that renders HTML pushes its own path onto a short history in the
+// session. `v5BackHref` is then the page BEFORE the current one, handed to every v5
+// template through res.locals, so a template can use it without its route passing it.
+//
+// Known limits, accepted for a prototype: a refresh does not add an entry (the current
+// path is only pushed when it differs from the top of the stack, so Back keeps pointing
+// at the page before it); using the browser's own Back and then a link rewinds the
+// stack the same way a person would expect; and a page reached by redirect records the
+// destination, not the redirect itself.
+function sfiGrasslandsV5BackLinks (req, res, next) {
+  if (req.method !== 'GET' || req.path.indexOf('/sfi-grasslands-v5/') !== 0) {
+    return next()
+  }
+  // Only real pages: no assets, no XHR, no map tiles
+  if (!req.accepts('html') || req.xhr || /\.[a-z0-9]+$/i.test(req.path)) {
+    return next()
+  }
+
+  var sessionData = getSfiGrasslandsV5SessionData(req)
+  var history = Array.isArray(sessionData.v5PageHistory) ? sessionData.v5PageHistory : []
+  var current = req.path
+
+  // Already here (a refresh, or a redirect back to the same page): leave the stack alone
+  if (history[history.length - 1] !== current) {
+    // Coming BACK to a page already in the stack: rewind to it rather than growing
+    var seenAt = history.lastIndexOf(current)
+    if (seenAt !== -1) {
+      history = history.slice(0, seenAt)
+    }
+    history.push(current)
+  }
+  if (history.length > 10) {
+    history = history.slice(history.length - 10)
+  }
+  sessionData.v5PageHistory = history
+
+  res.locals.v5BackHref = history.length > 1 ? history[history.length - 2] : null
+  next()
+}
+router.use(sfiGrasslandsV5BackLinks)
+
 // OS Maps basemap: tiles go through this server so the key stays private (app/os-maps.js)
 router.use(osMaps.middleware)
 router.get('/os-maps/style.json', osMaps.handleStyle)
@@ -79,6 +122,10 @@ router.get('/sfi-grasslands-v4b/demo-configuration/reset', sfiGrasslandsV4bRpaLa
 // Agile Farm test parcels for this session (see app/sfi-grasslands-v5/rpa-land.js).
 // This must run before every other v5 route.
 router.use('/sfi-grasslands-v5', sfiGrasslandsV5RpaLand.middleware)
+// The agreement v3 pages are part of the same journey, so they need the same business, SBI and
+// person (17 November 2026): without this their account bar was fixed text and a participant set
+// up as another business saw Agile Farm Ltd on the agreement.
+router.use('/sfi-agreement-v3', sfiGrasslandsV5RpaLand.middleware)
 router.post('/sfi-grasslands-v5/prototype-tools/rpa-land', sfiGrasslandsV5RpaLand.handlePost)
 // Demo configuration: business name and SBI (real land from the RPA Land API), then the task list
 router.get('/sfi-grasslands-v5/demo-configuration', sfiGrasslandsV5RpaLand.handleDemoConfigurationGet)
@@ -12538,6 +12585,12 @@ function getSfiGrasslandsV5SessionData (req) {
 }
 
 router.get('/sfi-grasslands-v5/sign-in', function (req, res) {
+  // Arrived from the agreement offer email (16 November 2026): after choosing a business,
+  // go to the grasslands agreement at the offer stage rather than the overview page.
+  if (req.query.from === 'offer-email') {
+    req.session.data = req.session.data || {}
+    req.session.data.v5FromOfferEmail = true
+  }
   var returnUrl = req.query.returnUrl
   var safeReturn = (
     typeof returnUrl === 'string' &&
@@ -12658,6 +12711,17 @@ function getSfiV5AgreementLocals (req) {
   var now = new Date()
   var dateOptions = { day: 'numeric', month: 'long', year: 'numeric' }
   function fmt (d) { return d.toLocaleDateString('en-GB', dateOptions) }
+  // Date and time for the things that happened at a moment (17 November 2026, user asked):
+  // "17 November 2026 at 8:25am", the GOV.UK time style - lowercase am/pm, no leading zero.
+  function fmtTime (d) {
+    var hours = d.getHours()
+    var minutes = d.getMinutes()
+    var suffix = hours < 12 ? 'am' : 'pm'
+    var display = hours % 12
+    if (display === 0) display = 12
+    return display + ':' + (minutes < 10 ? '0' : '') + minutes + suffix
+  }
+  function fmtDateTime (d) { return fmt(d) + ' at ' + fmtTime(d) }
   function addDays (d, n) { var c = new Date(d.getTime()); c.setDate(c.getDate() + n); return c }
 
   if (req.query.stage && SFI_V5_AGREEMENT_STAGES.indexOf(req.query.stage) !== -1) {
@@ -12693,19 +12757,29 @@ function getSfiV5AgreementLocals (req) {
   }, 0)
 
   var history = []
-  if (stage === 'active') history.push({ title: 'Agreement accepted', date: fmt(acceptedAt), byline: true, link: { text: 'View your agreement', href: '/sfi-agreement-v2/agreement' } })
-  if (stage === 'offer' || stage === 'active') history.push({ title: 'Agreement offer made', date: fmt(offerAt), link: { text: 'View agreement offer', href: '/sfi-agreement-v2/offer' } })
-  if (stage !== 'in-progress') history.push({ title: 'Application submitted', date: fmt(submittedAt), byline: true, link: { text: 'View application', href: '/sfi-grasslands-v5/view-application?from=landing' } })
-  history.push({ title: 'Application started', date: fmt(startedAt), byline: true })
+  // The SIGNED version, not the draft at /sfi-agreement-v3/agreement (17 November 2026)
+  if (stage === 'active') history.push({ title: 'Agreement accepted', date: fmtDateTime(acceptedAt), byline: true, link: { text: 'View your agreement', href: '/sfi-agreement-v3/agreement-signed' } })
+  // Once the offer is accepted there is nothing to go and view, so the entry keeps its
+  // date and loses its link (17 November 2026, user asked)
+  if (stage === 'offer' || stage === 'active') {
+    history.push(Object.assign(
+      { title: 'Agreement offer made', date: fmtDateTime(offerAt) },
+      stage === 'offer' ? { link: { text: 'View agreement offer', href: '/sfi-agreement-v3/offer' } } : {}
+    ))
+  }
+  if (stage !== 'in-progress') history.push({ title: 'Application submitted', date: fmtDateTime(submittedAt), byline: true, link: { text: 'View application', href: '/sfi-grasslands-v5/view-application?from=landing' } })
+  history.push({ title: 'Application started', date: fmtDateTime(startedAt), byline: true })
 
   return Object.assign(locals, {
     v5AgreementStage: stage,
     v5AgreementTab: req.query.tab === 'history' ? 'history' : 'overview',
     v5AgreementHistory: history,
-    v5StartedDateFormatted: fmt(startedAt),
-    v5SubmittedDateFormatted: fmt(submittedAt),
-    v5OfferDateFormatted: fmt(offerAt),
-    v5OfferAcceptByFormatted: fmt(addDays(offerAt, 30)),
+    v5StartedDateFormatted: fmtDateTime(startedAt),
+    v5SubmittedDateFormatted: fmtDateTime(submittedAt),
+    v5OfferDateFormatted: fmtDateTime(offerAt),
+    // 4 weeks after the offer was made (17 November 2026, user asked; was 30 days)
+    v5OfferAcceptByFormatted: fmtDateTime(addDays(offerAt, 28)),
+    v5AgreementAcceptedFormatted: fmtDateTime(acceptedAt),
     v5AgreementStartFormatted: fmt(agreementStart),
     v5AgreementEndFormatted: fmt(agreementEnd),
     v5ParcelCount: parcelCount,
@@ -12743,10 +12817,28 @@ router.get('/sfi-grasslands-v5/start', function (req, res) {
 
 router.post('/sfi-grasslands-v5/choose-business-answer', function (req, res) {
   var data = getSfiGrasslandsV5SessionData(req)
+  // Came in from the offer email (17 November 2026): the Farm and Land Service overview
+  // page, with the agreement already at the offer stage, so its "Grasslands agreement"
+  // card is there to go on to the agreement and then the offer itself.
+  if (data.v5FromOfferEmail) {
+    delete data.v5FromOfferEmail
+    data.v5AgreementStage = 'offer'
+    if (!data.v5AgreementOfferAt) {
+      data.v5AgreementOfferAt = new Date().toISOString()
+    }
+    return res.redirect('/sfi-grasslands-v5/singlefrontdoor/landing/landing?previousAgreements=1&actionDeductions=1')
+  }
   if (!data.v5StartFromApply) {
     return res.redirect('/sfi-grasslands-v5/singlefrontdoor/landing/landing')
   }
-  return res.redirect(hasSfiV5GrasslandsStarted(data) ? '/sfi-grasslands-v5/grasslands-agreement' : '/sfi-grasslands-v5/task-list')
+  // Signing back in with work already started lands on the Farm and Land Service overview
+  // (17 November 2026, user asked), not straight on the grasslands agreement page. That is what
+  // returning actually looks like, and its "Grasslands agreement" card goes on to the same page.
+  // A first sign-in from the start page still goes straight to the task list - the two ways in
+  // from the journey map of 11 November.
+  return res.redirect(hasSfiV5GrasslandsStarted(data)
+    ? '/sfi-grasslands-v5/singlefrontdoor/landing/landing'
+    : '/sfi-grasslands-v5/task-list')
 })
 
 // Start page before the task list (2 November 2026)
@@ -13120,7 +13212,18 @@ function renderSfiGrasslandsV5SelectRevenueActions (req, res, options) {
 }
 
 router.get('/sfi-grasslands-v5/select-revenue-actions', function (req, res) {
-  delete getSfiGrasslandsV5SessionData(req).v5SelectParcelsFrom
+  // Arrived from "select the action" on the land parcels page (16 November 2026):
+  // Save and continue goes straight back there, to the parcel that was open, instead
+  // of carrying on to Select your items.
+  var actionsSessionData = getSfiGrasslandsV5SessionData(req)
+  if (req.query.from === 'select-parcels') {
+    actionsSessionData.v5ActionsFromParcels = true
+    actionsSessionData.v5ActionsFromParcelId = req.query.parcel || null
+  } else {
+    delete actionsSessionData.v5ActionsFromParcels
+    delete actionsSessionData.v5ActionsFromParcelId
+  }
+  delete actionsSessionData.v5SelectParcelsFrom
   sfiGrasslandsV5LandActions.clearDraft(req)
   sfiGrasslandsV5Tasks.markInProgress(req, sfiGrasslandsV5Tasks.TASK_IDS.selectActions)
   renderSfiGrasslandsV5SelectRevenueActions(req, res)
@@ -13153,18 +13256,35 @@ router.post('/sfi-grasslands-v5/select-revenue-actions', function (req, res) {
     var sessionData = getSfiGrasslandsV5SessionData(req)
     sessionData.v5PendingInterested = newCodes
     sessionData.v5PendingRemove = removing
+    sessionData.v5PendingRemoveFrom = 'actions'
     return res.redirect('/sfi-grasslands-v5/confirm-remove-actions')
   }
 
   sfiGrasslandsV5RevenueActions.setInterestedCodes(req, newCodes)
   sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.selectActions)
-  res.redirect('/sfi-grasslands-v5/select-capital-items')
+  res.redirect(sfiGrasslandsV5AfterActionsHref(req))
 })
+
+// Where Save and continue goes after Select your actions: back to the land parcels page
+// when that is where the user came from, otherwise on to Select your items
+function sfiGrasslandsV5AfterActionsHref (req) {
+  var sessionData = getSfiGrasslandsV5SessionData(req)
+  if (!sessionData.v5ActionsFromParcels) {
+    return '/sfi-grasslands-v5/select-capital-items'
+  }
+  var parcelId = sessionData.v5ActionsFromParcelId
+  delete sessionData.v5ActionsFromParcels
+  delete sessionData.v5ActionsFromParcelId
+  return '/sfi-grasslands-v5/select-parcels' + (parcelId ? '?parcel=' + encodeURIComponent(parcelId) : '')
+}
 
 // Capital items (optional): one-off payments, picked once here then added to parcels on the map page
 function renderSfiGrasslandsV5SelectCapitalItems (req, res) {
   res.render('sfi-grasslands-v5/select-capital-items', {
     data: getSfiGrasslandsV5SessionData(req),
+    // Removing actions lands here, so the "removed" banner shows on this page too
+    // (16 November 2026); otherwise it sat in the session until select-parcels
+    flashMessage: sfiGrasslandsV5RevenueActions.takeFlash(req),
     capitalGroups: sfiGrasslandsV5CapitalItems.getGroups(),
     selectedCodes: sfiGrasslandsV5CapitalItems.getInterestedCodes(req),
     hasSavedParcels: sfiGrasslandsV5LandActions.hasSavedLandAndActions(req),
@@ -13181,10 +13301,56 @@ router.get('/sfi-grasslands-v5/select-capital-items', function (req, res) {
   renderSfiGrasslandsV5SelectCapitalItems(req, res)
 })
 
+// Which land parcels each capital item is on, with its quantity (16 November 2026).
+// Mirrors getActionUsage in revenue-actions.js; built here because capital-items.js
+// does not require land-actions.
+function getSfiGrasslandsV5CapitalItemUsage (req) {
+  var usage = {}
+  sfiGrasslandsV5LandActions.getApplicationParcels(req).forEach(function (parcel) {
+    ;(parcel.capitalItems || []).forEach(function (entry) {
+      var code = String(entry.code || '').toUpperCase()
+      var item = sfiGrasslandsV5CapitalItems.getItem(code)
+      if (!item) {
+        return
+      }
+      usage[code] = usage[code] || []
+      usage[code].push({
+        parcelId: parcel.parcelId,
+        parcelReference: sfiGrasslandsV5LandActions.getParcelDisplayReference(parcel),
+        quantityText: entry.quantityFormatted || entry.quantityText ||
+          (entry.quantity != null ? String(entry.quantity) + ' ' + (item.unit || '') : '')
+      })
+    })
+  })
+  Object.keys(usage).forEach(function (code) {
+    usage[code].sort(function (a, b) {
+      return String(a.parcelReference).localeCompare(String(b.parcelReference))
+    })
+  })
+  return usage
+}
+
 router.post('/sfi-grasslands-v5/select-capital-items', function (req, res) {
+  // Unticked items that are already on land parcels: confirm before removing them,
+  // the same way Select your actions does (16 November 2026)
+  var requested = req.body.v5CapitalItems
+  var requestedCodes = (Array.isArray(requested) ? requested : [requested])
+    .map(function (code) { return String(code || '').toUpperCase() })
+    .filter(function (code) { return code && code !== '_UNCHECKED' })
+  var itemUsage = getSfiGrasslandsV5CapitalItemUsage(req)
+  var removingItems = Object.keys(itemUsage).filter(function (code) {
+    return requestedCodes.indexOf(code) === -1
+  })
+  if (removingItems.length) {
+    var pendingData = getSfiGrasslandsV5SessionData(req)
+    pendingData.v5PendingInterested = requestedCodes
+    pendingData.v5PendingRemove = removingItems
+    pendingData.v5PendingRemoveFrom = 'items'
+    return res.redirect('/sfi-grasslands-v5/confirm-remove-actions')
+  }
+
   var codes = sfiGrasslandsV5CapitalItems.setInterestedCodes(req, req.body.v5CapitalItems)
 
-  // Unticked items come off any land parcels they were added to
   var parcels = sfiGrasslandsV5LandActions.getApplicationParcels(req)
   parcels.forEach(function (parcel) {
     if (Array.isArray(parcel.capitalItems)) {
@@ -13202,21 +13368,39 @@ router.post('/sfi-grasslands-v5/select-capital-items', function (req, res) {
   res.redirect('/sfi-grasslands-v5/select-parcels')
 })
 
+// Confirm removing actions OR items that are already on land parcels (16 November 2026).
+// v5PendingRemoveFrom says which page sent us here, which decides what gets removed,
+// where Cancel goes and where Remove continues to.
 function renderSfiGrasslandsV5ConfirmRemoveActions (req, res, error) {
   var sessionData = getSfiGrasslandsV5SessionData(req)
-  var usage = sfiGrasslandsV5RevenueActions.getActionUsage(req)
+  var fromItems = sessionData.v5PendingRemoveFrom === 'items'
+  var backHref = fromItems
+    ? '/sfi-grasslands-v5/select-capital-items'
+    : '/sfi-grasslands-v5/select-revenue-actions'
+  var usage = fromItems
+    ? getSfiGrasslandsV5CapitalItemUsage(req)
+    : sfiGrasslandsV5RevenueActions.getActionUsage(req)
   var removing = (sessionData.v5PendingRemove || []).filter(function (code) { return usage[code] })
   if (!removing.length) {
-    return res.redirect('/sfi-grasslands-v5/select-revenue-actions')
+    return res.redirect(backHref)
   }
   res.status(error ? 400 : 200).render('sfi-grasslands-v5/confirm-remove-actions', {
     data: sessionData,
+    backHref: backHref,
     removingActions: removing.map(function (code) {
-      var action = sfiGrasslandsV5RevenueActions.getAction(code)
+      var entry = fromItems
+        ? sfiGrasslandsV5CapitalItems.getItem(code)
+        : sfiGrasslandsV5RevenueActions.getAction(code)
       return {
         code: code,
-        name: action ? action.name : code,
-        parcels: usage[code].map(function (parcel) { return parcel.parcelReference })
+        name: entry ? entry.name : code,
+        // One line per land parcel, each with its own quantity (16 November 2026)
+        parcels: usage[code].map(function (parcel) {
+          return {
+            reference: parcel.parcelReference,
+            quantityText: parcel.quantityText || ''
+          }
+        })
       }
     }),
     error: error || null
@@ -13229,29 +13413,58 @@ router.get('/sfi-grasslands-v5/confirm-remove-actions', function (req, res) {
 
 router.post('/sfi-grasslands-v5/confirm-remove-actions', function (req, res) {
   var sessionData = getSfiGrasslandsV5SessionData(req)
-  var answer = req.body.v5ConfirmRemove
-  if (answer !== 'yes' && answer !== 'no') {
-    return renderSfiGrasslandsV5ConfirmRemoveActions(req, res, 'Select yes if you want to remove these actions from your application')
-  }
+  var fromItems = sessionData.v5PendingRemoveFrom === 'items'
   var pending = sessionData.v5PendingInterested || []
   var removing = sessionData.v5PendingRemove || []
   delete sessionData.v5PendingInterested
   delete sessionData.v5PendingRemove
+  delete sessionData.v5PendingRemoveFrom
 
-  if (answer === 'no') {
-    // Keep them: tick the actions again and go back to the list
-    sfiGrasslandsV5RevenueActions.setInterestedCodes(req, pending.concat(removing))
-    return res.redirect('/sfi-grasslands-v5/select-revenue-actions')
+  var flashHeading = removing.map(function (code) {
+    var entry = fromItems
+      ? sfiGrasslandsV5CapitalItems.getItem(code)
+      : sfiGrasslandsV5RevenueActions.getAction(code)
+    return entry && entry.name ? code + ': ' + entry.name : code
+  }).join(', ') + (removing.length === 1 ? ' has' : ' have') + ' been removed.'
+
+  if (fromItems) {
+    sfiGrasslandsV5CapitalItems.setInterestedCodes(req, pending)
+    var parcels = sfiGrasslandsV5LandActions.getApplicationParcels(req)
+    parcels.forEach(function (parcel) {
+      if (Array.isArray(parcel.capitalItems)) {
+        parcel.capitalItems = parcel.capitalItems.filter(function (item) {
+          return removing.indexOf(String(item.code || '').toUpperCase()) === -1
+        })
+      }
+    })
+    sessionData.sfiV5ApplicationParcels = parcels.filter(function (parcel) {
+      return (parcel.actions && parcel.actions.length) || (parcel.capitalItems && parcel.capitalItems.length)
+    })
+    sfiGrasslandsV5LandActions.syncParcelSelectionsData(req)
+    sfiGrasslandsV5RevenueActions.setFlash(req, { heading: flashHeading })
+    sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.selectCapitalItems)
+    return res.redirect('/sfi-grasslands-v5/select-parcels')
   }
 
   sfiGrasslandsV5RevenueActions.removeActionsFromApplication(req, removing)
-  sfiGrasslandsV5RevenueActions.setFlash(req, {
-    heading: removing.join(', ') + (removing.length === 1 ? ' has' : ' have') + ' been removed from your application'
-  })
+  sfiGrasslandsV5RevenueActions.setFlash(req, { heading: flashHeading })
   sfiGrasslandsV5RevenueActions.setInterestedCodes(req, pending)
   sfiGrasslandsV5Tasks.markCompleted(req, sfiGrasslandsV5Tasks.TASK_IDS.selectActions)
-  res.redirect('/sfi-grasslands-v5/select-capital-items')
+  res.redirect(sfiGrasslandsV5AfterActionsHref(req))
 })
+
+// Cancel on the confirm page: keep everything as it was and go back where we came from
+router.get('/sfi-grasslands-v5/cancel-remove-actions', function (req, res) {
+  var sessionData = getSfiGrasslandsV5SessionData(req)
+  var fromItems = sessionData.v5PendingRemoveFrom === 'items'
+  delete sessionData.v5PendingInterested
+  delete sessionData.v5PendingRemove
+  delete sessionData.v5PendingRemoveFrom
+  res.redirect(fromItems
+    ? '/sfi-grasslands-v5/select-capital-items'
+    : '/sfi-grasslands-v5/select-revenue-actions')
+})
+
 
 function renderSfiGrasslandsV5SelectParcels (req, res, options) {
   var opts = options || {}
@@ -14136,7 +14349,7 @@ router.post('/sfi-grasslands-v5/remove-parcel-actions/:parcelId', function (req,
       req.session.data.confirmLandFlash = removedMessage
     } else {
       sfiGrasslandsV5RevenueActions.setFlash(req, {
-        heading: 'Land parcel ' + parcelLabel + ' has been removed from your application'
+        heading: parcelLabel + ' and its actions have been removed.'
       })
     }
   }
@@ -14447,9 +14660,17 @@ router.get('/sfi-grasslands-v5/view-application', function (req, res) {
   var backHref = '/sfi-grasslands-v5/confirmation'
   var backButtonText = 'Back to confirmation'
 
+  // Opened from the grasslands agreement page (17 November 2026, user asked): Back returns
+  // there. That page used to link here with ?from=landing, so Back went to the Farm and
+  // Land Service overview instead of where the user had actually come from.
+  var fromAgreement = req.query.from === 'agreement'
+
   if (fromApplicationsAndAgreements) {
     backHref = '/sfi-grasslands-v5/applications-and-agreements'
     backButtonText = 'Back to applications and agreements'
+  } else if (fromAgreement) {
+    backHref = '/sfi-grasslands-v5/grasslands-agreement'
+    backButtonText = 'Back to your grasslands agreement'
   } else if (fromLanding) {
     backHref = '/sfi-grasslands-v5/singlefrontdoor/landing/landing'
     backButtonText = 'Back to Farm and Land Service'
@@ -17094,8 +17315,11 @@ router.get('/sfi-agreement-v3/offer', function (req, res) {
   })
 })
 
+// From the offer email (16 November 2026, user asked): sign in, choose a business, then
+// the grasslands agreement page at the offer stage, which carries the button through to
+// the offer itself. No returnUrl, so sign-in goes to the business list as it normally does.
 router.get('/sfi-agreement-v3/offer-sign-in', function (req, res) {
-  res.redirect('/sfi-grasslands-v3/sign-in?previousAgreements=1&actionDeductions=1&returnUrl=' + encodeURIComponent('/sfi-agreement-v3/offer'))
+  res.redirect('/sfi-grasslands-v5/sign-in?from=offer-email&previousAgreements=1&actionDeductions=1')
 })
 
 router.post('/sfi-agreement-v3/offer-sign-in', function (req, res) {
@@ -17122,10 +17346,46 @@ router.get('/sfi-agreement-v3/agreement-signed', function (req, res) {
   })
 })
 
+// The confirmation after accepting (17 November 2026). It used to be auto-rendered with no data,
+// so its dates were typed into the template and disagreed with the agreement page: it said the
+// agreement started 1 September 2026 while the agreement page said 1 December 2026.
+router.get('/sfi-agreement-v3/offer-accepted', function (req, res) {
+  var data = req.session.data || {}
+  var offer = sfiAgreementV3Offer.buildOfferFromSession(data, { signed: true })
+  var acceptedAt = data.v5AgreementAcceptedAt ? new Date(data.v5AgreementAcceptedAt) : new Date()
+  var start = new Date(acceptedAt.getFullYear(), acceptedAt.getMonth() + 1, 1)
+  var end = new Date(start.getFullYear() + 3, start.getMonth(), 0)
+  var dateOptions = { day: 'numeric', month: 'long', year: 'numeric' }
+  function fmtTime (d) {
+    var hours = d.getHours()
+    var suffix = hours < 12 ? 'am' : 'pm'
+    var hour12 = hours % 12 === 0 ? 12 : hours % 12
+    return hour12 + ':' + String(d.getMinutes()).padStart(2, '0') + suffix
+  }
+  res.render('sfi-agreement-v3/offer-accepted', {
+    data: data,
+    offer: offer,
+    v3AcceptedFormatted: acceptedAt.toLocaleDateString('en-GB', dateOptions) + ' at ' + fmtTime(acceptedAt),
+    v3AgreementStartFormatted: start.toLocaleDateString('en-GB', dateOptions),
+    v3AgreementEndFormatted: end.toLocaleDateString('en-GB', dateOptions),
+    // The fourth month of the agreement, worked out from the start above rather than taken from
+    // offer.firstPaymentMonthText, whose signed branch counts from a different date and gave the
+    // start month itself (17 November 2026)
+    v3FirstPaymentMonthFormatted: new Date(start.getFullYear(), start.getMonth() + 3, 1)
+      .toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+  })
+})
+
 router.post('/sfi-agreement-v3/offer', function (req, res) {
   res.redirect('/sfi-agreement-v3/accept-offer')
 })
 
 router.post('/sfi-agreement-v3/accept-offer', function (req, res) {
+  // Accepting now moves the agreement on and records WHEN (17 November 2026). Before this the
+  // stage only changed because the offer-accepted button carried "?stage=active", so the
+  // acceptance time on the agreement page and its History tab was "now" on every page load.
+  req.session.data = req.session.data || {}
+  req.session.data.v5AgreementStage = 'active'
+  req.session.data.v5AgreementAcceptedAt = new Date().toISOString()
   res.redirect('/sfi-agreement-v3/offer-accepted')
 })

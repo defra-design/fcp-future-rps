@@ -12,11 +12,19 @@
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-select-revenue-actions.css">
   {{ govukBackLink({
     text: "Back",
-    href: "/sfi-grasslands-v5/select-revenue-actions"
+    href: v5BackHref or "/sfi-grasslands-v5/select-revenue-actions"
   }) }}
 {% endblock %}
 
 {% block content %}
+{% if flashMessage %}
+  {% set flashHtml %}
+    {# Normal body paragraph, not the banner heading style (16 November 2026, user asked) #}
+    <p class="govuk-body">{{ flashMessage.heading or flashMessage }}</p>
+    {% if flashMessage.text %}<p class="govuk-body">{{ flashMessage.text }}</p>{% endif %}
+  {% endset %}
+  {{ govukNotificationBanner({ type: "success", html: flashHtml }) }}
+{% endif %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
@@ -24,8 +32,7 @@
       {% set journeySection = "Add actions and items to your land" %}
       {% include "sfi-grasslands-v5/_includes/journey-caption.html" %}
       <h1 class="govuk-heading-l">Select your items</h1>
-      {# Content of 4 November 2026 #}
-      <p class="govuk-body">You can claim payment for items when the work is completed.</p>
+      {# Content of 4 November 2026; "You can claim payment for items when the work is completed." removed 16 November 2026 #}
       <p class="govuk-body">Select all items that will be included in this application. You’ll be able to add them to parcels of land as you continue through the service.</p>
 
       {# Keeps an empty choice when nothing is ticked, so the page counts as answered #}
@@ -63,11 +70,7 @@
       {{ govukButton({
         text: "Save and continue"
       }) }}
-      {% if fromReview and hasSavedParcels %}
-        <p class="govuk-body">
-          <a class="govuk-link govuk-link--no-visited-state" href="/sfi-grasslands-v5/cancel-land-actions-draft">Cancel<span class="govuk-visually-hidden"> and return to review your actions and items</span></a>
-        </p>
-      {% endif %}
+      {# Cancel removed 16 November 2026 (user: Back covers it), as on select-parcels #}
     </form>
 
   </div>

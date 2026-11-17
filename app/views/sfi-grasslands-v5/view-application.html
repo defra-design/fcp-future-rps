@@ -1,5 +1,7 @@
-{% set serviceName = "Apply for a grasslands agreement" %}
-{% set serviceUrl = "/sfi-grasslands-v5/task-list" %}
+{# The application is read from the Farm and Land Service, not from inside the apply
+   journey (17 November 2026, user asked) #}
+{% set serviceName = "Farm and Land Service" %}
+{% set serviceUrl = "/sfi-grasslands-v5/singlefrontdoor/landing/landing" %}
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% block pageTitle %}

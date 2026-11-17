@@ -1,0 +1,24 @@
+{# Shared by the offer page and the printable agreement.
+   capitalItemsHeadingLevel = 3 puts it under a "Summary of actions and items" h2 (the offer page,
+   17 November 2026); anything else keeps the standalone h2 the agreement page uses.
+   capitalItemsShowIntro = false drops the "Each row is..." line, which is table instruction
+   rather than agreement copy. #}
+{% if capitalItemsHeadingLevel == 3 %}
+  <h3 class="govuk-heading-m" id="capital-items">Items</h3>
+{% else %}
+  <h2 class="govuk-heading-l" id="capital-items">Items</h2>
+{% endif %}
+{% if capitalItemsShowIntro != false %}
+  <p class="govuk-body">Each row is an item on one land parcel.</p>
+{% endif %}
+<table class="govuk-table {{ capitalItemsTableClass }}">
+  <caption class="govuk-table__caption govuk-visually-hidden">Items on each land parcel</caption>
+  <thead class="govuk-table__head"><tr class="govuk-table__row">
+    <th scope="col" class="govuk-table__header">Land parcel</th><th scope="col" class="govuk-table__header">Item</th><th scope="col" class="govuk-table__header">Quantity</th>
+  </tr></thead>
+  <tbody class="govuk-table__body">
+  {% for item in offer.capitalItems %}
+    <tr class="govuk-table__row"><td class="govuk-table__cell">{{ item.parcelReference }}</td><td class="govuk-table__cell">{{ item.label }}</td><td class="govuk-table__cell">{{ item.quantityText }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>

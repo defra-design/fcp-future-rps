@@ -12,7 +12,7 @@
   {{ super() }}
   {{ govukBackLink({
     text: "Back",
-    href: "/sfi-grasslands-v5/index"
+    href: v5BackHref or "/sfi-grasslands-v5/index"
   }) }}
 {% endblock %}
 
@@ -31,7 +31,7 @@
         <div class="govuk-panel govuk-panel--confirmation app-v5-demo-link">
           <h2 class="govuk-panel__title govuk-!-font-size-27">Link for a participant</h2>
           <div class="govuk-panel__body govuk-!-font-size-19">
-            {{ participantLinkSummary }}. The link opens the task list in a fresh session with this business and land.
+            {{ participantLinkSummary }}. The link opens the start page in a fresh session with this business and land.
             {% if participantLinkExpiry %}<br>It stops working at {{ participantLinkExpiry }}.{% endif %}
           </div>
         </div>

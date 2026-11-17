@@ -1,4 +1,8 @@
 {% set serviceName = "Farm and Land Service" %}
+{# The "View agreement" footer shortcut, which jumps to the offer email, is on this page as well
+   as the confirmation page (17 November 2026, user asked): this is where you wait for the offer,
+   so this is where a facilitator needs to make it arrive. #}
+{% set showViewAgreementInFooter = true %}
 {% extends "layouts/sfi-grasslands-v5-header.html" %}
 
 {% block pageTitle %}
@@ -8,6 +12,9 @@
 {% block beforeContent %}
   {{ super() }}
   {% include "sfi-grasslands-v5/_includes/account-bar.html" %}
+  {# Always the Farm and Land Service overview page (16 November 2026, user asked), not the
+     remembered previous page: this is where the agreement is reached from, whatever route
+     in the session took you here. #}
   {{ govukBackLink({ text: "Back", href: "/sfi-grasslands-v5/singlefrontdoor/landing/landing" }) }}
 {% endblock %}
 
@@ -89,10 +96,7 @@
           <dt class="govuk-summary-list__key">Submitted</dt>
           <dd class="govuk-summary-list__value">{{ v5SubmittedDateFormatted }}</dd>
         </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Estimated yearly payment</dt>
-          <dd class="govuk-summary-list__value">{{ v5YearlyPaymentFormatted }}</dd>
-        </div>
+        {# Estimated yearly payment removed 16 November 2026 (user asked) #}
       {% elif stage == 'offer' %}
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
           <dt class="govuk-summary-list__key">Offer made</dt>
@@ -102,23 +106,21 @@
           <dt class="govuk-summary-list__key">Accept by</dt>
           <dd class="govuk-summary-list__value">{{ v5OfferAcceptByFormatted }}</dd>
         </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Yearly payment</dt>
-          <dd class="govuk-summary-list__value">{{ v5YearlyPaymentFormatted }}</dd>
-        </div>
+        {# Yearly payment removed 17 November 2026 (user asked), on the offer and active stages #}
       {% else %}
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
           <dt class="govuk-summary-list__key">Agreement number</dt>
           <dd class="govuk-summary-list__value">SFI123456789</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+          <dt class="govuk-summary-list__key">Agreement accepted</dt>
+          <dd class="govuk-summary-list__value">{{ v5AgreementAcceptedFormatted }}</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
           <dt class="govuk-summary-list__key">Agreement dates</dt>
           <dd class="govuk-summary-list__value">{{ v5AgreementStartFormatted }} to {{ v5AgreementEndFormatted }}</dd>
         </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Yearly payment</dt>
-          <dd class="govuk-summary-list__value">{{ v5YearlyPaymentFormatted }}</dd>
-        </div>
+        {# Yearly payment removed 17 November 2026 (user asked) #}
       {% endif %}
     </dl>
 
@@ -140,17 +142,28 @@
       {% endif %}
       <h2 class="govuk-heading-m">What happens next</h2>
       <p class="govuk-body">We’ll review your application and email you when your agreement offer is ready.</p>
-      <p class="govuk-body"><a class="govuk-link" href="/sfi-grasslands-v5/view-application?from=landing">View your application</a></p>
+      {# A button, not a link (17 November 2026, user asked): every stage of this page has one
+         primary action, and while the application is awaiting review this is the only thing
+         there is to do here. #}
+      {{ govukButton({ text: "View your application", href: "/sfi-grasslands-v5/view-application?from=agreement" }) }}
 
     {% elif stage == 'offer' %}
       <h2 class="govuk-heading-m">What you need to do</h2>
       <p class="govuk-body">Check and accept your agreement offer by {{ v5OfferAcceptByFormatted }}.</p>
-      {{ govukButton({ text: "View agreement offer", href: "/sfi-agreement-v2/offer" }) }}
+      {{ govukButton({ text: "View agreement offer", href: "/sfi-agreement-v3/offer" }) }}
 
     {% else %}
       <h2 class="govuk-heading-m">Your agreement</h2>
       <p class="govuk-body">You do not need to do anything. We’ll pay you every 3 months.</p>
-      <p class="govuk-body"><a class="govuk-link" href="/sfi-agreement-v2/agreement">View your agreement</a></p>
+      {{ govukButton({ text: "View your agreement document", href: "/sfi-agreement-v3/agreement-signed" }) }}
+
+      {# Moved here from the offer-accepted confirmation page (17 November 2026, user asked):
+         they are things to come back to, and the confirmation is seen once #}
+      <p class="govuk-body">You can:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><a class="govuk-link" href="#" onclick="return false;">read the Grasslands terms and conditions (opens in a new tab)</a></li>
+        <li><a class="govuk-link" href="#" onclick="return false;">read the guidance for your actions (opens in a new tab)</a></li>
+      </ul>
     {% endif %}
 
   {% endif %}

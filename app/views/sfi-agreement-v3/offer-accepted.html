@@ -13,6 +13,8 @@
 {% endblock %}
 
 {% block content %}
+<style>.app-v3-feedback { border-top: 1px solid #b1b4b6; }</style>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -29,28 +31,41 @@
         What happens next
       </h2>
 
+      {# Real dates from the session (17 November 2026, user asked), so this page and the
+         grasslands agreement page agree. They were typed in and said 1 September 2026. The
+         acceptance carries a time because it is a moment; agreement dates and payment months
+         do not, because they are not. #}
       <p class="govuk-body">
-        Your agreement starts on 1 September 2026 and will last for 3 years.
+        You accepted this offer on {{ v3AcceptedFormatted }}.
       </p>
       <p class="govuk-body">
-        You will receive your first payment in December 2026.
+        Your agreement starts on {{ v3AgreementStartFormatted }} and ends on {{ v3AgreementEndFormatted }}.
       </p>
       <p class="govuk-body">
-        You will usually receive your first payment in the fourth month after your agreement starts.
+        You will receive your first payment in {{ v3FirstPaymentMonthFormatted }}. You will usually
+        receive your first payment in the fourth month after your agreement starts.
+      </p>
+      {# Names the service the agreement now lives in (17 November 2026, user asked), so the
+         button below is not the first the reader hears of it. #}
+      <p class="govuk-body">
+        Your agreement is in the Farm and Land Service. You can check it and your payments there at any time.
       </p>
 
+      {# The list came back on 17 November 2026 after moving to the grasslands agreement page
+         earlier the same day. It is on both: here because people act on it while they are still
+         on the page, there because that is where they come back to. #}
       <p class="govuk-body">You can:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>
-          <a class="govuk-link" href="/sfi-agreement-v3/agreement-signed" rel="noreferrer noopener" target="_blank">view your agreement document (opens in a new tab)</a>
-        </li>
-        <li>
-          <a class="govuk-link" href="#" onclick="return false;">read the Grasslands terms and conditions (opens in a new tab)</a>
-        </li>
-        <li>
-          <a class="govuk-link" href="#" onclick="return false;">read the guidance for your actions (opens in a new tab)</a>
-        </li>
+      <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-7">
+        <li><a class="govuk-link" href="/sfi-agreement-v3/agreement-signed" rel="noreferrer noopener" target="_blank">view your agreement document (opens in a new tab)</a></li>
+        <li><a class="govuk-link" href="#" onclick="return false;">read the Grasslands terms and conditions (opens in a new tab)</a></li>
+        <li><a class="govuk-link" href="#" onclick="return false;">read the guidance for your actions (opens in a new tab)</a></li>
       </ul>
+
+      {{ govukButton({ text: "Go to the Farm and Land Service", href: "/sfi-grasslands-v5/grasslands-agreement?stage=active" }) }}
+
+      <p class="govuk-body govuk-!-padding-top-4 govuk-!-margin-top-4 app-v3-feedback">
+        <a class="govuk-link" href="#">What did you think of this service?</a> (takes 30 seconds)
+      </p>
 
     </div>
   </div>

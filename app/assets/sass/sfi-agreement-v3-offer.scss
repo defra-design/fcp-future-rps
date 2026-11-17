@@ -10,3 +10,27 @@
   font-size: 16px;
   line-height: 1.25;
 }
+
+// The Actions and Items summary tables hold the same three columns, so they are laid out to the
+// same widths and read as one block (17 November 2026, user asked). Without this the browser
+// sizes each table from its own content and the Action and Item columns start in different
+// places, which is very visible when one table has a single row.
+.app-v3-summary-table {
+  table-layout: fixed;
+
+  th:nth-child(1),
+  td:nth-child(1) {
+    width: 25%;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 55%;
+  }
+
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 20%;
+  }
+}
+

@@ -35,7 +35,18 @@
 {% endblock %}
 
 {% block footer %}
-  {% if (GOVUKPrototypeKit.isDevelopment) %}
+  {# Participants must not get the prototype's own tools here (17 November 2026). The guard in
+     app/sfi-grasslands-v5/rpa-land.js runs on every route and sets v5ParticipantMode, but this
+     layout used to ignore it, so following "View agreement" out of v5 handed a participant
+     "Manage your prototype" and "Clear data". #}
+  {% if v5ParticipantMode %}
+    {% set footerItems = [
+      {
+        href: "/sfi-grasslands-v5/researcher-exit",
+        text: "Exit participant mode"
+      }
+    ] %}
+  {% elif (GOVUKPrototypeKit.isDevelopment) %}
     {% set footerItems = [
       {
         href: "/manage-prototype",
@@ -61,11 +72,12 @@
     ] %}
   {% endif %}
 
+  {# "Built by the Department..." removed to match v5 (17 November 2026, user asked).
+     Comments stay ABOVE the macro call: one inside its braces silently 500s every page. #}
   {{ govukFooter({
     rebrand: true,
     meta: {
       items: footerItems,
-      html: 'Built by the <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs">Department for Environment, Food &amp; Rural Affairs</a>',
       visuallyHiddenTitle: "Support links"
     }
   }) }}

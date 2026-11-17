@@ -1,30 +1,36 @@
-{% extends "layouts/main-thread.html" %}
+{% set serviceName = "Apply for a grasslands agreement" %}
+{% set serviceUrl = "/sfi-grasslands-v5/apply-start" %}
+{% extends "layouts/sfi-grasslands-v5-header.html" %}
+
+{#- Was on layouts/main-thread.html, a bare prototype-kit layout, so signing out dropped you onto a
+    page with no DEFRA header, no service name, a different phase banner and the prototype's own
+    footer tools - in the middle of a research session (17 November 2026, user spotted it).
+    It wears the v5 layout now, like every other page in the journey. -#}
 
 {% block pageTitle %}
-  Signed out
+  You have signed out
 {% endblock %}
 
 {% block beforeContent %}
-  {{ govukPhaseBanner({
-    tag: {
-      text: "Beta"
-    },
-    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback (opens in new tab)</a>.'
-    })
-  }}
+  {{ super() }}
 {% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">
-      You have signed out
-    </h1>
 
-    <p class="govuk-body">
-      If this is not what you wanted, you can <a class="govuk-link" href="sign-in">sign back in</a>.
-    </p>
+    <h1 class="govuk-heading-l">You have signed out</h1>
+
+    {% if data['sfiGrasslandsV5ApplicationSubmitted'] %}
+      <p class="govuk-body">Your application has been submitted. Sign back in to check it in the Farm and Land Service.</p>
+    {% elif data['sfiGrasslandsV5ApplicationStartedAt'] %}
+      <p class="govuk-body">We have saved your application. Sign back in to carry on where you left off.</p>
+    {% else %}
+      <p class="govuk-body">Sign back in when you are ready to apply.</p>
+    {% endif %}
+
+    {{ govukButton({ text: "Sign back in", href: "/sfi-grasslands-v5/sign-in" }) }}
+
   </div>
 </div>
 {% endblock %}
-

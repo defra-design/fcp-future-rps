@@ -19,7 +19,7 @@
                 From: Rural Payments Agency
             </p>
             <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-bottom-4">
-                To: Alfred Waldron, Agile Farm
+                To: {{ v5UserName or "Alfred Waldron" }}, {{ v5BusinessName or "Agile Farm Ltd" }}
             </p>
         </div>
     </div>
@@ -64,8 +64,11 @@
             <h1 class="govuk-heading-xl">
                 Review your updated agreement offer
             </h1>
+            {# The business and SBI the participant was set up with (17 November 2026, user asked).
+               They reach this page because the v5 rpa-land middleware is now mounted on
+               /sfi-agreement-v3; the old fixed text is the fallback. #}
             <h2 class="govuk-heading-m">
-                Agile Farm: Single business identifier (SBI) 123456789
+                {{ v5BusinessName or "Agile Farm Ltd" }}: Single business identifier (SBI) {{ v5Sbi or "123456789" }}
             </h2>
 
             <p>Your updated agreement offer is ready to review.</p>

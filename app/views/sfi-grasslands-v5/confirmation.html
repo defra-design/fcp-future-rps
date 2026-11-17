@@ -56,15 +56,22 @@
       {% endif %}
       {# Design of 10 November 2026: no status sentence; the button goes to the Farm and Land Service #}
       <p class="govuk-body">We’ll email you when your agreement offer is ready for you to check in the Farm and Land Service.</p>
+      {# One green button, no separate link (17 November 2026, user asked). It was a
+         "View and print your application (opens in new tab)" link above a button that
+         went to the grasslands agreement page or the Farm and Land Service depending on
+         the way in (journey map, 11 November 2026); that routing is gone with it.
+         It goes to the grasslands agreement page, not straight to view-application: that
+         is the page where the application can be viewed, alongside its status and what
+         happens next (17 November 2026, user asked). #}
+      {# The link came back on 17 November 2026 after being removed earlier the same day: it and the
+         button do different jobs. The link is the receipt, read or printed now, in a new tab so the
+         confirmation stays put. The button is the way back into the service later, and it lands on
+         the grasslands agreement page rather than the Farm and Land Service overview because the
+         overview's card shows no status - that click would tell you nothing. #}
       <p class="govuk-body">
         <a class="govuk-link" href="/sfi-grasslands-v5/view-application" target="_blank" rel="noreferrer noopener">View and print your application (opens in new tab)</a>
       </p>
-      {# Started from the grasslands start page: back to the grasslands landing page (journey map, 11 November 2026) #}
-      {% if data['v5StartFromApply'] %}
-      {{ govukButton({ text: "Go to your application", href: "/sfi-grasslands-v5/grasslands-agreement" }) }}
-      {% else %}
-      {{ govukButton({ text: "Go to Farm and Land Service", href: "/sfi-grasslands-v5/singlefrontdoor/landing/landing" }) }}
-      {% endif %}
+      {{ govukButton({ text: "Go to the Farm and Land Service", href: "/sfi-grasslands-v5/grasslands-agreement" }) }}
 
       <p class="govuk-body govuk-!-padding-top-4 app-v5-feedback">
         <a class="govuk-link" href="#">What did you think of this service?</a> (takes 30 seconds)

@@ -24,12 +24,12 @@
   {% if isEditingLandActions %}
     {{ govukBackLink({
       text: "Back",
-      href: "/sfi-grasslands-v5/cancel-land-actions-draft"
+      href: v5BackHref or "/sfi-grasslands-v5/cancel-land-actions-draft"
     }) }}
   {% else %}
     {{ govukBackLink({
       text: "Back",
-      href: "/sfi-grasslands-v5/select-land"
+      href: v5BackHref or "/sfi-grasslands-v5/select-land"
     }) }}
   {% endif %}
 {% endblock %}

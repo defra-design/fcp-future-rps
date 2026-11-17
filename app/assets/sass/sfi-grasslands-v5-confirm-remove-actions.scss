@@ -1,0 +1,33 @@
+// "Confirm that you want to remove these from your application" (16 November 2026).
+//
+// The table has one row per land parcel, so an action or item on three parcels is
+// three rows. Left as GOV.UK draws it, every row gets its own line and one action
+// reads as several unrelated things. So: no line between the rows of a group, and a
+// line only under the last parcel of each one. The code and name sit on the first row
+// of the group and the continuation rows tuck up under it.
+
+.app-v5-remove-table {
+  // A land parcel reference is one thing: never broken across two lines
+  // (16 November 2026). The table stays in the two-thirds column.
+  .app-v5-remove-table__parcel {
+    white-space: nowrap;
+  }
+
+  // Flush (16 November 2026): no padding between the rows of a group either, so the
+  // parcels stack as tightly as lines inside one cell would. The group keeps its full
+  // padding at the top and bottom, which is what separates it from the next one.
+  .app-v5-remove-table__row--grouped .govuk-table__cell {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .app-v5-remove-table__row--continued .govuk-table__cell {
+    padding-top: 0;
+  }
+
+  // Top-aligned so the name, its first parcel and that parcel's quantity all start
+  // on the same line, however many lines the name runs to
+  .govuk-table__cell {
+    vertical-align: top;
+  }
+}

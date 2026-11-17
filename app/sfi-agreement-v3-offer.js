@@ -433,24 +433,27 @@ function buildOfferRows (parcelSelections) {
       { number: 3, isFirstYear: false }
     ],
     holder: {
-      name: 'Agile Farms Ltd',
+      name: 'Agile Farm Ltd',
       sbi: '123456789',
       addressLines: [
-        'Agile Farms Ltd',
+        'Agile Farm Ltd',
         'Canal Walk',
         'Newbury',
         'Berkshire',
         'SK22 1DL'
       ],
       addressInline: 'Canal Walk, Newbury, Berkshire, SK22 1DL',
-      agreementName: 'SFI 2026',
+      // The agreement's own reference, matching the number on the offer-accepted panel
+      // (17 November 2026, user's design). It was 'SFI 2026', which named the scheme year
+      // rather than this agreement.
+      agreementName: 'GR1234D',
       agreementType: 'Sustainable Farming Incentive',
-      startDate: 'When you accept your agreement offer',
+      startDate: 'The date you accept your agreement offer',
       endDate: null,
       duration: '3 years from the agreement start date',
       agreementNumber: 'GR1234D',
       signedBy: 'Alfred Waldron',
-      signedBusiness: 'Agile Farms Ltd',
+      signedBusiness: 'Agile Farm Ltd',
       signedOn: null
     },
     signed: false,
@@ -489,6 +492,95 @@ function applyPaymentDates (offer, now) {
   return offer
 }
 
+// Items the participant actually put on their land parcels (17 November 2026). Until then this
+// was a hard-coded FG1/FG2/FG12 set, so the offer showed items nobody had chosen, on parcels that
+// might not be in the application at all. v5 keeps them on each parcel in sfiV5ApplicationParcels.
+var EXAMPLE_CAPITAL_ITEMS = [
+  { code: 'FG1', quantity: 120, parcelReference: 'SO3757 3193' },
+  { code: 'FG2', quantity: 80, parcelReference: 'SO3757 3194' },
+  { code: 'FG12', quantity: 1, parcelReference: 'SO3757 3193' }
+]
+
+function getApplicationParcelsFromSession (sessionData) {
+  var raw = (sessionData || {}).sfiV5ApplicationParcels
+  if (typeof raw === 'string') {
+    try {
+      raw = JSON.parse(raw)
+    } catch (error) {
+      raw = []
+    }
+  }
+  return Array.isArray(raw) ? raw : []
+}
+
+function buildCapitalItems (sessionData, entries) {
+  var capitalCatalogue = require('./sfi-grasslands-v5/capital-items')
+  var rows = entries || []
+  if (!entries) {
+    getApplicationParcelsFromSession(sessionData).forEach(function (parcel) {
+      var reference = parcel.parcelReference || parcel.osReference || parcel.osRef ||
+        parcel.parcelName || parcel.parcelId || ''
+      ;(parcel.capitalItems || []).forEach(function (entry) {
+        rows.push({
+          code: String(entry.code || '').toUpperCase(),
+          quantity: Number(entry.quantity) || 0,
+          parcelReference: reference
+        })
+      })
+    })
+  }
+  return rows.map(function (row) {
+    var item = capitalCatalogue.getItem(row.code)
+    if (!item) {
+      return null
+    }
+    var payment = Math.round(row.quantity * item.paymentRate * 100) / 100
+    return {
+      code: item.code,
+      parcelReference: row.parcelReference,
+      label: item.code + ': ' + item.name,
+      quantityText: item.unit === 'm'
+        ? row.quantity.toLocaleString('en-GB') + ' m'
+        : row.quantity + ' ' + item.unitLabel + (row.quantity === 1 ? '' : 's'),
+      paymentRateText: formatMoney(item.paymentRate) + ' per ' + item.unitLabel,
+      payment: payment,
+      paymentText: formatMoney(payment)
+    }
+  }).filter(Boolean).sort(function (a, b) {
+    return String(a.parcelReference).localeCompare(String(b.parcelReference), 'en-GB') ||
+      String(a.code).localeCompare(String(b.code), 'en-GB')
+  })
+}
+
+// The business, SBI and person a participant was set up with (17 November 2026). The agreement
+// document used to be hard-coded to Agile Farm Ltd whatever the demo configuration said, so a
+// participant signed in as someone else was handed an agreement in another farm's name. Keys are
+// the v5Demo* ones that app/sfi-grasslands-v5/rpa-land.js writes.
+function applyHolderFromSession (offer, sessionData) {
+  var data = sessionData || {}
+  var holder = offer.holder
+  if (data.v5DemoBusinessName) {
+    holder.name = data.v5DemoBusinessName
+    holder.signedBusiness = data.v5DemoBusinessName
+  }
+  if (data.v5DemoSbi) {
+    holder.sbi = data.v5DemoSbi
+  }
+  if (data.v5DemoUserName) {
+    holder.signedBy = data.v5DemoUserName
+  }
+  if (data.v5DemoAddress) {
+    var lines = String(data.v5DemoAddress).split('\n').map(function (line) {
+      return line.trim()
+    }).filter(Boolean)
+    if (lines.length) {
+      holder.addressLines = [holder.name].concat(lines)
+      holder.addressInline = lines.join(', ')
+    }
+  }
+  return offer
+}
+
 function buildOfferFromSession (sessionData, options) {
   var parcelSelections = getParcelSelectionsFromSession(sessionData)
   var offer = buildOfferRows(parcelSelections)
@@ -498,7 +590,15 @@ function buildOfferFromSession (sessionData, options) {
     offer.isExample = true
   }
 
-  return applyPaymentDates(applyAgreementStatus(offer, options))
+  offer.capitalItems = buildCapitalItems(sessionData)
+  if (!offer.capitalItems.length) {
+    offer.capitalItems = buildCapitalItems(null, EXAMPLE_CAPITAL_ITEMS)
+    offer.capitalItemsAreExample = true
+  }
+  offer.capitalTotalText = formatMoney(offer.capitalItems.reduce(function (total, item) {
+    return total + item.payment
+  }, 0))
+  return applyPaymentDates(applyAgreementStatus(applyHolderFromSession(offer, sessionData), options))
 }
 
 module.exports = {

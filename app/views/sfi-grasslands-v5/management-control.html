@@ -14,12 +14,12 @@
   {% if fromCheckYourAnswers %}
     {{ govukBackLink({
       text: "Back",
-      href: "/sfi-grasslands-v5/check-your-answers"
+      href: v5BackHref or "/sfi-grasslands-v5/check-your-answers"
     }) }}
   {% else %}
     {{ govukBackLink({
       text: "Back",
-      href: "/sfi-grasslands-v5/task-list"
+      href: v5BackHref or "/sfi-grasslands-v5/task-list"
     }) }}
   {% endif %}
 {% endblock %}

@@ -419,10 +419,12 @@ function handlePost (req, res) {
 }
 
 // ---------------------------------------------------------------------------
-// Demo configuration page: business name and SBI, then the task list
+// Demo configuration page: business name and SBI, then the grasslands start page
 // ---------------------------------------------------------------------------
 var DEMO_VIEW = 'sfi-grasslands-v5/demo-configuration'
-var DEMO_NEXT = '/sfi-grasslands-v5/task-list'
+// The participant link and the researcher's own run both open the start page
+// (17 November 2026, user asked); it was the task list.
+var DEMO_NEXT = '/sfi-grasslands-v5/apply-start'
 
 function fieldError (errors, field) {
   return (errors || []).find(function (error) { return error.field === field }) || null
@@ -740,7 +742,7 @@ function isParticipantPathAllowed (path) {
     path === '/favicon.ico') {
     return true
   }
-  if (/^\/sfi-agreement-v2\/.+/.test(path) && !/^\/sfi-agreement-v2\/index/.test(path)) {
+  if (/^\/sfi-agreement-v[23]\/.+/.test(path) && !/^\/sfi-agreement-v[23]\/index/.test(path)) {
     return true
   }
   // Signing in to view the agreement offer uses the v3 sign-in page

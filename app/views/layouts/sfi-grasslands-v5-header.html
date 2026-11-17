@@ -86,7 +86,11 @@
     }]) %}
   {% endif %}
 
-  {# View agreement points at Agreement v3 (16 November 2026), the version v5 hands over to #}
+  {# The prototype shortcut that jumps to the offer email, pointing at Agreement v3
+     (16 November 2026), the version v5 hands over to. A second item going to the
+     grasslands agreement page was added and removed again on 17 November 2026: the
+     green button on the confirmation page already goes there, so it was the same
+     destination twice. #}
   {% if showViewAgreementInFooter %}
     {% set footerItems = footerItems.concat([{
       href: "/sfi-agreement-v3/offer-email",
@@ -153,11 +157,13 @@
     {% endif %}
   {% endset %}
 
+  {# "Built by the Department for Environment, Food & Rural Affairs" removed 17 November 2026
+     (user asked). The comment lives HERE, above the macro call: a Nunjucks comment inside a
+     macro's object literal breaks the whole render with no error in the template. #}
   {{ govukFooter({
     rebrand: true,
     meta: {
       items: footerItems,
-      html: 'Built by the <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs">Department for Environment, Food &amp; Rural Affairs</a>',
       visuallyHiddenTitle: "Support links"
     },
     contentLicence: {

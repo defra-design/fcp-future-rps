@@ -16,12 +16,12 @@
   {% if fromCheckYourAnswers %}
     {{ govukBackLink({
       text: "Back",
-      href: "/sfi-grasslands-v5/check-your-answers"
+      href: v5BackHref or "/sfi-grasslands-v5/check-your-answers"
     }) }}
   {% else %}
     {{ govukBackLink({
       text: "Back",
-      href: "/sfi-grasslands-v5/task-list"
+      href: v5BackHref or "/sfi-grasslands-v5/task-list"
     }) }}
   {% endif %}
   <link rel="stylesheet" href="/public/stylesheets/sfi-grasslands-v5-confirm-land-and-actions.css">
@@ -42,7 +42,8 @@
             </h2>
           </div>
           <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">{{ flashMessage }}</p>
+            {# Normal body paragraph, not the banner heading style (16 November 2026, user asked) #}
+            <p class="govuk-body">{{ flashMessage }}</p>
             {% if not summary.isEmpty %}
               {# Same as the "Add another land parcel" button at the bottom of the form, so the
                  user doesn't have to scroll past every parcel to find it #}
@@ -188,13 +189,15 @@
             <input type="hidden" name="from" value="check-your-answers">
           {% endif %}
           <div class="govuk-button-group">
+            {# "Save and continue" on both branches (16 November 2026, user asked): the page
+               saves either way, so the button should not change wording with the route in #}
             {% if fromCheckYourAnswers %}
               <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="returnToCya">
-                Continue
+                Save and continue
               </button>
             {% else %}
               <button type="submit" class="govuk-button" data-module="govuk-button" name="confirmAction" value="save">
-                Continue
+                Save and continue
               </button>
             {% endif %}
             <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" name="confirmAction" value="addAnother">
