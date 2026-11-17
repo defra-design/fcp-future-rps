@@ -12782,6 +12782,9 @@ function getSfiV5AgreementLocals (req) {
     v5AgreementAcceptedFormatted: fmtDateTime(acceptedAt),
     v5AgreementStartFormatted: fmt(agreementStart),
     v5AgreementEndFormatted: fmt(agreementEnd),
+    // The agreement runs from the start of its first day to the end of its last (17 November 2026)
+    v5AgreementStartDateTimeFormatted: fmt(agreementStart) + ' at 12:00am',
+    v5AgreementEndDateTimeFormatted: fmt(agreementEnd) + ' at 11:59pm',
     v5ParcelCount: parcelCount,
     v5ActionCount: actionCount,
     v5YearlyPaymentFormatted: basket.isEmpty ? '£14,944.58' : basket.totalYearlyPaymentFormatted

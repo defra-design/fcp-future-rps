@@ -1,6 +1,11 @@
 {% set serviceName = "Apply for a grasslands agreement" %}
 {% set serviceUrl = "/sfi-agreement-v3/offer" %}
-{% set signOutUrl = "/sfi-agreement-v3/offer-email" %}
+{# Both ways out of this page go to the Farm and Land Service overview (17 November 2026, user
+   asked), not straight to the grasslands agreement page and not back to the offer email - the
+   prototype shortcut every other v3 page uses, which would put you in front of an offer you have
+   already accepted. The overview's Grasslands card reads "View your agreement" from here, because
+   accepting set the stage. #}
+{% set signOutUrl = "/sfi-grasslands-v5/singlefrontdoor/landing/landing" %}
 {% extends "layouts/sfi-agreement-v3-header.html" %}
 
 {% block pageTitle %}
@@ -61,7 +66,7 @@
         <li><a class="govuk-link" href="#" onclick="return false;">read the guidance for your actions (opens in a new tab)</a></li>
       </ul>
 
-      {{ govukButton({ text: "Go to the Farm and Land Service", href: "/sfi-grasslands-v5/grasslands-agreement?stage=active" }) }}
+      {{ govukButton({ text: "Go to the Farm and Land Service", href: "/sfi-grasslands-v5/singlefrontdoor/landing/landing" }) }}
 
       <p class="govuk-body govuk-!-padding-top-4 govuk-!-margin-top-4 app-v3-feedback">
         <a class="govuk-link" href="#">What did you think of this service?</a> (takes 30 seconds)

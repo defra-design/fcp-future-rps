@@ -112,13 +112,18 @@
           <dt class="govuk-summary-list__key">Agreement number</dt>
           <dd class="govuk-summary-list__value">SFI123456789</dd>
         </div>
+        {# "Agreement accepted" row removed 17 November 2026 (user asked). The acceptance and its
+           time are still in the History tab, and on the offer-accepted confirmation. #}
+        {# Split out of one "Agreement dates" row (17 November 2026, user asked), each with the
+           time the agreement runs between: it starts at the beginning of its first day and ends
+           at the end of its last. #}
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Agreement accepted</dt>
-          <dd class="govuk-summary-list__value">{{ v5AgreementAcceptedFormatted }}</dd>
+          <dt class="govuk-summary-list__key">Agreement start date</dt>
+          <dd class="govuk-summary-list__value">{{ v5AgreementStartDateTimeFormatted or v5AgreementStartFormatted }}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-          <dt class="govuk-summary-list__key">Agreement dates</dt>
-          <dd class="govuk-summary-list__value">{{ v5AgreementStartFormatted }} to {{ v5AgreementEndFormatted }}</dd>
+          <dt class="govuk-summary-list__key">Agreement end date</dt>
+          <dd class="govuk-summary-list__value">{{ v5AgreementEndDateTimeFormatted or v5AgreementEndFormatted }}</dd>
         </div>
         {# Yearly payment removed 17 November 2026 (user asked) #}
       {% endif %}
