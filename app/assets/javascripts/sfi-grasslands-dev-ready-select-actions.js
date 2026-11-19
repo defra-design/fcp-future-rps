@@ -2145,16 +2145,29 @@ function hasFourDecimalPlaces(rawValue) {
   return /^\d+\.\d{4}$/.test(normalised);
 }
 
-function getOverLimitErrorMessage(unit) {
+// The limit is named rather than described (19 November 2026, user asked): "the available
+// hectares" made the reader go and find the number for themselves, and in the error summary
+// there is no field beside it to read it off.
+function formatOverLimitValue(unit, maxAllowed) {
+  var value = Number(maxAllowed);
+  if (!Number.isFinite(value) || value < 0) {
+    value = 0;
+  }
+  if (unit === 'ha') {
+    return value.toFixed(4) + ' hectares';
+  }
+  var whole = Math.floor(value + 0.0001);
   if (unit === 'm') {
-    return 'Enter a number that is not higher than the available metres';
+    return whole.toLocaleString('en-GB') + ' metres';
   }
-
   if (unit === 'm²') {
-    return 'Enter a number that is not higher than the available square metres';
+    return whole.toLocaleString('en-GB') + ' square metres';
   }
+  return String(whole);
+}
 
-  return 'Enter a number that is not higher than the available hectares';
+function getOverLimitErrorMessage(unit, maxAllowed) {
+  return 'Enter a number that is not higher than ' + formatOverLimitValue(unit, maxAllowed);
 }
 
 function getQuantityCheckbox($quantityInput) {
@@ -5800,11 +5813,11 @@ $(document).ready(function(){
 
       if ((isOverLimit || isOverLimitMForAction) && parsed.valid) {
         if (suffix === 'ha' && isOverLimitHa) {
-          errors.overLimit = getOverLimitErrorMessage('ha');
+          errors.overLimit = getOverLimitErrorMessage('ha', remainingHa);
         } else if (isOverLimitMForAction || (suffix === 'm' && parsed.value > maxAllowedM + 0.0001)) {
-          errors.overLimit = getOverLimitErrorMessage('m');
+          errors.overLimit = getOverLimitErrorMessage('m', maxAllowedM);
         } else if (suffix === 'm²' && isOverLimitM2) {
-          errors.overLimit = getOverLimitErrorMessage('m²');
+          errors.overLimit = getOverLimitErrorMessage('m²', remainingM2);
         }
       }
 
@@ -6923,7 +6936,7 @@ $(document).ready(function(){
           return;
         }
 
-        errors.overLimit = getOverLimitErrorMessage(action.unit);
+        errors.overLimit = getOverLimitErrorMessage(action.unit, maxAllowed);
         if (action.limitedAreaCapped) {
           errors.overLimit += '. CIGL1 and CIGL2 together can only use 25% of your total farm area';
         }

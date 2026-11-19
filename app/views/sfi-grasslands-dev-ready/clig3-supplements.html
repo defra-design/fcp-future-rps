@@ -99,6 +99,8 @@
       {% endif %}
       <p class="govuk-body"><strong>CLIG3 area:</strong> {{ appliedAreaText }}</p>
       <p class="govuk-body">Supplements are paid on top of CLIG3 and last for the same 3 years.</p>
+      {# The either/or is said before the list, not discovered by ticking (19 November 2026) #}
+      <p class="govuk-body">You can add the haymaking supplements or the lenient grazing supplement, but not both.</p>
 
       <form action="/sfi-grasslands-dev-ready/clig3-supplements" method="post" novalidate data-clig3-supplements-form data-clig3-area="{{ clig3Ha }}">
         {% if fromCheckYourAnswers %}
@@ -114,6 +116,9 @@
             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
               {% for option in options %}
                 {% set codeLower = option.code | lower %}
+                {% if option.excludesOtherSupplements and not loop.first %}
+                  <div class="govuk-checkboxes__divider">or</div>
+                {% endif %}
                 {% set isChecked = option.code in selectedCodes %}
                 {% set codeError = null %}
                 {% for item in errors %}
@@ -132,6 +137,7 @@
                     aria-describedby="action-hint-{{ codeLower }} action-available-hint-{{ codeLower }}"
                     data-supplement="{{ option.code }}"
                     {% if option.appliesFullClig3Area %}data-whole-remaining-area="true"{% endif %}
+                    {% if option.excludesOtherSupplements %}data-supplement-exclusive="true"{% endif %}
                     {% if isChecked %}checked{% endif %}
                   >
                   <label class="govuk-label govuk-checkboxes__label" for="clig3-supplement-{{ codeLower }}">
@@ -188,7 +194,7 @@
                         <strong><span class="app-whole-remaining-amount" data-remaining-amount="{{ option.code }}">{{ appliedAreaText | replace(" hectares", "") }}</span> ha</strong>
                       </p>
                       <p class="govuk-hint app-action-full-area-hint" id="action-full-area-hint-{{ codeLower }}">
-                        <strong>This supplement covers the whole CLIG3 area.</strong><br>It does not reduce the area available to the other supplements.
+                        <strong>This supplement covers the whole CLIG3 area.</strong>
                       </p>
                     </div>
                   {% endif %}

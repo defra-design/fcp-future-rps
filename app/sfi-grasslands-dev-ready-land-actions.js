@@ -406,6 +406,14 @@ function supplementAppliesFullClig3Area (code) {
   return String(code || '').toUpperCase() === 'GRH10'
 }
 
+// GRH10 cannot be held with GRH7 or GRH8 (19 November 2026): it is the lenient grazing
+// supplement and they are the haymaking ones, so the land is managed one way or the other.
+// Separate from supplementAppliesFullClig3Area, which is about area rather than compatibility,
+// even though both are GRH10 today.
+function supplementExcludesOtherSupplements (code) {
+  return String(code || '').toUpperCase() === 'GRH10'
+}
+
 function findActionByCode (actions, code) {
   var normalised = String(code || '').toUpperCase()
   return (actions || []).find(function (action) {
@@ -481,6 +489,7 @@ function getClig3SupplementOptions (clig3Ha) {
       availableText: availableFormatted + ' available',
       requiresQuantityInput: requiresQuantity,
       appliesFullClig3Area: appliesFullArea,
+      excludesOtherSupplements: supplementExcludesOtherSupplements(code),
       guidanceUrl: getClig3SupplementGuidanceUrl(code, name)
     }
   })
@@ -534,24 +543,39 @@ function applyClig3Supplements (actions, selections) {
     return { actions: nextActions, errors: errors }
   }
 
+  // The page unticks the other side as you go, so this only catches a post with JavaScript off
+  var exclusiveChosen = chosen.filter(supplementExcludesOtherSupplements)
+  if (exclusiveChosen.length && chosen.length > exclusiveChosen.length) {
+    errors.push({
+      fieldId: 'clig3-supplement-' + chosen[0].toLowerCase(),
+      text: 'Select either the haymaking supplements or the lenient grazing supplement'
+    })
+    return { actions: nextActions, errors: errors }
+  }
+
   var clig3Ha = getClig3AppliedQuantity(nextActions)
   var partCodes = chosen.filter(function (code) { return supplementRequiresQuantityInput(code) })
   var partTotal = 0
   var parsedByCode = {}
 
   partCodes.forEach(function (code) {
+    var raw = String(quantities[code] == null ? '' : quantities[code]).trim()
     var parsed = parseSupplementQuantity(quantities[code])
     if (!parsed.valid) {
+      // "Enter a quantity" only fits an empty box. Something typed that is not a usable number
+      // says so instead (19 November 2026), and the page says the same while you type.
       errors.push({
         fieldId: 'quantity-' + code.toLowerCase(),
-        text: 'Enter a quantity for ' + code
+        text: raw
+          ? 'Quantity for ' + code + ' must be a number greater than 0'
+          : 'Enter a quantity for ' + code
       })
       return
     }
     if (parsed.value > clig3Ha + 0.00005) {
       errors.push({
         fieldId: 'quantity-' + code.toLowerCase(),
-        text: 'Quantity for ' + code + ' must be ' + clig3Ha.toFixed(4) + ' hectares or less'
+        text: 'Enter a number that is not higher than ' + clig3Ha.toFixed(4) + ' hectares'
       })
       return
     }
@@ -559,16 +583,21 @@ function applyClig3Supplements (actions, selections) {
     partTotal += parsed.value
   })
 
-  // The supplements share the CLIG3 area, so the ones with a quantity cannot add up to more
-  // One message, but every quantity box is in error. summary: false keeps the error summary
-  // to a single entry while each field still shows it.
-  if (!errors.length && partTotal > clig3Ha + 0.00005) {
-    partCodes.forEach(function (code, index) {
-      errors.push({
-        fieldId: 'quantity-' + code.toLowerCase(),
-        summary: index === 0,
-        text: 'Your supplements add up to ' + partTotal.toFixed(4) + ' hectares. They cannot be more than the CLIG3 area of ' + clig3Ha.toFixed(4) + ' hectares'
-      })
+  // The supplements share the CLIG3 area, so the ones with a quantity cannot add up to more.
+  // ONE message on ONE field, the last of them (19 November 2026, user asked): it used to go on
+  // every quantity box, which read as several problems rather than one. The page shows it
+  // against the box just edited, which the server cannot know, so it falls back to the last.
+  if (!errors.length && partTotal > clig3Ha + 0.00005 && partCodes.length) {
+    // The same sentence as a single quantity over the parcel, with the headroom left for this
+    // box once the others are taken off (19 November 2026, user asked)
+    var lastCode = partCodes[partCodes.length - 1]
+    var usedByOthers = partCodes.reduce(function (sum, code) {
+      return code === lastCode ? sum : sum + (parsedByCode[code] || 0)
+    }, 0)
+    var headroom = Math.max(0, Math.round((clig3Ha - usedByOthers) * 10000) / 10000)
+    errors.push({
+      fieldId: 'quantity-' + lastCode.toLowerCase(),
+      text: 'Enter a number that is not higher than ' + headroom.toFixed(4) + ' hectares'
     })
   }
 
@@ -635,7 +664,7 @@ function applyClig3SupplementSelection (actions, supplementCode, quantityRaw) {
         actions: nextActions,
         error: {
           fieldId: 'quantity-' + code.toLowerCase(),
-          text: 'Quantity must be ' + clig3Ha.toFixed(4) + ' hectares or less'
+          text: 'Enter a number that is not higher than ' + clig3Ha.toFixed(4) + ' hectares'
         }
       }
     }
